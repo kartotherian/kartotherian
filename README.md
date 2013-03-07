@@ -1,3 +1,21 @@
 tilelive-vector
 ---------------
 Implements the tilelive API for rendering mapnik vector tiles to raster images.
+
+### new Vector(options, callback)
+
+- *backend*: an initialized tilelive source object. Vector will call its `getTile()` method and expect a deflated vector tile PBF as the tile buffer.
+- *xml*: a Mapnik XML string that will be used to render vector tiles.
+- *base*: Optional, basepath for Mapnik map. Defaults to `__dirname`.
+- *format*: Optional, target output format. Defaults to `png8:m=h`.
+- *scale*: Optional, Mapnik scale factor. Defaults to `1`.
+- *deflate*: Optional, whether to expect deflated vector tiles. Defaults to `true`.
+- *maxAge*: Optional, length of time to hold vector tiles in memory cache. Defaults to `300e3` (300 seconds).
+- *reap*: Optional, time between reaps of vector tiles in memory cache. Defaults to `60e3` (60 seconds).
+
+### Code concepts
+
+- *Backend z/x/y*: a request for a raster tile at, say, 3/3/3 does not always mean 3/3/3 is requested from the backend source. The z/x/y requested from the backend source is referred in code by `bz/bx/by` and generally represent the same or lower zoom level. This allows for features like *overzooming*, *maskLevel tiles*, and *scale factor adjustment*.
+- *Overzooming*: if a tile beyond the `maxzoom` of the backend is requested, Vector will attempt to render the tile using the parent of the request at `maxzoom`.
+- *maskLevel tiles*: to avoid requiring many duplicate or empty vector tiles to be generated at high zoom levels, the backend source can specify a `maskLevel`. If a vector tile is not initially found at some `z > maskLevel`, Vector will issue an additional request to the backend using the parent tile of of the request at `maskLevel`. This allows a lower zoom level to "backfill" high zoom levels.
+- *Scale factor adjustment*: the scale argument decrements the backend zoom level such that the requested tile is the visual equivalent (when viewed on the proper dpi device) of its parent counterpart. For example, `scale: 2` decrements `bz` by 1, `scale: 4` decrements by 2, and so on.
