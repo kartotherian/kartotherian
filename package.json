@@ -1,6 +1,7 @@
 {
     "name": "tilelive-vector",
     "version": "0.0.1",
+    "private": true,
     "main": "./index.js",
     "dependencies": {
         "mapnik": "git+ssh://git@github.com:mapbox/node-mapnik-data-tile.git"
