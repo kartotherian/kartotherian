@@ -137,8 +137,10 @@ describe('tiles', function() {
         c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale:2 })
     };
     var tests = {
-        // z2+ tests overzooming.
-        a: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.0.0', '2.0.1'],
+        // 2.0.0, 2.0.1 test overzooming.
+        // 1.1.2 tests that solid bg tiles are generated even when no backend
+        // tile exists.
+        a: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '2.0.0', '2.0.1'],
         // 2.1.1 should use z2 datatile -- a coastline shapefile
         // 2.1.2 should use maskLevel -- place dots, like the others
         b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],

@@ -131,7 +131,7 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, callback) {
             return callback(err);
 
         var datatile = new mapnik.DataTile(bz, bx, by);
-        datatile.setData(data, function(err, success) {
+        datatile.setData(data || new Buffer(0), function(err, success) {
             var opts = {z:z, x:x, y:y, scale:source._scale};
             datatile.render(source._map, new mapnik.Image(256,256), opts, function(err, image) {
                 if (err) return callback(err);
