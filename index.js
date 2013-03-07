@@ -24,6 +24,7 @@ function Vector(uri, callback) {
     this._format = uri.format || 'png8:m=h';
     this._maxAge = typeof uri.maxAge === 'number' ? uri.maxAge : 300e3;
     this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
+    this._reap = typeof uri.reap === 'number' ? uri.reap : 60e3;
     this._base = path.resolve(uri.base || __dirname);
 
     if (callback) this.once('open', callback);
@@ -72,22 +73,28 @@ Vector.prototype.update = function(opts, callback) {
 // Wrapper around backend.getTile that implements a "locking" cache.
 Vector.prototype.sourceTile = function(backend, z, x, y, callback) {
     var source = this;
-
-    // Reap cached vector tiles with stale access times every 60s.
-    backend._vectorTimeout = backend._vectorTimeout || setTimeout(function() {
-        var now = +new Date;
-        Object.keys(backend._vectorCache).forEach(function(key) {
-            var task = backend._vectorCache[key];
-            if ((now-task.access) < source._maxAge) return;
-            delete backend._vectorCache[key];
-        });
-    }, 60e3);
-
+    var now = +new Date;
     var key = z + '/' + x + '/' + y;
     var cache = backend._vectorCache[key];
+
+    // Reap cached vector tiles with stale access times on an interval.
+    if (source._reap && !backend._vectorTimeout) backend._vectorTimeout = setTimeout(function() {
+        var now = +new Date;
+        Object.keys(backend._vectorCache).forEach(function(key) {
+            if ((now - backend._vectorCache[key].access) < source._maxAge) return;
+            delete backend._vectorCache[key];
+        });
+        delete backend._vectorTimeout;
+    }, source._reap);
+
+    // Expire cached tiles when they are past maxAge.
+    if (cache && (now-cache.access) >= source._maxAge) cache = false;
+
+    // Return cache if finished.
     if (cache && cache.done) {
-        cache.access = +new Date;
+        cache.access = now;
         return callback(null, cache.body, cache.headers);
+    // Otherwise add listener if task is in progress.
     } else if (cache) {
         return cache.once('done', callback);
     }
@@ -120,7 +127,7 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, callback) {
         if (err && err.message !== 'Tile does not exist')
             return callback(err);
 
-        if (err && err.message === 'Tile does not exist' && source._maskLevel && bz > source._maskLevel)
+        if (err && source._maskLevel && bz > source._maskLevel)
             return callback(err);
 
         var datatile = new mapnik.DataTile(bz, bx, by);
@@ -152,7 +159,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         // interpretation of 'maskLevel' key. Fix this by removing
         // masking entirely from the next version of tilelive-s3.
         if (this._backend.data && this._backend.data.maskLevel) {
-            this._backend.data._maskLevel = backend.data.maskLevel;
+            this._backend.data._maskLevel = this._backend.data.maskLevel;
             delete this._backend.data.maskLevel;
         }
         if (this._backend.data && this._backend.data._maskLevel) {
@@ -162,26 +169,22 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         return this.getTile(z, x, y, callback);
     }.bind(this));
 
-    // Overzooming support.
-    if (z > this._maxzoom) {
-        var bz = this._maxzoom;
-        var bx = Math.floor(x / Math.pow(2, z - this._maxzoom));
-        var by = Math.floor(y / Math.pow(2, z - this._maxzoom));
-    // If scale > 1 adjust source data zoom level inversely.
+    // If scale > 1 adjusts source data zoom level inversely.
     // scale 2x => z-1, scale 4x => z-2, scale 8x => z-3, etc.
-    } else if (this._scale > 1) {
-        var d = Math.round(Math.log(this._scale)/Math.log(2));
-        var bz = (z - d) > this._minzoom ? z - d : this._minzoom;
-        var bx = Math.floor(x / Math.pow(2, z - bz));
-        var by = Math.floor(y / Math.pow(2, z - bz));
-    } else {
-        var bz = z | 0;
-        var bx = x | 0;
-        var by = y | 0;
+    var d = Math.round(Math.log(this._scale)/Math.log(2));
+    var bz = (z - d) > this._minzoom ? z - d : this._minzoom;
+    var bx = Math.floor(x / Math.pow(2, z - bz));
+    var by = Math.floor(y / Math.pow(2, z - bz));
+
+    // Overzooming support.
+    if (bz > this._maxzoom) {
+        bz = this._maxzoom;
+        bx = Math.floor(x / Math.pow(2, z - this._maxzoom));
+        by = Math.floor(y / Math.pow(2, z - this._maxzoom));
     }
 
-    // For nonmasked sources or z within the maskrange attempt 1 draw.
-    if (!this._maskLevel || z <= this._maskLevel)
+    // For nonmasked sources or bz within the maskrange attempt 1 draw.
+    if (!this._maskLevel || bz <= this._maskLevel)
         return this.drawTile(bz,bx,by,z,x,y,callback);
 
     // Above the maskLevel errors should attempt a second draw using the mask.
