@@ -61,7 +61,7 @@ Vector.prototype.update = function(opts, callback) {
             base: this._base + '/'
         }, function(err) {
             delete this._info;
-            map.bufferSize = 256;
+            map.bufferSize = 256 * this._scale;
             this._xml = opts.xml;
             this._map = map;
             return callback(err);
