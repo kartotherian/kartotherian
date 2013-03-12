@@ -122,7 +122,7 @@ Vector.prototype.sourceTile = function(backend, z, x, y, callback) {
     });
 };
 
-Vector.prototype.drawTile = function(bz, bx, by, z, x, y, callback) {
+Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
     var source = this;
     source.sourceTile(this._backend, bz, bx, by, function(err, data, headers) {
         if (err && err.message !== 'Tile does not exist')
@@ -136,7 +136,7 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, callback) {
             var opts = {z:z, x:x, y:y, scale:source._scale};
             datatile.render(source._map, new mapnik.Image(256,256), opts, function(err, image) {
                 if (err) return callback(err);
-                image.encode(source._format, {}, function(err, buffer) {
+                image.encode(format, {}, function(err, buffer) {
                     if (err) return callback(err);
                     // @TODO determine headers from source format.
                     return callback(null, buffer, {'Content-Type': 'image/png'});
@@ -184,18 +184,22 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         by = Math.floor(y / Math.pow(2, z - this._maxzoom));
     }
 
+    // Hack around tilelive API - allow params to be passed per request
+    // as attributes of the callback function.
+    var format = callback.format || this._format;
+
     // For nonmasked sources or bz within the maskrange attempt 1 draw.
     if (!this._maskLevel || bz <= this._maskLevel)
-        return this.drawTile(bz,bx,by,z,x,y,callback);
+        return this.drawTile(bz,bx,by,z,x,y,format,callback);
 
     // Above the maskLevel errors should attempt a second draw using the mask.
-    this.drawTile(bz,bx,by,z,x,y, function(err, buffer, headers) {
+    this.drawTile(bz,bx,by,z,x,y,format,function(err, buffer, headers) {
         if (!err) return callback(err, buffer, headers);
         if (err && err.message !== 'Tile does not exist') return callback(err);
         bz = this._maskLevel;
         bx = Math.floor(x / Math.pow(2, z - this._maskLevel));
         by = Math.floor(y / Math.pow(2, z - this._maskLevel));
-        this.drawTile(bz, bx, by, z, x, y, callback);
+        this.drawTile(bz, bx, by, z, x, y, format, callback);
     }.bind(this));
 };
 
