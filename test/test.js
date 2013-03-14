@@ -44,10 +44,16 @@ Testsource.prototype.getTile = function(z,x,y,callback) {
     this.stats[key] = this.stats[key] || 0;
     this.stats[key]++;
 
+    // Headers.
+    var headers = {
+        'ETag':'73f12a518adef759138c142865287a18',
+        'Content-Type':'application/x-protobuf'
+    };
+
     if (!tiles[this.uri][key]) {
         return callback(new Error('Tile does not exist'));
     } else {
-        return callback(null, tiles[this.uri][key], {});
+        return callback(null, tiles[this.uri][key], headers);
     }
 };
 Testsource.prototype.getInfo = function(callback) {
@@ -159,6 +165,12 @@ describe('tiles', function() {
             it('should render ' + source + ' (' + key + ')', function(done) {
                 sources[source].getTile(z,x,y, function(err, buffer, headers) {
                     assert.ifError(err);
+                    // Backend headers preserved.
+                    // Note that 1.1.2 does not have an ETag header as it is a
+                    // tile generated without a backend tile.
+                    if (headers['ETag']) assert.equal(headers['ETag'], '73f12a518adef759138c142865287a18');
+                    // Content-Type overridden.
+                    assert.equal(headers['Content-Type'], 'image/png');
                     imageEqualsFile(buffer, __dirname + '/expected/' + source + '.' + key + '.png', function(err) {
                         assert.ifError(err);
                         done();

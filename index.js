@@ -139,7 +139,9 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
                 image.encode(format, {}, function(err, buffer) {
                     if (err) return callback(err);
                     // @TODO determine headers from source format.
-                    return callback(null, buffer, {'Content-Type': 'image/png'});
+                    headers = headers || {};
+                    headers['Content-Type'] = 'image/png';
+                    return callback(null, buffer, headers);
                 });
             });
         });
