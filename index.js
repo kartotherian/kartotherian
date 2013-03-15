@@ -142,6 +142,7 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
                     headers['Content-Type'] = format.indexOf('jpeg') === 0
                         ? 'image/jpeg'
                         : 'image/png';
+                    delete headers['Content-Encoding'];
                     return callback(null, buffer, headers);
                 });
             });
