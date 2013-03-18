@@ -207,6 +207,11 @@ Vector.prototype.getTile = function(z, x, y, callback) {
     }.bind(this));
 };
 
+// @TODO
+Vector.prototype.getGrid = function(z, x, y, callback) {
+    return callback(new Error('Grid does not exist'));
+};
+
 Vector.prototype.getInfo = function(callback) {
     if (!this._map) return callback(new Error('Tilesource not loaded'));
     if (this._info) return callback(null, this._info);
