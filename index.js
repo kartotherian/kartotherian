@@ -45,6 +45,10 @@ Vector.prototype.open = function(callback) {
 
 // Allows in-place update of XML/backends.
 Vector.prototype.update = function(opts, callback) {
+    // Scale.
+    if (opts.scale && this._scale !== opts.scale) {
+        this._scale = opts.scale;
+    }
     // If the backend has changed, the datatile cache must be cleared.
     if (opts.backend && this._backend !== opts.backend) {
         opts.backend._vectorCache = {};
