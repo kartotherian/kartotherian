@@ -140,20 +140,24 @@ describe('tiles', function() {
     var sources = {
         a: new Vector({ backend: new Testsource('a'), xml: xml.a }),
         b: new Vector({ backend: new Testsource('b'), xml: xml.b }),
-        c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale:2 })
+        c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale:2 }),
+        d: new Vector({ backend: new Testsource('a'), xml: xml.a })
     };
     var tests = {
         // 2.0.0, 2.0.1 test overzooming.
-        // 1.1.2 tests that solid bg tiles are generated even when no backend
-        // tile exists.
-        a: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '2.0.0', '2.0.1'],
+        // 1.1.2, 1.1.3 test that solid bg tiles are generated even when no
+        // backend tile exists.
+        a: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
         // 2.1.1 should use z2 datatile -- a coastline shapefile
         // 2.1.2 should use maskLevel -- place dots, like the others
         b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],
         // test scale factor. unlike previous test, 3.2.2/3.2.3 will be coast
         // and 3.2.4 should fallback to the maskLevel
-        c: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4']
+        c: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
+        // Checks for ETag stability.
+        d: ['0.0.0', '1.0.0', '1.0.1', '1.1.0']
     };
+    var etags = {};
     Object.keys(tests).forEach(function(source) {
         before(function(done) { sources[source].open(done); });
     });
@@ -165,11 +169,12 @@ describe('tiles', function() {
             it('should render ' + source + ' (' + key + ')', function(done) {
                 sources[source].getTile(z,x,y, function(err, buffer, headers) {
                     assert.ifError(err);
-                    // Backend headers preserved.
-                    // Note that 1.1.2 does not have an ETag header as it is a
-                    // tile generated without a backend tile.
-                    if (headers['ETag']) assert.equal(headers['ETag'], '73f12a518adef759138c142865287a18');
-                    // Content-Type overridden.
+                    // Check for presence of ETag and store away for later
+                    // ETag comparison.
+                    assert.ok('ETag' in headers);
+                    etags[source] = etags[source] || {};
+                    etags[source][key] = headers['ETag'];
+                    // Content-Type.
                     assert.equal(headers['Content-Type'], 'image/png');
                     imageEqualsFile(buffer, __dirname + '/expected/' + source + '.' + key + '.png', function(err) {
                         assert.ifError(err);
@@ -180,6 +185,27 @@ describe('tiles', function() {
                 });
             });
         });
+    });
+    it('same backend/xml => same ETags', function(done) {
+        tests.a.slice(0,4).forEach(function(key) {
+            assert.equal(etags.a[key], etags.d[key]);
+        });
+        done();    });
+    it('diff blank tiles => diff ETags', function(done) {
+        assert.notEqual(etags.a['1.1.2'], etags.a['1.1.3']);
+        done();
+    });
+    it('diff backend => diff ETags', function(done) {
+        tests.a.slice(0,4).forEach(function(key) {
+            assert.notEqual(etags.a[key], etags.b[key]);
+        });
+        done();
+    });
+    it('diff scale => diff ETags', function(done) {
+        tests.a.slice(0,4).forEach(function(key) {
+            assert.notEqual(etags.b[key], etags.c[key]);
+        });
+        done();
     });
 });
 

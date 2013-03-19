@@ -2,6 +2,7 @@ var mapnik = require('mapnik');
 var zlib = require('zlib');
 var path = require('path');
 var util = require('util');
+var crypto = require('crypto');
 
 module.exports = Vector;
 
@@ -68,6 +69,7 @@ Vector.prototype.update = function(opts, callback) {
             map.bufferSize = 256 * this._scale;
             this._xml = opts.xml;
             this._map = map;
+            this._md5 = crypto.createHash('md5').update(opts.xml).digest('hex');
             return callback(err);
         }.bind(this));
         return;
@@ -128,7 +130,7 @@ Vector.prototype.sourceTile = function(backend, z, x, y, callback) {
 
 Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
     var source = this;
-    source.sourceTile(this._backend, bz, bx, by, function(err, data, headers) {
+    source.sourceTile(this._backend, bz, bx, by, function(err, data, head) {
         if (err && err.message !== 'Tile does not exist')
             return callback(err);
 
@@ -142,11 +144,13 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
                 if (err) return callback(err);
                 image.encode(format, {}, function(err, buffer) {
                     if (err) return callback(err);
-                    headers = headers || {};
+                    var headers = {};
                     headers['Content-Type'] = format.indexOf('jpeg') === 0
                         ? 'image/jpeg'
                         : 'image/png';
-                    delete headers['Content-Encoding'];
+                    headers['ETag'] = JSON.stringify(crypto.createHash('md5')
+                        .update(source._scale + source._md5 + (head && head['ETag'] || (z+','+x+','+y)))
+                        .digest('hex'));
                     return callback(null, buffer, headers);
                 });
             });
