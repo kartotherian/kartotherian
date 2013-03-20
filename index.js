@@ -178,6 +178,10 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         if (this._backend.data && this._backend.data._maskLevel) {
             this._maskLevel = this._backend.data._maskLevel;
         }
+        // Support specifying maskLevel in other sources (mbtiles).
+        if (info.maskLevel) {
+            this._maskLevel = parseInt(info.maskLevel, 10);
+        }
 
         return this.getTile(z, x, y, callback);
     }.bind(this));
