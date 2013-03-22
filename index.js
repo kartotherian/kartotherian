@@ -135,17 +135,26 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
             return callback(err);
 
         if (err && source._maskLevel && bz > source._maskLevel)
-            return callback(err);
+            return callback(format === 'utf' ? new Error('Grid does not exist') : err);
 
         var datatile = new mapnik.DataTile(bz, bx, by);
         datatile.setData(data || new Buffer(0), function(err, success) {
             var opts = {z:z, x:x, y:y, scale:source._scale};
-            datatile.render(source._map, new mapnik.Image(256,256), opts, function(err, image) {
+            if (format === 'utf') {
+                var surface = new mapnik.Grid(256,256);
+                opts.layer = source._map.parameters.interactivity_layer;
+                opts.fields = source._map.parameters.interactivity_fields.split(',');
+            } else {
+                var surface = new mapnik.Image(256,256);
+            }
+            datatile.render(source._map, surface, opts, function(err, image) {
                 if (err) return callback(err);
                 image.encode(format, {}, function(err, buffer) {
                     if (err) return callback(err);
                     var headers = {};
-                    headers['Content-Type'] = format.indexOf('jpeg') === 0
+                    headers['Content-Type'] = format.indexOf('utf') === 0
+                        ? 'application/json'
+                        : format.indexOf('jpeg') === 0
                         ? 'image/jpeg'
                         : 'image/png';
                     headers['ETag'] = JSON.stringify(crypto.createHash('md5')
@@ -219,9 +228,12 @@ Vector.prototype.getTile = function(z, x, y, callback) {
     }.bind(this));
 };
 
-// @TODO
 Vector.prototype.getGrid = function(z, x, y, callback) {
-    return callback(new Error('Grid does not exist'));
+    if (!this._map) return callback(new Error('Tilesource not loaded'));
+    if (!this._map.parameters.interactivity_layer) return callback(new Error('Tilesource has no interactivity_layer'));
+    if (!this._map.parameters.interactivity_fields) return callback(new Error('Tilesource has no interactivity_fields'));
+    callback.format = 'utf';
+    return this.getTile(z, x, y, callback);
 };
 
 Vector.prototype.getInfo = function(callback) {
