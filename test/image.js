@@ -17,7 +17,7 @@ exec('compare -h', function(error, stdout, stderr) {
 module.exports = function imageEqualsFile(buffer, file, meanError, callback) {
     if (typeof meanError == 'function') {
         callback = meanError;
-        meanError = 0;
+        meanError = 0.001;
     }
 
     file = path.resolve(file);
@@ -36,8 +36,7 @@ module.exports = function imageEqualsFile(buffer, file, meanError, callback) {
         if (code) {
             return callback(new Error((error || 'Exited with code ' + code) + ': ' + result));
         }
-
-        var similarity = parseFloat(error.match(/^\d+(?:\.\d+)?\s+\((\d+(?:\.\d+)?)\)\s*$/)[1]);
+        var similarity = parseFloat(error.match(/^\d+(?:\.\d+)?\s+\(([^\)]+)\)\s*$/)[1]);
         if (similarity > meanError) {
             fs.writeFileSync(result, buffer);
             var err = new Error('Images not equal: ' + error.trim() + ':\n' + result + '\n'+file);
