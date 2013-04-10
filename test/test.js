@@ -193,9 +193,8 @@ describe('tiles', function() {
                     // fs.writeFileSync(__dirname + '/expected/' + source + '.' + key + '.png', buffer);
                     // done();
                 });
-                sources[source].getHeaders(z,x,y, function(err, buffer, headers) {
+                sources[source].getHeaders(z,x,y, function(err, headers) {
                     assert.ifError(err);
-                    assert.ifError(buffer);
                     // No backend tiles last modified defaults to Date 0.
                     // Otherwise, Last-Modified from backend should be passed.
                     if (['1.1.2','1.1.3'].indexOf(key) >= 0) {

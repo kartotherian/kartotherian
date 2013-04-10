@@ -149,7 +149,7 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
         headers['Last-Modified'] = new Date(head && head['Last-Modified'] || 0).toUTCString();
 
         // Return headers for 'headers' format.
-        if (format === 'headers') return callback(null, null, headers);
+        if (format === 'headers') return callback(null, headers, headers);
 
         var datatile = new mapnik.DataTile(bz, bx, by);
         datatile.setData(data || new Buffer(0), function(err, success) {
