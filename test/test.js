@@ -25,6 +25,7 @@ var tiles = {
         return memo;
     }, {})
 };
+var now = new Date;
 
 // Tilelive test source.
 function Testsource(uri, callback) {
@@ -46,6 +47,7 @@ Testsource.prototype.getTile = function(z,x,y,callback) {
 
     // Headers.
     var headers = {
+        'Last-Modified': now.toUTCString(),
         'ETag':'73f12a518adef759138c142865287a18',
         'Content-Type':'application/x-protobuf'
     };
@@ -166,9 +168,17 @@ describe('tiles', function() {
             var z = key.split('.')[0] | 0;
             var x = key.split('.')[1] | 0;
             var y = key.split('.')[2] | 0;
+            var remaining = 2;
             it('should render ' + source + ' (' + key + ')', function(done) {
                 sources[source].getTile(z,x,y, function(err, buffer, headers) {
                     assert.ifError(err);
+                    // No backend tiles last modified defaults to Date 0.
+                    // Otherwise, Last-Modified from backend should be passed.
+                    if (['1.1.2','1.1.3'].indexOf(key) >= 0) {
+                        assert.equal(headers['Last-Modified'], new Date(0).toUTCString());
+                    } else {
+                        assert.equal(headers['Last-Modified'], now.toUTCString());
+                    }
                     // Check for presence of ETag and store away for later
                     // ETag comparison.
                     assert.ok('ETag' in headers);
@@ -178,10 +188,24 @@ describe('tiles', function() {
                     assert.equal(headers['Content-Type'], 'image/png');
                     imageEqualsFile(buffer, __dirname + '/expected/' + source + '.' + key + '.png', function(err) {
                         assert.ifError(err);
-                        done();
+                        if (!--remaining) done();
                     });
                     // fs.writeFileSync(__dirname + '/expected/' + source + '.' + key + '.png', buffer);
                     // done();
+                });
+                sources[source].getHeaders(z,x,y, function(err, buffer, headers) {
+                    assert.ifError(err);
+                    assert.ifError(buffer);
+                    // No backend tiles last modified defaults to Date 0.
+                    // Otherwise, Last-Modified from backend should be passed.
+                    if (['1.1.2','1.1.3'].indexOf(key) >= 0) {
+                        assert.equal(headers['Last-Modified'], new Date(1).toUTCString());
+                    } else {
+                        assert.equal(headers['Last-Modified'], now.toUTCString());
+                    }
+                    // Content-Type.
+                    assert.equal(headers['Content-Type'], 'image/png');
+                    if (!--remaining) done();
                 });
             });
         });
