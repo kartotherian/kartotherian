@@ -199,7 +199,7 @@ describe('tiles', function() {
                     // No backend tiles last modified defaults to Date 0.
                     // Otherwise, Last-Modified from backend should be passed.
                     if (['1.1.2','1.1.3'].indexOf(key) >= 0) {
-                        assert.equal(headers['Last-Modified'], new Date(1).toUTCString());
+                        assert.equal(headers['Last-Modified'], new Date(0).toUTCString());
                     } else {
                         assert.equal(headers['Last-Modified'], now.toUTCString());
                     }
