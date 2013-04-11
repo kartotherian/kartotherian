@@ -309,7 +309,7 @@ describe('reap', function() {
             source.getTile(0, 0, 0, function(err, buffer, headers) {
                 assert.ifError(err);
                 setTimeout(function() {
-                    assert.equal(Object.keys(source._backend._vectorCache).length, 1);
+                    assert.equal(Object.keys(source._backend._vectorCache).length, 0);
                     done();
                 }, 500);
             });

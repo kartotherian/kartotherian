@@ -23,7 +23,7 @@ function Vector(uri, callback) {
     this._uri = uri;
     this._scale = uri.scale || 1;
     this._format = uri.format || 'png8:m=h';
-    this._maxAge = typeof uri.maxAge === 'number' ? uri.maxAge : 300e3;
+    this._maxAge = typeof uri.maxAge === 'number' ? uri.maxAge : 60e3;
     this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
     this._reap = typeof uri.reap === 'number' ? uri.reap : 60e3;
     this._base = path.resolve(uri.base || __dirname);
@@ -99,7 +99,6 @@ Vector.prototype.sourceTile = function(backend, z, x, y, callback) {
 
     // Return cache if finished.
     if (cache && cache.done) {
-        cache.access = now;
         return callback(null, cache.body, cache.headers);
     // Otherwise add listener if task is in progress.
     } else if (cache) {
