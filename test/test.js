@@ -65,7 +65,7 @@ Testsource.prototype.getInfo = function(callback) {
 describe('init', function() {
     it('should fail without backend', function(done) {
         new Vector({}, function(err) {
-            assert.equal(err.message, 'No datatile backend');
+            assert.equal(err.message, 'No backend');
             done();
         });
     });
@@ -150,7 +150,7 @@ describe('tiles', function() {
         // 1.1.2, 1.1.3 test that solid bg tiles are generated even when no
         // backend tile exists.
         a: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
-        // 2.1.1 should use z2 datatile -- a coastline shapefile
+        // 2.1.1 should use z2 vector tile -- a coastline shapefile
         // 2.1.2 should use maskLevel -- place dots, like the others
         b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],
         // test scale factor. unlike previous test, 3.2.2/3.2.3 will be coast
