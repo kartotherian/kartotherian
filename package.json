@@ -3,8 +3,9 @@
     "version": "0.0.1",
     "private": true,
     "main": "./index.js",
+    "description": "Vector tile => raster tile backend for tilelive",
     "dependencies": {
-        "mapnik": "git+ssh://git@github.com:mapbox/node-mapnik-data-tile.git#5aab68386f9a5b92c3dde7e66988f69545bc9f61"
+        "mapnik": "https://github.com/mapnik/node-mapnik/tarball/vector-tile"
     },
     "devDependencies": {
         "mocha": "1.3.x"

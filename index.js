@@ -17,7 +17,7 @@ function Task() {
 util.inherits(Task, require('events').EventEmitter);
 
 function Vector(uri, callback) {
-    if (!uri.backend) return callback && callback(new Error('No datatile backend'));
+    if (!uri.backend) return callback && callback(new Error('No backend'));
     if (!uri.xml) return callback && callback(new Error('No xml'));
 
     this._uri = uri;
@@ -50,7 +50,7 @@ Vector.prototype.update = function(opts, callback) {
     if (opts.scale && this._scale !== opts.scale) {
         this._scale = opts.scale;
     }
-    // If the backend has changed, the datatile cache must be cleared.
+    // If the backend has changed, the vector tile cache must be cleared.
     if (opts.backend && this._backend !== opts.backend) {
         opts.backend._vectorCache = {};
         this._backend = opts.backend;
@@ -150,8 +150,8 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
         // Return headers for 'headers' format.
         if (format === 'headers') return callback(null, headers, headers);
 
-        var datatile = new mapnik.DataTile(bz, bx, by);
-        datatile.setData(data || new Buffer(0), function(err, success) {
+        var vtile = new mapnik.VectorTile(bz, bx, by);
+        vtile.setData(data || new Buffer(0), function(err, success) {
             var opts = {z:z, x:x, y:y, scale:source._scale};
             if (format === 'utf') {
                 var surface = new mapnik.Grid(256,256);
@@ -160,7 +160,7 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
             } else {
                 var surface = new mapnik.Image(256,256);
             }
-            datatile.render(source._map, surface, opts, function(err, image) {
+            vtile.render(source._map, surface, opts, function(err, image) {
                 if (err) return callback(err);
                 image.encode(format, {}, function(err, buffer) {
                     if (err) return callback(err);
