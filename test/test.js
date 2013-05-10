@@ -143,7 +143,9 @@ describe('tiles', function() {
         a: new Vector({ backend: new Testsource('a'), xml: xml.a }),
         b: new Vector({ backend: new Testsource('b'), xml: xml.b }),
         c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale:2 }),
-        d: new Vector({ backend: new Testsource('a'), xml: xml.a })
+        d: new Vector({ backend: new Testsource('a'), xml: xml.a }),
+        e: new Vector({ backend: new Testsource('a'), xml: xml.a, format:'png8:c=2' }),
+        f: new Vector({ backend: new Testsource('a'), xml: xml.a.replace('png8:m=h', 'png8:c=2') })
     };
     var tests = {
         // 2.0.0, 2.0.1 test overzooming.
@@ -157,7 +159,11 @@ describe('tiles', function() {
         // and 3.2.4 should fallback to the maskLevel
         c: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
         // Checks for ETag stability.
-        d: ['0.0.0', '1.0.0', '1.0.1', '1.1.0']
+        d: ['0.0.0', '1.0.0', '1.0.1', '1.1.0'],
+        // Checks that explicit format in source URI overrides map parameters.
+        e: ['0.0.0'],
+        // Checks that format in map parameters beats default code fallback.
+        f: ['0.0.0']
     };
     var etags = {};
     Object.keys(tests).forEach(function(source) {
@@ -191,7 +197,6 @@ describe('tiles', function() {
                         if (!--remaining) done();
                     });
                     // fs.writeFileSync(__dirname + '/expected/' + source + '.' + key + '.png', buffer);
-                    // done();
                 });
                 sources[source].getHeaders(z,x,y, function(err, headers) {
                     assert.ifError(err);

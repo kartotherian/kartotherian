@@ -5,7 +5,7 @@
 <Parameters>
   <Parameter name="bounds">-180,-85.0511,180,85.0511</Parameter>
   <Parameter name="center">0,0,2</Parameter>
-  <Parameter name="format">data.png</Parameter>
+  <Parameter name="format">png8:m=h</Parameter>
   <Parameter name="minzoom">0</Parameter>
   <Parameter name="maxzoom">8</Parameter>
   <Parameter name="name"><![CDATA[test-b]]></Parameter>

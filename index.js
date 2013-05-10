@@ -22,7 +22,7 @@ function Vector(uri, callback) {
 
     this._uri = uri;
     this._scale = uri.scale || 1;
-    this._format = uri.format || 'png8:m=h';
+    this._format = uri.format || undefined;
     this._maxAge = typeof uri.maxAge === 'number' ? uri.maxAge : 60e3;
     this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
     this._reap = typeof uri.reap === 'number' ? uri.reap : 60e3;
@@ -70,6 +70,7 @@ Vector.prototype.update = function(opts, callback) {
             this._xml = opts.xml;
             this._map = map;
             this._md5 = crypto.createHash('md5').update(opts.xml).digest('hex');
+            this._format = this._format || map.parameters.format || 'png8:m=h';
             return callback(err);
         }.bind(this));
         return;
@@ -215,7 +216,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
 
     // Hack around tilelive API - allow params to be passed per request
     // as attributes of the callback function.
-    var format = callback.format || this._format;
+    var format = callback.format || this._format || this._map.parameters.format || 'png8:m=h';
 
     // For nonmasked sources or bz within the maskrange attempt 1 draw.
     if (!this._maskLevel || bz <= this._maskLevel)
