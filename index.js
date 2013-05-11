@@ -130,6 +130,8 @@ Vector.prototype.sourceTile = function(backend, z, x, y, callback) {
 
 Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
     var source = this;
+    var drawtime;
+    var loadtime = +new Date;
     source.sourceTile(this._backend, bz, bx, by, function(err, data, head) {
         if (err && err.message !== 'Tile does not exist')
             return callback(err);
@@ -151,6 +153,9 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
         // Return headers for 'headers' format.
         if (format === 'headers') return callback(null, headers, headers);
 
+        loadtime = (+new Date) - loadtime;
+        drawtime = +new Date;
+
         var vtile = new mapnik.VectorTile(bz, bx, by);
         vtile.setData(data || new Buffer(0), function(err, success) {
             var opts = {z:z, x:x, y:y, scale:source._scale};
@@ -165,6 +170,10 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
                 if (err) return callback(err);
                 image.encode(format, {}, function(err, buffer) {
                     if (err) return callback(err);
+
+                    buffer._loadtime = loadtime;
+                    buffer._drawtime = (+new Date) - drawtime;
+
                     return callback(null, buffer, headers);
                 });
             });

@@ -192,6 +192,9 @@ describe('tiles', function() {
                     etags[source][key] = headers['ETag'];
                     // Content-Type.
                     assert.equal(headers['Content-Type'], 'image/png');
+                    // Load/draw stats attached to buffer.
+                    assert.equal('number', typeof buffer._loadtime);
+                    assert.equal('number', typeof buffer._drawtime);
                     imageEqualsFile(buffer, __dirname + '/expected/' + source + '.' + key + '.png', function(err) {
                         assert.ifError(err);
                         if (!--remaining) done();
