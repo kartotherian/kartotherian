@@ -1,9 +1,13 @@
 {
     "name": "tilelive-vector",
     "version": "0.0.1",
-    "private": true,
     "main": "./index.js",
     "description": "Vector tile => raster tile backend for tilelive",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/mapbox/tilelive-vector.git"
+    },
+    "licenses": [{ "type": "BSD" }],
     "dependencies": {
         "mapnik": "1.0.0"
     },
