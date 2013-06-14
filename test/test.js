@@ -1,3 +1,4 @@
+var zlib = require('zlib');
 var assert = require('assert');
 var Vector = require('..');
 var path = require('path');
@@ -25,6 +26,14 @@ var tiles = {
         return memo;
     }, {})
 };
+
+// Additional error tile fixtures.
+zlib.deflate(new Buffer('asdf'), function(err, deflated) {
+    if (err) throw err;
+    tiles.a['1.0.2'] = new Buffer('asdf'); // invalid deflate
+    tiles.a['1.0.3'] = deflated;           // invalid protobuf
+});
+
 var now = new Date;
 
 // Tilelive test source.
@@ -215,6 +224,18 @@ describe('tiles', function() {
                     if (!--remaining) done();
                 });
             });
+        });
+    });
+    it('errors out on bad deflate', function(done) {
+        sources.a.getTile(1, 0, 2, function(err) {
+            assert.equal('Z_DATA_ERROR', err.code);
+            done();
+        });
+    });
+    it('errors out on bad protobuf', function(done) {
+        sources.a.getTile(1, 0, 3, function(err) {
+            assert.equal('could not parse protobuf', err.message);
+            done();
         });
     });
     it('same backend/xml => same ETags', function(done) {
