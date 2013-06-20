@@ -166,19 +166,26 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
                 var surface = new mapnik.Grid(256,256);
                 opts.layer = source._map.parameters.interactivity_layer;
                 opts.fields = source._map.parameters.interactivity_fields.split(',');
+            } else if (format === 'svg') {
+                var surface = new mapnik.CairoSurface(256,256);
             } else {
                 var surface = new mapnik.Image(256,256);
             }
             vtile.render(source._map, surface, opts, function(err, image) {
                 if (err) return callback(err);
-                image.encode(format, {}, function(err, buffer) {
-                    if (err) return callback(err);
+                if (format == 'svg') {
+                    headers['Content-Type'] = 'image/svg+xml';
+                    return callback(null, image.getData(), headers);
+                } else {
+                    image.encode(format, {}, function(err, buffer) {
+                        if (err) return callback(err);
 
-                    buffer._loadtime = loadtime;
-                    buffer._drawtime = (+new Date) - drawtime;
+                        buffer._loadtime = loadtime;
+                        buffer._drawtime = (+new Date) - drawtime;
 
-                    return callback(null, buffer, headers);
-                });
+                        return callback(null, buffer, headers);
+                    });
+                }
             });
         });
     });
