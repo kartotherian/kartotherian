@@ -174,6 +174,12 @@ describe('tiles', function() {
         // Checks that format in map parameters beats default code fallback.
         f: ['0.0.0']
     };
+    var formats = {
+        jpeg: { ctype: 'image/jpeg' },
+        png: { ctype: 'image/png' },
+        svg: { ctype: 'image/svg+xml' },
+        utf: { ctype: 'application/json' }
+    };
     var etags = {};
     Object.keys(tests).forEach(function(source) {
         before(function(done) { sources[source].open(done); });
@@ -220,10 +226,41 @@ describe('tiles', function() {
                         assert.equal(headers['Last-Modified'], now.toUTCString());
                     }
                     // Content-Type.
-                    assert.equal(headers['Content-Type'], 'image/png');
+                    assert.equal(undefined, headers['Content-Type']);
                     if (!--remaining) done();
                 });
             });
+        });
+    });
+    Object.keys(formats).forEach(function(format) {
+        it('format a (0.0.0) as ' + format, function(done) {
+            var source = 'a';
+            var key = '0.0.0';
+            var filepath = __dirname + '/expected/' + source + '.' + key + '.' + format;
+            var cbTile = function(err, buffer, headers) {
+                assert.ifError(err);
+                assert.equal(headers['Content-Type'], formats[format].ctype);
+                if (format === 'utf') {
+                    assert.deepEqual(buffer, JSON.parse(fs.readFileSync(filepath, 'utf8')));
+                    done();
+                    // fs.writeFileSync(filepath, JSON.stringify(buffer, null, 2));
+                    // done();
+                } else if (format === 'svg') {
+                    assert.equal(buffer, fs.readFileSync(filepath, 'utf8'));
+                    done();
+                    // fs.writeFileSync(filepath, JSON.stringify(buffer, null, 2));
+                    // done();
+                } else {
+                    imageEqualsFile(buffer, filepath, function(err) {
+                        assert.ifError(err);
+                        done();
+                    });
+                    // fs.writeFileSync(filepath, buffer);
+                    // done();
+                }
+            };
+            cbTile.format = format;
+            sources[source].getTile(0,0,0, cbTile);
         });
     });
     it('errors out on bad deflate', function(done) {

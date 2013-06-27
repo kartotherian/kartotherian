@@ -9,6 +9,8 @@
   <Parameter name="minzoom">0</Parameter>
   <Parameter name="maxzoom">8</Parameter>
   <Parameter name="name"><![CDATA[test-a]]></Parameter>
+  <Parameter name="interactivity_layer">coastline</Parameter>
+  <Parameter name="interactivity_fields">ScaleRank</Parameter>
 </Parameters>
 
 
