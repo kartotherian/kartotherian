@@ -199,6 +199,7 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
                         if (err) return callback(err);
                         buffer._loadtime = loadtime;
                         buffer._drawtime = (+new Date) - drawtime;
+                        buffer._srcbytes = data ? data.length : 0;
                         return callback(null, buffer, headers);
                     });
                 }
