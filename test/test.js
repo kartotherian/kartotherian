@@ -154,7 +154,8 @@ describe('tiles', function() {
         c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale:2 }),
         d: new Vector({ backend: new Testsource('a'), xml: xml.a }),
         e: new Vector({ backend: new Testsource('a'), xml: xml.a, format:'png8:c=2' }),
-        f: new Vector({ backend: new Testsource('a'), xml: xml.a.replace('png8:m=h', 'png8:c=2') })
+        f: new Vector({ backend: new Testsource('a'), xml: xml.a.replace('png8:m=h', 'png8:c=2') }),
+        g: new Vector({ backend: new Testsource('a'), xml: xml.a.replace('"scale">1', '"scale">2') })
     };
     var tests = {
         // 2.0.0, 2.0.1 test overzooming.
@@ -172,7 +173,9 @@ describe('tiles', function() {
         // Checks that explicit format in source URI overrides map parameters.
         e: ['0.0.0'],
         // Checks that format in map parameters beats default code fallback.
-        f: ['0.0.0']
+        f: ['0.0.0'],
+        // Checks that scale in map parameters beats default code fallback.
+        g: ['0.0.0']
     };
     var formats = {
         jpeg: { ctype: 'image/jpeg' },

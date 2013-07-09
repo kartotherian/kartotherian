@@ -8,6 +8,7 @@
   <Parameter name="format">png8:m=h</Parameter>
   <Parameter name="minzoom">0</Parameter>
   <Parameter name="maxzoom">8</Parameter>
+  <Parameter name="scale">1</Parameter>
   <Parameter name="name"><![CDATA[test-b]]></Parameter>
 </Parameters>
 

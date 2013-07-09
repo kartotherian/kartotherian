@@ -21,7 +21,7 @@ function Vector(uri, callback) {
     if (!uri.xml) return callback && callback(new Error('No xml'));
 
     this._uri = uri;
-    this._scale = uri.scale || 1;
+    this._scale = uri.scale || undefined;
     this._format = uri.format || undefined;
     this._maxAge = typeof uri.maxAge === 'number' ? uri.maxAge : 60e3;
     this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
@@ -46,10 +46,6 @@ Vector.prototype.open = function(callback) {
 
 // Allows in-place update of XML/backends.
 Vector.prototype.update = function(opts, callback) {
-    // Scale.
-    if (opts.scale && this._scale !== opts.scale) {
-        this._scale = opts.scale;
-    }
     // If the backend has changed, the vector tile cache must be cleared.
     if (opts.backend && this._backend !== opts.backend) {
         opts.backend._vectorCache = {};
@@ -66,11 +62,12 @@ Vector.prototype.update = function(opts, callback) {
             base: this._base + '/'
         }, function(err) {
             delete this._info;
-            map.bufferSize = 256 * this._scale;
             this._xml = opts.xml;
             this._map = map;
             this._md5 = crypto.createHash('md5').update(opts.xml).digest('hex');
-            this._format = this._format || map.parameters.format || 'png8:m=h';
+            this._format = opts.format || map.parameters.format || this._format || 'png8:m=h';
+            this._scale = opts.scale || +map.parameters.scale || this._scale || 1;
+            map.bufferSize = 256 * this._scale;
             return callback(err);
         }.bind(this));
         return;
