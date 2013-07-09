@@ -226,19 +226,12 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         this._minzoom = info.minzoom || 0;
         this._maxzoom = info.maxzoom || 22;
 
-        // @TODO massive hack to avoid conflict with tilelive-s3's
-        // interpretation of 'maskLevel' key. Fix this by removing
-        // masking entirely from the next version of tilelive-s3.
-        if (this._backend.data && this._backend.data.maskLevel) {
-            this._backend.data._maskLevel = this._backend.data.maskLevel;
-            delete this._backend.data.maskLevel;
-        }
-        if (this._backend.data && this._backend.data._maskLevel) {
-            this._maskLevel = this._backend.data._maskLevel;
-        }
-        // Support specifying maskLevel in other sources (mbtiles).
-        if (info.maskLevel) {
+        // @TODO some sources filter out custom keys @ getInfo forcing us
+        // to access info/data properties directly. Fix this.
+        if ('maskLevel' in info) {
             this._maskLevel = parseInt(info.maskLevel, 10);
+        } else if (this._backend.data && 'maskLevel' in this._backend.data) {
+            this._maskLevel = this._backend.data.maskLevel;
         }
 
         return this.getTile(z, x, y, callback);
