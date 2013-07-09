@@ -1,3 +1,5 @@
+var tilelive = require('tilelive');
+var url = require('url');
 var zlib = require('zlib');
 var assert = require('assert');
 var Vector = require('..');
@@ -8,7 +10,8 @@ var imageEqualsFile = require('./image.js');
 // Load fixture data.
 var xml = {
     a: fs.readFileSync(path.resolve(__dirname + '/test-a.xml'), 'utf8'),
-    b: fs.readFileSync(path.resolve(__dirname + '/test-b.xml'), 'utf8')
+    b: fs.readFileSync(path.resolve(__dirname + '/test-b.xml'), 'utf8'),
+    c: fs.readFileSync(path.resolve(__dirname + '/test-c.xml'), 'utf8')
 };
 var infos = {
     a: { minzoom:0, maxzoom:1 },
@@ -37,7 +40,10 @@ zlib.deflate(new Buffer('asdf'), function(err, deflated) {
 var now = new Date;
 
 // Tilelive test source.
+tilelive.protocols['test:'] = Testsource;
 function Testsource(uri, callback) {
+    if (uri && uri.pathname) uri = uri.pathname.slice(1);
+
     this.uri = uri;
     if (uri) this.data = {
         minzoom: infos[uri].minzoom,
@@ -73,7 +79,7 @@ Testsource.prototype.getInfo = function(callback) {
 
 describe('init', function() {
     it('should fail without backend', function(done) {
-        new Vector({}, function(err) {
+        new Vector({ xml: xml.c }, function(err) {
             assert.equal(err.message, 'No backend');
             done();
         });
@@ -115,7 +121,7 @@ describe('init', function() {
             });
         });
     });
-    it('should update xml', function(done) {
+    it('should update xml, backend', function(done) {
         new Vector({ backend: new Testsource(), xml: xml.a }, function(err, source) {
             assert.ifError(err);
             assert.ok(source);
@@ -127,22 +133,19 @@ describe('init', function() {
                     source.getInfo(function(err, info) {
                         assert.ifError(err);
                         assert.equal('test-b', info.name);
+                        assert.equal('b',source._backend.uri);
                         done();
                     });
                 });
             });
         });
     });
-    it('should update backend', function(done) {
-        new Vector({ backend: new Testsource('a'), xml: xml.a }, function(err, source) {
+    it('should use fallback backend', function(done) {
+        new Vector({ backend: new Testsource(), xml: xml.c }, function(err, source) {
             assert.ifError(err);
             assert.ok(source);
-            assert.equal('a',source._backend.uri);
-            source.update({backend: new Testsource('b')}, function(err) {
-                assert.ifError(err);
-                assert.equal('b',source._backend.uri);
-                done();
-            });
+            assert.equal(undefined,source._backend.uri);
+            done();
         });
     });
 });

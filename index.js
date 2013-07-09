@@ -1,3 +1,4 @@
+var tilelive = require('tilelive');
 var mapnik = require('mapnik');
 var zlib = require('zlib');
 var path = require('path');
@@ -17,7 +18,6 @@ function Task() {
 util.inherits(Task, require('events').EventEmitter);
 
 function Vector(uri, callback) {
-    if (!uri.backend) return callback && callback(new Error('No backend'));
     if (!uri.xml) return callback && callback(new Error('No xml'));
 
     this._uri = uri;
@@ -46,33 +46,41 @@ Vector.prototype.open = function(callback) {
 
 // Allows in-place update of XML/backends.
 Vector.prototype.update = function(opts, callback) {
-    // If the backend has changed, the vector tile cache must be cleared.
-    if (opts.backend && this._backend !== opts.backend) {
-        opts.backend._vectorCache = {};
-        this._backend = opts.backend;
-        delete this._minzoom;
-        delete this._maxzoom;
-        delete this._maskLevel;
-    }
     // If the XML has changed update the map.
-    if (opts.xml && this._xml !== opts.xml) {
-        var map = new mapnik.Map(256,256);
-        map.fromString(opts.xml, {
-            strict: false,
-            base: this._base + '/'
-        }, function(err) {
-            delete this._info;
-            this._xml = opts.xml;
-            this._map = map;
-            this._md5 = crypto.createHash('md5').update(opts.xml).digest('hex');
-            this._format = opts.format || map.parameters.format || this._format || 'png8:m=h';
-            this._scale = opts.scale || +map.parameters.scale || this._scale || 1;
-            map.bufferSize = 256 * this._scale;
-            return callback(err);
-        }.bind(this));
-        return;
-    }
-    return callback();
+    if (!opts.xml || this._xml === opts.xml) return callback();
+
+    var map = new mapnik.Map(256,256);
+    map.fromString(opts.xml, {
+        strict: false,
+        base: this._base + '/'
+    }, function(err) {
+        delete this._info;
+        this._xml = opts.xml;
+        this._map = map;
+        this._md5 = crypto.createHash('md5').update(opts.xml).digest('hex');
+        this._format = opts.format || map.parameters.format || this._format || 'png8:m=h';
+        this._scale = opts.scale || +map.parameters.scale || this._scale || 1;
+        map.bufferSize = 256 * this._scale;
+
+        var done = function(err, backend) {
+            if (err) return callback(err);
+            if (!backend) return callback(new Error('No backend'));
+            if (this._backend !== backend) {
+                backend._vectorCache = {};
+                this._backend = backend;
+                delete this._minzoom;
+                delete this._maxzoom;
+                delete this._maskLevel;
+            }
+            return callback();
+        }.bind(this);
+        if (map.parameters.source) {
+            tilelive.load(map.parameters.source, done);
+        } else {
+            done(null, this._backend || opts.backend);
+        }
+    }.bind(this));
+    return;
 };
 
 // Wrapper around backend.getTile that implements a "locking" cache.

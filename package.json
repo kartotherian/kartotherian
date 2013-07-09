@@ -9,7 +9,8 @@
     },
     "licenses": [{ "type": "BSD" }],
     "dependencies": {
-        "mapnik": "1.0.0"
+        "mapnik": "1.0.0",
+        "tilelive": "4.4.x"
     },
     "devDependencies": {
         "mocha": "1.3.x"
