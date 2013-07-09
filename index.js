@@ -23,6 +23,7 @@ function Vector(uri, callback) {
     this._uri = uri;
     this._scale = uri.scale || undefined;
     this._format = uri.format || undefined;
+    this._source = uri.source || undefined;
     this._maxAge = typeof uri.maxAge === 'number' ? uri.maxAge : 60e3;
     this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
     this._reap = typeof uri.reap === 'number' ? uri.reap : 60e3;
@@ -62,22 +63,24 @@ Vector.prototype.update = function(opts, callback) {
         this._scale = opts.scale || +map.parameters.scale || this._scale || 1;
         map.bufferSize = 256 * this._scale;
 
-        var done = function(err, backend) {
-            if (err) return callback(err);
-            if (!backend) return callback(new Error('No backend'));
-            if (this._backend !== backend) {
-                backend._vectorCache = {};
-                this._backend = backend;
-                delete this._minzoom;
-                delete this._maxzoom;
-                delete this._maskLevel;
-            }
-            return callback();
-        }.bind(this);
-        if (map.parameters.source) {
-            tilelive.load(map.parameters.source, done);
+        var source = map.parameters.source || opts.source;
+        if (!this._backend || this._source !== source) {
+            if (!source) return callback(new Error('No backend'));
+            tilelive.load(source, function(err, backend) {
+                if (err) return callback(err);
+                if (!backend) return callback(new Error('No backend'));
+                this._source = map.parameters.source || opts.source;
+                if (this._backend !== backend) {
+                    backend._vectorCache = {};
+                    this._backend = backend;
+                    delete this._minzoom;
+                    delete this._maxzoom;
+                    delete this._maskLevel;
+                }
+                return callback();
+            }.bind(this));
         } else {
-            done(null, this._backend || opts.backend);
+            return callback();
         }
     }.bind(this));
     return;

@@ -122,9 +122,9 @@ describe('init', function() {
         });
     });
     it('should update xml, backend', function(done) {
-        new Vector({ backend: new Testsource(), xml: xml.a }, function(err, source) {
+        new Vector({xml:xml.a}, function(err, source) {
             assert.ifError(err);
-            assert.ok(source);
+            assert.equal('a',source._backend.uri);
             source.getInfo(function(err, info) {
                 assert.ifError(err);
                 assert.equal('test-a', info.name);
@@ -141,10 +141,10 @@ describe('init', function() {
         });
     });
     it('should use fallback backend', function(done) {
-        new Vector({ backend: new Testsource(), xml: xml.c }, function(err, source) {
+        new Vector({ source:'test:///a', xml: xml.c }, function(err, source) {
             assert.ifError(err);
             assert.ok(source);
-            assert.equal(undefined,source._backend.uri);
+            assert.equal('a',source._backend.uri);
             done();
         });
     });
