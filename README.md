@@ -4,8 +4,8 @@ Implements the tilelive API for rendering mapnik vector tiles to raster images.
 
 ### new Vector(options, callback)
 
-- *backend*: an initialized tilelive source object. Vector will call its `getTile()` method and expect a deflated vector tile PBF as the tile buffer.
 - *xml*: a Mapnik XML string that will be used to render vector tiles.
+- *source*: Optional, a uri string suitable for use with `tilelive.load()`. This is fallback source that will be used if no source is found as part of the Mapnik XML parameters.
 - *base*: Optional, basepath for Mapnik map. Defaults to `__dirname`.
 - *format*: Optional, target output format. Defaults to `png8:m=h`.
 - *scale*: Optional, Mapnik scale factor. Defaults to `1`.
