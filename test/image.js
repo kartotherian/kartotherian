@@ -50,7 +50,5 @@ module.exports = function imageEqualsFile(buffer, file, meanError, callback) {
             callback(null);
         }
     });
-
-    compare.stdin.write(buffer);
     compare.stdin.end();
 };
