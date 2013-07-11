@@ -13,6 +13,7 @@
   <Parameter name="name"><![CDATA[test-a]]></Parameter>
   <Parameter name="interactivity_layer">coastline</Parameter>
   <Parameter name="interactivity_fields">ScaleRank</Parameter>
+  <Parameter name="json"><![CDATA[{"level1":{"level2":"property"},"scale":2}]]></Parameter>
 </Parameters>
 
 

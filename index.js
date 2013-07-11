@@ -290,6 +290,18 @@ Vector.prototype.getInfo = function(callback) {
     var params = this._map.parameters;
     this._info = Object.keys(params).reduce(function(memo, key) {
         switch (key) {
+        // The special "json" key/value pair allows JSON to be serialized
+        // and merged into the metadata of a mapnik XML based source. This
+        // enables nested properties and non-string datatypes to be
+        // captured by mapnik XML.
+        case 'json':
+            try { var jsondata = JSON.parse(params[key]); }
+            catch (err) { return callback(err); }
+            Object.keys(jsondata).reduce(function(memo, key) {
+                memo[key] = memo[key] || jsondata[key];
+                return memo;
+            }, memo);
+            break;
         case 'bounds':
         case 'center':
             memo[key] = params[key].split(',').map(function(v) { return parseFloat(v) });
