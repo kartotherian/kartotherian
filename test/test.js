@@ -183,6 +183,7 @@ describe('tiles', function() {
         g: ['0.0.0']
     };
     var formats = {
+        json: { ctype: 'application/json' },
         jpeg: { ctype: 'image/jpeg' },
         png: { ctype: 'image/png' },
         svg: { ctype: 'image/svg+xml' },

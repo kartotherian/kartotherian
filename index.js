@@ -152,6 +152,7 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
         case 'headers':
             // No content type for header-only.
             break;
+        case 'json':
         case 'utf':
             headers['Content-Type'] = 'application/json';
             break;
@@ -183,7 +184,10 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
             if (data && err) return callback(err);
 
             var opts = {z:z, x:x, y:y, scale:source._scale};
-            if (format === 'utf') {
+            if (format === 'json') {
+                try { return callback(null, vtile.toJSON(), headers); }
+                catch(err) { return callback(err); }
+            } else if (format === 'utf') {
                 var surface = new mapnik.Grid(256,256);
                 opts.layer = source._map.parameters.interactivity_layer;
                 opts.fields = source._map.parameters.interactivity_fields.split(',');
