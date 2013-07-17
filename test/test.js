@@ -249,13 +249,13 @@ describe('tiles', function() {
             var cbTile = function(err, buffer, headers) {
                 assert.ifError(err);
                 assert.equal(headers['Content-Type'], formats[format].ctype);
-                if (format === 'utf') {
+                if (format === 'utf' || format === 'json') {
                     assert.deepEqual(buffer, JSON.parse(fs.readFileSync(filepath, 'utf8')));
                     done();
                     // fs.writeFileSync(filepath, JSON.stringify(buffer, null, 2));
                     // done();
                 } else if (format === 'svg') {
-                    assert.equal(buffer, fs.readFileSync(filepath));
+                    assert.equal(buffer.length, fs.readFileSync(filepath).length);
                     done();
                 } else {
                     imageEqualsFile(buffer, filepath, function(err) {
