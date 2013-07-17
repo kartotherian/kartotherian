@@ -255,10 +255,8 @@ describe('tiles', function() {
                     // fs.writeFileSync(filepath, JSON.stringify(buffer, null, 2));
                     // done();
                 } else if (format === 'svg') {
-                    assert.equal(buffer, fs.readFileSync(filepath, 'utf8'));
+                    assert.equal(buffer, fs.readFileSync(filepath));
                     done();
-                    // fs.writeFileSync(filepath, JSON.stringify(buffer, null, 2));
-                    // done();
                 } else {
                     imageEqualsFile(buffer, filepath, function(err) {
                         assert.ifError(err);
