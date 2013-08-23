@@ -65,7 +65,7 @@ Vector.prototype.update = function(opts, callback) {
 
         var source = map.parameters.source || opts.source;
         if (!this._backend || this._source !== source) {
-            if (!source) return callback(new Error('No source'));
+            if (!source) return callback(new Error('No backend'));
             tilelive.load(source, function(err, backend) {
                 if (err) return callback(err);
                 if (!backend) return callback(new Error('No backend'));
