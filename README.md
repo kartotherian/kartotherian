@@ -2,6 +2,8 @@ tilelive-vector
 ---------------
 Implements the tilelive API for rendering mapnik vector tiles to raster images.
 
+[![Build Status](https://secure.travis-ci.org/mapbox/tilelive-vector.png)](http://travis-ci.org/mapbox/tilelive-vector)
+
 ### new Vector(options, callback)
 
 - *xml*: a Mapnik XML string that will be used to render vector tiles.
