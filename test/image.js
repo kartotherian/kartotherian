@@ -43,7 +43,7 @@ module.exports = function imageEqualsFile(buffer, file, meanError, callback) {
             err.similarity = similarity;
             callback(err);
         } else {
-            if (fs.existsSync(result)) {
+            if (existsSync(result)) {
                 // clean up old failures
                 fs.unlinkSync(result);
             }
