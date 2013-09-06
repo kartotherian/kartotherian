@@ -156,6 +156,7 @@ describe('tiles', function() {
     var sources = {
         a: new Vector({ backend: new Testsource('a'), xml: xml.a }),
         b: new Vector({ backend: new Testsource('b'), xml: xml.b }),
+        'b@2x': new Vector({ backend: new Testsource('b'), xml: xml.b }),
         c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale:2 }),
         d: new Vector({ backend: new Testsource('a'), xml: xml.a }),
         e: new Vector({ backend: new Testsource('a'), xml: xml.a, format:'png8:c=2' }),
@@ -173,6 +174,8 @@ describe('tiles', function() {
         // test scale factor. unlike previous test, 3.2.2/3.2.3 will be coast
         // and 3.2.4 should fallback to the maskLevel
         c: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
+        // should match results for 'c' which has a 2x factor map object.
+        'b@2x': ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
         // Checks for ETag stability.
         d: ['0.0.0', '1.0.0', '1.0.1', '1.1.0'],
         // Checks that explicit format in source URI overrides map parameters.
@@ -200,7 +203,7 @@ describe('tiles', function() {
             var y = key.split('.')[2] | 0;
             var remaining = 2;
             it('should render ' + source + ' (' + key + ')', function(done) {
-                sources[source].getTile(z,x,y, function(err, buffer, headers) {
+                var cbTile = function(err, buffer, headers) {
                     assert.ifError(err);
                     // No backend tiles last modified defaults to Date 0.
                     // Otherwise, Last-Modified from backend should be passed.
@@ -219,13 +222,13 @@ describe('tiles', function() {
                     // Load/draw stats attached to buffer.
                     assert.equal('number', typeof buffer._loadtime);
                     assert.equal('number', typeof buffer._drawtime);
+                    // fs.writeFileSync(__dirname + '/expected/' + source + '.' + key + '.png', buffer);
                     imageEqualsFile(buffer, __dirname + '/expected/' + source + '.' + key + '.png', function(err) {
                         assert.ifError(err);
                         if (!--remaining) done();
                     });
-                    // fs.writeFileSync(__dirname + '/expected/' + source + '.' + key + '.png', buffer);
-                });
-                sources[source].getHeaders(z,x,y, function(err, headers) {
+                };
+                var cbHead = function(err, headers) {
                     assert.ifError(err);
                     // No backend tiles last modified defaults to Date 0.
                     // Otherwise, Last-Modified from backend should be passed.
@@ -237,7 +240,13 @@ describe('tiles', function() {
                     // Content-Type.
                     assert.equal(undefined, headers['Content-Type']);
                     if (!--remaining) done();
-                });
+                };
+                if (/\@2x/.test(source)) {
+                    cbTile.scale = 2;
+                    cbHead.scale = 2;
+                }
+                sources[source].getTile(z,x,y, cbTile);
+                sources[source].getHeaders(z,x,y, cbHead);
             });
         });
     });
