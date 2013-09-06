@@ -61,7 +61,6 @@ Vector.prototype.update = function(opts, callback) {
         this._md5 = crypto.createHash('md5').update(opts.xml).digest('hex');
         this._format = opts.format || map.parameters.format || this._format || 'png8:m=h';
         this._scale = opts.scale || +map.parameters.scale || this._scale || 1;
-        map.bufferSize = 256 * this._scale;
 
         var source = map.parameters.source || opts.source;
         if (!this._backend || this._source !== source) {
@@ -183,7 +182,7 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, scale, callbac
             // Errors for null data are ignored as a solid tile be painted.
             if (data && err) return callback(err);
 
-            var opts = {z:z, x:x, y:y, scale:scale};
+            var opts = {z:z, x:x, y:y, scale:scale, buffer_size:256 * scale};
             if (format === 'json') {
                 try { return callback(null, vtile.toJSON(), headers); }
                 catch(err) { return callback(err); }
