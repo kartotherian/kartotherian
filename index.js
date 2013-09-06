@@ -136,7 +136,7 @@ Vector.prototype.sourceTile = function(backend, z, x, y, callback) {
     });
 };
 
-Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
+Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, scale, callback) {
     var source = this;
     var drawtime;
     var loadtime = +new Date;
@@ -168,7 +168,7 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
             break;
         }
         headers['ETag'] = JSON.stringify(crypto.createHash('md5')
-            .update(source._scale + source._md5 + (head && head['ETag'] || (z+','+x+','+y)))
+            .update(scale + source._md5 + (head && head['ETag'] || (z+','+x+','+y)))
             .digest('hex'));
         headers['Last-Modified'] = new Date(head && head['Last-Modified'] || 0).toUTCString();
 
@@ -183,7 +183,7 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, callback) {
             // Errors for null data are ignored as a solid tile be painted.
             if (data && err) return callback(err);
 
-            var opts = {z:z, x:x, y:y, scale:source._scale};
+            var opts = {z:z, x:x, y:y, scale:scale};
             if (format === 'json') {
                 try { return callback(null, vtile.toJSON(), headers); }
                 catch(err) { return callback(err); }
@@ -241,9 +241,14 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         return this.getTile(z, x, y, callback);
     }.bind(this));
 
+    // Hack around tilelive API - allow params to be passed per request
+    // as attributes of the callback function.
+    var format = callback.format || this._format;
+    var scale = callback.scale || this._scale;
+
     // If scale > 1 adjusts source data zoom level inversely.
     // scale 2x => z-1, scale 4x => z-2, scale 8x => z-3, etc.
-    var d = Math.round(Math.log(this._scale)/Math.log(2));
+    var d = Math.round(Math.log(scale)/Math.log(2));
     var bz = (z - d) > this._minzoom ? z - d : this._minzoom;
     var bx = Math.floor(x / Math.pow(2, z - bz));
     var by = Math.floor(y / Math.pow(2, z - bz));
@@ -255,22 +260,18 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         by = Math.floor(y / Math.pow(2, z - this._maxzoom));
     }
 
-    // Hack around tilelive API - allow params to be passed per request
-    // as attributes of the callback function.
-    var format = callback.format || this._format || this._map.parameters.format || 'png8:m=h';
-
     // For nonmasked sources or bz within the maskrange attempt 1 draw.
     if (!this._maskLevel || bz <= this._maskLevel)
-        return this.drawTile(bz,bx,by,z,x,y,format,callback);
+        return this.drawTile(bz, bx, by, z, x, y, format, scale, callback);
 
     // Above the maskLevel errors should attempt a second draw using the mask.
-    this.drawTile(bz,bx,by,z,x,y,format,function(err, buffer, headers) {
+    this.drawTile(bz, bx, by, z, x, y, format, scale, function(err, buffer, headers) {
         if (!err) return callback(err, buffer, headers);
         if (err && err.message !== 'Tile does not exist') return callback(err);
         bz = this._maskLevel;
         bx = Math.floor(x / Math.pow(2, z - this._maskLevel));
         by = Math.floor(y / Math.pow(2, z - this._maskLevel));
-        this.drawTile(bz, bx, by, z, x, y, format, callback);
+        this.drawTile(bz, bx, by, z, x, y, format, scale, callback);
     }.bind(this));
 };
 
