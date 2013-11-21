@@ -404,6 +404,10 @@ function Custom(uri, callback) {
         gunzip.on('error', error);
         parser.on('error', error);
 
+        // The uri passed from unpacker is not on S3 yet
+        console.log(uri);
+
+        /*
         // If a uri of the form custom://[bucket]/[object] is passed.
         request({uri:_({
             protocol:'http:',
@@ -413,6 +417,7 @@ function Custom(uri, callback) {
             .pipe(gunzip)
             .pipe(parser)
             .on('error', error);
+        */
     };
 
     function load() {
