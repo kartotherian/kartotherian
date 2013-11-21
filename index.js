@@ -39,6 +39,7 @@ util.inherits(Vector, require('events').EventEmitter);
 
 Vector.registerProtocols = function(tilelive) {
     tilelive.protocols['vector:'] = Vector;
+    tilelive.protocols['tm2z:'] = tm2z;
 };
 
 // Helper for callers to ensure source is open. This is not built directly
@@ -327,3 +328,24 @@ Vector.prototype.getInfo = function(callback) {
     return callback(null, this._info);
 };
 
+function tm2z(uri, callback) {
+    this._uri = uri;
+    this._scale = uri.scale || undefined;
+    this._format = uri.format || undefined;
+    this._source = uri.source || undefined;
+    this._maxAge = typeof uri.maxAge === 'number' ? uri.maxAge : 60e3;
+    this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
+    this._reap = typeof uri.reap === 'number' ? uri.reap : 60e3;
+    this._base = path.resolve(uri.base || __dirname);
+
+    console.log(this);
+
+    /*
+    if (callback) this.once('open', callback);
+
+    this.update(uri, function(err) {
+        this.emit('open', err, this);
+    }.bind(this));
+    */
+};
+util.inherits(tm2z, require('events').EventEmitter);
