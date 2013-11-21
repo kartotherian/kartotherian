@@ -37,6 +37,10 @@ function Vector(uri, callback) {
 };
 util.inherits(Vector, require('events').EventEmitter);
 
+Vector.registerProtocols = function(tilelive) {
+    tilelive.protocols['vector:'] = Vector;
+};
+
 // Helper for callers to ensure source is open. This is not built directly
 // into the constructor because there is no good auto cache-keying system
 // for these tile sources (ie. sharing/caching is best left to the caller).
