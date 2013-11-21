@@ -12,6 +12,10 @@ var request = require('request');
 
 module.exports = Vector;
 
+function md5(str) {
+    return crypto.createHash('md5').update(str).digest('hex');
+};
+
 function Task() {
     this.err = null;
     this.headers = {};
@@ -75,6 +79,7 @@ Vector.prototype.update = function(opts, callback) {
         var source = map.parameters.source || opts.source;
         if (!this._backend || this._source !== source) {
             if (!source) return callback(new Error('No backend'));
+            console.log(source);
             tilelive.load(source, function(err, backend) {
                 if (err) return callback(err);
                 if (!backend) return callback(new Error('No backend'));
@@ -343,7 +348,7 @@ function Custom(uri, callback) {
     }
 
     var xml;
-    var base = uri.pathname;
+    var base = '/tmp/' + md5(id).substr(0,8) + '-' + path.basename(id);
     var parser = tar.Parse();
     var gunzip = zlib.Gunzip();
     var unpacked = false;
@@ -404,8 +409,11 @@ function Custom(uri, callback) {
         gunzip.on('error', error);
         parser.on('error', error);
 
-        // The uri passed from unpacker is not on S3 yet
-        console.log(uri);
+        // The uri from unpacker has already been pulled down from S3
+        fs.createReadStream(uri.pathname)
+            .pipe(gunzip)
+            .pipe(parser)
+            .on('error', error);
 
         /*
         // If a uri of the form custom://[bucket]/[object] is passed.
@@ -423,6 +431,7 @@ function Custom(uri, callback) {
     function load() {
         if (!xml) return callback(new Error('project.xml not found in package'));
         Custom.sources[id] = new Vector({
+            // @TODO: fix this source
             source: 'mapbox:///mapbox.mapbox-streets-v2',
             base: base,
             xml: xml
