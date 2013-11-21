@@ -343,8 +343,7 @@ function Custom(uri, callback) {
     }
 
     var xml;
-    console.log(id);
-    var base = config.temp + '/' + tools.md5(id).substr(0,8) + '-' + path.basename(id);
+    var base = uri.pathname;
     var parser = tar.Parse();
     var gunzip = zlib.Gunzip();
     var unpacked = false;
