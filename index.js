@@ -1,9 +1,14 @@
+var _ = require('underscore');
 var tilelive = require('tilelive');
 var mapnik = require('mapnik');
+var fs = require('fs');
+var tar = require('tar');
+var url = require('url');
 var zlib = require('zlib');
 var path = require('path');
 var util = require('util');
 var crypto = require('crypto');
+var request = require('request');
 
 module.exports = Vector;
 
@@ -39,7 +44,7 @@ util.inherits(Vector, require('events').EventEmitter);
 
 Vector.registerProtocols = function(tilelive) {
     tilelive.protocols['vector:'] = Vector;
-    tilelive.protocols['tm2z:'] = tm2z;
+    tilelive.protocols['tm2z:'] = Custom;
 };
 
 // Helper for callers to ensure source is open. This is not built directly
@@ -328,24 +333,111 @@ Vector.prototype.getInfo = function(callback) {
     return callback(null, this._info);
 };
 
-function tm2z(uri, callback) {
-    this._uri = uri;
-    this._scale = uri.scale || undefined;
-    this._format = uri.format || undefined;
-    this._source = uri.source || undefined;
-    this._maxAge = typeof uri.maxAge === 'number' ? uri.maxAge : 60e3;
-    this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
-    this._reap = typeof uri.reap === 'number' ? uri.reap : 60e3;
-    this._base = path.resolve(uri.base || __dirname);
+function Custom(uri, callback) {
+    var id = url.format(uri);
 
-    console.log(this);
+    // Cache hit.
+    if (Custom.sources[id]) {
+        Custom.sources[id].access = +new Date;
+        return Custom.sources[id].open(callback);
+    }
 
-    /*
-    if (callback) this.once('open', callback);
+    var xml;
+    console.log(id);
+    var base = config.temp + '/' + tools.md5(id).substr(0,8) + '-' + path.basename(id);
+    var parser = tar.Parse();
+    var gunzip = zlib.Gunzip();
+    var unpacked = false;
 
-    this.update(uri, function(err) {
-        this.emit('open', err, this);
-    }.bind(this));
-    */
+    var once = 0;
+    var error = function(err) { if (!once++) callback(err); };
+
+    // Check for unpacked manifest
+    fs.exists(base + '/.unpacked', function(exists) {
+        unpacked = exists;
+        if (unpacked) {
+            unpack();
+        } else {
+            fs.mkdir(base, function(err) {
+                if (err && err.code !== 'EEXIST') return callback(err);
+                unpack();
+            });
+        }
+    });
+
+    function unpack() {
+        var todo = [];
+        parser.on('entry', function(entry) {
+            var parts = [];
+            var filepath = entry.props.path.split('/').slice(1).join('/');
+            entry.on('data', function(p) { parts.push(p) });
+            entry.on('end', function() {
+                var buffer = Buffer.concat(parts);
+                if (path.basename(filepath).toLowerCase() == 'project.xml') {
+                    xml = buffer.toString();
+                    if (unpacked) return load();
+                } else if (!unpacked && entry.type === 'Directory') {
+                    todo.push(function(next) { fs.mkdir(base + '/' + filepath, next); });
+                } else if (!unpacked && entry.type === 'File') {
+                    todo.push(function(next) { fs.writeFile(base + '/' + filepath, buffer, next); });
+                }
+            });
+        });
+        parser.on('end', function() {
+            // Load was called early via parser. Do nothing.
+            if (unpacked && xml) return;
+
+            // Package unpacked but no project.xml. Call load to error our.
+            if (unpacked) return load();
+
+            todo.push(function(next) { fs.writeFile(base + '/.unpacked', '', next); });
+            var next = function(err) {
+                if (err && err.code !== 'EEXIST') return callback(err);
+                if (todo.length) {
+                    todo.shift()(next);
+                } else {
+                    unpacked = true;
+                    load();
+                }
+            };
+            next();
+        });
+        gunzip.on('error', error);
+        parser.on('error', error);
+
+        // If a uri of the form custom://[bucket]/[object] is passed.
+        request({uri:_({
+            protocol:'http:',
+            host: uri.host + '.s3.amazonaws.com',
+            hostname: uri.host + '.s3.amazonaws.com'
+        }).defaults(uri)})
+            .pipe(gunzip)
+            .pipe(parser)
+            .on('error', error);
+    };
+
+    function load() {
+        if (!xml) return callback(new Error('project.xml not found in package'));
+        Custom.sources[id] = new Vector({
+            source: 'mapbox:///mapbox.mapbox-streets-v2',
+            base: base,
+            xml: xml
+        });
+        Custom.sources[id].open(function(err, source) {
+            if (err) {
+                delete Custom.sources[id];
+                return callback(err);
+            }
+            source.mtime = new Date(source._backend.data.mtime);
+            source.access = +new Date;
+            callback(null, source);
+        });
+    };
 };
-util.inherits(tm2z, require('events').EventEmitter);
+Custom.sources = {};
+
+// All custom sources must be declared and loaded explicitly by a custom:// uri.
+// See blended.js.
+Custom.findID = function(source, id, callback) {
+    callback(new Error('id not found'));
+};
