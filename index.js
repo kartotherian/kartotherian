@@ -439,7 +439,7 @@ function Custom(uri, callback) {
                 delete Custom.sources[id];
                 return callback(err);
             }
-            source.mtime = new Date(source._backend.data.mtime);
+            source.mtime = source._backend.data && source._backend.data.mtime ? new Date(source._backend.data.mtime) : new Date;
             source.access = +new Date;
             callback(null, source);
         });
