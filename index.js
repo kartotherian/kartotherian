@@ -1,5 +1,4 @@
 var _ = require('underscore');
-var tilelive = require('tilelive');
 var mapnik = require('mapnik');
 var fs = require('fs');
 var tar = require('tar');
@@ -9,6 +8,9 @@ var path = require('path');
 var util = require('util');
 var crypto = require('crypto');
 var request = require('request');
+
+var tilelive = require('tilelive');
+require('./lib/source').registerProtocols(tilelive);
 
 module.exports = Vector;
 
@@ -79,7 +81,6 @@ Vector.prototype.update = function(opts, callback) {
         var source = map.parameters.source || opts.source;
         if (!this._backend || this._source !== source) {
             if (!source) return callback(new Error('No backend'));
-            console.log(source);
             tilelive.load(source, function(err, backend) {
                 if (err) return callback(err);
                 if (!backend) return callback(new Error('No backend'));
