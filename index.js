@@ -430,7 +430,6 @@ function Custom(uri, callback) {
     function load() {
         if (!xml) return callback(new Error('project.xml not found in package'));
         Custom.sources[id] = new Vector({
-            // @TODO: fix this source
             source: 'mapbox:///mapbox.mapbox-streets-v2',
             base: base,
             xml: xml
