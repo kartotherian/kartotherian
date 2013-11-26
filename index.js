@@ -3,14 +3,12 @@ var mapnik = require('mapnik');
 var fs = require('fs');
 var tar = require('tar');
 var url = require('url');
+var tilelive = require('tilelive');
 var zlib = require('zlib');
 var path = require('path');
 var util = require('util');
 var crypto = require('crypto');
 var request = require('request');
-
-var tilelive = require('tilelive');
-require('./lib/source').registerProtocols(tilelive);
 
 module.exports = Vector;
 
@@ -81,6 +79,7 @@ Vector.prototype.update = function(opts, callback) {
         var source = map.parameters.source || opts.source;
         if (!this._backend || this._source !== source) {
             if (!source) return callback(new Error('No backend'));
+            console.log(tilelive.protocol);
             tilelive.load(source, function(err, backend) {
                 if (err) return callback(err);
                 if (!backend) return callback(new Error('No backend'));
