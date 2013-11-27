@@ -413,18 +413,6 @@ function Custom(uri, callback) {
             .pipe(gunzip)
             .pipe(parser)
             .on('error', error);
-
-        /*
-        // If a uri of the form custom://[bucket]/[object] is passed.
-        request({uri:_({
-            protocol:'http:',
-            host: uri.host + '.s3.amazonaws.com',
-            hostname: uri.host + '.s3.amazonaws.com'
-        }).defaults(uri)})
-            .pipe(gunzip)
-            .pipe(parser)
-            .on('error', error);
-        */
     };
 
     function load() {
@@ -439,7 +427,7 @@ function Custom(uri, callback) {
                 delete Custom.sources[id];
                 return callback(err);
             }
-            source.mtime = source._backend.data && source._backend.data.mtime ? new Date(source._backend.data.mtime) : new Date;
+            source.mtime = new Date(source._backend.data.mtime);
             source.access = +new Date;
             callback(null, source);
         });
