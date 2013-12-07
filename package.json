@@ -9,7 +9,7 @@
     },
     "licenses": [{ "type": "BSD" }],
     "dependencies": {
-        "mapnik": "1.2.x",
+        "mapnik": "https://github.com/mapnik/node-mapnik/tarball/master",
         "tilelive": "4.5.x"
     },
     "devDependencies": {
