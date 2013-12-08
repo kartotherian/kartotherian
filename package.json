@@ -1,0 +1,10 @@
+{
+  "name": "tilelive-tmsource",
+  "version": "0.0.0",
+  "description": "A tilelive.js source for tmsource:// URIs",
+  "author": "Seth Fitzsimmons <seth@mojodna.net>",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "tilelive-bridge": "0.0.8"
+  }
+}
