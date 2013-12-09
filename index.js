@@ -69,7 +69,6 @@ Vector.prototype.update = function(opts, callback) {
         strict: false,
         base: this._base + '/'
     }, function(err) {
-        if (err) return callback(err);
         delete this._info;
         this._xml = opts.xml;
         this._map = map;
@@ -91,10 +90,18 @@ Vector.prototype.update = function(opts, callback) {
                     delete this._maxzoom;
                     delete this._maskLevel;
                 }
-                return callback();
+                this.profile(opts, function(err, stats) {
+                    if (err) return callback(err);
+                    if (stats) console.log(stats);
+                    return callback();
+                });
             }.bind(this));
         } else {
-            return callback();
+            this.profile(opts, function(err, stats) {
+                if (err) return callback(err);
+                if (stats) console.log(stats);
+                return callback();
+            });
         }
     }.bind(this));
     return;
@@ -348,16 +355,16 @@ Vector.prototype.profile = function(opts, callback) {
         if (err) return callback(err);
         var mapFromStringTime = Date.now() - mapFromStringStart;
         var renderStart = Date.now();
-        map.render(new mapnik.VectorTile(0,0,0), {}, function(err, vt) {
+        this.drawTile(0,0,0,0,0,0,'png',1,function(err, buffer, headers) {
             if (err) return callback(err);
             var renderTime = Date.now() - renderStart;
-            console.log(vt.toJSON());
+            fs.writeFile('map.png', buffer);
             callback(null, {
                 mapFromString: mapFromStringTime,
                 renderTime: renderTime
             });
         });
-    });
+    }.bind(this));
 };
 
 function Custom(uri, callback) {
