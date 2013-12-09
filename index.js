@@ -90,7 +90,10 @@ Vector.prototype.update = function(opts, callback) {
                     delete this._maxzoom;
                     delete this._maskLevel;
                 }
-                return callback();
+                this.profile({ some: 'options' }, function(err, stats) {
+                    if (err) return callback(err);
+                    return callback();
+                });
             }.bind(this));
         } else {
             return callback();
@@ -335,6 +338,10 @@ Vector.prototype.getInfo = function(callback) {
         return memo;
     }, {});
     return callback(null, this._info);
+};
+
+Vector.prototype.profile = function(options, callback) {
+    callback(null, {});
 };
 
 function Custom(uri, callback) {
