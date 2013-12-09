@@ -49,6 +49,7 @@ util.inherits(Vector, require('events').EventEmitter);
 Vector.registerProtocols = function(tilelive) {
     tilelive.protocols['vector:'] = Vector;
     tilelive.protocols['tm2z:'] = Custom;
+    tilelive.protocols['custom:'] = Custom;
 };
 
 // Helper for callers to ensure source is open. This is not built directly
@@ -355,10 +356,9 @@ Vector.prototype.profile = function(opts, callback) {
         if (err) return callback(err);
         var mapFromStringTime = Date.now() - mapFromStringStart;
         var renderStart = Date.now();
-        this.drawTile(0,0,0,0,0,0,'png',1,function(err, buffer, headers) {
+        this.drawTile(0, 0, 0, 0, 0, 0, 'png', 1, function(err, buffer, headers) {
             if (err) return callback(err);
             var renderTime = Date.now() - renderStart;
-            fs.writeFile('map.png', buffer);
             callback(null, {
                 mapFromString: mapFromStringTime,
                 renderTime: renderTime
@@ -438,11 +438,28 @@ function Custom(uri, callback) {
         gunzip.on('error', error);
         parser.on('error', error);
 
-        // The uri from unpacker has already been pulled down from S3
-        fs.createReadStream(uri.pathname)
-            .pipe(gunzip)
-            .pipe(parser)
-            .on('error', error);
+        switch(uri.protocol) {
+            case 'custom:':
+                // If a uri of the form custom://[bucket]/[object]
+                // is passed.
+                request({uri:_({
+                    protocol:'http:',
+                    host: uri.host + '.s3.amazonaws.com',
+                    hostname: uri.host + '.s3.amazonaws.com'
+                }).defaults(uri)})
+                    .pipe(gunzip)
+                    .pipe(parser)
+                    .on('error', error);
+                break;
+            case 'tm2z:':
+                // The uri from unpacker has already been pulled
+                // down from S3.
+                fs.createReadStream(uri.pathname)
+                    .pipe(gunzip)
+                    .pipe(parser)
+                    .on('error', error);
+                break;
+        }
     };
 
     function load() {
