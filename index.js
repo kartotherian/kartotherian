@@ -64,9 +64,12 @@ Vector.prototype.update = function(opts, callback) {
     // If the XML has changed update the map.
     if (!opts.xml || this._xml === opts.xml) return callback();
 
-    this.profile(opts, function(err, map, stats) {
+    var map = new mapnik.Map(256,256);
+    map.fromString(opts.xml, {
+        strict: false,
+        base: this._base + '/'
+    }, function(err) {
         if (err) return callback(err);
-        if (stats) console.log(stats);
         delete this._info;
         this._xml = opts.xml;
         this._map = map;
@@ -344,8 +347,15 @@ Vector.prototype.profile = function(opts, callback) {
     }, function(err) {
         if (err) return callback(err);
         var mapFromStringTime = Date.now() - mapFromStringStart;
-        callback(null, map, {
-            mapFromStringTime: mapFromStringTime
+        var renderStart = Date.now();
+        map.render(new mapnik.VectorTile(0,0,0), {}, function(err, vt) {
+            if (err) return callback(err);
+            var renderTime = Date.now() - renderStart;
+            console.log(vt.toJSON());
+            callback(null, {
+                mapFromString: mapFromStringTime,
+                renderTime: renderTime
+            });
         });
     });
 };
