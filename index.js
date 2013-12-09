@@ -64,11 +64,9 @@ Vector.prototype.update = function(opts, callback) {
     // If the XML has changed update the map.
     if (!opts.xml || this._xml === opts.xml) return callback();
 
-    var map = new mapnik.Map(256,256);
-    map.fromString(opts.xml, {
-        strict: false,
-        base: this._base + '/'
-    }, function(err) {
+    this.profile(opts, function(err, map, stats) {
+        if (err) return callback(err);
+        if (stats) console.log(stats);
         delete this._info;
         this._xml = opts.xml;
         this._map = map;
@@ -90,10 +88,7 @@ Vector.prototype.update = function(opts, callback) {
                     delete this._maxzoom;
                     delete this._maskLevel;
                 }
-                this.profile({ some: 'options' }, function(err, stats) {
-                    if (err) return callback(err);
-                    return callback();
-                });
+                return callback();
             }.bind(this));
         } else {
             return callback();
@@ -340,8 +335,19 @@ Vector.prototype.getInfo = function(callback) {
     return callback(null, this._info);
 };
 
-Vector.prototype.profile = function(options, callback) {
-    callback(null, {});
+Vector.prototype.profile = function(opts, callback) {
+    var map = new mapnik.Map(256,256);
+    var mapFromStringStart = Date.now();
+    map.fromString(opts.xml, {
+        strict: false,
+        base: this._base + '/'
+    }, function(err) {
+        if (err) return callback(err);
+        var mapFromStringTime = Date.now() - mapFromStringStart;
+        callback(null, map, {
+            mapFromStringTime: mapFromStringTime
+        });
+    });
 };
 
 function Custom(uri, callback) {
