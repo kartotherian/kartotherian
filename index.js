@@ -11,7 +11,7 @@ var TMSource = function(uri, callback) {
   uri.pathname = uri.hostname + uri.pathname + "/data.xml";
 
   // TODO if data.xml does not exist (but data.yml does), generate it before
-  // pointing tilelive-bridge at it
+  // pointing tilelive-bridge at it (it accepts XML as uri.xml)
 
   return Bridge.call(this, uri, callback);
 };
