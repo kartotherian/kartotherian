@@ -473,8 +473,6 @@ function tm2z(uri, callback) {
 };
 tm2z.sources = {};
 
-// All custom sources must be declared and loaded explicitly by a custom:// uri.
-// See blended.js.
 tm2z.findID = function(source, id, callback) {
     callback(new Error('id not found'));
 };
