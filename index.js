@@ -49,6 +49,7 @@ util.inherits(Vector, require('events').EventEmitter);
 Vector.registerProtocols = function(tilelive) {
     tilelive.protocols['vector:'] = Vector;
     tilelive.protocols['tm2z:'] = Custom;
+    tilelive.protocols['custom:'] = Custom;
 };
 
 // Helper for callers to ensure source is open. This is not built directly
