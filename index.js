@@ -11,6 +11,7 @@ var crypto = require('crypto');
 var request = require('request');
 
 module.exports = Vector;
+module.exports.tm2z = tm2z;
 
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
@@ -48,8 +49,7 @@ util.inherits(Vector, require('events').EventEmitter);
 
 Vector.registerProtocols = function(tilelive) {
     tilelive.protocols['vector:'] = Vector;
-    tilelive.protocols['tm2z:'] = Custom;
-    tilelive.protocols['custom:'] = Custom;
+    tilelive.protocols['tm2z:'] = tm2z;
 };
 
 // Helper for callers to ensure source is open. This is not built directly
@@ -362,13 +362,13 @@ Vector.prototype.profile = function(opts, callback) {
     }.bind(this));
 };
 
-function Custom(uri, callback) {
+function tm2z(uri, callback) {
     var id = url.format(uri);
 
     // Cache hit.
-    if (Custom.sources[id]) {
-        Custom.sources[id].access = +new Date;
-        return Custom.sources[id].open(callback);
+    if (tm2z.sources[id]) {
+        tm2z.sources[id].access = +new Date;
+        return tm2z.sources[id].open(callback);
     }
 
     var xml;
@@ -433,28 +433,36 @@ function Custom(uri, callback) {
         gunzip.on('error', error);
         parser.on('error', error);
 
-        // If a uri of the form custom://[bucket]/[object]
-        // is passed.
-        request({uri:_({
-            protocol:'http:',
-            host: uri.host + '.s3.amazonaws.com',
-            hostname: uri.host + '.s3.amazonaws.com'
-        }).defaults(uri)})
-            .pipe(gunzip)
-            .pipe(parser)
-            .on('error', error);
+        switch(uri.protocol) {
+            case 'tm2z:':
+                // The uri from unpacker has already been pulled
+                // down from S3.
+                fs.createReadStream(uri.pathname)
+                   .pipe(gunzip)
+                   .pipe(parser)
+                   .on('error', error);
+                break;
+            case 'tm2z+http:':
+                request({uri:_({
+                    protocol:'http:'
+                }).defaults(uri)})
+                    .pipe(gunzip)
+                    .pipe(parser)
+                    .on('error', error);
+                break;
+        }
     };
 
     function load() {
         if (!xml) return callback(new Error('project.xml not found in package'));
-        Custom.sources[id] = new Vector({
+        tm2z.sources[id] = new Vector({
             source: 'mapbox:///mapbox.mapbox-streets-v2',
             base: base,
             xml: xml
         });
-        Custom.sources[id].open(function(err, source) {
+        tm2z.sources[id].open(function(err, source) {
             if (err) {
-                delete Custom.sources[id];
+                delete tm2z.sources[id];
                 return callback(err);
             }
             source.mtime = new Date(source._backend.data.mtime);
@@ -463,10 +471,10 @@ function Custom(uri, callback) {
         });
     };
 };
-Custom.sources = {};
+tm2z.sources = {};
 
 // All custom sources must be declared and loaded explicitly by a custom:// uri.
 // See blended.js.
-Custom.findID = function(source, id, callback) {
+tm2z.findID = function(source, id, callback) {
     callback(new Error('id not found'));
 };
