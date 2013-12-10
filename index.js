@@ -93,16 +93,11 @@ Vector.prototype.update = function(opts, callback) {
                 }
                 this.profile(opts, function(err, stats) {
                     if (err) return callback(err);
-                    if (stats) console.log(stats);
                     return callback();
                 });
             }.bind(this));
         } else {
-            this.profile(opts, function(err, stats) {
-                if (err) return callback(err);
-                if (stats) console.log(stats);
-                return callback();
-            });
+            return callback();
         }
     }.bind(this));
     return;
