@@ -1,5 +1,4 @@
 var tilelive = require('tilelive');
-var _ = require('underscore');
 var mapnik = require('mapnik');
 var fs = require('fs');
 var tar = require('tar');
@@ -444,9 +443,8 @@ function tm2z(uri, callback) {
                    .on('error', error);
                 break;
             case 'tm2z+http:':
-                request({uri:_({
-                    protocol:'http:'
-                }).defaults(uri)})
+                uri.protocol = 'http:';
+                request({ uri: uri })
                     .pipe(gunzip)
                     .pipe(parser)
                     .on('error', error);
