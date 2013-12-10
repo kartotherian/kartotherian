@@ -202,6 +202,7 @@ describe('tiles', function() {
                 }
             };
             cbTile.format = format;
+            if (format == 'png') cbTile.format = 'png8:m=h';
             sources[source].getTile(0,0,0, cbTile);
         });
     });
