@@ -8,7 +8,7 @@ var Bridge = require("tilelive-bridge");
 var TMSource = function(uri, callback) {
   uri = url.parse(uri);
 
-  uri.pathname += "/data.xml";
+  uri.pathname = uri.hostname + uri.pathname + "/data.xml";
 
   // TODO if data.xml does not exist (but data.yml does), generate it before
   // pointing tilelive-bridge at it
