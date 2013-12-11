@@ -21,7 +21,9 @@
     "tilejson": "~0.6.0"
   },
   "devDependencies": {
-    "mocha": "1.3.x"
+    "mocha": "1.3.x",
+    "fstream": "~0.1.25",
+    "mkdirp": "~0.3.5"
   },
   "scripts": {
     "test": "node_modules/.bin/mocha -R spec"
