@@ -42,6 +42,12 @@ describe('tm2z', function() {
             done();
         });
     });
+    it('errors on an invalid S3 tm2z+http url', function(done) {
+        tilelive.load('tm2z+http://mapbox.s3.amazonaws.com/tilelive-vector/invalid.tm2z', function(err, source) {
+            assert.equal('Z_DATA_ERROR', err.code);
+            done();
+        });
+    });
     /*
     it('errors out on bad deflate', function(done) {
         sources.a.getTile(1, 0, 2, function(err) {
