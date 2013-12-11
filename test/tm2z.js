@@ -59,12 +59,14 @@ describe('tm2z', function() {
 });
 describe('tm2z+http', function() {
     it('loads a tm2z+http url', function(done) {
+        this.timeout(5000);
         tilelive.load(remote, function(err, source) {
             if (err) throw err;
             done();
         });
     });
     it('matches expected xml', function(done) {
+        this.timeout(5000);
         tilelive.load(remote, function(err, source) {
             if (err) throw err;
             assert.equal(xml, source._xml);
