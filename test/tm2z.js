@@ -28,21 +28,20 @@ tilelive.protocols['mapbox:'] = function Source(uri, callback) {
 };
 
 describe('tm2z', function() {
-    it('loads a tm2z url', function(done) {
+    it('loads and unpacks a tm2z url', function(done) {
         tilelive.load('tm2z://' + file, function(err, source) {
             if (err) throw err;
             assert.equal(xml, source._xml);
             done();
         });
     });
-    /*
-    it('loads a tm2z+http url', function(done) {
-        tilelive.load('tm2z+http://' + file, function(err, source) {
-            console.log(source);
+    it('loads and unpacks a tm2z+http url', function(done) {
+        tilelive.load('tm2z+http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z.tm2z', function(err, source) {
+            if (err) throw err;
+            assert.equal(xml, source._xml);
             done();
         });
     });
-    */
     /*
     it('errors out on bad deflate', function(done) {
         sources.a.getTile(1, 0, 2, function(err) {
