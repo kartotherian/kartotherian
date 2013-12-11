@@ -9,7 +9,8 @@ var fs = require('fs');
 // var imageEqualsFile = require('./image.js');
 
 // Load fixture data.
-var file = path.resolve(__dirname + '/test-tm2z.tm2z'),
+var local = 'tm2z://' + path.resolve(__dirname + '/test-tm2z.tm2z'),
+    remote = 'tm2z+http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z.tm2z',
     xml = fs.readFileSync(__dirname + '/test-tm2z-project.xml');
 
 /*
@@ -28,23 +29,16 @@ tilelive.protocols['mapbox:'] = function Source(uri, callback) {
 };
 
 describe('tm2z', function() {
-    it('loads and unpacks a tm2z url', function(done) {
-        tilelive.load('tm2z://' + file, function(err, source) {
+    it('loads a tm2z url', function(done) {
+        tilelive.load(local, function(err, source) {
             if (err) throw err;
-            assert.equal(xml, source._xml);
             done();
         });
     });
-    it('loads and unpacks a tm2z+http url', function(done) {
-        tilelive.load('tm2z+http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z.tm2z', function(err, source) {
+    it('matches expected xml', function(done) {
+        tilelive.load(local, function(err, source) {
             if (err) throw err;
             assert.equal(xml, source._xml);
-            done();
-        });
-    });
-    it('errors on an invalid S3 tm2z+http url', function(done) {
-        tilelive.load('tm2z+http://mapbox.s3.amazonaws.com/tilelive-vector/invalid.tm2z', function(err, source) {
-            assert.equal('Z_DATA_ERROR', err.code);
             done();
         });
     });
@@ -62,4 +56,25 @@ describe('tm2z', function() {
         });
     });
     */
+});
+describe('tm2z+http', function() {
+    it('loads a tm2z+http url', function(done) {
+        tilelive.load(remote, function(err, source) {
+            if (err) throw err;
+            done();
+        });
+    });
+    it('matches expected xml', function(done) {
+        tilelive.load(remote, function(err, source) {
+            if (err) throw err;
+            assert.equal(xml, source._xml);
+            done();
+        });
+    });
+    it('errors out on an invalid S3 url', function(done) {
+        tilelive.load('tm2z+http://mapbox.s3.amazonaws.com/tilelive-vector/invalid.tm2z', function(err, source) {
+            assert.equal('Z_DATA_ERROR', err.code);
+            done();
+        });
+    });
 });
