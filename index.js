@@ -8,6 +8,7 @@ var path = require('path');
 var util = require('util');
 var crypto = require('crypto');
 var request = require('request');
+var exists = fs.exists || require('path').exists;
 
 module.exports = Vector;
 module.exports.tm2z = tm2z;
@@ -381,7 +382,7 @@ function tm2z(uri, callback) {
     var error = function(err) { if (!once++) callback(err); };
 
     // Check for unpacked manifest
-    fs.exists(base + '/.unpacked', function(exists) {
+    exists(base + '/.unpacked', function(exists) {
         unpacked = exists;
         if (unpacked) {
             unpack();
