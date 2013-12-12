@@ -46,9 +46,9 @@ function gzip(path, callback) {
 }
 
 // Load fixture data.
-var localPath = path.resolve(__dirname + '/test-tm2z.tm2z'),
+var localPath = path.resolve(__dirname + '/fixtures/tm2z/test.tm2z'),
     remotePath = 'http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z.tm2z',
-    xml = fs.readFileSync(__dirname + '/test-tm2z-project.xml');
+    xml = fs.readFileSync(__dirname + '/fixtures/tm2z/project.xml');
 
 /*
 // Additional error tile fixtures.
