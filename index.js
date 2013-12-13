@@ -71,6 +71,8 @@ Vector.prototype.update = function(opts, callback) {
         strict: false,
         base: this._base + '/'
     }, function(err) {
+        if (err) return callback(err);
+
         delete this._info;
         this._xml = opts.xml;
         this._map = map;
