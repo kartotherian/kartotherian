@@ -9,23 +9,23 @@ var imageEqualsFile = require('./image.js');
 
 // Load fixture data.
 var xml = {
-    a: fs.readFileSync(path.resolve(__dirname + '/test-a.xml'), 'utf8'),
-    b: fs.readFileSync(path.resolve(__dirname + '/test-b.xml'), 'utf8'),
-    c: fs.readFileSync(path.resolve(__dirname + '/test-c.xml'), 'utf8')
+    a: fs.readFileSync(path.resolve(__dirname + '/fixtures/a.xml'), 'utf8'),
+    b: fs.readFileSync(path.resolve(__dirname + '/fixtures/b.xml'), 'utf8'),
+    c: fs.readFileSync(path.resolve(__dirname + '/fixtures/c.xml'), 'utf8')
 };
 var infos = {
     a: { minzoom:0, maxzoom:1 },
     b: { minzoom:0, maxzoom:2, maskLevel:1 }
 };
 var tiles = {
-    a: fs.readdirSync(path.resolve(__dirname + '/test-a')).reduce(function(memo, basename) {
+    a: fs.readdirSync(path.resolve(__dirname + '/fixtures/a')).reduce(function(memo, basename) {
         var key = basename.split('.').slice(0,3).join('.');
-        memo[key] = fs.readFileSync(path.resolve(__dirname + '/test-a/' + basename));
+        memo[key] = fs.readFileSync(path.resolve(__dirname + '/fixtures/a/' + basename));
         return memo;
     }, {}),
-    b: fs.readdirSync(path.resolve(__dirname + '/test-b')).reduce(function(memo, basename) {
+    b: fs.readdirSync(path.resolve(__dirname + '/fixtures/b')).reduce(function(memo, basename) {
         var key = basename.split('.').slice(0,3).join('.');
-        memo[key] = fs.readFileSync(path.resolve(__dirname + '/test-b/' + basename));
+        memo[key] = fs.readFileSync(path.resolve(__dirname + '/fixtures/b/' + basename));
         return memo;
     }, {})
 };
