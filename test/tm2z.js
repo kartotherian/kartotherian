@@ -1,13 +1,9 @@
 var tilelive = require('tilelive');
 var TileJSON = require('tilejson');
 var url = require('url');
-var tar = require('tar');
-var fstream = require('fstream');
-var zlib = require('zlib');
 var assert = require('assert');
 var path = require('path');
 var fs = require('fs');
-var mkdirp = require('mkdirp');
 var crypto = require('crypto');
 
 function md5(str) {
