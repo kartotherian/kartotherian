@@ -92,10 +92,7 @@ Vector.prototype.update = function(opts, callback) {
                     delete this._maxzoom;
                     delete this._maskLevel;
                 }
-                this.profile(opts, function(err, stats) {
-                    if (err) return callback(err);
-                    return callback();
-                });
+                return callback();
             }.bind(this));
         } else {
             return callback();
