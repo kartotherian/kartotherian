@@ -341,10 +341,10 @@ Vector.prototype.getInfo = function(callback) {
     return callback(null, this._info);
 };
 
-Vector.prototype.profile = function(opts, callback) {
+Vector.prototype.profile = function(callback) {
     var map = new mapnik.Map(256,256);
     var mapFromStringStart = Date.now();
-    map.fromString(opts.xml, {
+    map.fromString(this._xml, {
         strict: false,
         base: this._base + '/'
     }, function(err) {
