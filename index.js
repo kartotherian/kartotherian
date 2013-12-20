@@ -343,6 +343,7 @@ Vector.prototype.getInfo = function(callback) {
 
 Vector.prototype.profile = function(callback) {
     var map = new mapnik.Map(256,256);
+
     var mapFromStringStart = Date.now();
     map.fromString(this._xml, {
         strict: false,
@@ -394,7 +395,28 @@ function tm2z(uri, callback) {
     });
 
     function unpack() {
+        var stream;
+        var filesize = 0;
+        var gunzipSize = 0;
         var todo = [];
+
+        function chunked(chunk) {
+            filesize += chunk.length;
+            if (filesize > (750 * 1024)) {
+                var err = new Error('Filesize should not exceed 750k.');
+                err.type = 'validation';
+                stream.emit('error', err);
+            }
+        }
+
+        gunzip.on('data', function(chunk) {
+            gunzipSize += chunk.length;
+            if (gunzipSize > (5 * 1024 * 1024)) {
+                var err = new Error('Unzipped size should not exceed 5MB.');
+                err.type = 'validation';
+                gunzip.emit('error', err);
+            }
+        });
         parser.on('entry', function(entry) {
             var parts = [];
             var filepath = entry.props.path.split('/').slice(1).join('/');
@@ -437,14 +459,16 @@ function tm2z(uri, callback) {
             case 'tm2z:':
                 // The uri from unpacker has already been pulled
                 // down from S3.
-                fs.createReadStream(uri.pathname)
-                   .pipe(gunzip)
-                   .pipe(parser)
-                   .on('error', error);
+                stream = fs.createReadStream(uri.pathname)
+                    .on('data', chunked)
+                    .pipe(gunzip)
+                    .pipe(parser)
+                    .on('error', error);
                 break;
             case 'tm2z+http:':
                 uri.protocol = 'http:';
-                request({ uri: uri })
+                stream = request({ uri: uri })
+                    .on('data', chunked)
                     .pipe(gunzip)
                     .pipe(parser)
                     .on('error', error);
