@@ -396,22 +396,25 @@ function tm2z(uri, callback) {
 
     function unpack() {
         var stream;
-        var filesize = 0;
-        var gunzipSize = 0;
+        var size = {
+            tm2z: 0,
+            unzipped: 0,
+            xml: 0
+        };
         var todo = [];
 
         function chunked(chunk) {
-            filesize += chunk.length;
-            if (filesize > (750 * 1024)) {
-                var err = new Error('Filesize should not exceed 750k.');
+            size.tm2z += chunk.length;
+            if (size.tm2z > (750 * 1024)) {
+                var err = new Error('tm2z size should not exceed 750k.');
                 err.type = 'validation';
                 stream.emit('error', err);
             }
         }
 
         gunzip.on('data', function(chunk) {
-            gunzipSize += chunk.length;
-            if (gunzipSize > (5 * 1024 * 1024)) {
+            size.unzipped += chunk.length;
+            if (size.unzipped > (5 * 1024 * 1024)) {
                 var err = new Error('Unzipped size should not exceed 5MB.');
                 err.type = 'validation';
                 gunzip.emit('error', err);
@@ -420,7 +423,17 @@ function tm2z(uri, callback) {
         parser.on('entry', function(entry) {
             var parts = [];
             var filepath = entry.props.path.split('/').slice(1).join('/');
-            entry.on('data', function(p) { parts.push(p) });
+            entry.on('data', function(chunk) {
+                if (path.basename(filepath).toLowerCase() == 'project.xml') {
+                    size.xml += chunk;
+                    if (size.xml > (750 * 1024)) {
+                        var err = new Error('project.xml size should not exceed 750k.');
+                        err.type = 'validation';
+                        parser.emit('error', err);
+                    }
+                }
+                parts.push(chunk);
+            });
             entry.on('end', function() {
                 var buffer = Buffer.concat(parts);
                 if (path.basename(filepath).toLowerCase() == 'project.xml') {
