@@ -407,7 +407,6 @@ function tm2z(uri, callback) {
             size.tm2z += chunk.length;
             if (size.tm2z > (750 * 1024)) {
                 var err = new Error('tm2z size should not exceed 750k.');
-                err.type = 'validation';
                 stream.emit('error', err);
             }
         }
@@ -416,7 +415,6 @@ function tm2z(uri, callback) {
             size.unzipped += chunk.length;
             if (size.unzipped > (5 * 1024 * 1024)) {
                 var err = new Error('Unzipped size should not exceed 5MB.');
-                err.type = 'validation';
                 gunzip.emit('error', err);
             }
         });
@@ -428,7 +426,6 @@ function tm2z(uri, callback) {
                     size.xml += chunk;
                     if (size.xml > (750 * 1024)) {
                         var err = new Error('project.xml size should not exceed 750k.');
-                        err.type = 'validation';
                         parser.emit('error', err);
                     }
                 }
