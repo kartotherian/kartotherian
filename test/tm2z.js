@@ -49,7 +49,7 @@ describe('tm2z', function() {
         });
     });
     it('errors out on bad gunzip', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/doublezip.tar.gz', function(err, source) {
+        tilelive.load('tm2z://' + fixtureDir + '/doublezip.tm2z', function(err, source) {
             assert.equal(err.message, 'invalid tar file');
             done();
         });
@@ -61,13 +61,13 @@ describe('tm2z', function() {
         });
     });
     it('errors out if missing project.xml', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/empty.tar.gz', function(err, source) {
+        tilelive.load('tm2z://' + fixtureDir + '/empty.tm2z', function(err, source) {
             assert.equal(err.message, 'project.xml not found in package');
             done();
         });
     });
     it('errors out on invalid project.xml', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/malformed.tar.gz', function(err, source) {
+        tilelive.load('tm2z://' + fixtureDir + '/malformed.tm2z', function(err, source) {
             assert.equal(err.message.split(':')[0], 'XML document not well formed');
             done();
         });
