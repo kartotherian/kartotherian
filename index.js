@@ -414,7 +414,7 @@ function tm2z(uri, callback) {
         gunzip.on('data', function(chunk) {
             size.unzipped += chunk.length;
             if (size.unzipped > (5 * 1024 * 1024)) {
-                var err = new RangeError('Unzipped directory size should not exceed 5MB.');
+                var err = new RangeError('Unzipped size should not exceed 5MB.');
                 gunzip.emit('error', err);
             }
         });
@@ -423,7 +423,7 @@ function tm2z(uri, callback) {
             var filepath = entry.props.path.split('/').slice(1).join('/');
             entry.on('data', function(chunk) {
                 if (path.basename(filepath).toLowerCase() == 'project.xml') {
-                    size.xml += chunk;
+                    size.xml += chunk.length;
                     if (size.xml > (750 * 1024)) {
                         var err = new RangeError('Unzipped project.xml size should not exceed 750k.');
                         parser.emit('error', err);
