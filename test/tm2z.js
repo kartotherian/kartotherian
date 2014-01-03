@@ -54,6 +54,12 @@ describe('tm2z', function() {
             done();
         });
     });
+    it('errors out if not a directory', function(done) {
+        tilelive.load('tm2z://' + fixtureDir + '/nodirectory.tm2z', function(err, source) {
+            assert.equal(err.message.split(',')[0], 'EISDIR');
+            done();
+        });
+    });
     it('errors out if missing project.xml', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/empty.tar.gz', function(err, source) {
             assert.equal(err.message, 'project.xml not found in package');
