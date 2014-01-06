@@ -54,24 +54,57 @@ describe('tm2z', function() {
             done();
         });
     });
-    it('errors out if file size exceeds 750k', function(done) {
+    it('errors out if file size exceeds max size', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/filesize.tm2z', function(err, source) {
             assert.equal(err instanceof RangeError, true);
-            assert.equal(err.message, 'Upload size should not exceed 750k.');
+            assert.equal(err.message, 'Upload size should not exceed 750KB.');
             done();
         });
     });
-    it('errors out if unzipped size exceeds 5MB', function(done) {
+    it('errors out if file size exceeds custom max size', function(done) {
+        tilelive.load({
+            protocol: 'tm2z:',
+            pathname: fixtureDir + '/filesize.tm2z',
+            filesize: 500 * 1024
+        }, function(err, source) {
+            assert.equal(err instanceof RangeError, true);
+            assert.equal(err.message, 'Upload size should not exceed 500KB.');
+            done();
+        });
+    });
+    it('errors out if unzipped size exceeds max size', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/gunzipsize.tm2z', function(err, source) {
             assert.equal(err instanceof RangeError, true);
             assert.equal(err.message, 'Unzipped size should not exceed 5MB.');
             done();
         });
     });
-    it('errors out if unzipped project.xml size exceeds 750k', function(done) {
+    it('errors out if unzipped size exceeds custom max size', function(done) {
+        tilelive.load({
+            protocol: 'tm2z:',
+            pathname: fixtureDir + '/gunzipsize.tm2z',
+            gunzipsize: 1024 * 1024
+        }, function(err, source) {
+            assert.equal(err instanceof RangeError, true);
+            assert.equal(err.message, 'Unzipped size should not exceed 1MB.');
+            done();
+        });
+    });
+    it('errors out if unzipped project.xml size exceeds max size', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/xmlsize.tm2z', function(err, source) {
             assert.equal(err instanceof RangeError, true);
-            assert.equal(err.message, 'Unzipped project.xml size should not exceed 750k.');
+            assert.equal(err.message, 'Unzipped project.xml size should not exceed 750KB.');
+            done();
+        });
+    });
+    it('errors out if unzipped project.xml size exceeds custom max size', function(done) {
+        tilelive.load({
+            protocol: 'tm2z:',
+            pathname: fixtureDir + '/xmlsize.tm2z',
+            xmlsize: 300 * 1024
+        }, function(err, source) {
+            assert.equal(err instanceof RangeError, true);
+            assert.equal(err.message, 'Unzipped project.xml size should not exceed 300KB.');
             done();
         });
     });

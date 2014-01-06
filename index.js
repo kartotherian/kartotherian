@@ -9,6 +9,7 @@ var util = require('util');
 var crypto = require('crypto');
 var request = require('request');
 var exists = fs.exists || require('path').exists;
+var numeral = require('numeral');
 
 module.exports = Vector;
 module.exports.tm2z = tm2z;
@@ -364,6 +365,12 @@ Vector.prototype.profile = function(callback) {
 };
 
 function tm2z(uri, callback) {
+    var maxsize = {
+        file: uri.filesize || 750 * 1024,
+        gunzip: uri.gunzipsize || 5 * 1024 * 1024,
+        xml: uri.xmlsize || 750 * 1024
+    };
+
     var id = url.format(uri);
 
     // Cache hit.
@@ -397,24 +404,24 @@ function tm2z(uri, callback) {
     function unpack() {
         var stream;
         var size = {
-            tm2z: 0,
-            unzipped: 0,
+            file: 0,
+            gunzip: 0,
             xml: 0
         };
         var todo = [];
 
         function chunked(chunk) {
-            size.tm2z += chunk.length;
-            if (size.tm2z > (750 * 1024)) {
-                var err = new RangeError('Upload size should not exceed 750k.');
+            size.file += chunk.length;
+            if (size.file > maxsize.file) {
+                var err = new RangeError('Upload size should not exceed ' + numeral(maxsize.file).format('0b') + '.');
                 stream.emit('error', err);
             }
         }
 
         gunzip.on('data', function(chunk) {
-            size.unzipped += chunk.length;
-            if (size.unzipped > (5 * 1024 * 1024)) {
-                var err = new RangeError('Unzipped size should not exceed 5MB.');
+            size.gunzip += chunk.length;
+            if (size.gunzip > maxsize.gunzip) {
+                var err = new RangeError('Unzipped size should not exceed ' + numeral(maxsize.gunzip).format('0b') + '.');
                 gunzip.emit('error', err);
             }
         });
@@ -424,8 +431,8 @@ function tm2z(uri, callback) {
             entry.on('data', function(chunk) {
                 if (path.basename(filepath).toLowerCase() == 'project.xml') {
                     size.xml += chunk.length;
-                    if (size.xml > (750 * 1024)) {
-                        var err = new RangeError('Unzipped project.xml size should not exceed 750k.');
+                    if (size.xml > maxsize.xml) {
+                        var err = new RangeError('Unzipped project.xml size should not exceed ' + numeral(maxsize.xml).format('0b') + '.');
                         parser.emit('error', err);
                     }
                 }
