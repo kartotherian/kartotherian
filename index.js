@@ -9,6 +9,7 @@ var util = require('util');
 var crypto = require('crypto');
 var request = require('request');
 var exists = fs.exists || require('path').exists;
+var numeral = require('numeral');
 
 module.exports = Vector;
 module.exports.tm2z = tm2z;
@@ -343,6 +344,7 @@ Vector.prototype.getInfo = function(callback) {
 
 Vector.prototype.profile = function(callback) {
     var map = new mapnik.Map(256,256);
+
     var mapFromStringStart = Date.now();
     map.fromString(this._xml, {
         strict: false,
@@ -363,6 +365,12 @@ Vector.prototype.profile = function(callback) {
 };
 
 function tm2z(uri, callback) {
+    var maxsize = {
+        file: uri.filesize || 750 * 1024,
+        gunzip: uri.gunzipsize || 5 * 1024 * 1024,
+        xml: uri.xmlsize || 750 * 1024
+    };
+
     var id = url.format(uri);
 
     // Cache hit.
@@ -394,11 +402,42 @@ function tm2z(uri, callback) {
     });
 
     function unpack() {
+        var stream;
+        var size = {
+            file: 0,
+            gunzip: 0,
+            xml: 0
+        };
         var todo = [];
+
+        function chunked(chunk) {
+            size.file += chunk.length;
+            if (size.file > maxsize.file) {
+                var err = new RangeError('Upload size should not exceed ' + numeral(maxsize.file).format('0b') + '.');
+                stream.emit('error', err);
+            }
+        }
+
+        gunzip.on('data', function(chunk) {
+            size.gunzip += chunk.length;
+            if (size.gunzip > maxsize.gunzip) {
+                var err = new RangeError('Unzipped size should not exceed ' + numeral(maxsize.gunzip).format('0b') + '.');
+                gunzip.emit('error', err);
+            }
+        });
         parser.on('entry', function(entry) {
             var parts = [];
             var filepath = entry.props.path.split('/').slice(1).join('/');
-            entry.on('data', function(p) { parts.push(p) });
+            entry.on('data', function(chunk) {
+                if (path.basename(filepath).toLowerCase() == 'project.xml') {
+                    size.xml += chunk.length;
+                    if (size.xml > maxsize.xml) {
+                        var err = new RangeError('Unzipped project.xml size should not exceed ' + numeral(maxsize.xml).format('0b') + '.');
+                        parser.emit('error', err);
+                    }
+                }
+                parts.push(chunk);
+            });
             entry.on('end', function() {
                 var buffer = Buffer.concat(parts);
                 if (path.basename(filepath).toLowerCase() == 'project.xml') {
@@ -437,14 +476,16 @@ function tm2z(uri, callback) {
             case 'tm2z:':
                 // The uri from unpacker has already been pulled
                 // down from S3.
-                fs.createReadStream(uri.pathname)
-                   .pipe(gunzip)
-                   .pipe(parser)
-                   .on('error', error);
+                stream = fs.createReadStream(uri.pathname)
+                    .on('data', chunked)
+                    .pipe(gunzip)
+                    .pipe(parser)
+                    .on('error', error);
                 break;
             case 'tm2z+http:':
                 uri.protocol = 'http:';
-                request({ uri: uri })
+                stream = request({ uri: uri })
+                    .on('data', chunked)
                     .pipe(gunzip)
                     .pipe(parser)
                     .on('error', error);
