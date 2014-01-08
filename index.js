@@ -69,7 +69,7 @@ Vector.prototype.update = function(opts, callback) {
 
     var map = new mapnik.Map(256,256);
     map.fromString(opts.xml, {
-        strict: false,
+        strict: true,
         base: this._base + '/'
     }, function(err) {
         if (err) return callback(err);
