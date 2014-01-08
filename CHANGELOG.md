@@ -1,5 +1,9 @@
 # Changlog
 
+## 0.3.0
+
+ - Adds errors when tm2z unpacking streams exceed a configurable size
+
 ## 0.2.0
 
  - Adds unpacking of tm2z archives
