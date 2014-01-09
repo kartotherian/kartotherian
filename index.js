@@ -13,6 +13,7 @@ var numeral = require('numeral');
 
 module.exports = Vector;
 module.exports.tm2z = tm2z;
+module.exports.mapnik = mapnik;
 
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
@@ -53,10 +54,6 @@ Vector.registerProtocols = function(tilelive) {
     tilelive.protocols['tm2z:'] = tm2z;
     tilelive.protocols['tm2z+http:'] = tm2z;
 };
-
-// Register default fonts.
-mapnik.register_default_fonts();
-mapnik.register_fonts(path.dirname(require.resolve('tm2-default-fonts')), { recurse: true });
 
 // Helper for callers to ensure source is open. This is not built directly
 // into the constructor because there is no good auto cache-keying system
