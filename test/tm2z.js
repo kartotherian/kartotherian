@@ -1,4 +1,3 @@
-var mapnik = require('mapnik');
 var tilelive = require('tilelive');
 var TileJSON = require('tilejson');
 var url = require('url');
@@ -21,10 +20,6 @@ require('..').registerProtocols(tilelive);
 tilelive.protocols['mapbox:'] = function Source(uri, callback) {
     return new TileJSON('http://a.tiles.mapbox.com/v3' + uri.pathname + '.json', callback);
 };
-
-// Register default fonts.
-mapnik.register_default_fonts();
-mapnik.register_fonts(path.dirname(require.resolve('tm2-default-fonts')), { recurse: true });
 
 describe('tm2z', function() {
     it('loads a tm2z url', function(done) {
