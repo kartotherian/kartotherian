@@ -70,7 +70,7 @@ Vector.prototype.update = function(opts, callback) {
 
     var map = new mapnik.Map(256,256);
     map.fromString(opts.xml, {
-        strict: true,
+        strict: opts.strict || false,
         base: this._base + '/'
     }, function(err) {
         if (err) return callback(err);
@@ -372,6 +372,8 @@ function tm2z(uri, callback) {
         xml: uri.xmlsize || 750 * 1024
     };
 
+    var strict = uri.strict;
+
     var id = url.format(uri);
 
     // Cache hit.
@@ -499,7 +501,8 @@ function tm2z(uri, callback) {
         tm2z.sources[id] = new Vector({
             source: 'mapbox:///mapbox.mapbox-streets-v2',
             base: base,
-            xml: xml
+            xml: xml,
+            strict: strict
         });
         tm2z.sources[id].open(function(err, source) {
             if (err) {
