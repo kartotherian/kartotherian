@@ -133,43 +133,19 @@ describe('tm2z', function() {
             done();
         });
     });
-    it('errors out if style references a missing font, strict', function(done) {
-        tilelive.load({
-            protocol: 'tm2z:',
-            pathname: fixtureDir + '/missing_font.tm2z',
-            strict: true
-        }, function(err, source) {
+    it('errors out if style references a missing font', function(done) {
+        tilelive.load('tm2z://' + fixtureDir + '/missing_font.tm2z', function(err, source) {
             assert.equal(err.message.split("'")[0], 'Failed to find font face ');
             done();
         });
     });
-    it('does not error out if style references a missing font, non-strict (default)', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/missing_font.tm2z', function(err, source) {
+    it('does not error out if style references a registered font', function(done) {
+        tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
             assert.ifError(err);
             done();
         });
     });
-    it('does not error out if style references a registered font, strict', function(done) {
-        tilelive.load({
-            protocol: 'tm2z:',
-            pathname: fixtureDir + '/project.tm2z',
-            strict: true
-        }, function(err, source) {
-            assert.ifError(err);
-            done();
-        });
-    });
-    it('errors out if style references a missing image, strict', function(done) {
-        tilelive.load({
-            protocol: 'tm2z:',
-            pathname: fixtureDir + '/missing_image.tm2z',
-            strict: true
-        }, function(err, source) {
-            assert.equal(err.message.split(':')[0], 'file could not be found');
-            done();
-        });
-    });
-    it('errors out if style references a missing image, non-strict (default)', function(done) {
+    it('errors out if style references a missing image', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/missing_image.tm2z', function(err, source) {
             assert.equal(err.message.split(':')[0], 'file could not be found');
             done();
