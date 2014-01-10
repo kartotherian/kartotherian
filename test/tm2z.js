@@ -6,8 +6,6 @@ var path = require('path');
 var fs = require('fs');
 var crypto = require('crypto');
 var Vector = require('..');
-var mapnik = require('mapnik');
-
 
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
@@ -29,7 +27,7 @@ Vector.mapnik.register_fonts(path.dirname('fonts'), { recurse: true });
 
 describe('tm2z', function() {
     it('exposes the mapnik binding', function() {
-        assert.equal(mapnik, Vector.mapnik);
+        assert.ok(Vector.mapnik);
     });
     it('loads a tm2z url', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
