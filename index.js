@@ -73,7 +73,10 @@ Vector.prototype.update = function(opts, callback) {
         strict: true,
         base: this._base + '/'
     }, function(err) {
-        if (err) return callback(err);
+        if (err) {
+            err.code = 'EMAPNIK';
+            return callback(err);
+        }
 
         delete this._info;
         this._xml = opts.xml;
@@ -351,7 +354,10 @@ Vector.prototype.profile = function(callback) {
         strict: true,
         base: this._base + '/'
     }, function(err) {
-        if (err) return callback(err);
+        if (err) {
+            err.code = 'EMAPNIK';
+            return callback(err);
+        }
         var mapFromStringTime = Date.now() - mapFromStringStart;
         var renderStart = Date.now();
         this.drawTile(0, 0, 0, 0, 0, 0, 'png', 1, function(err, buffer, headers) {
