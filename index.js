@@ -13,6 +13,7 @@ var numeral = require('numeral');
 
 module.exports = Vector;
 module.exports.tm2z = tm2z;
+module.exports.mapnik = mapnik;
 
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
@@ -69,7 +70,7 @@ Vector.prototype.update = function(opts, callback) {
 
     var map = new mapnik.Map(256,256);
     map.fromString(opts.xml, {
-        strict: false,
+        strict: true,
         base: this._base + '/'
     }, function(err) {
         if (err) return callback(err);
@@ -347,7 +348,7 @@ Vector.prototype.profile = function(callback) {
 
     var mapFromStringStart = Date.now();
     map.fromString(this._xml, {
-        strict: false,
+        strict: true,
         base: this._base + '/'
     }, function(err) {
         if (err) return callback(err);

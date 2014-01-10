@@ -5,6 +5,7 @@ var assert = require('assert');
 var path = require('path');
 var fs = require('fs');
 var crypto = require('crypto');
+var Vector = require('..');
 
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
@@ -16,12 +17,18 @@ var fixtureDir = path.resolve(__dirname + '/fixtures/tm2z'),
     xml = fs.readFileSync(fixtureDir + '/project/project.xml');
 
 // Register vector:, tm2z:, tm2z+http: and mapbox: tilelive protocols
-require('..').registerProtocols(tilelive);
+Vector.registerProtocols(tilelive);
 tilelive.protocols['mapbox:'] = function Source(uri, callback) {
     return new TileJSON('http://a.tiles.mapbox.com/v3' + uri.pathname + '.json', callback);
 };
 
+// Register font
+Vector.mapnik.register_fonts(__dirname + '/fonts/source-sans-pro/');
+
 describe('tm2z', function() {
+    it('exposes the mapnik binding', function() {
+        assert.ok(Vector.mapnik);
+    });
     it('loads a tm2z url', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
             if (err) throw err;
@@ -123,6 +130,24 @@ describe('tm2z', function() {
     it('errors out on invalid project.xml', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/malformed.tm2z', function(err, source) {
             assert.equal(err.message.split(':')[0], 'XML document not well formed');
+            done();
+        });
+    });
+    it('errors out if style references a missing font', function(done) {
+        tilelive.load('tm2z://' + fixtureDir + '/missing_font.tm2z', function(err, source) {
+            assert.equal(err.message.split("'")[0], 'Failed to find font face ');
+            done();
+        });
+    });
+    it('does not error out if style references a registered font', function(done) {
+        tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
+            assert.ifError(err);
+            done();
+        });
+    });
+    it('errors out if style references a missing image', function(done) {
+        tilelive.load('tm2z://' + fixtureDir + '/missing_image.tm2z', function(err, source) {
+            assert.equal(err.message.split(':')[0], 'file could not be found');
             done();
         });
     });
