@@ -23,7 +23,7 @@ tilelive.protocols['mapbox:'] = function Source(uri, callback) {
 };
 
 // Register font
-Vector.mapnik.register_fonts(path.dirname('fonts'), { recurse: true });
+Vector.mapnik.register_fonts(__dirname + '/fonts/source-sans-pro/');
 
 describe('tm2z', function() {
     it('exposes the mapnik binding', function() {
@@ -145,6 +145,16 @@ describe('tm2z', function() {
     });
     it('does not error out if style references a missing font, non-strict (default)', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/missing_font.tm2z', function(err, source) {
+            assert.ifError(err);
+            done();
+        });
+    });
+    it('does not error out if style references a registered font, strict', function(done) {
+        tilelive.load({
+            protocol: 'tm2z:',
+            pathname: fixtureDir + '/project.tm2z',
+            strict: true
+        }, function(err, source) {
             assert.ifError(err);
             done();
         });
