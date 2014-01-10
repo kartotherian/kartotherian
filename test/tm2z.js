@@ -31,20 +31,20 @@ describe('tm2z', function() {
     });
     it('loads a tm2z url', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
-            if (err) throw err;
+            assert.ifError(err);
             done();
         });
     });
     it('matches expected xml', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
-            if (err) throw err;
+            assert.ifError(err);
             assert.equal(source._xml, xml);
             done();
         });
     });
     it('gunzips then untars', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/project.tar.gz', function(err, source) {
-            if (err) throw err;
+            assert.ifError(err);
             done();
         });
     });
@@ -159,14 +159,14 @@ describe('tm2z+http', function() {
     it('loads a tm2z+http url', function(done) {
         this.timeout(5000);
         tilelive.load('tm2z+' + remotePath, function(err, source) {
-            if (err) throw err;
+            assert.ifError(err);
             done();
         });
     });
     it('matches expected xml', function(done) {
         this.timeout(5000);
         tilelive.load('tm2z+' + remotePath, function(err, source) {
-            if (err) throw err;
+            assert.ifError(err);
             assert.equal(xml, source._xml);
             done();
         });
