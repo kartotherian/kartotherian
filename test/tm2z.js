@@ -135,6 +135,7 @@ describe('tm2z', function() {
     });
     it('errors out if style references a missing font', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/missing_font.tm2z', function(err, source) {
+            assert.equal('EMAPNIK', err.code);
             assert.equal(err.message.split("'")[0], 'Failed to find font face ');
             done();
         });
@@ -147,6 +148,7 @@ describe('tm2z', function() {
     });
     it('errors out if style references a missing image', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/missing_image.tm2z', function(err, source) {
+            assert.equal('EMAPNIK', err.code);
             assert.equal(err.message.split(':')[0], 'file could not be found');
             done();
         });
