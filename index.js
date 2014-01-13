@@ -363,7 +363,7 @@ Vector.prototype.profile = function(callback) {
         var vtile = new mapnik.VectorTile(0,0,0);
         map.render(vtile, {}, function(err, vtile) {
             if (err) throw err;
-            console.log(vtile.getData().length);
+            console.log(vtile.toGeoJSON(0));
             var renderTime = Date.now() - renderStart;
             callback(null, {
                 mapFromString: mapFromStringTime,
