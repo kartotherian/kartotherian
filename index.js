@@ -360,14 +360,16 @@ Vector.prototype.profile = function(callback) {
         }
         var mapFromStringTime = Date.now() - mapFromStringStart;
         var renderStart = Date.now();
-        this.drawTile(0, 0, 0, 0, 0, 0, 'png', 1, function(err, buffer, headers) {
-            if (err) return callback(err);
+        var vtile = new mapnik.VectorTile(0,0,0);
+        map.render(vtile, {}, function(err, vtile) {
+            if (err) throw err;
+            console.log(vtile.getData().length);
             var renderTime = Date.now() - renderStart;
             callback(null, {
                 mapFromString: mapFromStringTime,
                 renderTime: renderTime
             });
-        });
+        }.bind(this));
     }.bind(this));
 };
 
