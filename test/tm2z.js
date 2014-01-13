@@ -153,6 +153,15 @@ describe('tm2z', function() {
             done();
         });
     });
+    it('profiles a tm2z file', function(done) {
+        tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
+            assert.ifError(err);
+            source.profile(function(err, profile) {
+                assert.ifError(err);
+                done();
+            });
+        });
+    });
 });
 
 describe('tm2z+http', function() {
