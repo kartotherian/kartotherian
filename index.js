@@ -360,16 +360,23 @@ Vector.prototype.profile = function(callback) {
         }
         var mapFromStringTime = Date.now() - mapFromStringStart;
         var renderStart = Date.now();
-        var vtile = new mapnik.VectorTile(0,0,0);
-        map.render(vtile, {}, function(err, vtile) {
-            if (err) throw err;
-            console.log(vtile.toGeoJSON(0));
-            var renderTime = Date.now() - renderStart;
-            callback(null, {
-                mapFromString: mapFromStringTime,
-                renderTime: renderTime
-            });
-        }.bind(this));
+
+        for (var z = 0; z < 1; z++) {
+            for (var x = 0; x < Math.pow(2,z); x++) {
+                for (var y = 0; y < Math.pow(2,z); y++) {
+                    var vtile = new mapnik.VectorTile(z,x,y);
+                    map.render(vtile, {}, function(err, vtile) {
+                        if (err) throw err;
+                        console.log(z, x, y, vtile.toGeoJSON(0));
+                        var renderTime = Date.now() - renderStart;
+                        callback(null, {
+                            mapFromString: mapFromStringTime,
+                            renderTime: renderTime
+                        });
+                    }.bind(this));
+                }
+            }
+        }
     }.bind(this));
 };
 
