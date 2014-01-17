@@ -154,6 +154,7 @@ describe('tm2z', function() {
         });
     });
     it('profiles a tm2z file', function(done) {
+        this.timeout(0);
         tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
             assert.ifError(err);
             source.profile(function(err, profile) {

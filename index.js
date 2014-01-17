@@ -358,22 +358,34 @@ Vector.prototype.profile = function(callback) {
             err.code = 'EMAPNIK';
             return callback(err);
         }
+
         var mapFromStringTime = Date.now() - mapFromStringStart;
         var renderStart = Date.now();
+        var maxzoom = 4;
+        var tilecount = (function() {
+            var j = 0;
+            for (var i = 0; i < maxzoom; i++) {
+                j += Math.pow(Math.pow(2, i), 2);
+            }
+            return j;
+        })();
+        var t = 0;
 
-        for (var z = 0; z < 1; z++) {
+        for (var z = 0; z < maxzoom; z++) {
             for (var x = 0; x < Math.pow(2,z); x++) {
                 for (var y = 0; y < Math.pow(2,z); y++) {
-                    var vtile = new mapnik.VectorTile(z,x,y);
-                    map.render(vtile, {}, function(err, vtile) {
-                        if (err) throw err;
-                        console.log(z, x, y, vtile.toGeoJSON(0));
-                        var renderTime = Date.now() - renderStart;
-                        callback(null, {
-                            mapFromString: mapFromStringTime,
-                            renderTime: renderTime
+                    (function(z,x,y) {
+                        this.getTile(z, x, y, function(err, buffer, headers) {
+                            if (err) throw err;
+                            console.log(z, x, y, buffer.length, t++);
+                            if (t === tilecount) {
+                                callback(null, {
+                                    mapFromString: mapFromStringTime,
+                                    renderTime: Date.now() - renderStart
+                                });
+                            }
                         });
-                    }.bind(this));
+                    }.bind(this))(z,x,y);
                 }
             }
         }
