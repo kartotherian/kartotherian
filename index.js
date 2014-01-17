@@ -413,10 +413,11 @@ Vector.prototype.profile = function(callback) {
                                         if (z < (info.maxzoom || 22)) {
                                             getTiles(z, tiles[0].x, tiles[0].y);
                                         } else {
-                                            callback(null, {
-                                                mapFromString: mapFromStringTime,
+                                            var profile = {
                                                 renderTime: Date.now() - renderStart
-                                            });
+                                            }
+                                            console.log(profile);
+                                            callback(null, profile);
                                         }
                                     }
                                 }.bind(this));
