@@ -378,6 +378,7 @@ Vector.prototype.profile = function(callback) {
                 }
             }
 
+            // Profile derivative four tiles of z,x,y
             var getTiles = (function(z,x,y) {
                 var tiles = [];
                 var dz = z + 1;
@@ -420,8 +421,6 @@ Vector.prototype.profile = function(callback) {
             
             getTiles(0, 0, 0);
         }.bind(this));
-
-        // Profile derivative four tiles of z,x,y
     }.bind(this));
 };
 
