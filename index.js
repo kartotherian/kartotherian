@@ -362,33 +362,45 @@ Vector.prototype.profile = function(callback) {
         var mapFromStringTime = Date.now() - mapFromStringStart;
         var renderStart = Date.now();
         var maxzoom = 4;
-        var tilecount = (function() {
-            var j = 0;
-            for (var i = 0; i < maxzoom; i++) {
-                j += Math.pow(Math.pow(2, i), 2);
-            }
-            return j;
-        })();
-        var t = 0;
 
-        for (var z = 0; z < maxzoom; z++) {
-            for (var x = 0; x < Math.pow(2,z); x++) {
-                for (var y = 0; y < Math.pow(2,z); y++) {
-                    (function(z,x,y) {
-                        this.getTile(z, x, y, function(err, buffer, headers) {
-                            if (err) throw err;
-                            console.log(z, x, y, buffer.length, t++);
-                            if (t === tilecount) {
-                                callback(null, {
-                                    mapFromString: mapFromStringTime,
-                                    renderTime: Date.now() - renderStart
-                                });
-                            }
-                        });
-                    }.bind(this))(z,x,y);
+        // for (var z = 0; z < maxzoom; z++) {
+            (function(z) {
+                var tiles = [];
+                var tilecount = Math.pow(Math.pow(2, z), 2);
+                for (var x = 0; x < Math.pow(2,z); x++) {
+                    for (var y = 0; y < Math.pow(2,z); y++) {
+                        (function(z,x,y) {
+                            this.getTile(z, x, y, function(err, buffer, headers) {
+                                if (err) throw err;
+                                var tile = {
+                                    z: z,
+                                    x: x,
+                                    y: y,
+                                    length: buffer.length
+                                };
+                                // console.log(tile);
+                                tiles.push(tile)
+                                if (tiles.length === tilecount) {
+                                    tiles.sort(function (a, b) {
+                                        if (a.length < b.length)
+                                          return 1;
+                                        if (a.length > b.length)
+                                            return -1;
+                                        // a must be equal to b
+                                        return 0;
+                                    });
+                                    console.log(tiles[0]);
+                                    callback(null, {
+                                        mapFromString: mapFromStringTime,
+                                        renderTime: Date.now() - renderStart
+                                    });
+                                }
+                            });
+                        }.bind(this))(z,x,y);
+                    }
                 }
-            }
-        }
+            }.bind(this))(maxzoom);
+        // }
     }.bind(this));
 };
 
