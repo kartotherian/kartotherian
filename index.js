@@ -362,64 +362,71 @@ Vector.prototype.profile = function(callback) {
         var mapFromStringTime = Date.now() - mapFromStringStart;
         var renderStart = Date.now();
 
-        // Load min/maxzoom/maskLevel info.
-        this._backend.getInfo(function(err, info) {
+        this.getInfo(function(err, info) {
             if (err) return callback(err);
-            if (this._maxzoom === undefined) {
-                this._minzoom = info.minzoom || 0;
-                this._maxzoom = info.maxzoom || 22;
 
-                // @TODO some sources filter out custom keys @ getInfo forcing us
-                // to access info/data properties directly. Fix this.
-                if ('maskLevel' in info) {
-                    this._maskLevel = parseInt(info.maskLevel, 10);
-                } else if (this._backend.data && 'maskLevel' in this._backend.data) {
-                    this._maskLevel = this._backend.data.maskLevel;
-                }
-            }
+            this._backend.getInfo(function(err, backend_info) {
+                if (err) return callback(err);
 
-            // Profile derivative four tiles of z,x,y
-            var getTiles = (function(z,x,y) {
-                var tiles = [];
-                var dz = z + 1;
-                for (var dx = x*2; dx < (x*2)+2; dx++) {
-                    for (var dy = y*2; dy < (y*2)+2; dy++) {
-                        (function(z,x,y) {
-                            this.getTile(z, x, y, function(err, buffer, headers) {
-                                if (err) throw err;
-                                var tile = {
-                                    z: z,
-                                    x: x,
-                                    y: y,
-                                    length: buffer.length
-                                };
-                                tiles.push(tile)
-                                if (tiles.length === 4) {
-                                    tiles.sort(function (a, b) {
-                                        if (a.length < b.length)
-                                          return 1;
-                                        if (a.length > b.length)
-                                            return -1;
-                                        // a must be equal to b
-                                        return 0;
-                                    });
-                                    console.log(tiles[0]);
-                                    if (z < this._maxzoom) {
-                                        getTiles(z, tiles[0].x, tiles[0].y);
-                                    } else {
-                                        callback(null, {
-                                            mapFromString: mapFromStringTime,
-                                            renderTime: Date.now() - renderStart
+                var center = info.center || backend_info.center;
+                var minzoom = info.minzoom || backend_info.minzoom || 0;
+                var maxzoom = info.maxzoom || backend_info.maxzoom || 22;
+
+                var diffscale = (center[2] - minzoom) * 2;
+                var offset = Math.pow(2, minzoom)
+                var mincenter = diffscale ? {
+                    x: Math.floor(center[0] / diffscale) % offset,
+                    y: Math.floor(center[1] / diffscale) % offset,
+                    z: minzoom
+                } : {
+                    x: center[0],
+                    y: center[1],
+                    z: center[2]
+                };
+
+                // Profile derivative four tiles of z,x,y
+                var getTiles = (function(z,x,y) {
+                    var tiles = [];
+                    var dz = z + 1;
+                    for (var dx = x*2; dx < (x*2)+2; dx++) {
+                        for (var dy = y*2; dy < (y*2)+2; dy++) {
+                            (function(z,x,y) {
+                                this.getTile(z, x, y, function(err, buffer, headers) {
+                                    if (err) throw err;
+                                    var tile = {
+                                        z: z,
+                                        x: x,
+                                        y: y,
+                                        length: buffer.length
+                                    };
+                                    tiles.push(tile)
+                                    if (tiles.length === 4) {
+                                        tiles.sort(function (a, b) {
+                                            if (a.length < b.length)
+                                              return 1;
+                                            if (a.length > b.length)
+                                                return -1;
+                                            // a must be equal to b
+                                            return 0;
                                         });
+                                        console.log(tiles[0]);
+                                        if (z < (info.maxzoom || 22)) {
+                                            getTiles(z, tiles[0].x, tiles[0].y);
+                                        } else {
+                                            callback(null, {
+                                                mapFromString: mapFromStringTime,
+                                                renderTime: Date.now() - renderStart
+                                            });
+                                        }
                                     }
-                                }
-                            }.bind(this));
-                        }.bind(this))(dz,dx,dy);
+                                }.bind(this));
+                            }.bind(this))(dz,dx,dy);
+                        }
                     }
-                }
-            }).bind(this);
-            
-            getTiles(0, 0, 0);
+                }).bind(this);
+                
+                getTiles(mincenter.x, mincenter.y, mincenter.z);
+            }.bind(this));
         }.bind(this));
     }.bind(this));
 };
