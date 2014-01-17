@@ -361,50 +361,67 @@ Vector.prototype.profile = function(callback) {
 
         var mapFromStringTime = Date.now() - mapFromStringStart;
         var renderStart = Date.now();
-        var maxzoom = 9;
 
-        // Profile derivative four tiles of z,x,y
-        var getTiles = (function(z,x,y) {
-            var tiles = [];
-            var dz = z + 1;
-            for (var dx = x*2; dx < (x*2)+2; dx++) {
-                for (var dy = y*2; dy < (y*2)+2; dy++) {
-                    (function(z,x,y) {
-                        this.getTile(z, x, y, function(err, buffer, headers) {
-                            if (err) throw err;
-                            var tile = {
-                                z: z,
-                                x: x,
-                                y: y,
-                                length: buffer.length
-                            };
-                            tiles.push(tile)
-                            if (tiles.length === 4) {
-                                tiles.sort(function (a, b) {
-                                    if (a.length < b.length)
-                                      return 1;
-                                    if (a.length > b.length)
-                                        return -1;
-                                    // a must be equal to b
-                                    return 0;
-                                });
-                                console.log(tiles[0]);
-                                if (z < maxzoom) {
-                                    getTiles(z, tiles[0].x, tiles[0].y);
-                                } else {
-                                    callback(null, {
-                                        mapFromString: mapFromStringTime,
-                                        renderTime: Date.now() - renderStart
-                                    });
-                                }
-                            }
-                        });
-                    }.bind(this))(dz,dx,dy);
+        // Load min/maxzoom/maskLevel info.
+        this._backend.getInfo(function(err, info) {
+            if (err) return callback(err);
+            if (this._maxzoom === undefined) {
+                this._minzoom = info.minzoom || 0;
+                this._maxzoom = info.maxzoom || 22;
+
+                // @TODO some sources filter out custom keys @ getInfo forcing us
+                // to access info/data properties directly. Fix this.
+                if ('maskLevel' in info) {
+                    this._maskLevel = parseInt(info.maskLevel, 10);
+                } else if (this._backend.data && 'maskLevel' in this._backend.data) {
+                    this._maskLevel = this._backend.data.maskLevel;
                 }
             }
-        }).bind(this)
-        
-        getTiles(0, 0, 0);
+
+            var getTiles = (function(z,x,y) {
+                var tiles = [];
+                var dz = z + 1;
+                for (var dx = x*2; dx < (x*2)+2; dx++) {
+                    for (var dy = y*2; dy < (y*2)+2; dy++) {
+                        (function(z,x,y) {
+                            this.getTile(z, x, y, function(err, buffer, headers) {
+                                if (err) throw err;
+                                var tile = {
+                                    z: z,
+                                    x: x,
+                                    y: y,
+                                    length: buffer.length
+                                };
+                                tiles.push(tile)
+                                if (tiles.length === 4) {
+                                    tiles.sort(function (a, b) {
+                                        if (a.length < b.length)
+                                          return 1;
+                                        if (a.length > b.length)
+                                            return -1;
+                                        // a must be equal to b
+                                        return 0;
+                                    });
+                                    console.log(tiles[0]);
+                                    if (z < this._maxzoom) {
+                                        getTiles(z, tiles[0].x, tiles[0].y);
+                                    } else {
+                                        callback(null, {
+                                            mapFromString: mapFromStringTime,
+                                            renderTime: Date.now() - renderStart
+                                        });
+                                    }
+                                }
+                            }.bind(this));
+                        }.bind(this))(dz,dx,dy);
+                    }
+                }
+            }).bind(this);
+            
+            getTiles(0, 0, 0);
+        }.bind(this));
+
+        // Profile derivative four tiles of z,x,y
     }.bind(this));
 };
 
