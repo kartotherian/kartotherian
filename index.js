@@ -361,13 +361,14 @@ Vector.prototype.profile = function(callback) {
 
         var mapFromStringTime = Date.now() - mapFromStringStart;
         var renderStart = Date.now();
-        var maxzoom = 4;
+        var maxzoom = 9;
 
+        // Profile derivative four tiles of z,x,y
         var getTiles = (function(z,x,y) {
             var tiles = [];
-            var tilecount = Math.pow(Math.pow(2, z), 2);
-            for (var x = 0; x < Math.pow(2,z); x++) {
-                for (var y = 0; y < Math.pow(2,z); y++) {
+            var dz = z + 1;
+            for (var dx = x*2; dx < (x*2)+2; dx++) {
+                for (var dy = y*2; dy < (y*2)+2; dy++) {
                     (function(z,x,y) {
                         this.getTile(z, x, y, function(err, buffer, headers) {
                             if (err) throw err;
@@ -378,7 +379,7 @@ Vector.prototype.profile = function(callback) {
                                 length: buffer.length
                             };
                             tiles.push(tile)
-                            if (tiles.length === tilecount) {
+                            if (tiles.length === 4) {
                                 tiles.sort(function (a, b) {
                                     if (a.length < b.length)
                                       return 1;
@@ -389,7 +390,7 @@ Vector.prototype.profile = function(callback) {
                                 });
                                 console.log(tiles[0]);
                                 if (z < maxzoom) {
-                                    getTiles(++z, tiles[0].x, tiles[0].y);
+                                    getTiles(z, tiles[0].x, tiles[0].y);
                                 } else {
                                     callback(null, {
                                         mapFromString: mapFromStringTime,
@@ -398,7 +399,7 @@ Vector.prototype.profile = function(callback) {
                                 }
                             }
                         });
-                    }.bind(this))(z,x,y);
+                    }.bind(this))(dz,dx,dy);
                 }
             }
         }).bind(this)
