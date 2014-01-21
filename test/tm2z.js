@@ -164,19 +164,9 @@ describe('tm2z', function() {
             });
         });
     });
-    it('profiles a slow tm2z file', function(done) {
-        this.timeout(10000);
-        tilelive.load('tm2z://' + fixtureDir + '/slow.tm2z', function(err, source) {
-            assert.ifError(err);
-            source.profile(function(err, profile) {
-                assert.ifError(err);
-                done();
-            });
-        });
-    });
-    it('profiles a slow tm2z file with minzoom level 13', function(done) {
+    it('profiles a slow tm2z file with minzoom level 11', function(done) {
         this.timeout(50000);
-        tilelive.load('tm2z://' + fixtureDir + '/slow-z13.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + fixtureDir + '/slow-z10-center.tm2z', function(err, source) {
             assert.ifError(err);
             source.profile(function(err, profile) {
                 assert.ifError(err);

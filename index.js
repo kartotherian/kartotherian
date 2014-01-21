@@ -411,9 +411,9 @@ Vector.prototype.profile = function(callback) {
                                             // a must be equal to b
                                             return 0;
                                         });
-                                        console.log(tiles[0]);
                                         var path = __dirname + '/test/expected/tm2z/' + z + '.' + x + '.' + y + '.png';
                                         console.log(path);
+                                        console.log(tiles[0]);
                                         fs.writeFile(path, buffer);
                                         if (z < (maxzoom)) {
                                             getTiles(z, tiles[0].x, tiles[0].y);
