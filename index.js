@@ -373,7 +373,7 @@ Vector.prototype.profile = function(callback) {
                 var maxzoom = info.maxzoom || backend_info.maxzoom || 22;
 
                 var diffscale = (center[2] - minzoom) * 2;
-                var offset = Math.pow(2, minzoom)
+                var offset = Math.pow(2, minzoom);
                 var mincenter = diffscale ? {
                     x: Math.floor(center[0] / diffscale) % offset,
                     y: Math.floor(center[1] / diffscale) % offset,
@@ -383,6 +383,8 @@ Vector.prototype.profile = function(callback) {
                     y: center[1],
                     z: center[2]
                 };
+
+                console.log(info);
 
                 // Profile derivative four tiles of z,x,y
                 var getTiles = (function(z,x,y) {
@@ -399,7 +401,7 @@ Vector.prototype.profile = function(callback) {
                                         y: y,
                                         length: buffer.length
                                     };
-                                    tiles.push(tile)
+                                    tiles.push(tile);
                                     if (tiles.length === 4) {
                                         tiles.sort(function (a, b) {
                                             if (a.length < b.length)
@@ -410,7 +412,10 @@ Vector.prototype.profile = function(callback) {
                                             return 0;
                                         });
                                         console.log(tiles[0]);
-                                        if (z < (info.maxzoom || 22)) {
+                                        var path = __dirname + '/test/expected/tm2z/' + z + '.' + x + '.' + y + '.png';
+                                        console.log(path);
+                                        fs.writeFile(path, buffer);
+                                        if (z < (maxzoom)) {
                                             getTiles(z, tiles[0].x, tiles[0].y);
                                         } else {
                                             var profile = {
@@ -426,7 +431,7 @@ Vector.prototype.profile = function(callback) {
                     }
                 }).bind(this);
                 
-                getTiles(mincenter.x, mincenter.y, mincenter.z);
+                getTiles(mincenter.z, mincenter.x, mincenter.y);
             }.bind(this));
         }.bind(this));
     }.bind(this));

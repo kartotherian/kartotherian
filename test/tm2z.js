@@ -13,6 +13,7 @@ function md5(str) {
 
 // Load fixture data.
 var fixtureDir = path.resolve(__dirname + '/fixtures/tm2z'),
+    customDir = path.resolve(__dirname + '/../tm2-custom-styles'),
     remotePath = 'http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z.tm2z',
     xml = fs.readFileSync(fixtureDir + '/project/project.xml');
 
@@ -154,8 +155,28 @@ describe('tm2z', function() {
         });
     });
     it('profiles a tm2z file', function(done) {
-        this.timeout(0);
+        this.timeout(10000);
         tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
+            assert.ifError(err);
+            source.profile(function(err, profile) {
+                assert.ifError(err);
+                done();
+            });
+        });
+    });
+    it('profiles a slow tm2z file', function(done) {
+        this.timeout(10000);
+        tilelive.load('tm2z://' + fixtureDir + '/slow.tm2z', function(err, source) {
+            assert.ifError(err);
+            source.profile(function(err, profile) {
+                assert.ifError(err);
+                done();
+            });
+        });
+    });
+    it('profiles a slow tm2z file with minzoom level 13', function(done) {
+        this.timeout(50000);
+        tilelive.load('tm2z://' + fixtureDir + '/slow-z13.tm2z', function(err, source) {
             assert.ifError(err);
             source.profile(function(err, profile) {
                 assert.ifError(err);
