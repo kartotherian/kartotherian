@@ -10,6 +10,7 @@ var crypto = require('crypto');
 var request = require('request');
 var exists = fs.exists || require('path').exists;
 var numeral = require('numeral');
+var sm = new (require('sphericalmercator'))();
 
 module.exports = Vector;
 module.exports.tm2z = tm2z;
@@ -362,6 +363,8 @@ Vector.prototype.profile = function(callback) {
         var mapFromStringTime = Date.now() - mapFromStringStart;
         var renderStart = Date.now();
 
+        var dense_tiles = [];
+
         this.getInfo(function(err, info) {
             if (err) return callback(err);
 
@@ -372,27 +375,25 @@ Vector.prototype.profile = function(callback) {
                 var minzoom = info.minzoom || backend_info.minzoom || 0;
                 var maxzoom = info.maxzoom || backend_info.maxzoom || 22;
 
-                var diffscale = (center[2] - minzoom) * 2;
-                var offset = Math.pow(2, minzoom);
-                var mincenter = diffscale ? {
-                    x: Math.floor(center[0] / diffscale) % offset,
-                    y: Math.floor(center[1] / diffscale) % offset,
-                    z: minzoom
-                } : {
-                    x: center[0],
-                    y: center[1],
-                    z: center[2]
+                var offset_lon = 360;
+                var offset_lat = 170.1022;
+
+                // Mod to lon/lat to bounds, zoom out one level from center
+                var mincenter = {
+                    lon: center[0] % offset_lon,
+                    lat: center[1] % offset_lat,
+                    zoom: center[2] > minzoom ? center[2] - 1 : minzoom
                 };
 
-                console.log(info);
+                var xyz = sm.xyz([mincenter.lon, mincenter.lat, mincenter.lon, mincenter.lat], mincenter.zoom);
 
                 // Profile derivative four tiles of z,x,y
-                var getTiles = (function(z,x,y) {
+                var getTiles = (function(x,y,z) {
                     var tiles = [];
-                    var dz = z + 1;
-                    for (var dx = x*2; dx < (x*2)+2; dx++) {
-                        for (var dy = y*2; dy < (y*2)+2; dy++) {
-                            (function(z,x,y) {
+
+                    for (var dx = x; dx < (x + 2); dx++) {
+                        for (var dy = y; dy < (y + 2); dy++) {
+                            (function(x,y,z) {
                                 this.getTile(z, x, y, function(err, buffer, headers) {
                                     if (err) throw err;
                                     var tile = {
@@ -412,26 +413,25 @@ Vector.prototype.profile = function(callback) {
                                             return 0;
                                         });
                                         var path = __dirname + '/test/expected/tm2z/' + z + '.' + x + '.' + y + '.png';
-                                        console.log(path);
-                                        console.log(tiles[0]);
                                         fs.writeFile(path, buffer);
+                                        console.log(tiles[0]);
+                                        dense_tiles.push(tiles[0]);
                                         if (z < (maxzoom)) {
-                                            getTiles(z, tiles[0].x, tiles[0].y);
+                                            getTiles(tiles[0].x * 2, tiles[0].y * 2, ++z);
                                         } else {
-                                            var profile = {
+                                            callback(null, {
+                                                tiles: dense_tiles,
                                                 renderTime: Date.now() - renderStart
-                                            }
-                                            console.log(profile);
-                                            callback(null, profile);
+                                            });
                                         }
                                     }
                                 }.bind(this));
-                            }.bind(this))(dz,dx,dy);
+                            }.bind(this))(dx,dy,z);
                         }
                     }
                 }).bind(this);
                 
-                getTiles(mincenter.z, mincenter.x, mincenter.y);
+                getTiles(xyz.minX, xyz.minY, mincenter.zoom);
             }.bind(this));
         }.bind(this));
     }.bind(this));
