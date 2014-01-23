@@ -400,6 +400,7 @@ Vector.prototype.profile = function(callback) {
                                         z: z,
                                         x: x,
                                         y: y,
+                                        buffer: buffer,
                                         length: buffer.length
                                     };
                                     tiles.push(tile);
@@ -412,9 +413,6 @@ Vector.prototype.profile = function(callback) {
                                             // a must be equal to b
                                             return 0;
                                         });
-                                        var path = __dirname + '/test/expected/tm2z/' + z + '.' + x + '.' + y + '.png';
-                                        fs.writeFile(path, buffer);
-                                        console.log(tiles[0]);
                                         dense_tiles.push(tiles[0]);
                                         if (z < (maxzoom)) {
                                             getTiles(tiles[0].x * 2, tiles[0].y * 2, ++z);
