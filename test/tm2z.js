@@ -13,7 +13,6 @@ function md5(str) {
 
 // Load fixture data.
 var fixtureDir = path.resolve(__dirname + '/fixtures/tm2z'),
-    customDir = path.resolve(__dirname + '/../tm2-custom-styles'),
     remotePath = 'http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z.tm2z',
     xml = fs.readFileSync(fixtureDir + '/project/project.xml');
 
