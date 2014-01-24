@@ -172,25 +172,6 @@ describe('tm2z', function() {
             });
         });
     });
-    it('profiles a slow tm2z file', function(done) {
-        this.timeout(0);
-        tilelive.load('tm2z://' + fixtureDir + '/lines.tm2z', function(err, source) {
-            assert.ifError(err);
-            source.profile(function(err, profile) {
-                assert.ifError(err);
-                assert.ok(profile.renderTime);
-                assert.equal(9, profile.tiles.length);
-                for(var i = 0; i < profile.tiles.length; i++) {
-                    assert.ok(profile.tiles[i].x);
-                    assert.ok(profile.tiles[i].y);
-                    assert.ok(profile.tiles[i].z);
-                    assert.ok(profile.tiles[i].buffer);
-                    assert.ok(profile.tiles[i].length);
-                }
-                done();
-            });
-        });
-    });
 });
 
 describe('tm2z+http', function() {
