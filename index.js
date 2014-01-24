@@ -348,90 +348,107 @@ Vector.prototype.getInfo = function(callback) {
 };
 
 Vector.prototype.profile = function(callback) {
+    var source = this;
     var map = new mapnik.Map(256,256);
+    var xmltime = Date.now();
+    var densest = [];
 
-    var mapFromStringStart = Date.now();
-    map.fromString(this._xml, {
+    map.fromString(source._xml, {
         strict: true,
-        base: this._base + '/'
+        base: source._base + '/'
     }, function(err) {
         if (err) {
             err.code = 'EMAPNIK';
             return callback(err);
         }
 
-        var mapFromStringTime = Date.now() - mapFromStringStart;
-        var renderStart = Date.now();
+        xmltime = Date.now() - xmltime;
 
-        var dense_tiles = [];
-
-        this.getInfo(function(err, info) {
+        source.getInfo(function(err, info) {
             if (err) return callback(err);
 
-            this._backend.getInfo(function(err, backend_info) {
+            source._backend.getInfo(function(err, backend_info) {
                 if (err) return callback(err);
 
-                var center = info.center || backend_info.center;
+                var center = (info.center || backend_info.center).slice(0);
                 var minzoom = info.minzoom || backend_info.minzoom || 0;
                 var maxzoom = info.maxzoom || backend_info.maxzoom || 22;
 
-                var offset_lon = 360;
-                var offset_lat = 170.1022;
+                // wrapx lon value.
+                center[0] = ((((center[0]+180)%360)+360)%360) - 180;
 
-                // Mod to lon/lat to bounds, zoom out one level from center
-                var mincenter = {
-                    lon: center[0] % offset_lon,
-                    lat: center[1] % offset_lat,
-                    zoom: center[2] > minzoom ? center[2] - 1 : minzoom
-                };
+                var xyz = sm.xyz([center[0], center[1], center[0], center[1]], minzoom);
 
-                var xyz = sm.xyz([mincenter.lon, mincenter.lat, mincenter.lon, mincenter.lat], mincenter.zoom);
+                getTiles(minzoom, xyz.minX, xyz.minY);
 
                 // Profile derivative four tiles of z,x,y
-                var getTiles = (function(z,x,y) {
+                function getTiles(z, x, y) {
                     var tiles = [];
+                    getTile(z, x+0, y+0);
+                    getTile(z, x+0, y+1);
+                    getTile(z, x+1, y+0);
+                    getTile(z, x+1, y+1);
+                    function getTile(z, x, y) {
+                        source.getTile(z, x, y, function(err, buffer, headers) {
+                            // aborted
+                            if (!tiles) return;
 
-                    for (var dx = x; dx < (x + 2); dx++) {
-                        for (var dy = y; dy < (y + 2); dy++) {
-                            (function(z,x,y) {
-                                this.getTile(z, x, y, function(err, buffer, headers) {
-                                    if (err) throw err;
-                                    var tile = {
-                                        z: z,
-                                        x: x,
-                                        y: y,
-                                        buffer: buffer,
-                                        length: buffer.length
-                                    };
-                                    tiles.push(tile);
-                                    if (tiles.length === 4) {
-                                        tiles.sort(function (a, b) {
-                                            if (a.length < b.length)
-                                              return 1;
-                                            if (a.length > b.length)
-                                                return -1;
-                                            // a must be equal to b
-                                            return 0;
-                                        });
-                                        dense_tiles.push(tiles[0]);
-                                        if (z < (maxzoom)) {
-                                            getTiles(++z, tiles[0].x * 2, tiles[0].y * 2);
-                                        } else {
-                                            callback(null, {
-                                                tiles: dense_tiles,
-                                                renderTime: Date.now() - renderStart
-                                            });
-                                        }
-                                    }
-                                }.bind(this));
-                            }.bind(this))(z,dx,dy);
-                        }
+                            // error occurred, set tiles to false to signal to
+                            // other calls to abort.
+                            if (err && (tiles = false)) return callback(err);
+
+                            tiles.push({
+                                z: z,
+                                x: x,
+                                y: y,
+                                drawtime: buffer._drawtime,
+                                loadtime: buffer._loadtime,
+                                srcbytes: buffer._srcbytes,
+                                imgbytes: buffer.length,
+                                buffer: buffer
+                            });
+                            if (tiles.length < 4) return;
+
+                            tiles.sort(function (a, b) {
+                                if (a.imgbytes < b.imgbytes) return 1;
+                                if (a.imgbytes > b.imgbytes) return -1;
+                                return 0;
+                            });
+                            densest.push(tiles[0]);
+
+                            // Done.
+                            if (z >= maxzoom) return callback(null, {
+                                tiles: densest,
+                                xmltime: xmltime,
+                                drawtime: densest.reduce(stat('drawtime', densest.length), {}),
+                                loadtime: densest.reduce(stat('loadtime', densest.length), {}),
+                                srcbytes: densest.reduce(stat('srcbytes', densest.length), {}),
+                                imgbytes: densest.reduce(stat('imgbytes', densest.length), {}),
+                            });
+
+                            function stat(key, count) { return function(memo, t) {
+                                memo.avg = (memo.avg || 0) + t[key]/count;
+                                memo.min = Math.min(memo.min||Infinity, t[key]);
+                                memo.max = Math.max(memo.max||0, t[key]);
+                                return memo;
+                            }}
+
+                            // profiling zxy @ zoom level < center.
+                            // next zxy should remain on center coords.
+                            if (z < center[2]) {
+                                var xyz = sm.xyz([center[0], center[1], center[0], center[1]], z+1);
+                                getTiles(z+1, xyz.minX, xyz.minY);
+                            // profiling zxy @ zoomlevel >= center.
+                            // next zxy descend based on densest tile.
+                            } else {
+                                getTiles(z+1, tiles[0].x * 2, tiles[0].y * 2);
+                            }
+                        });
                     }
-                }).bind(this);
-                getTiles(mincenter.zoom, xyz.minX, xyz.minY);
-            }.bind(this));
-        }.bind(this));
-    }.bind(this));
+                }
+            });
+        });
+    });
 };
 
 function tm2z(uri, callback) {
