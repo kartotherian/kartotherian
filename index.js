@@ -44,9 +44,8 @@ function Vector(uri, callback) {
 
     if (callback) this.once('open', callback);
 
-    this.update(uri, function(err) {
-        this.emit('open', err, this);
-    }.bind(this));
+    var s = this;
+    this.update(uri, function(err) { s.emit('open', err, s); });
 };
 util.inherits(Vector, require('events').EventEmitter);
 
@@ -69,6 +68,7 @@ Vector.prototype.update = function(opts, callback) {
     // If the XML has changed update the map.
     if (!opts.xml || this._xml === opts.xml) return callback();
 
+    var s = this;
     var map = new mapnik.Map(256,256);
     map.fromString(opts.xml, {
         strict: true,
@@ -79,33 +79,33 @@ Vector.prototype.update = function(opts, callback) {
             return callback(err);
         }
 
-        delete this._info;
-        this._xml = opts.xml;
-        this._map = map;
-        this._md5 = crypto.createHash('md5').update(opts.xml).digest('hex');
-        this._format = opts.format || map.parameters.format || this._format || 'png8:m=h';
-        this._scale = opts.scale || +map.parameters.scale || this._scale || 1;
+        delete s._info;
+        s._xml = opts.xml;
+        s._map = map;
+        s._md5 = crypto.createHash('md5').update(opts.xml).digest('hex');
+        s._format = opts.format || map.parameters.format || s._format || 'png8:m=h';
+        s._scale = opts.scale || +map.parameters.scale || s._scale || 1;
 
         var source = map.parameters.source || opts.source;
-        if (!this._backend || this._source !== source) {
+        if (!s._backend || s._source !== source) {
             if (!source) return callback(new Error('No backend'));
             tilelive.load(source, function(err, backend) {
                 if (err) return callback(err);
                 if (!backend) return callback(new Error('No backend'));
-                this._source = map.parameters.source || opts.source;
-                if (this._backend !== backend) {
+                s._source = map.parameters.source || opts.source;
+                if (s._backend !== backend) {
                     backend._vectorCache = {};
-                    this._backend = backend;
-                    delete this._minzoom;
-                    delete this._maxzoom;
-                    delete this._maskLevel;
+                    s._backend = backend;
+                    delete s._minzoom;
+                    delete s._maxzoom;
+                    delete s._maskLevel;
                 }
                 return callback();
-            }.bind(this));
+            });
         } else {
             return callback();
         }
-    }.bind(this));
+    });
     return;
 };
 
@@ -246,23 +246,25 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, scale, callbac
 Vector.prototype.getTile = function(z, x, y, callback) {
     if (!this._map) return callback(new Error('Tilesource not loaded'));
 
+    var s = this;
+
     // Lazy load min/maxzoom/maskLevel info.
     if (this._maxzoom === undefined) return this._backend.getInfo(function(err, info) {
         if (err) return callback(err);
 
-        this._minzoom = info.minzoom || 0;
-        this._maxzoom = info.maxzoom || 22;
+        s._minzoom = info.minzoom || 0;
+        s._maxzoom = info.maxzoom || 22;
 
         // @TODO some sources filter out custom keys @ getInfo forcing us
         // to access info/data properties directly. Fix this.
         if ('maskLevel' in info) {
-            this._maskLevel = parseInt(info.maskLevel, 10);
-        } else if (this._backend.data && 'maskLevel' in this._backend.data) {
-            this._maskLevel = this._backend.data.maskLevel;
+            s._maskLevel = parseInt(info.maskLevel, 10);
+        } else if (s._backend.data && 'maskLevel' in s._backend.data) {
+            s._maskLevel = s._backend.data.maskLevel;
         }
 
-        return this.getTile(z, x, y, callback);
-    }.bind(this));
+        return s.getTile(z, x, y, callback);
+    });
 
     // Hack around tilelive API - allow params to be passed per request
     // as attributes of the callback function.
@@ -291,11 +293,11 @@ Vector.prototype.getTile = function(z, x, y, callback) {
     this.drawTile(bz, bx, by, z, x, y, format, scale, function(err, buffer, headers) {
         if (!err) return callback(err, buffer, headers);
         if (err && err.message !== 'Tile does not exist') return callback(err);
-        bz = this._maskLevel;
-        bx = Math.floor(x / Math.pow(2, z - this._maskLevel));
-        by = Math.floor(y / Math.pow(2, z - this._maskLevel));
-        this.drawTile(bz, bx, by, z, x, y, format, scale, callback);
-    }.bind(this));
+        bz = s._maskLevel;
+        bx = Math.floor(x / Math.pow(2, z - s._maskLevel));
+        by = Math.floor(y / Math.pow(2, z - s._maskLevel));
+        s.drawTile(bz, bx, by, z, x, y, format, scale, callback);
+    });
 };
 
 Vector.prototype.getGrid = function(z, x, y, callback) {
@@ -348,14 +350,14 @@ Vector.prototype.getInfo = function(callback) {
 };
 
 Vector.prototype.profile = function(callback) {
-    var source = this;
+    var s = this;
     var map = new mapnik.Map(256,256);
     var xmltime = Date.now();
     var densest = [];
 
-    map.fromString(source._xml, {
+    map.fromString(this._xml, {
         strict: true,
-        base: source._base + '/'
+        base: this._base + '/'
     }, function(err) {
         if (err) {
             err.code = 'EMAPNIK';
@@ -364,10 +366,10 @@ Vector.prototype.profile = function(callback) {
 
         xmltime = Date.now() - xmltime;
 
-        source.getInfo(function(err, info) {
+        s.getInfo(function(err, info) {
             if (err) return callback(err);
 
-            source._backend.getInfo(function(err, backend_info) {
+            s._backend.getInfo(function(err, backend_info) {
                 if (err) return callback(err);
 
                 var center = (info.center || backend_info.center).slice(0);
@@ -389,7 +391,7 @@ Vector.prototype.profile = function(callback) {
                     getTile(z, x+1, y+0);
                     getTile(z, x+1, y+1);
                     function getTile(z, x, y) {
-                        source.getTile(z, x, y, function(err, buffer, headers) {
+                        s.getTile(z, x, y, function(err, buffer, headers) {
                             // aborted
                             if (!tiles) return;
 
