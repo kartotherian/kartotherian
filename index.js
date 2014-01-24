@@ -388,12 +388,12 @@ Vector.prototype.profile = function(callback) {
                 var xyz = sm.xyz([mincenter.lon, mincenter.lat, mincenter.lon, mincenter.lat], mincenter.zoom);
 
                 // Profile derivative four tiles of z,x,y
-                var getTiles = (function(x,y,z) {
+                var getTiles = (function(z,x,y) {
                     var tiles = [];
 
                     for (var dx = x; dx < (x + 2); dx++) {
                         for (var dy = y; dy < (y + 2); dy++) {
-                            (function(x,y,z) {
+                            (function(z,x,y) {
                                 this.getTile(z, x, y, function(err, buffer, headers) {
                                     if (err) throw err;
                                     var tile = {
@@ -415,7 +415,7 @@ Vector.prototype.profile = function(callback) {
                                         });
                                         dense_tiles.push(tiles[0]);
                                         if (z < (maxzoom)) {
-                                            getTiles(tiles[0].x * 2, tiles[0].y * 2, ++z);
+                                            getTiles(++z, tiles[0].x * 2, tiles[0].y * 2);
                                         } else {
                                             callback(null, {
                                                 tiles: dense_tiles,
@@ -424,12 +424,11 @@ Vector.prototype.profile = function(callback) {
                                         }
                                     }
                                 }.bind(this));
-                            }.bind(this))(dx,dy,z);
+                            }.bind(this))(z,dx,dy);
                         }
                     }
                 }).bind(this);
-                
-                getTiles(xyz.minX, xyz.minY, mincenter.zoom);
+                getTiles(mincenter.zoom, xyz.minX, xyz.minY);
             }.bind(this));
         }.bind(this));
     }.bind(this));
