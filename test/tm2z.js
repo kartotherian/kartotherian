@@ -153,6 +153,54 @@ describe('tm2z', function() {
             done();
         });
     });
+    it('profiles a tm2z file', function(done) {
+        this.timeout(0);
+        tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
+            assert.ifError(err);
+            source.profile(function(err, profile) {
+                assert.ifError(err);
+                assert.deepEqual([
+                    'tiles',
+                    'xmltime',
+                    'drawtime',
+                    'loadtime',
+                    'srcbytes',
+                    'imgbytes'
+                ], Object.keys(profile));
+                assert.equal('number', typeof profile.xmltime);
+                assert.deepEqual(['avg','min','max'], Object.keys(profile.drawtime));
+                assert.deepEqual(['avg','min','max'], Object.keys(profile.loadtime));
+                assert.deepEqual(['avg','min','max'], Object.keys(profile.srcbytes));
+                assert.deepEqual(['avg','min','max'], Object.keys(profile.imgbytes));
+                assert.deepEqual([
+                    '0/0/0',
+                    '1/1/0',
+                    '2/2/1',
+                    '3/4/3',
+                    '4/9/7',
+                    '5/19/14',
+                    '6/39/29',
+                    '7/79/58',
+                    '8/159/117',
+                    '9/319/235',
+                    '10/638/470',
+                    '11/1276/940',
+                    '12/2553/1880',
+                    '13/5106/3761',
+                    '14/10212/7522',
+                    '15/20424/15045',
+                    '16/40849/30091',
+                    '17/81699/60182',
+                    '18/163398/120364',
+                    '19/326797/240728',
+                    '20/653594/481456',
+                    '21/1307188/962913',
+                    '22/2614376/1925826'
+                ], profile.tiles.map(function(t) { return t.z + '/' + t.x + '/' + t.y }));
+                done();
+            });
+        });
+    });
 });
 
 describe('tm2z+http', function() {
