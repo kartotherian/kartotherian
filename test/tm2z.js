@@ -159,12 +159,19 @@ describe('tm2z', function() {
             assert.ifError(err);
             source.profile(function(err, profile) {
                 assert.ifError(err);
+                assert.deepEqual([
+                    'tiles',
+                    'xmltime',
+                    'drawtime',
+                    'loadtime',
+                    'srcbytes',
+                    'imgbytes'
+                ], Object.keys(profile));
                 assert.equal('number', typeof profile.xmltime);
                 assert.deepEqual(['avg','min','max'], Object.keys(profile.drawtime));
                 assert.deepEqual(['avg','min','max'], Object.keys(profile.loadtime));
                 assert.deepEqual(['avg','min','max'], Object.keys(profile.srcbytes));
                 assert.deepEqual(['avg','min','max'], Object.keys(profile.imgbytes));
-                assert.equal(23, profile.tiles.length);
                 assert.deepEqual([
                     '0/0/0',
                     '1/1/0',
