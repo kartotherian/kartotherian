@@ -386,31 +386,30 @@ Vector.prototype.profile = function(callback) {
                 // Profile derivative four tiles of z,x,y
                 function getTiles(z, x, y) {
                     var tiles = [];
-                    getTile(z, x+0, y+0);
-                    getTile(z, x+0, y+1);
-                    getTile(z, x+1, y+0);
-                    getTile(z, x+1, y+1);
-                    function getTile(z, x, y) {
-                        s.getTile(z, x, y, function(err, buffer, headers) {
-                            // aborted
-                            if (!tiles) return;
-
-                            // error occurred, set tiles to false to signal to
-                            // other calls to abort.
-                            if (err && (tiles = false)) return callback(err);
-
-                            tiles.push({
-                                z: z,
-                                x: x,
-                                y: y,
-                                drawtime: buffer._drawtime,
-                                loadtime: buffer._loadtime,
-                                srcbytes: buffer._srcbytes,
-                                imgbytes: buffer.length,
-                                buffer: buffer
+                    var queue = [
+                        {z:z, x:x+0, y:y+0},
+                        {z:z, x:x+0, y:y+1},
+                        {z:z, x:x+1, y:y+0},
+                        {z:z, x:x+1, y:y+1}
+                    ];
+                    getTile();
+                    function getTile() {
+                        if (queue.length) {
+                            var t = queue.shift();
+                            s.getTile(t.z, t.x, t.y, function(err, run1, headers) {
+                                if (err) return callback(err);
+                                s.getTile(t.z, t.x, t.y, function(err, run2, headers) {
+                                    if (err) return callback(err);
+                                    t.drawtime = Math.min(run1._drawtime, run2._drawtime);
+                                    t.loadtime = run1._loadtime;
+                                    t.srcbytes = run1._srcbytes;
+                                    t.imgbytes = run1.length;
+                                    t.buffer = run1;
+                                    tiles.push(t);
+                                    getTile();
+                                });
                             });
-                            if (tiles.length < 4) return;
-
+                        } else {
                             tiles.sort(function (a, b) {
                                 if (a.imgbytes < b.imgbytes) return 1;
                                 if (a.imgbytes > b.imgbytes) return -1;
@@ -445,7 +444,7 @@ Vector.prototype.profile = function(callback) {
                             } else {
                                 getTiles(z+1, tiles[0].x * 2, tiles[0].y * 2);
                             }
-                        });
+                        }
                     }
                 }
             });
