@@ -108,10 +108,14 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             return source.getTile(bz, bx, by, sourceGet);
         }
         if (err && err.message !== 'Tile does not exist') return done(err);
-        body = body || new Buffer(0);
-        size = body.length;
-        headers = head || {};
-        return backend._deflate ? zlib.inflate(body, makevtile) : makevtile(null, body, b);
+
+        if (!body) {
+            return makevtile();
+        } else {
+            size = body.length;
+            headers = head || {};
+            return backend._deflate ? zlib.inflate(body, makevtile) : makevtile(null, body);
+        }
     });
 
     function done(err, body, headers) {
@@ -121,15 +125,21 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         task.headers = headers;
         task.emit('done', err, body, headers);
     };
+
     function makevtile(err, data) {
         if (err && err.message !== 'Tile does not exist') return done(err);
         var vtile = new mapnik.VectorTile(bz, bx, by);
         vtile._srcbytes = size;
-        vtile.setData(data || new Buffer(0), function(err) {
-            // Errors for null data are ignored as a solid tile be painted.
-            if (data && err) return done(err);
-            return done(err, vtile, headers);
-        });
+
+        // null/zero length data is a solid tile be painted.
+        if (!data) return done(null, vtile, headers);
+
+        try {
+            vtile.setData(data);
+        } catch (err) {
+            return done(err);
+        }
+        done(null, vtile, headers);
     };
 };
 

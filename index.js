@@ -162,28 +162,29 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         } else {
             var surface = new mapnik.Image(256,256);
         }
+
         vtile.parse(function(err) {
-        if (err) return callback(err);
-        vtile.render(source._map, surface, opts, function(err, image) {
             if (err) return callback(err);
-            if (format == 'svg') {
-                headers['Content-Type'] = 'image/svg+xml';
-                return callback(null, image.getData(), headers);
-            } else if (format === 'utf') {
-                image.encode(format, {}, function(err, buffer) {
-                    if (err) return callback(err);
-                    return callback(null, buffer, headers);
-                });
-            } else {
-                image.encode(format, {}, function(err, buffer) {
-                    if (err) return callback(err);
-                    buffer._loadtime = loadtime;
-                    buffer._drawtime = (+new Date) - drawtime;
-                    buffer._srcbytes = vtile._srcbytes || 0;
-                    return callback(null, buffer, headers);
-                });
-            }
-        });
+            vtile.render(source._map, surface, opts, function(err, image) {
+                if (err) return callback(err);
+                if (format == 'svg') {
+                    headers['Content-Type'] = 'image/svg+xml';
+                    return callback(null, image.getData(), headers);
+                } else if (format === 'utf') {
+                    image.encode(format, {}, function(err, buffer) {
+                        if (err) return callback(err);
+                        return callback(null, buffer, headers);
+                    });
+                } else {
+                    image.encode(format, {}, function(err, buffer) {
+                        if (err) return callback(err);
+                        buffer._loadtime = loadtime;
+                        buffer._drawtime = (+new Date) - drawtime;
+                        buffer._srcbytes = vtile._srcbytes || 0;
+                        return callback(null, buffer, headers);
+                    });
+                }
+            });
         });
     });
 };
