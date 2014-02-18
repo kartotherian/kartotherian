@@ -162,6 +162,8 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         } else {
             var surface = new mapnik.Image(256,256);
         }
+        vtile.parse(function(err) {
+        if (err) return callback(err);
         vtile.render(source._map, surface, opts, function(err, image) {
             if (err) return callback(err);
             if (format == 'svg') {
@@ -181,6 +183,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
                     return callback(null, buffer, headers);
                 });
             }
+        });
         });
     });
 };
