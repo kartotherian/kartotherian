@@ -25,23 +25,33 @@ function Backend(opts, callback) {
     this._source = null;
     var backend = this;
 
-    tilelive.load(opts.uri, function(err, source) {
-        if (err) return callback(err);
-        source.getInfo(function(err, info) {
+    if (opts.source) {
+        setsource(opts.source, opts);
+    } else if (opts.uri) {
+        tilelive.load(opts.uri, function(err, source) {
             if (err) return callback(err);
-            backend._minzoom = info.minzoom || 0;
-            backend._maxzoom = info.maxzoom || 22;
-            // @TODO some sources filter out custom keys @ getInfo forcing us
-            // to access info/data properties directly. Fix this.
-            if ('maskLevel' in info) {
-                backend._maskLevel = parseInt(info.maskLevel, 10);
-            } else if (source.data && 'maskLevel' in source.data) {
-                backend._maskLevel = source.data.maskLevel;
-            }
-            backend._source = source;
-            callback(null, backend);
+            source.getInfo(function(err, info) {
+                if (err) return callback(err);
+                setsource(source, info);
+            });
         });
-    });
+    } else {
+        if (callback) callback(new Error('opts.uri or opts.source must be set'));
+    }
+
+    function setsource(source, info) {
+        backend._minzoom = info.minzoom || 0;
+        backend._maxzoom = info.maxzoom || 22;
+        // @TODO some sources filter out custom keys @ getInfo forcing us
+        // to access info/data properties directly. Fix this.
+        if ('maskLevel' in info) {
+            backend._maskLevel = parseInt(info.maskLevel, 10);
+        } else if (source.data && 'maskLevel' in source.data) {
+            backend._maskLevel = source.data.maskLevel;
+        }
+        backend._source = source;
+        if (callback) callback(null, backend);
+    }
 };
 
 Backend.prototype.getInfo = function(callback) {
