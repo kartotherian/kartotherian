@@ -1,5 +1,14 @@
 # Changlog
 
+## 0.5.0
+
+ - Update to mapnik 1.3.x
+ - Split out overzoom/mask logic to backend source
+
+## 0.4.0
+
+ - Use mapnik strict mode
+
 ## 0.3.0
 
  - Adds errors when tm2z unpacking streams exceed a configurable size
