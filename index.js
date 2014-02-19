@@ -11,24 +11,16 @@ var request = require('request');
 var exists = fs.exists || require('path').exists;
 var numeral = require('numeral');
 var sm = new (require('sphericalmercator'))();
+var Backend = require('./backend');
 
 module.exports = Vector;
 module.exports.tm2z = tm2z;
 module.exports.mapnik = mapnik;
+module.exports.Backend = Backend;
 
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
 };
-
-function Task() {
-    this.err = null;
-    this.headers = {};
-    this.access = +new Date;
-    this.done;
-    this.body;
-    return;
-};
-util.inherits(Task, require('events').EventEmitter);
 
 function Vector(uri, callback) {
     if (!uri.xml) return callback && callback(new Error('No xml'));
@@ -89,17 +81,16 @@ Vector.prototype.update = function(opts, callback) {
         var source = map.parameters.source || opts.source;
         if (!s._backend || s._source !== source) {
             if (!source) return callback(new Error('No backend'));
-            tilelive.load(source, function(err, backend) {
+            new Backend({
+                uri: source,
+                scale: s._scale,
+                reap: s._uri.reap,
+                maxAge: s._uri.maxAge,
+                deflate: s._uri.deflate
+            }, function(err, backend) {
                 if (err) return callback(err);
-                if (!backend) return callback(new Error('No backend'));
                 s._source = map.parameters.source || opts.source;
-                if (s._backend !== backend) {
-                    backend._vectorCache = {};
-                    s._backend = backend;
-                    delete s._minzoom;
-                    delete s._maxzoom;
-                    delete s._maskLevel;
-                }
+                s._backend = backend;
                 return callback();
             });
         } else {
@@ -109,66 +100,23 @@ Vector.prototype.update = function(opts, callback) {
     return;
 };
 
-// Wrapper around backend.getTile that implements a "locking" cache.
-Vector.prototype.sourceTile = function(backend, z, x, y, callback) {
-    var source = this;
-    var now = +new Date;
-    var key = z + '/' + x + '/' + y;
-    var cache = backend._vectorCache[key];
+Vector.prototype.getTile = function(z, x, y, callback) {
+    if (!this._map) return callback(new Error('Tilesource not loaded'));
 
-    // Reap cached vector tiles with stale access times on an interval.
-    if (source._reap && !backend._vectorTimeout) backend._vectorTimeout = setTimeout(function() {
-        var now = +new Date;
-        Object.keys(backend._vectorCache).forEach(function(key) {
-            if ((now - backend._vectorCache[key].access) < source._maxAge) return;
-            delete backend._vectorCache[key];
-        });
-        delete backend._vectorTimeout;
-    }, source._reap);
+    // Hack around tilelive API - allow params to be passed per request
+    // as attributes of the callback function.
+    var format = callback.format || this._format || this._map.parameters.format || 'png8:m=h';
+    var scale = this._scale;
 
-    // Expire cached tiles when they are past maxAge.
-    if (cache && (now-cache.access) >= source._maxAge) cache = false;
-
-    // Return cache if finished.
-    if (cache && cache.done) {
-        return callback(null, cache.body, cache.headers);
-    // Otherwise add listener if task is in progress.
-    } else if (cache) {
-        return cache.once('done', callback);
-    }
-
-    var task = new Task();
-    task.once('done', callback);
-
-    var done = function(err, body, headers) {
-        if (err) delete backend._vectorCache[key];
-        task.done = true;
-        task.body = body;
-        task.headers = headers;
-        task.emit('done', err, body, headers);
-    };
-    backend._vectorCache[key] = task;
-    backend.getTile(z, x, y, function(err, body, headers) {
-        if (err) return done(err);
-
-        // If the source vector tiles are not using deflate, we're done.
-        if (!source._deflate) return done(err, body, headers);
-
-        // Otherwise, inflate the data.
-        zlib.inflate(body, function(err, body) { return done(err, body, headers); });
-    });
-};
-
-Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, scale, callback) {
     var source = this;
     var drawtime;
     var loadtime = +new Date;
-    source.sourceTile(this._backend, bz, bx, by, function(err, data, head) {
+    source._backend.getTile(z, x, y, function(err, vtile, head) {
         if (err && err.message !== 'Tile does not exist')
             return callback(err);
 
-        if (err && source._maskLevel && bz > source._maskLevel)
-            return callback(format === 'utf' ? new Error('Grid does not exist') : err);
+        // if (err && source._maskLevel && bz > source._maskLevel)
+        //     return callback(format === 'utf' ? new Error('Grid does not exist') : err);
 
         var headers = {};
         switch (format.match(/^[a-z]+/i)[0]) {
@@ -201,30 +149,22 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, scale, callbac
         loadtime = (+new Date) - loadtime;
         drawtime = +new Date;
 
-        var vtile = new mapnik.VectorTile(bz, bx, by);
-        try {
-            vtile.setData(data || new Buffer(0));
-        } catch (err) {
-            // Errors for null/zero length data are ignored as a solid tile be painted.
-            if (data) return callback(err);
+        var opts = {z:z, x:x, y:y, scale:scale, buffer_size:256 * scale};
+        if (format === 'json') {
+            try { return callback(null, vtile.toJSON(), headers); }
+            catch(err) { return callback(err); }
+        } else if (format === 'utf') {
+            var surface = new mapnik.Grid(256,256);
+            opts.layer = source._map.parameters.interactivity_layer;
+            opts.fields = source._map.parameters.interactivity_fields.split(',');
+        } else if (format === 'svg') {
+            var surface = new mapnik.CairoSurface('svg',256,256);
+        } else {
+            var surface = new mapnik.Image(256,256);
         }
-        vtile.parse(data || new Buffer(0), function(err) {
-            // Errors for null/zero length data are ignored as a solid tile be painted.
-            if (data && err) return callback(err);
 
-            var opts = {z:z, x:x, y:y, scale:scale, buffer_size:256 * scale};
-            if (format === 'json') {
-                try { return callback(null, vtile.toJSON(), headers); }
-                catch(err) { return callback(err); }
-            } else if (format === 'utf') {
-                var surface = new mapnik.Grid(256,256);
-                opts.layer = source._map.parameters.interactivity_layer;
-                opts.fields = source._map.parameters.interactivity_fields.split(',');
-            } else if (format === 'svg') {
-                var surface = new mapnik.CairoSurface('svg',256,256);
-            } else {
-                var surface = new mapnik.Image(256,256);
-            }
+        vtile.parse(function(err) {
+            if (err) return callback(err);
             vtile.render(source._map, surface, opts, function(err, image) {
                 if (err) return callback(err);
                 if (format == 'svg') {
@@ -240,69 +180,12 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, scale, callbac
                         if (err) return callback(err);
                         buffer._loadtime = loadtime;
                         buffer._drawtime = (+new Date) - drawtime;
-                        buffer._srcbytes = data ? data.length : 0;
+                        buffer._srcbytes = vtile._srcbytes || 0;
                         return callback(null, buffer, headers);
                     });
                 }
             });
         });
-    });
-};
-
-Vector.prototype.getTile = function(z, x, y, callback) {
-    if (!this._map) return callback(new Error('Tilesource not loaded'));
-
-    var s = this;
-
-    // Lazy load min/maxzoom/maskLevel info.
-    if (this._maxzoom === undefined) return this._backend.getInfo(function(err, info) {
-        if (err) return callback(err);
-
-        s._minzoom = info.minzoom || 0;
-        s._maxzoom = info.maxzoom || 22;
-
-        // @TODO some sources filter out custom keys @ getInfo forcing us
-        // to access info/data properties directly. Fix this.
-        if ('maskLevel' in info) {
-            s._maskLevel = parseInt(info.maskLevel, 10);
-        } else if (s._backend.data && 'maskLevel' in s._backend.data) {
-            s._maskLevel = s._backend.data.maskLevel;
-        }
-
-        return s.getTile(z, x, y, callback);
-    });
-
-    // Hack around tilelive API - allow params to be passed per request
-    // as attributes of the callback function.
-    var format = callback.format || this._format;
-    var scale = callback.scale || this._scale;
-
-    // If scale > 1 adjusts source data zoom level inversely.
-    // scale 2x => z-1, scale 4x => z-2, scale 8x => z-3, etc.
-    var d = Math.round(Math.log(scale)/Math.log(2));
-    var bz = (z - d) > this._minzoom ? z - d : this._minzoom;
-    var bx = Math.floor(x / Math.pow(2, z - bz));
-    var by = Math.floor(y / Math.pow(2, z - bz));
-
-    // Overzooming support.
-    if (bz > this._maxzoom) {
-        bz = this._maxzoom;
-        bx = Math.floor(x / Math.pow(2, z - this._maxzoom));
-        by = Math.floor(y / Math.pow(2, z - this._maxzoom));
-    }
-
-    // For nonmasked sources or bz within the maskrange attempt 1 draw.
-    if (!this._maskLevel || bz <= this._maskLevel)
-        return this.drawTile(bz, bx, by, z, x, y, format, scale, callback);
-
-    // Above the maskLevel errors should attempt a second draw using the mask.
-    this.drawTile(bz, bx, by, z, x, y, format, scale, function(err, buffer, headers) {
-        if (!err) return callback(err, buffer, headers);
-        if (err && err.message !== 'Tile does not exist') return callback(err);
-        bz = s._maskLevel;
-        bx = Math.floor(x / Math.pow(2, z - s._maskLevel));
-        by = Math.floor(y / Math.pow(2, z - s._maskLevel));
-        s.drawTile(bz, bx, by, z, x, y, format, scale, callback);
     });
 };
 
@@ -599,7 +482,7 @@ function tm2z(uri, callback) {
                 delete tm2z.sources[id];
                 return callback(err);
             }
-            source.mtime = new Date(source._backend.data.mtime);
+            source.mtime = new Date(source._backend._source.data.mtime);
             source.access = +new Date;
             callback(null, source);
         });
