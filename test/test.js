@@ -214,7 +214,7 @@ describe('tiles', function() {
     });
     it('errors out on bad protobuf', function(done) {
         sources.a.getTile(1, 0, 3, function(err) {
-            assert.equal('could not parse protobuf', err.message);
+            assert.equal('could not parse buffer as protobuf', err.message);
             done();
         });
     });

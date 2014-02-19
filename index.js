@@ -202,8 +202,14 @@ Vector.prototype.drawTile = function(bz, bx, by, z, x, y, format, scale, callbac
         drawtime = +new Date;
 
         var vtile = new mapnik.VectorTile(bz, bx, by);
-        vtile.setData(data || new Buffer(0), function(err) {
-            // Errors for null data are ignored as a solid tile be painted.
+        try {
+            vtile.setData(data || new Buffer(0));
+        } catch (err) {
+            // Errors for null/zero length data are ignored as a solid tile be painted.
+            if (data) return callback(err);
+        }
+        vtile.parse(data || new Buffer(0), function(err) {
+            // Errors for null/zero length data are ignored as a solid tile be painted.
             if (data && err) return callback(err);
 
             var opts = {z:z, x:x, y:y, scale:scale, buffer_size:256 * scale};
