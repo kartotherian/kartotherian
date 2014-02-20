@@ -149,22 +149,21 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         loadtime = (+new Date) - loadtime;
         drawtime = +new Date;
 
-        var opts = {z:z, x:x, y:y, scale:scale, buffer_size:256 * scale};
-        if (format === 'json') {
-            try { return callback(null, vtile.toJSON(), headers); }
-            catch(err) { return callback(err); }
-        } else if (format === 'utf') {
-            var surface = new mapnik.Grid(256,256);
-            opts.layer = source._map.parameters.interactivity_layer;
-            opts.fields = source._map.parameters.interactivity_fields.split(',');
-        } else if (format === 'svg') {
-            var surface = new mapnik.CairoSurface('svg',256,256);
-        } else {
-            var surface = new mapnik.Image(256,256);
-        }
-
         vtile.parse(function(err) {
             if (err) return callback(err);
+            var opts = {z:z, x:x, y:y, scale:scale, buffer_size:256 * scale};
+            if (format === 'json') {
+                try { return callback(null, vtile.toJSON(), headers); }
+                catch(err) { return callback(err); }
+            } else if (format === 'utf') {
+                var surface = new mapnik.Grid(256,256);
+                opts.layer = source._map.parameters.interactivity_layer;
+                opts.fields = source._map.parameters.interactivity_fields.split(',');
+            } else if (format === 'svg') {
+                var surface = new mapnik.CairoSurface('svg',256,256);
+            } else {
+                var surface = new mapnik.Image(256,256);
+            }
             vtile.render(source._map, surface, opts, function(err, image) {
                 if (err) return callback(err);
                 if (format == 'svg') {
