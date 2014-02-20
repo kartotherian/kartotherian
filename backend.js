@@ -1,4 +1,5 @@
 var tilelive = require('tilelive');
+var crypto = require('crypto');
 var mapnik = require('mapnik');
 var util = require('util');
 var zlib = require('zlib');
@@ -44,7 +45,7 @@ function Backend(opts, callback) {
         backend._maxzoom = info.maxzoom || 22;
         // @TODO some sources filter out custom keys @ getInfo forcing us
         // to access info/data properties directly. Fix this.
-        if ('maskLevel' in info) {
+        if ('maskLevel' in info && !isNaN(parseInt(info.maskLevel, 10))) {
             backend._maskLevel = parseInt(info.maskLevel, 10);
         } else if (source.data && 'maskLevel' in source.data) {
             backend._maskLevel = source.data.maskLevel;
@@ -140,6 +141,17 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         if (err && err.message !== 'Tile does not exist') return done(err);
         var vtile = new mapnik.VectorTile(bz, bx, by);
         vtile._srcbytes = size;
+
+        // If no last modified is provided, use epoch.
+        headers['Last-Modified'] = new Date(headers['Last-Modified'] || 0).toUTCString();
+
+        // Set an ETag if not present.
+        headers['ETag'] = headers['ETag'] || JSON.stringify(crypto.createHash('md5')
+            .update((z+','+x+','+y) + (data||''))
+            .digest('hex'));
+
+        // Set content type.
+        headers['Content-Type'] = 'application/x-protobuf';
 
         // null/zero length data is a solid tile be painted.
         if (!data) return done(null, vtile, headers);
