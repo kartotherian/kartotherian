@@ -81,6 +81,7 @@ Testsource.prototype.getInfo = function(callback) {
 describe('tiles', function() {
     var sources = {
         a: new Vector({ backend: new Testsource('a'), xml: xml.a }),
+        'a@vt': new Vector({ backend: new Vector.Backend('test:///a'), xml: xml.a }),
         b: new Vector({ backend: new Testsource('b'), xml: xml.b }),
         'b@2x': new Vector({ backend: new Testsource('b'), xml: xml.b }),
         c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale:2 }),
@@ -94,6 +95,7 @@ describe('tiles', function() {
         // 1.1.2, 1.1.3 test that solid bg tiles are generated even when no
         // backend tile exists.
         a: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
+        'a@vt': ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
         // 2.1.1 should use z2 vector tile -- a coastline shapefile
         // 2.1.2 should use maskLevel -- place dots, like the others
         b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],

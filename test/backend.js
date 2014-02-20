@@ -146,6 +146,7 @@ describe('tiles', function() {
         b: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1 }),
         c: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2 })
     };
+    sources.d = new Backend({ source: sources.a, minzoom:0, maxzoom:1 });
     var tests = {
         // 2.0.0, 2.0.1 test overzooming.
         // 1.1.2, 1.1.3 test that solid bg tiles are generated even when no
@@ -156,16 +157,10 @@ describe('tiles', function() {
         b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],
         // test scale factor. unlike previous test, 3.2.2/3.2.3 will be coast
         // and 3.2.4 should fallback to the maskLevel
-        c: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4']
+        c: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
+        // proxies through vector tiles (rather than PBFs) from a source.
+        d: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1']
     };
-    var formats = {
-        json: { ctype: 'application/json' },
-        jpeg: { ctype: 'image/jpeg' },
-        png: { ctype: 'image/png' },
-        svg: { ctype: 'image/svg+xml' },
-        utf: { ctype: 'application/json' }
-    };
-    var etags = {};
     Object.keys(tests).forEach(function(source) {
         tests[source].forEach(function(key) {
             var z = key.split('.')[0] | 0;
@@ -187,8 +182,6 @@ describe('tiles', function() {
                     // Check for presence of ETag and store away for later
                     // ETag comparison.
                     assert.ok('ETag' in headers);
-                    etags[source] = etags[source] || {};
-                    etags[source][key] = headers['ETag'];
                     // Content-Type.
                     assert.equal(headers['Content-Type'], 'application/x-protobuf');
                     // Size stats attached to buffer.

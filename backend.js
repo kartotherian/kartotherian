@@ -122,6 +122,10 @@ Backend.prototype.getTile = function(z, x, y, callback) {
 
         if (!body) {
             return makevtile();
+        } else if (body instanceof mapnik.VectorTile) {
+            size = body._srcbytes;
+            headers = head || {};
+            return makevtile(null, body);
         } else {
             size = body.length;
             headers = head || {};
@@ -139,8 +143,6 @@ Backend.prototype.getTile = function(z, x, y, callback) {
 
     function makevtile(err, data) {
         if (err && err.message !== 'Tile does not exist') return done(err);
-        var vtile = new mapnik.VectorTile(bz, bx, by);
-        vtile._srcbytes = size;
 
         // If no last modified is provided, use epoch.
         headers['Last-Modified'] = new Date(headers['Last-Modified'] || 0).toUTCString();
@@ -152,6 +154,12 @@ Backend.prototype.getTile = function(z, x, y, callback) {
 
         // Set content type.
         headers['Content-Type'] = 'application/x-protobuf';
+
+        // Pass-thru of an upstream mapnik vector tile (not pbf) source.
+        if (data instanceof mapnik.VectorTile) return done(null, data, headers);
+
+        var vtile = new mapnik.VectorTile(bz, bx, by);
+        vtile._srcbytes = size;
 
         // null/zero length data is a solid tile be painted.
         if (!data) return done(null, vtile, headers);
