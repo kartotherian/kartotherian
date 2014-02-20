@@ -169,7 +169,10 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         } catch (err) {
             return done(err);
         }
-        done(null, vtile, headers);
+        vtile.parse(function(err) {
+            if (err) return done(err);
+            done(null, vtile, headers);
+        })
     };
 };
 

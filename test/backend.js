@@ -200,8 +200,7 @@ describe('tiles', function() {
     });
     it('errors out on bad protobuf', function(done) {
         sources.a.getTile(1, 0, 3, function(err, vtile) {
-            assert.ifError(err);
-            assert.throws(function() { vtile.parse(); }, /could not parse buffer as protobuf/);
+            assert.equal('could not parse buffer as protobuf', err.message);
             done();
         });
     });
