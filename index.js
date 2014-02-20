@@ -148,42 +148,38 @@ Vector.prototype.getTile = function(z, x, y, callback) {
 
         loadtime = (+new Date) - loadtime;
         drawtime = +new Date;
-
-        vtile.parse(function(err) {
+        var opts = {z:z, x:x, y:y, scale:scale, buffer_size:256 * scale};
+        if (format === 'json') {
+            try { return callback(null, vtile.toJSON(), headers); }
+            catch(err) { return callback(err); }
+        } else if (format === 'utf') {
+            var surface = new mapnik.Grid(256,256);
+            opts.layer = source._map.parameters.interactivity_layer;
+            opts.fields = source._map.parameters.interactivity_fields.split(',');
+        } else if (format === 'svg') {
+            var surface = new mapnik.CairoSurface('svg',256,256);
+        } else {
+            var surface = new mapnik.Image(256,256);
+        }
+        vtile.render(source._map, surface, opts, function(err, image) {
             if (err) return callback(err);
-            var opts = {z:z, x:x, y:y, scale:scale, buffer_size:256 * scale};
-            if (format === 'json') {
-                try { return callback(null, vtile.toJSON(), headers); }
-                catch(err) { return callback(err); }
+            if (format == 'svg') {
+                headers['Content-Type'] = 'image/svg+xml';
+                return callback(null, image.getData(), headers);
             } else if (format === 'utf') {
-                var surface = new mapnik.Grid(256,256);
-                opts.layer = source._map.parameters.interactivity_layer;
-                opts.fields = source._map.parameters.interactivity_fields.split(',');
-            } else if (format === 'svg') {
-                var surface = new mapnik.CairoSurface('svg',256,256);
+                image.encode(format, {}, function(err, buffer) {
+                    if (err) return callback(err);
+                    return callback(null, buffer, headers);
+                });
             } else {
-                var surface = new mapnik.Image(256,256);
+                image.encode(format, {}, function(err, buffer) {
+                    if (err) return callback(err);
+                    buffer._loadtime = loadtime;
+                    buffer._drawtime = (+new Date) - drawtime;
+                    buffer._srcbytes = vtile._srcbytes || 0;
+                    return callback(null, buffer, headers);
+                });
             }
-            vtile.render(source._map, surface, opts, function(err, image) {
-                if (err) return callback(err);
-                if (format == 'svg') {
-                    headers['Content-Type'] = 'image/svg+xml';
-                    return callback(null, image.getData(), headers);
-                } else if (format === 'utf') {
-                    image.encode(format, {}, function(err, buffer) {
-                        if (err) return callback(err);
-                        return callback(null, buffer, headers);
-                    });
-                } else {
-                    image.encode(format, {}, function(err, buffer) {
-                        if (err) return callback(err);
-                        buffer._loadtime = loadtime;
-                        buffer._drawtime = (+new Date) - drawtime;
-                        buffer._srcbytes = vtile._srcbytes || 0;
-                        return callback(null, buffer, headers);
-                    });
-                }
-            });
         });
     });
 };
