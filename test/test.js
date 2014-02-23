@@ -152,7 +152,7 @@ describe('tiles', function() {
                     assert.equal('number', typeof buffer._drawtime);
                     // fs.writeFileSync(__dirname + '/expected/' + source + '.' + key + '.png', buffer);
                     imageEqualsFile(buffer, __dirname + '/expected/' + source + '.' + key + '.png', function(err) {
-                        //assert.ifError(err);
+                        assert.ifError(err);
                         if (!--remaining) done();
                     });
                 };
