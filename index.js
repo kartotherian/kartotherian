@@ -105,13 +105,13 @@ Vector.prototype.getTile = function(z, x, y, callback) {
 
     // Hack around tilelive API - allow params to be passed per request
     // as attributes of the callback function.
-    var format = callback.format || this._format || this._map.parameters.format || 'png8:m=h';
-    var scale = this._scale;
+    var format = callback.format || this._format;
+    var scale = callback.scale || this._scale;
 
     var source = this;
     var drawtime;
     var loadtime = +new Date;
-    source._backend.getTile(z, x, y, function(err, vtile, head) {
+    var cb = function(err, vtile, head) {
         if (err && err.message !== 'Tile does not exist')
             return callback(err);
 
@@ -181,7 +181,10 @@ Vector.prototype.getTile = function(z, x, y, callback) {
                 });
             }
         });
-    });
+    };
+    cb.format = format;
+    cb.scale = scale;
+    source._backend.getTile(z, x, y, cb);
 };
 
 Vector.prototype.getGrid = function(z, x, y, callback) {

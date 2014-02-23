@@ -66,8 +66,24 @@ Backend.prototype.getTile = function(z, x, y, callback) {
 
     var backend = this;
     var source = backend._source;
+    var scale = callback.scale || backend._scale;
     var now = +new Date;
-    var key = z + '/' + x + '/' + y;
+
+    // If scale > 1 adjusts source data zoom level inversely.
+    // scale 2x => z-1, scale 4x => z-2, scale 8x => z-3, etc.
+    var d = Math.round(Math.log(scale)/Math.log(2));
+    var bz = (z - d) > backend._minzoom ? z - d : backend._minzoom;
+    var bx = Math.floor(x / Math.pow(2, z - bz));
+    var by = Math.floor(y / Math.pow(2, z - bz));
+
+    // Overzooming support.
+    if (bz > backend._maxzoom) {
+        bz = backend._maxzoom;
+        bx = Math.floor(x / Math.pow(2, z - bz));
+        by = Math.floor(y / Math.pow(2, z - bz));
+    }
+
+    var key = bz + '/' + bx + '/' + by;
     var cache = backend._vectorCache[key];
 
     // Reap cached vector tiles with stale access times on an interval.
@@ -94,20 +110,6 @@ Backend.prototype.getTile = function(z, x, y, callback) {
 
     var size = 0;
     var headers = {};
-
-    // If scale > 1 adjusts source data zoom level inversely.
-    // scale 2x => z-1, scale 4x => z-2, scale 8x => z-3, etc.
-    var d = Math.round(Math.log(backend._scale)/Math.log(2));
-    var bz = (z - d) > backend._minzoom ? z - d : backend._minzoom;
-    var bx = Math.floor(x / Math.pow(2, z - bz));
-    var by = Math.floor(y / Math.pow(2, z - bz));
-
-    // Overzooming support.
-    if (bz > backend._maxzoom) {
-        bz = backend._maxzoom;
-        bx = Math.floor(x / Math.pow(2, z - bz));
-        by = Math.floor(y / Math.pow(2, z - bz));
-    }
 
     source.getTile(bz, bx, by, function sourceGet(err, body, head) {
         if (typeof backend._maskLevel === 'number' &&
