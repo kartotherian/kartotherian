@@ -1,5 +1,9 @@
 # Changlog
 
+## 0.7.0
+
+ - Update to mapnik 1.4.x (packaged binaries!)
+
 ## 0.6.0
 
  - Backend: share a parsed mapnik.VectorTile instances between getTile calls
