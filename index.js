@@ -181,12 +181,15 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             } else {
                 image.encode(format, {}, function(err, buffer) {
                     if (err) return callback(err);
-                    var profiler = new TileProfiler(vtile);
                     
                     buffer._loadtime = loadtime;
                     buffer._drawtime = (+new Date) - drawtime;
                     buffer._srcbytes = vtile._srcbytes || 0;
-                    if (profile) buffer._geometryStats = profiler.geometryStatistics();
+                    
+                    if (profile) {
+                        var profiler = new TileProfiler(vtile);
+                        buffer._geometryStats = profiler.geometryStatistics();
+                    }
                     
                     return callback(null, buffer, headers);
                 });
