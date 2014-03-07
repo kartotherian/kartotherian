@@ -1,5 +1,9 @@
 # Changlog
 
+## 0.8.0
+
+ - Use lru-cache to replace internal backend VT cache
+
 ## 0.7.0
 
  - Update to mapnik 1.4.x (packaged binaries!)
