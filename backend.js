@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var mapnik = require('mapnik');
 var util = require('util');
 var zlib = require('zlib');
+var lru = require('lru-cache');
 
 module.exports = Backend;
 
@@ -17,12 +18,11 @@ function Task(callback) {
 util.inherits(Task, require('events').EventEmitter);
 
 function Backend(opts, callback) {
-    this._vectorCache = {};
     this._vectorTimeout = null;
     this._scale = opts.scale || 1;
     this._maxAge = typeof opts.maxAge === 'number' ? opts.maxAge : 60e3;
     this._deflate = typeof opts.deflate === 'boolean' ? opts.deflate : true;
-    this._reap = typeof opts.reap === 'number' ? opts.reap : 60e3;
+    this._vectorCache = lru({ max: 1000, maxAge: this._maxAge });
     this._source = null;
     var backend = this;
 
@@ -84,20 +84,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
     }
 
     var key = bz + '/' + bx + '/' + by;
-    var cache = backend._vectorCache[key];
-
-    // Reap cached vector tiles with stale access times on an interval.
-    if (backend._reap && !backend._vectorTimeout) backend._vectorTimeout = setTimeout(function() {
-        var now = +new Date;
-        Object.keys(backend._vectorCache).forEach(function(key) {
-            if ((now - backend._vectorCache[key].access) < backend._maxAge) return;
-            delete backend._vectorCache[key];
-        });
-        delete backend._vectorTimeout;
-    }, backend._reap);
-
-    // Expire cached tiles when they are past maxAge.
-    if (cache && (now-cache.access) >= backend._maxAge) cache = false;
+    var cache = backend._vectorCache.get(key);
 
     // Return cache if finished.
     if (cache && cache.done) return callback(null, cache.body, cache.headers);
@@ -106,7 +93,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
     if (cache) return cache.once('done', callback);
 
     var task = new Task(callback);
-    backend._vectorCache[key] = task;
+    backend._vectorCache.set(key, task);
 
     var size = 0;
     var headers = {};
@@ -136,7 +123,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
     });
 
     function done(err, body, headers) {
-        if (err) delete backend._vectorCache[key];
+        if (err) backend._vectorCache.set(key, undefined);
         task.done = true;
         task.body = body;
         task.headers = headers;

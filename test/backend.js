@@ -88,7 +88,6 @@ describe('backend', function() {
         new Backend({ uri:'test:///a' }, function(err, source) {
             assert.ifError(err);
             assert.equal(1, source._scale);
-            assert.equal(60e3, source._reap);
             assert.equal(60e3, source._maxAge);
             assert.equal(true, source._deflate);
             assert.equal(0, source._minzoom);
@@ -100,7 +99,6 @@ describe('backend', function() {
     it('sync default opts', function(done) {
         var source = new Backend({ source: new Testsource('a') });
         assert.equal(1, source._scale);
-        assert.equal(60e3, source._reap);
         assert.equal(60e3, source._maxAge);
         assert.equal(true, source._deflate);
         assert.equal(0, source._minzoom);
@@ -114,7 +112,6 @@ describe('backend', function() {
             maskLevel: 4
         });
         assert.equal(1, source._scale);
-        assert.equal(60e3, source._reap);
         assert.equal(60e3, source._maxAge);
         assert.equal(true, source._deflate);
         assert.equal(2, source._minzoom);
@@ -259,8 +256,7 @@ describe('reap', function() {
         source: new Testsource('a'),
         minzoom: 0,
         maxzoom: 1,
-        maxAge: 1000,
-        reap: 500
+        maxAge: 500
     });
     var requests = ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1'];
     requests.forEach(function(key) {
@@ -275,7 +271,7 @@ describe('reap', function() {
         });
     });
     it('backend should have a populated cache', function(done) {
-        assert.equal(Object.keys(source._vectorCache).length, 5);
+        assert.equal(source._vectorCache.keys().length, 5);
         done();
     });
     it('backend should reap expired tiles', function(done) {
@@ -283,7 +279,11 @@ describe('reap', function() {
             source.getTile(0, 0, 0, function(err, buffer, headers) {
                 assert.ifError(err);
                 setTimeout(function() {
-                    assert.equal(Object.keys(source._vectorCache).length, 0);
+                    assert.equal(source._vectorCache.keys().length, 5);
+                    requests.forEach(function(key) {
+                        assert.deepEqual(undefined, source._vectorCache.get(key.split('.').join('/')));
+                    });
+                    assert.equal(source._vectorCache.keys().length, 0);
                     done();
                 }, 500);
             });

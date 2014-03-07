@@ -31,7 +31,6 @@ function Vector(uri, callback) {
     this._source = uri.source || undefined;
     this._maxAge = typeof uri.maxAge === 'number' ? uri.maxAge : 60e3;
     this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
-    this._reap = typeof uri.reap === 'number' ? uri.reap : 60e3;
     this._base = path.resolve(uri.base || __dirname);
 
     if (callback) this.once('open', callback);
