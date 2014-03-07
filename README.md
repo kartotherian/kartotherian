@@ -13,7 +13,6 @@ Implements the tilelive API for rendering mapnik vector tiles to raster images.
 - *scale*: Optional, Mapnik scale factor. Defaults to `1`.
 - *deflate*: Optional, whether to expect deflated vector tiles. Defaults to `true`.
 - *maxAge*: Optional, length of time to hold vector tiles in memory cache. Defaults to `300e3` (300 seconds).
-- *reap*: Optional, time between reaps of vector tiles in memory cache. Defaults to `60e3` (60 seconds).
 
 ### Code concepts
 
