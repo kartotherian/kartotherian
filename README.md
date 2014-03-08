@@ -12,7 +12,6 @@ Implements the tilelive API for rendering mapnik vector tiles to raster images.
 - *format*: Optional, target output format. Defaults to `png8:m=h`.
 - *scale*: Optional, Mapnik scale factor. Defaults to `1`.
 - *deflate*: Optional, whether to expect deflated vector tiles. Defaults to `true`.
-- *maxAge*: Optional, length of time to hold vector tiles in memory cache. Defaults to `300e3` (300 seconds).
 
 ### Code concepts
 
