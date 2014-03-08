@@ -3,26 +3,12 @@ var crypto = require('crypto');
 var mapnik = require('mapnik');
 var util = require('util');
 var zlib = require('zlib');
-var lru = require('lru-cache');
 
 module.exports = Backend;
 
-function Task(callback) {
-    this.err = null;
-    this.headers = {};
-    this.access = +new Date;
-    this.done;
-    this.body;
-    this.once('done', callback);
-};
-util.inherits(Task, require('events').EventEmitter);
-
 function Backend(opts, callback) {
-    this._vectorTimeout = null;
     this._scale = opts.scale || 1;
-    this._maxAge = typeof opts.maxAge === 'number' ? opts.maxAge : 60e3;
     this._deflate = typeof opts.deflate === 'boolean' ? opts.deflate : true;
-    this._vectorCache = lru({ max: 1000, maxAge: this._maxAge });
     this._source = null;
     var backend = this;
 
@@ -83,18 +69,6 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         by = Math.floor(y / Math.pow(2, z - bz));
     }
 
-    var key = bz + '/' + bx + '/' + by;
-    var cache = backend._vectorCache.get(key);
-
-    // Return cache if finished.
-    if (cache && cache.done) return callback(null, cache.body, cache.headers);
-
-    // Otherwise add listener if task is in progress.
-    if (cache) return cache.once('done', callback);
-
-    var task = new Task(callback);
-    backend._vectorCache.set(key, task);
-
     var size = 0;
     var headers = {};
 
@@ -107,7 +81,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             by = Math.floor(y / Math.pow(2, z - bz));
             return source.getTile(bz, bx, by, sourceGet);
         }
-        if (err && err.message !== 'Tile does not exist') return done(err);
+        if (err && err.message !== 'Tile does not exist') return callback(err);
 
         if (!body) {
             return makevtile();
@@ -122,16 +96,8 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         }
     });
 
-    function done(err, body, headers) {
-        if (err) backend._vectorCache.set(key, undefined);
-        task.done = true;
-        task.body = body;
-        task.headers = headers;
-        task.emit('done', err, body, headers);
-    };
-
     function makevtile(err, data) {
-        if (err && err.message !== 'Tile does not exist') return done(err);
+        if (err && err.message !== 'Tile does not exist') return callback(err);
 
         // If no last modified is provided, use epoch.
         headers['Last-Modified'] = new Date(headers['Last-Modified'] || 0).toUTCString();
@@ -145,22 +111,22 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         headers['Content-Type'] = 'application/x-protobuf';
 
         // Pass-thru of an upstream mapnik vector tile (not pbf) source.
-        if (data instanceof mapnik.VectorTile) return done(null, data, headers);
+        if (data instanceof mapnik.VectorTile) return callback(null, data, headers);
 
         var vtile = new mapnik.VectorTile(bz, bx, by);
         vtile._srcbytes = size;
 
         // null/zero length data is a solid tile be painted.
-        if (!data) return done(null, vtile, headers);
+        if (!data) return callback(null, vtile, headers);
 
         try {
             vtile.setData(data);
         } catch (err) {
-            return done(err);
+            return callback(err);
         }
         vtile.parse(function(err) {
-            if (err) return done(err);
-            done(null, vtile, headers);
+            if (err) return callback(err);
+            callback(null, vtile, headers);
         })
     };
 };
