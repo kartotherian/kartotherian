@@ -1,5 +1,9 @@
 # Changlog
 
+## 0.9.0
+
+ - Backend: remove caching of VT tiles
+
 ## 0.8.0
 
  - Use lru-cache to replace internal backend VT cache
