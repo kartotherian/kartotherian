@@ -36,6 +36,10 @@ zlib.deflate(new Buffer('asdf'), function(err, deflated) {
     tiles.a['1.0.2'] = new Buffer('asdf'); // invalid deflate
     tiles.a['1.0.3'] = deflated;           // invalid protobuf
 });
+zlib.deflate(new Buffer(0), function(err, deflated) {
+    if (err) throw err;
+    tiles.a['0.0.1'] = deflated;
+});
 
 var now = new Date;
 
@@ -145,7 +149,8 @@ describe('tiles', function() {
         // 2.0.0, 2.0.1 test overzooming.
         // 1.1.2, 1.1.3 test that solid bg tiles are generated even when no
         // backend tile exists.
-        a: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
+        // 0.0.1 test that solid bg tiles are generated for 0-length protobufs.
+        a: ['0.0.0', '0.0.1', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
         // 2.1.1 should use z2 vector tile -- a coastline shapefile
         // 2.1.2 should use maskLevel -- place dots, like the others
         b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],
