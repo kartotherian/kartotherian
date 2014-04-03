@@ -117,7 +117,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         vtile._srcbytes = size;
 
         // null/zero length data is a solid tile be painted.
-        if (!data) return callback(null, vtile, headers);
+        if (!data || !data.length) return callback(null, vtile, headers);
 
         try {
             vtile.setData(data);
