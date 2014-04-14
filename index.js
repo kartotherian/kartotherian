@@ -53,6 +53,10 @@ Vector.prototype.open = function(callback) {
     this.once('open', callback);
 };
 
+Vector.prototype.close = function(callback) {
+    return callback();
+};
+
 // Allows in-place update of XML/backends.
 Vector.prototype.update = function(opts, callback) {
     // If the XML has changed update the map.
