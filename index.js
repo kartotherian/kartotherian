@@ -17,8 +17,12 @@ var Backend = require('./backend');
 var mapTemplate = fs.readFileSync(__dirname + '/templates/map.xml', 'utf8');
 var layerTemplate = fs.readFileSync(__dirname + '/templates/layer.xml', 'utf8');
 
+// Register fonts for xray styles.
+mapnik.register_fonts(path.resolve(__dirname + '/fonts'));
+
 module.exports = Vector;
 module.exports.tm2z = tm2z;
+module.exports.xray = xray;
 module.exports.mapnik = mapnik;
 module.exports.Backend = Backend;
 
