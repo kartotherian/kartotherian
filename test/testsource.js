@@ -6,11 +6,6 @@ var path = require('path');
 module.exports = Testsource;
 
 // Load fixture data.
-var xml = {
-    a: fs.readFileSync(path.resolve(__dirname + '/fixtures/a.xml'), 'utf8'),
-    b: fs.readFileSync(path.resolve(__dirname + '/fixtures/b.xml'), 'utf8'),
-    c: fs.readFileSync(path.resolve(__dirname + '/fixtures/c.xml'), 'utf8')
-};
 var infos = {
     a: {
         minzoom:0,
