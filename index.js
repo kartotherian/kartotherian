@@ -516,8 +516,11 @@ function xray(opts, callback) {
 xray.xml = function(opts) {
     // Support interactivity options template if passed in.
     var params = '';
-    if (opts.interactivity_layer && opts.template) {
-        params = util.format(xray.templates.params, opts.interactivity_layer, opts.template);
+    var layer = opts.vector_layers.filter(function(l) {
+        return l.id === opts.interactivity_layer && l.fields;
+    });
+    if (layer.length && opts.template) {
+        params = util.format(xray.templates.params, layer[0].id, Object.keys(layer[0].fields).join(','), opts.template);
     }
 
     return util.format(xray.templates.map, params, opts.vector_layers.map(function(layer){

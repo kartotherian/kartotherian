@@ -77,7 +77,7 @@ describe('xray', function() {
             }),
             'xray-interactivity.xml': xray.xml({
                 vector_layers: [
-                    { "id": "water" }
+                    { "id": "water", "fields": { "NAME": "String" } }
                 ],
                 interactivity_layer: 'water',
                 template: '<div>{{NAME}}</div>'
