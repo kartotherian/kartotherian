@@ -29,6 +29,7 @@ function Backend(opts, callback) {
     function setsource(source, info) {
         backend._minzoom = info.minzoom || 0;
         backend._maxzoom = info.maxzoom || 22;
+        backend._vector_layers = info.vector_layers || undefined;
         // @TODO some sources filter out custom keys @ getInfo forcing us
         // to access info/data properties directly. Fix this.
         if ('maskLevel' in info && !isNaN(parseInt(info.maskLevel, 10))) {

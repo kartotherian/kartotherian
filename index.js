@@ -13,8 +13,12 @@ var numeral = require('numeral');
 var sm = new (require('sphericalmercator'))();
 var Backend = require('./backend');
 
+// Register fonts for xray styles.
+mapnik.register_fonts(path.resolve(__dirname + '/fonts'));
+
 module.exports = Vector;
 module.exports.tm2z = tm2z;
+module.exports.xray = xray;
 module.exports.mapnik = mapnik;
 module.exports.Backend = Backend;
 
@@ -29,6 +33,7 @@ function Vector(uri, callback) {
     this._scale = uri.scale || undefined;
     this._format = uri.format || undefined;
     this._source = uri.source || undefined;
+    this._backend = uri.backend || undefined;
     this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
     this._base = path.resolve(uri.base || __dirname);
 
@@ -486,8 +491,67 @@ function tm2z(uri, callback) {
         });
     };
 };
+
 tm2z.sources = {};
 
 tm2z.findID = function(source, id, callback) {
     callback(new Error('id not found'));
 };
+
+function xray(opts, callback) {
+    new Backend(opts, function(err, backend) {
+        if (err) return callback(err);
+        if (!backend._vector_layers) return callback(new Error('source must contain a vector_layers property'));
+        new Vector({
+            xml: xray.xml({
+                vector_layers: backend._vector_layers,
+                template: opts.template,
+                interactivity_layer: opts.interactivity_layer
+            }),
+            backend: backend
+        }, callback);
+    });
+};
+
+xray.xml = function(opts) {
+    // Support interactivity options template if passed in.
+    var params = '';
+    var interactive = opts.vector_layers.filter(function(l) {
+        return l.id === opts.interactivity_layer && l.fields;
+    })[0];
+    if (interactive && opts.template) {
+        params = util.format(xray.templates.params, interactive.id, Object.keys(interactive.fields).join(','), opts.template);
+    }
+
+    return util.format(xray.templates.map, params, opts.vector_layers.map(function(layer){
+        var rgb = xray.color(layer.id).join(',');
+        if (layer === interactive) {
+            return util.format(xray.templates.interactive, layer.id, rgb, layer.id, layer.id)
+        } else {
+            return util.format(xray.templates.layer, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id)
+        }
+    }).join('\n'));
+};
+
+// Templates for generating xray styles.
+xray.templates = {};
+xray.templates.map = fs.readFileSync(__dirname + '/templates/map.xml', 'utf8');
+xray.templates.layer = fs.readFileSync(__dirname + '/templates/layer.xml', 'utf8');
+xray.templates.interactive = fs.readFileSync(__dirname + '/templates/interactive.xml', 'utf8');
+xray.templates.params = fs.readFileSync(__dirname + '/templates/params.xml', 'utf8');
+
+xray.color = function(str) {
+    var rgb = [0, 0, 0];
+    for (var i = 0; i < str.length; i++) {
+        var v = str.charCodeAt(i);
+        rgb[v % 3] = (rgb[i % 3] + (13*(v%13))) % 12;
+    }
+    var r = 4 + rgb[0];
+    var g = 4 + rgb[1];
+    var b = 4 + rgb[2];
+    r = (r * 16) + r;
+    g = (g * 16) + g;
+    b = (b * 16) + b;
+    return [r,g,b];
+};
+

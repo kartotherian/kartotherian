@@ -6,75 +6,15 @@ var Vector = require('..');
 var path = require('path');
 var fs = require('fs');
 var imageEqualsFile = require('./image.js');
+var Testsource = require('./testsource');
 
-// Load fixture data.
+// Tilelive test source.
+tilelive.protocols['test:'] = Testsource;
+
 var xml = {
     a: fs.readFileSync(path.resolve(__dirname + '/fixtures/a.xml'), 'utf8'),
     b: fs.readFileSync(path.resolve(__dirname + '/fixtures/b.xml'), 'utf8'),
     c: fs.readFileSync(path.resolve(__dirname + '/fixtures/c.xml'), 'utf8')
-};
-var infos = {
-    a: { minzoom:0, maxzoom:1 },
-    b: { minzoom:0, maxzoom:2, maskLevel:1 }
-};
-var tiles = {
-    a: fs.readdirSync(path.resolve(__dirname + '/fixtures/a')).reduce(function(memo, basename) {
-        var key = basename.split('.').slice(0,3).join('.');
-        memo[key] = fs.readFileSync(path.resolve(__dirname + '/fixtures/a/' + basename));
-        return memo;
-    }, {}),
-    b: fs.readdirSync(path.resolve(__dirname + '/fixtures/b')).reduce(function(memo, basename) {
-        var key = basename.split('.').slice(0,3).join('.');
-        memo[key] = fs.readFileSync(path.resolve(__dirname + '/fixtures/b/' + basename));
-        return memo;
-    }, {})
-};
-
-// Additional error tile fixtures.
-zlib.deflate(new Buffer('asdf'), function(err, deflated) {
-    if (err) throw err;
-    tiles.a['1.0.2'] = new Buffer('asdf'); // invalid deflate
-    tiles.a['1.0.3'] = deflated;           // invalid protobuf
-});
-
-var now = new Date;
-
-// Tilelive test source.
-tilelive.protocols['test:'] = Testsource;
-function Testsource(uri, callback) {
-    if (uri && uri.pathname) uri = uri.pathname.slice(1);
-
-    this.uri = uri;
-    if (uri) this.data = {
-        minzoom: infos[uri].minzoom,
-        maxzoom: infos[uri].maxzoom,
-        maskLevel: infos[uri].maskLevel
-    };
-    this.stats = {};
-    return callback && callback(null, this);
-};
-Testsource.prototype.getTile = function(z,x,y,callback) {
-    var key = [z,x,y].join('.');
-
-    // Count number of times each key is requested for tests.
-    this.stats[key] = this.stats[key] || 0;
-    this.stats[key]++;
-
-    // Headers.
-    var headers = {
-        'Last-Modified': now.toUTCString(),
-        'ETag':'73f12a518adef759138c142865287a18',
-        'Content-Type':'application/x-protobuf'
-    };
-
-    if (!tiles[this.uri][key]) {
-        return callback(new Error('Tile does not exist'));
-    } else {
-        return callback(null, tiles[this.uri][key], headers);
-    }
-};
-Testsource.prototype.getInfo = function(callback) {
-    return callback(null, this.data);
 };
 
 describe('init', function() {
@@ -209,7 +149,7 @@ describe('tiles', function() {
                     if (['1.1.2','1.1.3'].indexOf(key) >= 0) {
                         assert.equal(headers['Last-Modified'], new Date(0).toUTCString());
                     } else {
-                        assert.equal(headers['Last-Modified'], now.toUTCString());
+                        assert.equal(headers['Last-Modified'], Testsource.now.toUTCString());
                     }
                     // Check for presence of ETag and store away for later
                     // ETag comparison.
@@ -234,7 +174,7 @@ describe('tiles', function() {
                     if (['1.1.2','1.1.3'].indexOf(key) >= 0) {
                         assert.equal(headers['Last-Modified'], new Date(0).toUTCString());
                     } else {
-                        assert.equal(headers['Last-Modified'], now.toUTCString());
+                        assert.equal(headers['Last-Modified'], Testsource.now.toUTCString());
                     }
                     // Content-Type.
                     assert.equal(undefined, headers['Content-Type']);
