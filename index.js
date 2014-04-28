@@ -13,10 +13,6 @@ var numeral = require('numeral');
 var sm = new (require('sphericalmercator'))();
 var Backend = require('./backend');
 
-// Templates for generating xray styles.
-var mapTemplate = fs.readFileSync(__dirname + '/templates/map.xml', 'utf8');
-var layerTemplate = fs.readFileSync(__dirname + '/templates/layer.xml', 'utf8');
-
 // Register fonts for xray styles.
 mapnik.register_fonts(path.resolve(__dirname + '/fonts'));
 
@@ -506,16 +502,35 @@ function xray(opts, callback) {
     new Backend(opts, function(err, backend) {
         if (err) return callback(err);
         if (!backend._vector_layers) return callback(new Error('source must contain a vector_layers property'));
-        var xml = util.format(mapTemplate, backend._vector_layers.map(function(layer){
-            var rgb = xray.color(layer.id).join(',');
-            return util.format(layerTemplate, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id)
-        }).join('\n'));
         new Vector({
-            xml: xml,
+            xml: xray.xml({
+                vector_layers: backend._vector_layers,
+                template: opts.template,
+                interactivity_layer: opts.interactivity_layer
+            }),
             backend: backend
         }, callback);
     });
 };
+
+xray.xml = function(opts) {
+    // Support interactivity options template if passed in.
+    var params = '';
+    if (opts.interactivity_layer && opts.template) {
+        params = util.format(xray.templates.params, opts.interactivity_layer, opts.template);
+    }
+
+    return util.format(xray.templates.map, params, opts.vector_layers.map(function(layer){
+        var rgb = xray.color(layer.id).join(',');
+        return util.format(xray.templates.layer, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id)
+    }).join('\n'));
+};
+
+// Templates for generating xray styles.
+xray.templates = {};
+xray.templates.map = fs.readFileSync(__dirname + '/templates/map.xml', 'utf8');
+xray.templates.layer = fs.readFileSync(__dirname + '/templates/layer.xml', 'utf8');
+xray.templates.params = fs.readFileSync(__dirname + '/templates/params.xml', 'utf8');
 
 xray.color = function(str) {
     var rgb = [0, 0, 0];

@@ -48,4 +48,44 @@ describe('xray', function() {
             done();
         });
     });
+    it('color', function() {
+        var results = {
+            '': [68,68,68],
+            'a': [68,170,68],
+            'ab': [68,170,85],
+            'world': [136,221,102],
+            'rivers and lakes': [170,153,85]
+        };
+        for (var key in results) {
+            assert.deepEqual(xray.color(key), results[key]);
+        }
+    });
+    it('xml', function() {
+        var results = {
+            'xray-single.xml': xray.xml({
+                vector_layers: [
+                    { "id": "coastline" }
+                ]
+            }),
+            'xray-multi.xml': xray.xml({
+                vector_layers: [
+                    { "id": "coastline" },
+                    { "id": "countries" },
+                    { "id": "water" },
+                    { "id": "landuse" }
+                ]
+            }),
+            'xray-interactivity.xml': xray.xml({
+                vector_layers: [
+                    { "id": "water" }
+                ],
+                interactivity_layer: 'water',
+                template: '<div>{{NAME}}</div>'
+            })
+        };
+        for (var key in results) {
+            // fs.writeFileSync(__dirname + '/expected/' + key, results[key]);
+            assert.equal(fs.readFileSync(__dirname + '/expected/' + key), results[key]);
+        }
+    });
 });
