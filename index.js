@@ -5,8 +5,11 @@ var fs = require("fs"),
     url = require("url"),
     util = require("util");
 
-var Bridge = require("tilelive-bridge"),
+var _ = require("underscore"),
+    Bridge = require("tilelive-bridge"),
     carto = require("carto"),
+    mapnik = require("mapnik"),
+    mapnikref = require('mapnik-reference').version.latest,
     yaml = require("js-yaml");
 
 var tm = {};
@@ -37,6 +40,87 @@ tm.sortkeys = function(obj) {
     }, {});
   } catch(e) { return obj };
 };
+
+var defaults = {
+  name:'',
+  description:'',
+  attribution:'',
+  mtime:+new Date,
+  minzoom:0,
+  maxzoom:6,
+  center:[0,0,3],
+  Layer:[],
+  _prefs: {
+    saveCenter: true,
+    disabled: [],
+    inspector: false
+  }
+};
+
+var deflayer = {
+  id:'',
+  srs:'',
+  description:'',
+  fields: {},
+  Datasource: {},
+  properties: {
+    minzoom:0,
+    maxzoom:22,
+    'buffer-size':0
+  }
+};
+
+// Initialize defaults and derived properties on source data.
+var normalize = function(data) {
+  data = _(data).defaults(defaults);
+  // Initialize deep defaults for _prefs, layers.
+  data._prefs = _(data._prefs).defaults(defaults._prefs);
+  data.Layer = data.Layer.map(function(l) {
+    l = _(l).defaults(deflayer);
+    // @TODO mapnikref doesn't distinguish between keys that belong in
+    // layer properties vs. attributes...
+    l.properties = _(l.properties).defaults(deflayer.properties);
+    // Ensure datasource keys are valid.
+    l.Datasource = _(l.Datasource).reduce(function(memo, val, key) {
+      if (!mapnikref.datasources[l.Datasource.type]) return memo;
+      if (key === 'type') memo[key] = val;
+      if (key in mapnikref.datasources[l.Datasource.type]) memo[key] = val;
+      // Set a default extent value for postgis based on the SRS.
+      if (l.Datasource.type === 'postgis' && key === 'extent' && !val) {
+        _(tm.srs).each(function(srs, id) {
+            if (l.srs !== srs) return;
+            memo[key] = tm.extent[id];
+        });
+      }
+      return memo
+    }, {});
+    return l;
+  });
+  // Format property to distinguish from imagery tiles.
+  data.format = 'pbf';
+  // Construct vector_layers info from layer properties if necessary.
+  data.vector_layers = data.Layer.map(function(l) {
+    var info = {};
+    info.id = l.id;
+    if ('description' in l) info.description = l.description;
+    if ('minzoom' in l.properties) info.minzoom = l.properties.minzoom;
+    if ('maxzoom' in l.properties) info.maxzoom = l.properties.maxzoom;
+    info.fields = [];
+    var opts = _(l.Datasource).clone();
+
+    // Ugh. Also, Windows.
+    if (opts.file && opts.file.charAt(0) !== '/') opts.base = url.parse(data.id).pathname;
+
+    var fields = new mapnik.Datasource(opts).describe().fields;
+    info.fields = _(fields).reduce(function(memo, type, field) {
+      memo[field] = l.fields[field] || type;
+      return memo;
+    }, {});
+    return info;
+  });
+  return data;
+};
+
 
 var toXML = function(data, callback) {
   // Include params to be written to XML.
@@ -90,8 +174,7 @@ var TMSource = function(uri, callback) {
       return callback(err);
     }
 
-    // TODO (tm2) data.yml does not include format
-    self.info.format = "pbf";
+    self.info = normalize(self.info);
 
     return toXML(self.info, function(err, xml) {
       if (err) {

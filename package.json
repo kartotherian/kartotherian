@@ -8,8 +8,11 @@
   ],
   "license": "BSD-2-Clause",
   "dependencies": {
-    "tilelive-bridge": "0.2.0",
-    "js-yaml": "~3.0.2",
-    "carto": "~0.9.5"
+    "tilelive-bridge": "^0.4.0",
+    "js-yaml": "^3.0.2",
+    "carto": "^0.9.5",
+    "underscore": "^1.6.0",
+    "mapnik-reference": "^5.0.9",
+    "mapnik": "^1.4.2"
   }
 }
