@@ -13,6 +13,10 @@ var numeral = require('numeral');
 var sm = new (require('sphericalmercator'))();
 var Backend = require('./backend');
 
+// Templates for generating xray styles.
+var mapTemplate = fs.readFileSync(__dirname + '/templates/map.xml', 'utf8');
+var layerTemplate = fs.readFileSync(__dirname + '/templates/layer.xml', 'utf8');
+
 module.exports = Vector;
 module.exports.tm2z = tm2z;
 module.exports.mapnik = mapnik;
@@ -29,6 +33,7 @@ function Vector(uri, callback) {
     this._scale = uri.scale || undefined;
     this._format = uri.format || undefined;
     this._source = uri.source || undefined;
+    this._backend = uri.backend || undefined;
     this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
     this._base = path.resolve(uri.base || __dirname);
 
@@ -486,8 +491,24 @@ function tm2z(uri, callback) {
         });
     };
 };
+
 tm2z.sources = {};
 
 tm2z.findID = function(source, id, callback) {
     callback(new Error('id not found'));
 };
+
+function xray(opts, callback) {
+    new Backend(opts, function(err, backend) {
+        if (err) return callback(err);
+        if (!backend._vector_layers) return callback(new Error('source must contain a vector_layers property'));
+        var xml = util.format(mapTemplate, backend._vector_layers.map(function(layer){
+            return util.format(layerTemplate, layer.id, layer.id, layer.id)
+        }).join('\n'));
+        new Vector({
+            xml: xml,
+            backend: backend
+        }, callback);
+    });
+};
+
