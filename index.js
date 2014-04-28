@@ -516,16 +516,20 @@ function xray(opts, callback) {
 xray.xml = function(opts) {
     // Support interactivity options template if passed in.
     var params = '';
-    var layer = opts.vector_layers.filter(function(l) {
+    var interactive = opts.vector_layers.filter(function(l) {
         return l.id === opts.interactivity_layer && l.fields;
-    });
-    if (layer.length && opts.template) {
-        params = util.format(xray.templates.params, layer[0].id, Object.keys(layer[0].fields).join(','), opts.template);
+    })[0];
+    if (interactive && opts.template) {
+        params = util.format(xray.templates.params, interactive.id, Object.keys(interactive.fields).join(','), opts.template);
     }
 
     return util.format(xray.templates.map, params, opts.vector_layers.map(function(layer){
         var rgb = xray.color(layer.id).join(',');
-        return util.format(xray.templates.layer, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id)
+        if (layer === interactive) {
+            return util.format(xray.templates.interactive, layer.id, rgb, layer.id, layer.id)
+        } else {
+            return util.format(xray.templates.layer, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id)
+        }
     }).join('\n'));
 };
 
@@ -533,6 +537,7 @@ xray.xml = function(opts) {
 xray.templates = {};
 xray.templates.map = fs.readFileSync(__dirname + '/templates/map.xml', 'utf8');
 xray.templates.layer = fs.readFileSync(__dirname + '/templates/layer.xml', 'utf8');
+xray.templates.interactive = fs.readFileSync(__dirname + '/templates/interactive.xml', 'utf8');
 xray.templates.params = fs.readFileSync(__dirname + '/templates/params.xml', 'utf8');
 
 xray.color = function(str) {
