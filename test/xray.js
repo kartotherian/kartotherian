@@ -1,7 +1,9 @@
 var tilelive = require('tilelive');
 var assert = require('assert');
+var imageEqualsFile = require('./image.js');
 var Testsource = require('./testsource');
 var xray = require('..').xray;
+var fs = require('fs');
 
 // Tilelive test source.
 tilelive.protocols['test:'] = Testsource;
@@ -23,7 +25,14 @@ describe('xray', function() {
         new xray({uri:'test:///a'}, function(err, source) {
             assert.ifError(err);
             assert.ok(!!source);
-            done();
+            source.getTile(0,0,0, function(err,buffer) {
+                assert.ifError(err);
+                // fs.writeFileSync(__dirname + '/expected/xray-a-0-0-0.png', buffer);
+                imageEqualsFile(buffer, __dirname + '/expected/xray-a-0-0-0.png', function(err) {
+                    assert.ifError(err);
+                    done();
+                });
+            });
         });
     });
 });
