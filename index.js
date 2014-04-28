@@ -507,12 +507,28 @@ function xray(opts, callback) {
         if (err) return callback(err);
         if (!backend._vector_layers) return callback(new Error('source must contain a vector_layers property'));
         var xml = util.format(mapTemplate, backend._vector_layers.map(function(layer){
-            return util.format(layerTemplate, layer.id, layer.id, layer.id)
+            var rgb = xray.color(layer.id).join(',');
+            return util.format(layerTemplate, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id)
         }).join('\n'));
         new Vector({
             xml: xml,
             backend: backend
         }, callback);
     });
+};
+
+xray.color = function(str) {
+    var rgb = [0, 0, 0];
+    for (var i = 0; i < str.length; i++) {
+        var v = str.charCodeAt(i);
+        rgb[v % 3] = (rgb[i % 3] + (13*(v%13))) % 12;
+    }
+    var r = 4 + rgb[0];
+    var g = 4 + rgb[1];
+    var b = 4 + rgb[2];
+    r = (r * 16) + r;
+    g = (g * 16) + g;
+    b = (b * 16) + b;
+    return [r,g,b];
 };
 
