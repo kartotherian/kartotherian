@@ -21,7 +21,7 @@ describe('xray', function() {
             done();
         });
     });
-    it('valid', function(done) {
+    it('loads uri', function(done) {
         new xray({uri:'test:///a'}, function(err, source) {
             assert.ifError(err);
             assert.ok(!!source);
@@ -33,6 +33,19 @@ describe('xray', function() {
                     done();
                 });
             });
+        });
+    });
+    it('loads source', function(done) {
+        var source = new Testsource('a');
+        new xray({
+            source: source,
+            minzoom: 0,
+            maxzoom: 1,
+            vector_layers: [{ id:'coastline' }]
+        }, function(err, source) {
+            assert.ifError(err);
+            assert.ok(!!source);
+            done();
         });
     });
 });
