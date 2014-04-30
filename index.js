@@ -354,10 +354,7 @@ function tm2z(uri, callback) {
     var id = url.format(uri);
 
     // Cache hit.
-    if (tm2z.sources[id]) {
-        tm2z.sources[id].access = +new Date;
-        return tm2z.sources[id].open(callback);
-    }
+    if (tm2z.sources[id]) return tm2z.sources[id].open(callback);
 
     var xml;
     var base = '/tmp/' + md5(id).substr(0,8) + '-' + path.basename(id);
@@ -485,8 +482,6 @@ function tm2z(uri, callback) {
                 delete tm2z.sources[id];
                 return callback(err);
             }
-            source.mtime = new Date(source._backend._source.data.mtime);
-            source.access = +new Date;
             callback(null, source);
         });
     };
