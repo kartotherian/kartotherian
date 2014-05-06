@@ -1,5 +1,9 @@
 # Changlog
 
+## 0.11.0
+
+ - Add xray constructor for auto-generating inspection styles for backends
+
 ## 0.10.0
 
  - Loosen node-mapnik semver to any ~1.4.0 version
