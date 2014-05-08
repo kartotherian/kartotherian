@@ -4,7 +4,7 @@ var imageEqualsFile = require('./image.js');
 var Testsource = require('./testsource');
 var xray = require('..').xray;
 var fs = require('fs');
-var UPDATE = process.env.UPDATE:
+var UPDATE = process.env.UPDATE;
 
 // Tilelive test source.
 tilelive.protocols['test:'] = Testsource;
