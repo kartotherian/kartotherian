@@ -1,5 +1,9 @@
 # Changlog
 
+## 0.12.0
+
+ - Adds queryTile method and removes xray interactivity for inspection
+
 ## 0.11.0
 
  - Add xray constructor for auto-generating inspection styles for backends
