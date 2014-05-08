@@ -7,6 +7,7 @@ var path = require('path');
 var fs = require('fs');
 var imageEqualsFile = require('./image.js');
 var Testsource = require('./testsource');
+var UPDATE = process.env.UPDATE;
 
 // Tilelive test source.
 tilelive.protocols['test:'] = Testsource;
@@ -161,7 +162,9 @@ describe('tiles', function() {
                     // Load/draw stats attached to buffer.
                     assert.equal('number', typeof buffer._loadtime);
                     assert.equal('number', typeof buffer._drawtime);
-                    // fs.writeFileSync(__dirname + '/expected/' + source + '.' + key + '.png', buffer);
+                    if (UPDATE) {
+                        fs.writeFileSync(__dirname + '/expected/' + source + '.' + key + '.png', buffer);
+                    }
                     imageEqualsFile(buffer, __dirname + '/expected/' + source + '.' + key + '.png', function(err) {
                         assert.ifError(err);
                         if (!--remaining) done();
@@ -198,20 +201,25 @@ describe('tiles', function() {
                 assert.ifError(err);
                 assert.equal(headers['Content-Type'], formats[format].ctype);
                 if (format === 'utf' || format === 'json') {
+                    if (UPDATE) {
+                        fs.writeFileSync(filepath, JSON.stringify(buffer, null, 2));
+                    }
                     assert.deepEqual(buffer, JSON.parse(fs.readFileSync(filepath, 'utf8')));
                     done();
-                    // fs.writeFileSync(filepath, JSON.stringify(buffer, null, 2));
-                    // done();
                 } else if (format === 'svg') {
+                    if (UPDATE) {
+                        fs.writeFileSync(filepath, buffer);
+                    }
                     assert.equal(buffer.length, fs.readFileSync(filepath).length);
                     done();
                 } else {
+                    if (UPDATE) {
+                        fs.writeFileSync(filepath, buffer);
+                    }
                     imageEqualsFile(buffer, filepath, function(err) {
                         assert.ifError(err);
                         done();
                     });
-                    // fs.writeFileSync(filepath, buffer);
-                    // done();
                 }
             };
             cbTile.format = format;

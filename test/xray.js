@@ -4,6 +4,7 @@ var imageEqualsFile = require('./image.js');
 var Testsource = require('./testsource');
 var xray = require('..').xray;
 var fs = require('fs');
+var UPDATE = process.env.UPDATE:
 
 // Tilelive test source.
 tilelive.protocols['test:'] = Testsource;
@@ -27,7 +28,9 @@ describe('xray', function() {
             assert.ok(!!source);
             source.getTile(0,0,0, function(err,buffer) {
                 assert.ifError(err);
-                // fs.writeFileSync(__dirname + '/expected/xray-a-0-0-0.png', buffer);
+                if (UPDATE) {
+                    fs.writeFileSync(__dirname + '/expected/xray-a-0-0-0.png', buffer);
+                }
                 imageEqualsFile(buffer, __dirname + '/expected/xray-a-0-0-0.png', function(err) {
                     assert.ifError(err);
                     done();
@@ -84,7 +87,9 @@ describe('xray', function() {
             })
         };
         for (var key in results) {
-            // fs.writeFileSync(__dirname + '/expected/' + key, results[key]);
+            if (UPDATE) {
+                fs.writeFileSync(__dirname + '/expected/' + key, results[key]);
+            }
             assert.equal(fs.readFileSync(__dirname + '/expected/' + key), results[key]);
         }
     });
