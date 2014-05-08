@@ -227,6 +227,23 @@ describe('tiles', function() {
             sources[source].getTile(0,0,0, cbTile);
         });
     });
+    it('query', function(done) {
+        this.timeout(5000);
+        var lonlat = [-77.0131, 38.8829];
+        var filepath = __dirname + '/expected/query-' + lonlat.join(',') + '.json';
+        sources.a.queryTile(22, lonlat[0], lonlat[1], { tolerance: 10000 }, function(err, data, headers) {
+            assert.ifError(err);
+            assert.equal(headers['Content-Type'], 'application/json');
+            if (UPDATE) {
+                fs.writeFileSync(filepath, JSON.stringify(data, null, 2));
+            }
+            assert.deepEqual(
+                JSON.parse(JSON.stringify(data)),
+                JSON.parse(fs.readFileSync(filepath, 'utf8'))
+            );
+            done();
+        });
+    });
     it('errors out on bad deflate', function(done) {
         sources.a.getTile(1, 0, 2, function(err) {
             assert.equal('Z_DATA_ERROR', err.code);

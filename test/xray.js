@@ -77,13 +77,6 @@ describe('xray', function() {
                     { "id": "water" },
                     { "id": "landuse" }
                 ]
-            }),
-            'xray-interactivity.xml': xray.xml({
-                vector_layers: [
-                    { "id": "water", "fields": { "NAME": "String" } }
-                ],
-                interactivity_layer: 'water',
-                template: '<div>{{NAME}}</div>'
             })
         };
         for (var key in results) {
