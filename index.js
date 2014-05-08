@@ -256,10 +256,10 @@ Vector.prototype.queryTile = function(lon, lat, options, callback) {
         var results = [];
         for (var i = 0; i < features.length; i++) {
             results.push({
-                id: features[0].id(),
-                distance: features[0].distance,
-                layer: features[0].layer,
-                attributes: features[0].attributes()
+                id: features[i].id(),
+                distance: features[i].distance,
+                layer: features[i].layer,
+                attributes: features[i].attributes()
             });
         }
         headers['Content-Type'] = 'application/json';
