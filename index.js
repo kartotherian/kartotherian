@@ -241,6 +241,32 @@ Vector.prototype.getInfo = function(callback) {
     return callback(null, this._info);
 };
 
+// Proxies mapnik vtile.query method with the added convienice of
+// letting the tilelive-vector backend do the hard work of finding
+// the right tile to use.
+Vector.prototype.queryTile = function(lon, lat, options, callback) {
+    var xyz = sm.xyz([lon, lat, lon, lat], 22);
+    this._backend.getTile(22, xyz.minX, xyz.minY, function(err, vtile, headers) {
+        if (err) return callback(err);
+        try {
+            var features = vtile.query(lon, lat, options);
+        } catch(err) {
+            return callback(err);
+        }
+        var results = [];
+        for (var i = 0; i < features.length; i++) {
+            results.push({
+                id: features[0].id(),
+                distance: features[0].distance,
+                layer: features[0].layer,
+                attributes: features[0].attributes()
+            });
+        }
+        headers['Content-Type'] = 'application/json';
+        return callback(null, results, headers);
+    });
+};
+
 Vector.prototype.profile = function(callback) {
     var s = this;
     var map = new mapnik.Map(256,256);
