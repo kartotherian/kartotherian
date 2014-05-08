@@ -1,28 +1,27 @@
 var _ = require('underscore');
 var spherical = require('spherical');
 
-var TileProfiler = module.exports = function(vtile) {
-    this._vtile = vtile;
-};
 
-TileProfiler.prototype.layerInfo = function() {
-    var jsonsizes = this._vtile.toJSON().reduce(function(memo, l) {
-        memo[l.name] = JSON.stringify(l).length;
-        return memo;
-    }, {});
+module.exports = {
+    layerInfo: function(vtile) {
+        var jsonsizes = vtile.toJSON().reduce(function(memo, l) {
+            memo[l.name] = JSON.stringify(l).length;
+            return memo;
+        }, {});
 
-    return this._vtile.toGeoJSON('__array__').map(function(layer) {
-        var info = {
-            name: layer.name,                  // name of the layer
-            coordCount: [],                    // # coords per feature
-            duplicateCoordCount: [],           // # duplicate coords per feature
-            coordDistance: [],                 // distances between consecutive coordinates
-            features: layer.features.length,   // number of features
-            jsonsize: jsonsizes[layer.name]    // length of layer as a JSON string
-        };
-        layer.features.reduce(featureDetails, info);
-        return info;
-    });
+        return vtile.toGeoJSON('__array__').map(function(layer) {
+            var info = {
+                name: layer.name,                  // name of the layer
+                coordCount: [],                    // # coords per feature
+                duplicateCoordCount: [],           // # duplicate coords per feature
+                coordDistance: [],                 // distances between consecutive coordinates
+                features: layer.features.length,   // number of features
+                jsonsize: jsonsizes[layer.name]    // length of layer as a JSON string
+            };
+            layer.features.reduce(featureDetails, info);
+            return info;
+        });
+    }
 };
 
 function featureDetails(info, feature) {

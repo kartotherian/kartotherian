@@ -11,7 +11,7 @@ var request = require('request');
 var exists = fs.exists || require('path').exists;
 var numeral = require('numeral');
 var sm = new (require('sphericalmercator'))();
-var TileProfiler = require('./tile-profiler');
+var profiler = require('./tile-profiler');
 var Backend = require('./backend');
 
 // Register fonts for xray styles.
@@ -186,10 +186,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
                     buffer._drawtime = (+new Date) - drawtime;
                     buffer._srcbytes = vtile._srcbytes || 0;
 
-                    if (profile) {
-                        var profiler = new TileProfiler(vtile);
-                        buffer._layerInfo = profiler.layerInfo();
-                    }
+                    if (profile) buffer._layerInfo = profiler.layerInfo(vtile);
 
                     return callback(null, buffer, headers);
                 });

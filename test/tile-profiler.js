@@ -1,6 +1,6 @@
 var tilelive = require('tilelive');
 var Vector = require('..');
-var Profiler = require('../tile-profiler');
+var profiler = require('../tile-profiler');
 var Testsource = require('./testsource');
 var ss = require('simple-statistics');
 var fs = require('fs');
@@ -14,7 +14,7 @@ tilelive.protocols['test:'] = Testsource;
 
 var xml = fs.readFileSync(path.resolve(__dirname + '/fixtures/a.xml'), 'utf8');
 
-describe('getTile', function() {
+describe('getTile with profile=true', function() {
     var source;
     before(function(done) {
         new Vector({ uri:'test:///a', xml: xml }, function(err, s) {
@@ -47,8 +47,7 @@ describe('profiler', function() {
         });
     });
     it('returns expected layer information', function(done) {
-        var p = new Profiler(tile);
-        var layerInfo = p.layerInfo();
+        var layerInfo = profiler.layerInfo(tile);
 
         // Tile has a 'coastline' layer
         var coastline = _(layerInfo).where({ name: 'coastline' })[0];
