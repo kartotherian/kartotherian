@@ -7,6 +7,7 @@ var fs = require('fs');
 var path = require('path');
 var assert = require('assert');
 var zlib = require('zlib');
+var _ = require('underscore');
 
 // Tilelive test source.
 tilelive.protocols['test:'] = Testsource;
@@ -22,10 +23,10 @@ describe('getTile', function() {
             done();
         });
     });
-    it('finds geometry statistics', function(done) {
+    it('finds layer information', function(done) {
         var cb = function(err, vtile, headers) {
             assert.ifError(err);
-            assert(vtile._geometryStats);
+            assert(vtile._layerInfo);
             done();
         };
         cb.profile = true;
@@ -45,38 +46,32 @@ describe('profiler', function() {
             });
         });
     });
-    it('returns tile size', function(done) {
+    it('returns expected layer information', function(done) {
         var p = new Profiler(tile);
-        assert.equal(p.tileSize(), tile._srcbytes);
-        done();
-    });
-    it('returns geometry statistics', function(done) {
-        var p = new Profiler(tile);
-        var geomStats = p.geometryStatistics();
+        var layerInfo = p.layerInfo();
 
         // Tile has a 'coastline' layer
-        assert.equal(geomStats.coastline.name, 'coastline');
+        var coastline = _(layerInfo).where({ name: 'coastline' })[0];
+        assert(coastline);
 
         // Tile contains 4177 features
-        assert.equal(
-            geomStats.coastline.coordCount.length,
-            geomStats.coastline.coordCount.length,
-            geomStats.coastline.duplicateCoordCount.length,
-            geomStats.coastline.coordDistance.length,
-            4177
-        );
+        assert.equal(coastline.coordCount.length, 4177);
+        assert.equal(coastline.features, 4177);
 
         // Longest/shortest features
-        assert.equal(ss.max(geomStats.coastline.coordCount), 381);
-        assert.equal(ss.min(geomStats.coastline.coordCount), 2);
+        assert.equal(ss.max(coastline.coordCount), 381);
+        assert.equal(ss.min(coastline.coordCount), 2);
 
         // Most/least duplication
-        assert.equal(ss.max(geomStats.coastline.duplicateCoordCount), 9);
-        assert.equal(ss.min(geomStats.coastline.duplicateCoordCount), 0);
+        assert.equal(ss.max(coastline.duplicateCoordCount), 9);
+        assert.equal(ss.min(coastline.duplicateCoordCount), 0);
 
         // Max/Min distance between consecutive coords
-        assert.equal(ss.max(geomStats.coastline.coordDistance), 570446.5598775251);
-        assert.equal(ss.min(geomStats.coastline.coordDistance), 0);
+        assert.equal(ss.max(coastline.coordDistance), 570446.5598775251);
+        assert.equal(ss.min(coastline.coordDistance), 0);
+
+        // Expected jsonsize
+        assert.equal(coastline.jsonsize, 520120);
         done();
     });
 });
