@@ -524,33 +524,16 @@ function xray(opts, callback) {
         if (err) return callback(err);
         if (!backend._vector_layers) return callback(new Error('source must contain a vector_layers property'));
         new Vector({
-            xml: xray.xml({
-                vector_layers: backend._vector_layers,
-                template: opts.template,
-                interactivity_layer: opts.interactivity_layer
-            }),
+            xml: xray.xml({ vector_layers: backend._vector_layers }),
             backend: backend
         }, callback);
     });
 };
 
 xray.xml = function(opts) {
-    // Support interactivity options template if passed in.
-    var params = '';
-    var interactive = opts.vector_layers.filter(function(l) {
-        return l.id === opts.interactivity_layer && l.fields;
-    })[0];
-    if (interactive && opts.template) {
-        params = util.format(xray.templates.params, interactive.id, Object.keys(interactive.fields).join(','), opts.template);
-    }
-
-    return util.format(xray.templates.map, params, opts.vector_layers.map(function(layer){
+    return util.format(xray.templates.map, opts.vector_layers.map(function(layer){
         var rgb = xray.color(layer.id).join(',');
-        if (layer === interactive) {
-            return util.format(xray.templates.interactive, layer.id, rgb, layer.id, layer.id)
-        } else {
-            return util.format(xray.templates.layer, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id)
-        }
+        return util.format(xray.templates.layer, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id)
     }).join('\n'));
 };
 
@@ -558,7 +541,6 @@ xray.xml = function(opts) {
 xray.templates = {};
 xray.templates.map = fs.readFileSync(__dirname + '/templates/map.xml', 'utf8');
 xray.templates.layer = fs.readFileSync(__dirname + '/templates/layer.xml', 'utf8');
-xray.templates.interactive = fs.readFileSync(__dirname + '/templates/interactive.xml', 'utf8');
 xray.templates.params = fs.readFileSync(__dirname + '/templates/params.xml', 'utf8');
 
 xray.color = function(str) {
