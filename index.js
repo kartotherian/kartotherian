@@ -244,9 +244,9 @@ Vector.prototype.getInfo = function(callback) {
 // Proxies mapnik vtile.query method with the added convienice of
 // letting the tilelive-vector backend do the hard work of finding
 // the right tile to use.
-Vector.prototype.queryTile = function(lon, lat, options, callback) {
+Vector.prototype.queryTile = function(z, lon, lat, options, callback) {
     var xyz = sm.xyz([lon, lat, lon, lat], 22);
-    this._backend.getTile(22, xyz.minX, xyz.minY, function(err, vtile, headers) {
+    this._backend.getTile(z, xyz.minX, xyz.minY, function(err, vtile, headers) {
         if (err) return callback(err);
         try {
             var features = vtile.query(lon, lat, options);

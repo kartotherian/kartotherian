@@ -231,7 +231,7 @@ describe('tiles', function() {
         this.timeout(5000);
         var lonlat = [-77.0131, 38.8829];
         var filepath = __dirname + '/expected/query-' + lonlat.join(',') + '.json';
-        sources.a.queryTile(lonlat[0], lonlat[1], { tolerance: 10000 }, function(err, data, headers) {
+        sources.a.queryTile(22, lonlat[0], lonlat[1], { tolerance: 10000 }, function(err, data, headers) {
             assert.ifError(err);
             assert.equal(headers['Content-Type'], 'application/json');
             if (UPDATE) {
