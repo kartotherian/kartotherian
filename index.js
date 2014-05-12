@@ -114,6 +114,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
     var format = callback.format || this._format;
     var scale = callback.scale || this._scale;
     var profile = callback.profile || false;
+    var tileDim = scale * 256;
 
     var source = this;
     var drawtime;
@@ -160,13 +161,13 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             try { return callback(null, vtile.toJSON(), headers); }
             catch(err) { return callback(err); }
         } else if (format === 'utf') {
-            var surface = new mapnik.Grid(256,256);
+            var surface = new mapnik.Grid(tileDim,tileDim);
             opts.layer = source._map.parameters.interactivity_layer;
             opts.fields = source._map.parameters.interactivity_fields.split(',');
         } else if (format === 'svg') {
-            var surface = new mapnik.CairoSurface('svg',256,256);
+            var surface = new mapnik.CairoSurface('svg',tileDim,tileDim);
         } else {
-            var surface = new mapnik.Image(256,256);
+            var surface = new mapnik.Image(tileDim,tileDim);
         }
         vtile.render(source._map, surface, opts, function(err, image) {
             if (err) return callback(err);
