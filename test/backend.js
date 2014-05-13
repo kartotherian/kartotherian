@@ -7,6 +7,7 @@ var mapnik = require('..').mapnik;
 var path = require('path');
 var fs = require('fs');
 var Testsource = require('./testsource');
+var UPDATE = process.env.UPDATE;
 
 // Tilelive test source.
 tilelive.protocols['test:'] = Testsource;
@@ -115,6 +116,13 @@ describe('tiles', function() {
                     assert.equal(headers['Content-Type'], 'application/x-protobuf');
                     // Size stats attached to buffer.
                     assert.equal('number', typeof vtile._srcbytes);
+                    // Compare vtile contents to expected fixtures.
+                    var fixtpath = __dirname + '/expected/backend-' + source + '.' + key + '.json';
+                    if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), null, 2));
+                    assert.deepEqual(
+                        JSON.parse(JSON.stringify(vtile.toJSON())),
+                        JSON.parse(fs.readFileSync(fixtpath))
+                    );
                     done();
                 };
                 sources[source].getTile(z,x,y, cbTile);
