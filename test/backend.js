@@ -84,8 +84,8 @@ describe('tiles', function() {
         // 2.1.1 should use z2 vector tile -- a coastline shapefile
         // 2.1.2 should use maskLevel -- place dots, like the others
         b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],
-        // test scale factor. unlike previous test, 3.2.2/3.2.3 will be coast
-        // and 3.2.4 should fallback to the maskLevel
+        // test the scale factor of the request affecting the output tile size
+        // seems overly generous in passing
         c: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
         // proxies through vector tiles (rather than PBFs) from a source.
         d: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1']
