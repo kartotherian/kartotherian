@@ -37,6 +37,8 @@ function Vector(uri, callback) {
     this._backend = uri.backend || undefined;
     this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
     this._base = path.resolve(uri.base || __dirname);
+    this._width = this._scale * 256 | 0 || 256;
+    this._height = this._scale * 256 | 0 || 256;
 
     if (callback) this.once('open', callback);
 
@@ -114,7 +116,6 @@ Vector.prototype.getTile = function(z, x, y, callback) {
     var format = callback.format || this._format;
     var scale = callback.scale || this._scale;
     var profile = callback.profile || false;
-    var tileDim = scale * 256;
 
     var source = this;
     var drawtime;
@@ -161,13 +162,13 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             try { return callback(null, vtile.toJSON(), headers); }
             catch(err) { return callback(err); }
         } else if (format === 'utf') {
-            var surface = new mapnik.Grid(tileDim,tileDim);
+            var surface = new mapnik.Grid(source._width,source._height);
             opts.layer = source._map.parameters.interactivity_layer;
             opts.fields = source._map.parameters.interactivity_fields.split(',');
         } else if (format === 'svg') {
-            var surface = new mapnik.CairoSurface('svg',tileDim,tileDim);
+            var surface = new mapnik.CairoSurface('svg',source._width,source._height);
         } else {
-            var surface = new mapnik.Image(tileDim,tileDim);
+            var surface = new mapnik.Image(source._width,source._height);
         }
         vtile.render(source._map, surface, opts, function(err, image) {
             if (err) return callback(err);
