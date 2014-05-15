@@ -7,10 +7,10 @@ var zlib = require('zlib');
 module.exports = Backend;
 
 function Backend(opts, callback) {
+    this._scale = opts.scale || 1;
     this._deflate = typeof opts.deflate === 'boolean' ? opts.deflate : true;
     this._source = null;
     var backend = this;
-
     if (opts.source) {
         setsource(opts.source, opts);
     } else if (opts.uri) {
@@ -48,7 +48,6 @@ Backend.prototype.getInfo = function(callback) {
 
 // Wrapper around backend.getTile that implements a "locking" cache.
 Backend.prototype.getTile = function(z, x, y, callback) {
-    console.log('tlv backend')
     if (!this._source) return callback(new Error('Tilesource not loaded'));
 
     var backend = this;

@@ -84,7 +84,7 @@ Vector.prototype.update = function(opts, callback) {
         s._map = map;
         s._md5 = crypto.createHash('md5').update(opts.xml).digest('hex');
         s._format = opts.format || map.parameters.format || s._format || 'png8:m=h';
-        s._scale = 1;
+        s._scale = opts.scale || +map.parameters.scale || s._scale || 1;
 
         var source = map.parameters.source || opts.source;
         if (!s._backend || s._source !== source) {
