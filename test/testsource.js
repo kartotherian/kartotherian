@@ -42,6 +42,10 @@ var infos = {
             }
         ]
     },
+    i: {
+        minzoom:0,
+        maxzoom:1
+    },
     'invalid-novector': {
         minzoom:0,
         maxzoom:1
@@ -56,6 +60,11 @@ var tiles = {
     b: fs.readdirSync(path.resolve(__dirname + '/fixtures/b')).reduce(function(memo, basename) {
         var key = basename.split('.').slice(0,3).join('.');
         memo[key] = fs.readFileSync(path.resolve(__dirname + '/fixtures/b/' + basename));
+        return memo;
+    }, {}),
+    i: fs.readdirSync(path.resolve(__dirname + '/fixtures/i')).reduce(function(memo, basename) {
+        var key = basename.split('.').slice(0,3).join('.');
+        memo[key] = fs.readFileSync(path.resolve(__dirname + '/fixtures/i/' + basename));
         return memo;
     }, {})
 };
