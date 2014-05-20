@@ -1,6 +1,6 @@
 [
   {
-    "name": "raster",
+    "name": "image",
     "extent": 4096,
     "version": 1,
     "features": [

@@ -8,6 +8,7 @@ var zlib = require('zlib');
 module.exports = Backend;
 
 function Backend(opts, callback) {
+    this._layer = opts.layer || 'image';
     this._scale = opts.scale || 1;
     this._source = null;
     var backend = this;
@@ -137,7 +138,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             if (type === 'pbf') {
                 vtile.setData(data);
             } else {
-                vtile.addImage(data, 'raster'); // todo better layername
+                vtile.addImage(data, backend._layer);
             }
         } catch (err) {
             return callback(err);
