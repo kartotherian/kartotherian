@@ -73,7 +73,8 @@ describe('tiles', function() {
     var sources = {
         a: new Backend({ source: new Testsource('a'), minzoom:0, maxzoom: 1 }),
         b: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1 }),
-        c: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2 })
+        c: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2 }),
+        h: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2, legacy: true })
     };
     sources.d = new Backend({ source: sources.a, minzoom:0, maxzoom:1 });
     var tests = {
@@ -88,7 +89,9 @@ describe('tiles', function() {
         // test the scale factor of the request affecting the output tile size
         c: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
         // proxies through vector tiles (rather than PBFs) from a source.
-        d: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1']
+        d: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
+        // test the a legacy flag overriding the scale factor of the request affecting the output tile size
+        h: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4']
     };
     Object.keys(tests).forEach(function(source) {
         tests[source].forEach(function(key) {

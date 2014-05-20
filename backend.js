@@ -10,6 +10,7 @@ function Backend(opts, callback) {
     this._scale = opts.scale || 1;
     this._deflate = typeof opts.deflate === 'boolean' ? opts.deflate : true;
     this._source = null;
+    this._legacy = opts.legacy || false;
     var backend = this;
     if (opts.source) {
         setsource(opts.source, opts);
@@ -53,10 +54,21 @@ Backend.prototype.getTile = function(z, x, y, callback) {
     var backend = this;
     var source = backend._source;
     var now = +new Date;
+    var legacy = backend._legacy;
+    var scale = callback.scale || backend._scale;
 
-    var bz = z;
-    var bx = x;
-    var by = y;
+    // If scale > 1 adjusts source data zoom level inversely.
+    // scale 2x => z-1, scale 4x => z-2, scale 8x => z-3, etc.
+    if (legacy) {
+        var d = Math.round(Math.log(scale)/Math.log(2));
+        var bz = (z - d) > backend._minzoom ? z - d : backend._minzoom;
+        var bx = Math.floor(x / Math.pow(2, z - bz));
+        var by = Math.floor(y / Math.pow(2, z - bz));
+    } else {
+        var bz = z;
+        var bx = x;
+        var by = y;
+    }
 
     // Overzooming support.
     if (bz > backend._maxzoom) {

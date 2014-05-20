@@ -35,6 +35,7 @@ function Vector(uri, callback) {
     this._format = uri.format || undefined;
     this._source = uri.source || undefined;
     this._backend = uri.backend || undefined;
+    this._legacy = uri.legacy || false;
     this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
     this._base = path.resolve(uri.base || __dirname);
 
@@ -108,14 +109,13 @@ Vector.prototype.update = function(opts, callback) {
 
 Vector.prototype.getTile = function(z, x, y, callback) {
     if (!this._map) return callback(new Error('Tilesource not loaded'));
-
     // Hack around tilelive API - allow params to be passed per request
     // as attributes of the callback function.
     var format = callback.format || this._format;
     var scale = callback.scale || this._scale;
     var profile = callback.profile || false;
-    var width = scale * 256 | 0 || 256;
-    var height = scale * 256 | 0 || 256;
+    var width = (!this._legacy) ? scale * 256 | 0 || 256 : 256;
+    var height = (!this._legacy) ? scale * 256 | 0 || 256 : 256;
 
     var source = this;
     var drawtime;
