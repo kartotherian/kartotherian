@@ -1,6 +1,6 @@
 {
   "name": "tilelive-vector",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "main": "./index.js",
   "description": "Vector tile => raster tile backend for tilelive",
   "repository": {
