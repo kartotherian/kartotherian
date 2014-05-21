@@ -119,12 +119,26 @@ describe('tiles', function() {
                     // Size stats attached to buffer.
                     assert.equal('number', typeof vtile._srcbytes);
                     // Compare vtile contents to expected fixtures.
-                    var fixtpath = __dirname + '/expected/backend-' + source + '.' + key + '.json';
-                    if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), null, 2));
-                    assert.deepEqual(
-                        JSON.parse(JSON.stringify(vtile.toJSON())),
-                        JSON.parse(fs.readFileSync(fixtpath))
-                    );
+                    // if source is h, test legacy scale factor
+                    // at zoom > 1 it will compare with data at previous zoom level.
+                    if (source === 'h') {
+                        if (key[0] > 1) {
+                            key[0] -= 1;
+                            var fixtpath = __dirname + '/expected/backend-h.' + key + '.json';
+                            if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), null, 2));
+                            assert.deepEqual(
+                                JSON.parse(JSON.stringify(vtile.toJSON())),
+                                JSON.parse(fs.readFileSync(fixtpath))
+                            );
+                        }
+                    } else {
+                        var fixtpath = __dirname + '/expected/backend-' + source + '.' + key + '.json';
+                        if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), null, 2));
+                        assert.deepEqual(
+                            JSON.parse(JSON.stringify(vtile.toJSON())),
+                            JSON.parse(fs.readFileSync(fixtpath))
+                        );
+                    }
                     done();
                 };
                 sources[source].getTile(z,x,y, cbTile);
