@@ -252,7 +252,7 @@ Vector.prototype.getInfo = function(callback) {
 // the right tile to use.
 Vector.prototype.queryTile = function(z, lon, lat, options, callback) {
     var xyz = sm.xyz([lon, lat, lon, lat], z);
-    this._backend.getTile(z, xyz.minX, xyz.minY, function(err, vtile, headers) {
+    this._backend.getTile(z, xyz.minX, xyz.minY, function(err, vtile, head) {
         if (err) return callback(err);
         try {
             var features = vtile.query(lon, lat, options);
@@ -268,7 +268,12 @@ Vector.prototype.queryTile = function(z, lon, lat, options, callback) {
                 attributes: features[i].attributes()
             });
         }
+        var headers = {};
         headers['Content-Type'] = 'application/json';
+        headers['ETag'] = JSON.stringify(crypto.createHash('md5')
+            .update(head && head['ETag'] || (z+','+lon+','+lat))
+            .digest('hex'));
+        headers['Last-Modified'] = new Date(head && head['Last-Modified'] || 0).toUTCString();
         return callback(null, results, headers);
     });
 };
