@@ -103,7 +103,8 @@ describe('tiles', function() {
         f: new Vector({ backend: new Testsource('a'), xml: xml.a.replace('png8:m=h', 'png8:c=2') }),
         g: new Vector({ backend: new Testsource('a'), xml: xml.a.replace('"scale">1', '"scale">2') }),
         h: new Vector({ backend: new Testsource('b'), xml: xml.b, scale: 2 }),
-        i: new Vector({ backend: new Testsource('i'), xml: xml.i })
+        i: new Vector({ backend: new Testsource('i'), xml: xml.i }),
+        'i@2x': new Vector({ backend: new Testsource('i'), xml: xml.i })
     };
     var tests = {
         // 2.0.0, 2.0.1 test overzooming.
@@ -127,7 +128,9 @@ describe('tiles', function() {
         // Checks that scale in map parameters beats default code fallback.
         g: ['0.0.0'],
         // Image sources.
-        i: ['0.0.0', '1.0.0']
+        i: ['0.0.0', '1.0.0'],
+        // Image sources.
+        'i@2x': ['0.0.0', '1.0.0']
     };
     var formats = {
         json: { ctype: 'application/json' },
