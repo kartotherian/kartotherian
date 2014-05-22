@@ -5,12 +5,54 @@
     "version": 2,
     "features": [
       {
+        "id": 1,
+        "type": 1,
+        "geometry": [
+          9,
+          6466,
+          3170
+        ],
+        "properties": {
+          "ABBREV": "China",
+          "ADM0_A3": "CHN",
+          "ADM0_DIF": 0,
+          "ADMIN": "China",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 7973000,
+          "GEOUNIT": "China",
+          "GEOU_DIF": 0,
+          "GU_A3": "CHN",
+          "ISO_A2": "CN",
+          "ISO_A3": "CHN",
+          "ISO_N3": 156,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 3,
+          "NAME": "China",
+          "NAME_FORMA": "People's Republic of China",
+          "NAME_SORT": "China",
+          "OID_": 11,
+          "POP_EST": 1338612968,
+          "POSTAL": "CN",
+          "SOVEREIGNT": "China",
+          "SOV_A3": "CH1",
+          "SUBUNIT": "China",
+          "SU_A3": "CHN",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Country",
+          "ne_10m_adm": "CHN"
+        }
+      },
+      {
         "id": 2,
         "type": 1,
         "geometry": [
           9,
-          11814,
-          7104
+          5906,
+          3552
         ],
         "properties": {
           "ABBREV": "India",
@@ -51,8 +93,8 @@
         "type": 1,
         "geometry": [
           9,
-          3680,
-          6206
+          1840,
+          3102
         ],
         "properties": {
           "ABBREV": "U.S.A.",
@@ -89,12 +131,54 @@
         }
       },
       {
+        "id": 4,
+        "type": 1,
+        "geometry": [
+          9,
+          6830,
+          4140
+        ],
+        "properties": {
+          "ABBREV": "Indo.",
+          "ADM0_A3": "IDN",
+          "ADM0_DIF": 0,
+          "ADMIN": "Indonesia",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 914600,
+          "GEOUNIT": "Indonesia",
+          "GEOU_DIF": 0,
+          "GU_A3": "IDN",
+          "ISO_A2": "ID",
+          "ISO_A3": "IDN",
+          "ISO_N3": 360,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 11,
+          "NAME": "Indonesia",
+          "NAME_FORMA": "Republic of Indonesia",
+          "NAME_SORT": "Indonesia",
+          "OID_": 148,
+          "POP_EST": 240271522,
+          "POSTAL": "INDO",
+          "SOVEREIGNT": "Indonesia",
+          "SOV_A3": "IDN",
+          "SUBUNIT": "Indonesia",
+          "SU_A3": "IDN",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "IDN"
+        }
+      },
+      {
         "id": 5,
         "type": 1,
         "geometry": [
           9,
-          5784,
-          8618
+          2892,
+          4308
         ],
         "properties": {
           "ABBREV": "Brazil",
@@ -135,8 +219,8 @@
         "type": 1,
         "geometry": [
           9,
-          11350,
-          6752
+          5674,
+          3376
         ],
         "properties": {
           "ABBREV": "Pak.",
@@ -177,8 +261,8 @@
         "type": 1,
         "geometry": [
           9,
-          12286,
-          7060
+          6142,
+          3530
         ],
         "properties": {
           "ABBREV": "Bang.",
@@ -219,8 +303,8 @@
         "type": 1,
         "geometry": [
           9,
-          8560,
-          7752
+          4280,
+          3876
         ],
         "properties": {
           "ABBREV": "Nigeria",
@@ -257,12 +341,96 @@
         }
       },
       {
+        "id": 9,
+        "type": 1,
+        "geometry": [
+          9,
+          6322,
+          2140
+        ],
+        "properties": {
+          "ABBREV": "Rus.",
+          "ADM0_A3": "RUS",
+          "ADM0_DIF": 0,
+          "ADMIN": "Russia",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 2266000,
+          "GEOUNIT": "Russia",
+          "GEOU_DIF": 0,
+          "GU_A3": "RUS",
+          "ISO_A2": "RU",
+          "ISO_A3": "RUS",
+          "ISO_N3": 643,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 7,
+          "NAME": "Russia",
+          "NAME_FORMA": "Russian Federation",
+          "NAME_SORT": "Russia",
+          "OID_": 214,
+          "POP_EST": 140041247,
+          "POSTAL": "RUS",
+          "SOVEREIGNT": "Russia",
+          "SOV_A3": "RUS",
+          "SUBUNIT": "Russia",
+          "SU_A3": "RUS",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "RUS"
+        }
+      },
+      {
+        "id": 10,
+        "type": 1,
+        "geometry": [
+          9,
+          7260,
+          3192
+        ],
+        "properties": {
+          "ABBREV": "Japan",
+          "ADM0_A3": "JPN",
+          "ADM0_DIF": 0,
+          "ADMIN": "Japan",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 4329000,
+          "GEOUNIT": "Japan",
+          "GEOU_DIF": 0,
+          "GU_A3": "JPN",
+          "ISO_A2": "JP",
+          "ISO_A3": "JPN",
+          "ISO_N3": 392,
+          "LEVEL": 2,
+          "LabelRank": 4,
+          "MAP_COLOR": 4,
+          "NAME": "Japan",
+          "NAME_FORMA": "",
+          "NAME_SORT": "Japan",
+          "OID_": 156,
+          "POP_EST": 127078679,
+          "POSTAL": "J",
+          "SOVEREIGNT": "Japan",
+          "SOV_A3": "JPN",
+          "SUBUNIT": "Japan",
+          "SU_A3": "JPN",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "JPN"
+        }
+      },
+      {
         "id": 11,
         "type": 1,
         "geometry": [
           9,
-          3516,
-          7056
+          1758,
+          3528
         ],
         "properties": {
           "ABBREV": "Mex.",
@@ -299,12 +467,96 @@
         }
       },
       {
+        "id": 12,
+        "type": 1,
+        "geometry": [
+          9,
+          6890,
+          3824
+        ],
+        "properties": {
+          "ABBREV": "Phil.",
+          "ADM0_A3": "PHL",
+          "ADM0_DIF": 0,
+          "ADMIN": "Philippines",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 317500,
+          "GEOUNIT": "Philippines",
+          "GEOU_DIF": 0,
+          "GU_A3": "PHL",
+          "ISO_A2": "PH",
+          "ISO_A3": "PHL",
+          "ISO_N3": 608,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 8,
+          "NAME": "Philippines",
+          "NAME_FORMA": "Republic of the Philippines",
+          "NAME_SORT": "Philippines",
+          "OID_": 207,
+          "POP_EST": 97976603,
+          "POSTAL": "PH",
+          "SOVEREIGNT": "Philippines",
+          "SOV_A3": "PHL",
+          "SUBUNIT": "Philippines",
+          "SU_A3": "PHL",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "PHL"
+        }
+      },
+      {
+        "id": 13,
+        "type": 1,
+        "geometry": [
+          9,
+          6552,
+          3738
+        ],
+        "properties": {
+          "ABBREV": "Viet.",
+          "ADM0_A3": "VNM",
+          "ADM0_DIF": 0,
+          "ADMIN": "Vietnam",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 241700,
+          "GEOUNIT": "Vietnam",
+          "GEOU_DIF": 0,
+          "GU_A3": "VNM",
+          "ISO_A2": "VN",
+          "ISO_A3": "VNM",
+          "ISO_N3": 704,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 4,
+          "NAME": "Vietnam",
+          "NAME_FORMA": "Socialist Republic of Vietnam",
+          "NAME_SORT": "Vietnam",
+          "OID_": 262,
+          "POP_EST": 86967524,
+          "POSTAL": "VN",
+          "SOVEREIGNT": "Vietnam",
+          "SOV_A3": "VNM",
+          "SUBUNIT": "Vietnam",
+          "SU_A3": "VNM",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "VNM"
+        }
+      },
+      {
         "id": 14,
         "type": 1,
         "geometry": [
           9,
-          9994,
-          7796
+          4996,
+          3898
         ],
         "properties": {
           "ABBREV": "Eth.",
@@ -345,8 +597,8 @@
         "type": 1,
         "geometry": [
           9,
-          9550,
-          6934
+          4774,
+          3466
         ],
         "properties": {
           "ABBREV": "Egypt",
@@ -387,8 +639,8 @@
         "type": 1,
         "geometry": [
           9,
-          8664,
-          5468
+          4332,
+          2734
         ],
         "properties": {
           "ABBREV": "Ger.",
@@ -429,8 +681,8 @@
         "type": 1,
         "geometry": [
           9,
-          9792,
-          6254
+          4896,
+          3126
         ],
         "properties": {
           "ABBREV": "Tur.",
@@ -471,8 +723,8 @@
         "type": 1,
         "geometry": [
           9,
-          9244,
-          8324
+          4622,
+          4162
         ],
         "properties": {
           "ABBREV": "D.R.C.",
@@ -513,8 +765,8 @@
         "type": 1,
         "geometry": [
           9,
-          10658,
-          6612
+          5328,
+          3306
         ],
         "properties": {
           "ABBREV": "Iran",
@@ -551,12 +803,54 @@
         }
       },
       {
+        "id": 20,
+        "type": 1,
+        "geometry": [
+          9,
+          6402,
+          3730
+        ],
+        "properties": {
+          "ABBREV": "Thai.",
+          "ADM0_A3": "THA",
+          "ADM0_DIF": 0,
+          "ADMIN": "Thailand",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 547400,
+          "GEOUNIT": "Thailand",
+          "GEOU_DIF": 0,
+          "GU_A3": "THA",
+          "ISO_A2": "TH",
+          "ISO_A3": "THA",
+          "ISO_N3": 764,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 1,
+          "NAME": "Thailand",
+          "NAME_FORMA": "Kingdom of Thailand",
+          "NAME_SORT": "Thailand",
+          "OID_": 244,
+          "POP_EST": 65905410,
+          "POSTAL": "TH",
+          "SOVEREIGNT": "Thailand",
+          "SOV_A3": "THA",
+          "SUBUNIT": "Thailand",
+          "SU_A3": "THA",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "THA"
+        }
+      },
+      {
         "id": 21,
         "type": 1,
         "geometry": [
           9,
-          8306,
-          5714
+          4152,
+          2856
         ],
         "properties": {
           "ABBREV": "Fr.",
@@ -597,8 +891,8 @@
         "type": 1,
         "geometry": [
           9,
-          8102,
-          5336
+          4050,
+          2668
         ],
         "properties": {
           "ABBREV": "U.K.",
@@ -639,8 +933,8 @@
         "type": 1,
         "geometry": [
           9,
-          8738,
-          6022
+          4368,
+          3010
         ],
         "properties": {
           "ABBREV": "Italy",
@@ -681,8 +975,8 @@
         "type": 1,
         "geometry": [
           9,
-          9214,
-          9634
+          4606,
+          4816
         ],
         "properties": {
           "ABBREV": "S.Af.",
@@ -719,12 +1013,96 @@
         }
       },
       {
+        "id": 25,
+        "type": 1,
+        "geometry": [
+          9,
+          7008,
+          3204
+        ],
+        "properties": {
+          "ABBREV": "S.Kor.",
+          "ADM0_A3": "KOR",
+          "ADM0_DIF": 0,
+          "ADMIN": "South Korea",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 1335000,
+          "GEOUNIT": "South Korea",
+          "GEOU_DIF": 0,
+          "GU_A3": "KOR",
+          "ISO_A2": "KR",
+          "ISO_A3": "KOR",
+          "ISO_N3": 410,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 5,
+          "NAME": "S. Korea",
+          "NAME_FORMA": "Republic of Korea",
+          "NAME_SORT": "Korea, South",
+          "OID_": 232,
+          "POP_EST": 48508972,
+          "POSTAL": "KR",
+          "SOVEREIGNT": "South Korea",
+          "SOV_A3": "KOR",
+          "SUBUNIT": "South Korea",
+          "SU_A3": "KOR",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "KOR"
+        }
+      },
+      {
+        "id": 26,
+        "type": 1,
+        "geometry": [
+          9,
+          6284,
+          3600
+        ],
+        "properties": {
+          "ABBREV": "Myan.",
+          "ADM0_A3": "MMR",
+          "ADM0_DIF": 0,
+          "ADMIN": "Myanmar",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 55130,
+          "GEOUNIT": "Myanmar",
+          "GEOU_DIF": 0,
+          "GU_A3": "MMR",
+          "ISO_A2": "MM",
+          "ISO_A3": "MMR",
+          "ISO_N3": 104,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 13,
+          "NAME": "Myanmar",
+          "NAME_FORMA": "Union of Burma",
+          "NAME_SORT": "Myanmar",
+          "OID_": 190,
+          "POP_EST": 48137741,
+          "POSTAL": "MM",
+          "SOVEREIGNT": "Myanmar",
+          "SOV_A3": "MMR",
+          "SUBUNIT": "Myanmar",
+          "SU_A3": "MMR",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "MMR"
+        }
+      },
+      {
         "id": 27,
         "type": 1,
         "geometry": [
           9,
-          9618,
-          5620
+          4808,
+          2810
         ],
         "properties": {
           "ABBREV": "Ukr.",
@@ -765,8 +1143,8 @@
         "type": 1,
         "geometry": [
           9,
-          4864,
-          8012
+          2432,
+          4006
         ],
         "properties": {
           "ABBREV": "Col.",
@@ -807,8 +1185,8 @@
         "type": 1,
         "geometry": [
           9,
-          9776,
-          8478
+          4888,
+          4238
         ],
         "properties": {
           "ABBREV": "Tanz.",
@@ -849,8 +1227,8 @@
         "type": 1,
         "geometry": [
           9,
-          5262,
-          9912
+          2630,
+          4956
         ],
         "properties": {
           "ABBREV": "Arg.",
@@ -891,8 +1269,8 @@
         "type": 1,
         "geometry": [
           9,
-          8026,
-          6180
+          4012,
+          3090
         ],
         "properties": {
           "ABBREV": "Sp.",
@@ -933,8 +1311,8 @@
         "type": 1,
         "geometry": [
           9,
-          9912,
-          8164
+          4956,
+          4082
         ],
         "properties": {
           "ABBREV": "Ken.",
@@ -975,8 +1353,8 @@
         "type": 1,
         "geometry": [
           9,
-          9074,
-          5396
+          4536,
+          2698
         ],
         "properties": {
           "ABBREV": "Pol.",
@@ -1017,8 +1395,8 @@
         "type": 1,
         "geometry": [
           9,
-          7812,
-          6756
+          3906,
+          3378
         ],
         "properties": {
           "ABBREV": "Mor.",
@@ -1059,8 +1437,8 @@
         "type": 1,
         "geometry": [
           9,
-          8310,
-          6842
+          4154,
+          3420
         ],
         "properties": {
           "ABBREV": "Alg.",
@@ -1101,8 +1479,8 @@
         "type": 1,
         "geometry": [
           9,
-          3638,
-          5218
+          1818,
+          2608
         ],
         "properties": {
           "ABBREV": "Can.",
@@ -1143,8 +1521,8 @@
         "type": 1,
         "geometry": [
           9,
-          9664,
-          8132
+          4832,
+          4066
         ],
         "properties": {
           "ABBREV": "Uga.",
@@ -1185,8 +1563,8 @@
         "type": 1,
         "geometry": [
           9,
-          9554,
-          7450
+          4776,
+          3724
         ],
         "properties": {
           "ABBREV": "Sudan",
@@ -1227,8 +1605,8 @@
         "type": 1,
         "geometry": [
           9,
-          4764,
-          8638
+          2382,
+          4318
         ],
         "properties": {
           "ABBREV": "Peru",
@@ -1269,8 +1647,8 @@
         "type": 1,
         "geometry": [
           9,
-          10164,
-          6578
+          5082,
+          3288
         ],
         "properties": {
           "ABBREV": "Iraq",
@@ -1311,8 +1689,8 @@
         "type": 1,
         "geometry": [
           9,
-          10214,
-          7052
+          5106,
+          3526
         ],
         "properties": {
           "ABBREV": "Saud.",
@@ -1353,8 +1731,8 @@
         "type": 1,
         "geometry": [
           9,
-          12010,
-          6850
+          6004,
+          3424
         ],
         "properties": {
           "ABBREV": "Nepal",
@@ -1395,8 +1773,8 @@
         "type": 1,
         "geometry": [
           9,
-          11196,
-          6548
+          5598,
+          3274
         ],
         "properties": {
           "ABBREV": "Afg.",
@@ -1437,8 +1815,8 @@
         "type": 1,
         "geometry": [
           9,
-          11060,
-          6092
+          5530,
+          3046
         ],
         "properties": {
           "ABBREV": "Uzb.",
@@ -1479,8 +1857,8 @@
         "type": 1,
         "geometry": [
           9,
-          5194,
-          7846
+          2596,
+          3922
         ],
         "properties": {
           "ABBREV": "Ven.",
@@ -1517,12 +1895,54 @@
         }
       },
       {
+        "id": 46,
+        "type": 1,
+        "geometry": [
+          9,
+          6592,
+          4008
+        ],
+        "properties": {
+          "ABBREV": "Malay.",
+          "ADM0_A3": "MYS",
+          "ADM0_DIF": 0,
+          "ADMIN": "Malaysia",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 384300,
+          "GEOUNIT": "Malaysia",
+          "GEOU_DIF": 0,
+          "GU_A3": "MYS",
+          "ISO_A2": "MY",
+          "ISO_A3": "MYS",
+          "ISO_N3": 458,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 6,
+          "NAME": "Malaysia",
+          "NAME_FORMA": "",
+          "NAME_SORT": "Malaysia",
+          "OID_": 176,
+          "POP_EST": 25715819,
+          "POSTAL": "MY",
+          "SOVEREIGNT": "Malaysia",
+          "SOV_A3": "MYS",
+          "SUBUNIT": "Malaysia",
+          "SU_A3": "MYS",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "MYS"
+        }
+      },
+      {
         "id": 47,
         "type": 1,
         "geometry": [
           9,
-          8140,
-          7842
+          4070,
+          3920
         ],
         "properties": {
           "ABBREV": "Ghana",
@@ -1563,8 +1983,8 @@
         "type": 1,
         "geometry": [
           9,
-          10358,
-          7456
+          5178,
+          3728
         ],
         "properties": {
           "ABBREV": "Yem.",
@@ -1601,12 +2021,96 @@
         }
       },
       {
+        "id": 49,
+        "type": 1,
+        "geometry": [
+          9,
+          6848,
+          3538
+        ],
+        "properties": {
+          "ABBREV": "Taiwan",
+          "ADM0_A3": "TWN",
+          "ADM0_DIF": 0,
+          "ADMIN": "Taiwan",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 712000,
+          "GEOUNIT": "Taiwan",
+          "GEOU_DIF": 0,
+          "GU_A3": "TWN",
+          "ISO_A2": "TW",
+          "ISO_A3": "TWN",
+          "ISO_N3": 158,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 2,
+          "NAME": "Taiwan",
+          "NAME_FORMA": "",
+          "NAME_SORT": "Taiwan",
+          "OID_": 242,
+          "POP_EST": 22974347,
+          "POSTAL": "TW",
+          "SOVEREIGNT": "Taiwan",
+          "SOV_A3": "TWN",
+          "SUBUNIT": "Taiwan",
+          "SU_A3": "TWN",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "TWN"
+        }
+      },
+      {
+        "id": 50,
+        "type": 1,
+        "geometry": [
+          9,
+          6984,
+          3086
+        ],
+        "properties": {
+          "ABBREV": "N. Kor.",
+          "ADM0_A3": "PRK",
+          "ADM0_DIF": 0,
+          "ADMIN": "North Korea",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 40000,
+          "GEOUNIT": "North Korea",
+          "GEOU_DIF": 0,
+          "GU_A3": "PRK",
+          "ISO_A2": "KP",
+          "ISO_A3": "PRK",
+          "ISO_N3": 408,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 9,
+          "NAME": "N. Korea",
+          "NAME_FORMA": "Democratic People's Republic of Korea",
+          "NAME_SORT": "Korea, North",
+          "OID_": 197,
+          "POP_EST": 22665345,
+          "POSTAL": "KP",
+          "SOVEREIGNT": "North Korea",
+          "SOV_A3": "PRK",
+          "SUBUNIT": "North Korea",
+          "SU_A3": "PRK",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "PRK"
+        }
+      },
+      {
         "id": 51,
         "type": 1,
         "geometry": [
           9,
-          9328,
-          5836
+          4664,
+          2918
         ],
         "properties": {
           "ABBREV": "Rom.",
@@ -1647,8 +2151,8 @@
         "type": 1,
         "geometry": [
           9,
-          9776,
-          9010
+          4888,
+          4504
         ],
         "properties": {
           "ABBREV": "Moz.",
@@ -1689,8 +2193,8 @@
         "type": 1,
         "geometry": [
           9,
-          11864,
-          7844
+          5932,
+          3922
         ],
         "properties": {
           "ABBREV": "Sri L.",
@@ -1727,12 +2231,54 @@
         }
       },
       {
+        "id": 54,
+        "type": 1,
+        "geometry": [
+          9,
+          7148,
+          4696
+        ],
+        "properties": {
+          "ABBREV": "Auz.",
+          "ADM0_A3": "AUS",
+          "ADM0_DIF": 0,
+          "ADMIN": "Australia",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 800200,
+          "GEOUNIT": "Australia",
+          "GEOU_DIF": 0,
+          "GU_A3": "AUS",
+          "ISO_A2": "AU",
+          "ISO_A3": "AUS",
+          "ISO_N3": 36,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 7,
+          "NAME": "Australia",
+          "NAME_FORMA": "Commonwealth of Australia",
+          "NAME_SORT": "Australia",
+          "OID_": 10,
+          "POP_EST": 21262641,
+          "POSTAL": "AU",
+          "SOVEREIGNT": "Australia",
+          "SOV_A3": "AU1",
+          "SUBUNIT": "Australia",
+          "SU_A3": "AUS",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Country",
+          "ne_10m_adm": "AUS"
+        }
+      },
+      {
         "id": 55,
         "type": 1,
         "geometry": [
           9,
-          10316,
-          9094
+          5158,
+          4546
         ],
         "properties": {
           "ABBREV": "Mad.",
@@ -1773,8 +2319,8 @@
         "type": 1,
         "geometry": [
           9,
-          7938,
-          7842
+          3968,
+          3920
         ],
         "properties": {
           "ABBREV": "I.C.",
@@ -1815,8 +2361,8 @@
         "type": 1,
         "geometry": [
           9,
-          9944,
-          6486
+          4972,
+          3242
         ],
         "properties": {
           "ABBREV": "Syria",
@@ -1857,8 +2403,8 @@
         "type": 1,
         "geometry": [
           9,
-          8744,
-          7946
+          4372,
+          3972
         ],
         "properties": {
           "ABBREV": "Cam.",
@@ -1899,8 +2445,8 @@
         "type": 1,
         "geometry": [
           9,
-          8434,
-          5398
+          4216,
+          2698
         ],
         "properties": {
           "ABBREV": "Neth.",
@@ -1941,8 +2487,8 @@
         "type": 1,
         "geometry": [
           9,
-          4980,
-          9554
+          2490,
+          4776
         ],
         "properties": {
           "ABBREV": "Chile",
@@ -1983,8 +2529,8 @@
         "type": 1,
         "geometry": [
           9,
-          8118,
-          7622
+          4058,
+          3810
         ],
         "properties": {
           "ABBREV": "B.F.",
@@ -2025,8 +2571,8 @@
         "type": 1,
         "geometry": [
           9,
-          11256,
-          5664
+          5628,
+          2832
         ],
         "properties": {
           "ABBREV": "Kaz.",
@@ -2067,8 +2613,8 @@
         "type": 1,
         "geometry": [
           9,
-          8620,
-          7382
+          4310,
+          3690
         ],
         "properties": {
           "ABBREV": "Niger",
@@ -2109,8 +2655,8 @@
         "type": 1,
         "geometry": [
           9,
-          4628,
-          8236
+          2314,
+          4118
         ],
         "properties": {
           "ABBREV": "Ecu.",
@@ -2147,12 +2693,54 @@
         }
       },
       {
+        "id": 65,
+        "type": 1,
+        "geometry": [
+          9,
+          6484,
+          3798
+        ],
+        "properties": {
+          "ABBREV": "Camb.",
+          "ADM0_A3": "KHM",
+          "ADM0_DIF": 0,
+          "ADMIN": "Cambodia",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 27940,
+          "GEOUNIT": "Cambodia",
+          "GEOU_DIF": 0,
+          "GU_A3": "KHM",
+          "ISO_A2": "KH",
+          "ISO_A3": "KHM",
+          "ISO_N3": 116,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 5,
+          "NAME": "Cambodia",
+          "NAME_FORMA": "Kingdom of Cambodia",
+          "NAME_SORT": "Cambodia",
+          "OID_": 104,
+          "POP_EST": 14494293,
+          "POSTAL": "KH",
+          "SOVEREIGNT": "Cambodia",
+          "SOV_A3": "KHM",
+          "SUBUNIT": "Cambodia",
+          "SU_A3": "KHM",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "KHM"
+        }
+      },
+      {
         "id": 66,
         "type": 1,
         "geometry": [
           9,
-          9728,
-          8790
+          4864,
+          4394
         ],
         "properties": {
           "ABBREV": "Mal.",
@@ -2193,8 +2781,8 @@
         "type": 1,
         "geometry": [
           9,
-          7524,
-          7508
+          3762,
+          3754
         ],
         "properties": {
           "ABBREV": "Sen.",
@@ -2235,8 +2823,8 @@
         "type": 1,
         "geometry": [
           9,
-          4078,
-          7468
+          2038,
+          3734
         ],
         "properties": {
           "ABBREV": "Guat.",
@@ -2277,8 +2865,8 @@
         "type": 1,
         "geometry": [
           9,
-          8990,
-          8758
+          4494,
+          4378
         ],
         "properties": {
           "ABBREV": "Ang.",
@@ -2319,8 +2907,8 @@
         "type": 1,
         "geometry": [
           9,
-          8074,
-          7392
+          4036,
+          3696
         ],
         "properties": {
           "ABBREV": "Mali",
@@ -2361,8 +2949,8 @@
         "type": 1,
         "geometry": [
           9,
-          9412,
-          8844
+          4706,
+          4422
         ],
         "properties": {
           "ABBREV": "Zambia",
@@ -2403,8 +2991,8 @@
         "type": 1,
         "geometry": [
           9,
-          4594,
-          7162
+          2296,
+          3580
         ],
         "properties": {
           "ABBREV": "Cuba",
@@ -2445,8 +3033,8 @@
         "type": 1,
         "geometry": [
           9,
-          9544,
-          9082
+          4772,
+          4540
         ],
         "properties": {
           "ABBREV": "Zimb.",
@@ -2487,8 +3075,8 @@
         "type": 1,
         "geometry": [
           9,
-          9186,
-          6236
+          4592,
+          3118
         ],
         "properties": {
           "ABBREV": "Greece",
@@ -2529,8 +3117,8 @@
         "type": 1,
         "geometry": [
           9,
-          7800,
-          6224
+          3900,
+          3112
         ],
         "properties": {
           "ABBREV": "Port.",
@@ -2571,8 +3159,8 @@
         "type": 1,
         "geometry": [
           9,
-          8626,
-          6534
+          4312,
+          3266
         ],
         "properties": {
           "ABBREV": "Tun.",
@@ -2613,8 +3201,8 @@
         "type": 1,
         "geometry": [
           9,
-          9552,
-          8282
+          4776,
+          4140
         ],
         "properties": {
           "ABBREV": "Rwa.",
@@ -2655,8 +3243,8 @@
         "type": 1,
         "geometry": [
           9,
-          8402,
-          5510
+          4200,
+          2754
         ],
         "properties": {
           "ABBREV": "Belg.",
@@ -2697,8 +3285,8 @@
         "type": 1,
         "geometry": [
           9,
-          9030,
-          7480
+          4514,
+          3740
         ],
         "properties": {
           "ABBREV": "Chad",
@@ -2739,8 +3327,8 @@
         "type": 1,
         "geometry": [
           9,
-          8888,
-          5574
+          4444,
+          2786
         ],
         "properties": {
           "ABBREV": "Cz. Rep.",
@@ -2781,8 +3369,8 @@
         "type": 1,
         "geometry": [
           9,
-          7684,
-          7690
+          3842,
+          3844
         ],
         "properties": {
           "ABBREV": "Gin.",
@@ -2823,8 +3411,8 @@
         "type": 1,
         "geometry": [
           9,
-          9074,
-          5750
+          4536,
+          2874
         ],
         "properties": {
           "ABBREV": "Hun.",
@@ -2865,8 +3453,8 @@
         "type": 1,
         "geometry": [
           9,
-          10248,
-          8000
+          5124,
+          4000
         ],
         "properties": {
           "ABBREV": "Som.",
@@ -2907,8 +3495,8 @@
         "type": 1,
         "geometry": [
           9,
-          5248,
-          8966
+          2624,
+          4482
         ],
         "properties": {
           "ABBREV": "Bolivia",
@@ -2949,8 +3537,8 @@
         "type": 1,
         "geometry": [
           9,
-          4996,
-          7316
+          2498,
+          3658
         ],
         "properties": {
           "ABBREV": "Dom. Rep.",
@@ -2991,8 +3579,8 @@
         "type": 1,
         "geometry": [
           9,
-          9468,
-          5292
+          4734,
+          2646
         ],
         "properties": {
           "ABBREV": "Bela.",
@@ -3033,8 +3621,8 @@
         "type": 1,
         "geometry": [
           9,
-          9014,
-          4230
+          4506,
+          2114
         ],
         "properties": {
           "ABBREV": "Swe.",
@@ -3075,8 +3663,8 @@
         "type": 1,
         "geometry": [
           9,
-          4864,
-          7318
+          2432,
+          3658
         ],
         "properties": {
           "ABBREV": "Haiti",
@@ -3117,8 +3705,8 @@
         "type": 1,
         "geometry": [
           9,
-          9550,
-          8344
+          4774,
+          4172
         ],
         "properties": {
           "ABBREV": "Bur.",
@@ -3159,8 +3747,8 @@
         "type": 1,
         "geometry": [
           9,
-          8298,
-          7718
+          4148,
+          3858
         ],
         "properties": {
           "ABBREV": "Benin",
@@ -3201,8 +3789,8 @@
         "type": 1,
         "geometry": [
           9,
-          9568,
-          7858
+          4784,
+          3928
         ],
         "properties": {
           "ABBREV": "S. Sud.",
@@ -3243,8 +3831,8 @@
         "type": 1,
         "geometry": [
           9,
-          10362,
-          6180
+          5180,
+          3090
         ],
         "properties": {
           "ABBREV": "Aze.",
@@ -3285,8 +3873,8 @@
         "type": 1,
         "geometry": [
           9,
-          8856,
-          5724
+          4428,
+          2862
         ],
         "properties": {
           "ABBREV": "Aust.",
@@ -3327,8 +3915,8 @@
         "type": 1,
         "geometry": [
           9,
-          4248,
-          7508
+          2124,
+          3754
         ],
         "properties": {
           "ABBREV": "Hond.",
@@ -3369,8 +3957,8 @@
         "type": 1,
         "geometry": [
           9,
-          8564,
-          5774
+          4282,
+          2886
         ],
         "properties": {
           "ABBREV": "Switz.",
@@ -3411,8 +3999,8 @@
         "type": 1,
         "geometry": [
           9,
-          9136,
-          5942
+          4568,
+          2970
         ],
         "properties": {
           "ABBREV": "Serb.",
@@ -3453,8 +4041,8 @@
         "type": 1,
         "geometry": [
           9,
-          11426,
-          6260
+          5712,
+          3130
         ],
         "properties": {
           "ABBREV": "Tjk.",
@@ -3495,8 +4083,8 @@
         "type": 1,
         "geometry": [
           9,
-          9778,
-          6704
+          4888,
+          3352
         ],
         "properties": {
           "ABBREV": "Isr.",
@@ -3537,8 +4125,8 @@
         "type": 1,
         "geometry": [
           9,
-          9338,
-          6032
+          4668,
+          3016
         ],
         "properties": {
           "ABBREV": "Bulg.",
@@ -3579,8 +4167,8 @@
         "type": 1,
         "geometry": [
           9,
-          4146,
-          7560
+          2072,
+          3780
         ],
         "properties": {
           "ABBREV": "El. S.",
@@ -3617,12 +4205,54 @@
         }
       },
       {
+        "id": 101,
+        "type": 1,
+        "geometry": [
+          9,
+          6692,
+          3572
+        ],
+        "properties": {
+          "ABBREV": "H.K.",
+          "ADM0_A3": "HKG",
+          "ADM0_DIF": 1,
+          "ADMIN": "Hong Kong S.A.R.",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 306600,
+          "GEOUNIT": "Hong Kong S.A.R.",
+          "GEOU_DIF": 0,
+          "GU_A3": "HKG",
+          "ISO_A2": "HK",
+          "ISO_A3": "HKG",
+          "ISO_N3": 344,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 3,
+          "NAME": "Hong Kong",
+          "NAME_FORMA": "Hong Kong Special Administrative Region",
+          "NAME_SORT": "Hong Kong S.A.R.",
+          "OID_": 12,
+          "POP_EST": 7055071,
+          "POSTAL": "HK",
+          "SOVEREIGNT": "China",
+          "SOV_A3": "CH1",
+          "SUBUNIT": "Hong Kong S.A.R.",
+          "SU_A3": "HKG",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "China",
+          "TYPE": "Country",
+          "ne_10m_adm": "HKG"
+        }
+      },
+      {
         "id": 102,
         "type": 1,
         "geometry": [
           9,
-          5534,
-          9280
+          2766,
+          4640
         ],
         "properties": {
           "ABBREV": "Para.",
@@ -3659,12 +4289,54 @@
         }
       },
       {
+        "id": 103,
+        "type": 1,
+        "geometry": [
+          9,
+          6430,
+          3644
+        ],
+        "properties": {
+          "ABBREV": "Laos",
+          "ADM0_A3": "LAO",
+          "ADM0_DIF": 0,
+          "ADMIN": "Laos",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 13980,
+          "GEOUNIT": "Laos",
+          "GEOU_DIF": 0,
+          "GU_A3": "LAO",
+          "ISO_A2": "LA",
+          "ISO_A3": "LAO",
+          "ISO_N3": 418,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 9,
+          "NAME": "Laos",
+          "NAME_FORMA": "Lao People's Democratic Republic",
+          "NAME_SORT": "Laos",
+          "OID_": 164,
+          "POP_EST": 6834942,
+          "POSTAL": "LA",
+          "SOVEREIGNT": "Laos",
+          "SOV_A3": "LAO",
+          "SUBUNIT": "Laos",
+          "SU_A3": "LAO",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "LAO"
+        }
+      },
+      {
         "id": 104,
         "type": 1,
         "geometry": [
           9,
-          7654,
-          7800
+          3826,
+          3900
         ],
         "properties": {
           "ABBREV": "S.L.",
@@ -3705,8 +4377,8 @@
         "type": 1,
         "geometry": [
           9,
-          9858,
-          6694
+          4928,
+          3346
         ],
         "properties": {
           "ABBREV": "Jord.",
@@ -3747,8 +4419,8 @@
         "type": 1,
         "geometry": [
           9,
-          9010,
-          6906
+          4504,
+          3452
         ],
         "properties": {
           "ABBREV": "Libya",
@@ -3785,12 +4457,54 @@
         }
       },
       {
+        "id": 107,
+        "type": 1,
+        "geometry": [
+          9,
+          7400,
+          4242
+        ],
+        "properties": {
+          "ABBREV": "P.N.G.",
+          "ADM0_A3": "PNG",
+          "ADM0_DIF": 0,
+          "ADMIN": "Papua New Guinea",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 13210,
+          "GEOUNIT": "Papua New Guinea",
+          "GEOU_DIF": 0,
+          "GU_A3": "PNG",
+          "ISO_A2": "PG",
+          "ISO_A3": "PNG",
+          "ISO_N3": 598,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 1,
+          "NAME": "Papua New Guinea",
+          "NAME_FORMA": "Independent State of Papua New Guinea",
+          "NAME_SORT": "Papua New Guinea",
+          "OID_": 204,
+          "POP_EST": 6057263,
+          "POSTAL": "PG",
+          "SOVEREIGNT": "Papua New Guinea",
+          "SOV_A3": "PNG",
+          "SUBUNIT": "Papua New Guinea",
+          "SU_A3": "PN1",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "PNG"
+        }
+      },
+      {
         "id": 108,
         "type": 1,
         "geometry": [
           9,
-          8234,
-          7794
+          4116,
+          3896
         ],
         "properties": {
           "ABBREV": "Togo",
@@ -3831,8 +4545,8 @@
         "type": 1,
         "geometry": [
           9,
-          4310,
-          7602
+          2154,
+          3800
         ],
         "properties": {
           "ABBREV": "Nic.",
@@ -3873,8 +4587,8 @@
         "type": 1,
         "geometry": [
           9,
-          9924,
-          7462
+          4962,
+          3730
         ],
         "properties": {
           "ABBREV": "Erit.",
@@ -3915,8 +4629,8 @@
         "type": 1,
         "geometry": [
           9,
-          8648,
-          5102
+          4324,
+          2550
         ],
         "properties": {
           "ABBREV": "Den.",
@@ -3957,8 +4671,8 @@
         "type": 1,
         "geometry": [
           9,
-          9082,
-          5636
+          4540,
+          2818
         ],
         "properties": {
           "ABBREV": "Svk.",
@@ -3999,8 +4713,8 @@
         "type": 1,
         "geometry": [
           9,
-          11596,
-          6088
+          5798,
+          3044
         ],
         "properties": {
           "ABBREV": "Kgz.",
@@ -4041,8 +4755,8 @@
         "type": 1,
         "geometry": [
           9,
-          9398,
-          4436
+          4698,
+          2218
         ],
         "properties": {
           "ABBREV": "Fin.",
@@ -4083,8 +4797,8 @@
         "type": 1,
         "geometry": [
           9,
-          10892,
-          6250
+          5446,
+          3124
         ],
         "properties": {
           "ABBREV": "Turkm.",
@@ -4125,8 +4839,8 @@
         "type": 1,
         "geometry": [
           9,
-          10646,
-          7074
+          5322,
+          3536
         ],
         "properties": {
           "ABBREV": "U.A.E.",
@@ -4167,8 +4881,8 @@
         "type": 1,
         "geometry": [
           9,
-          8608,
-          4626
+          4304,
+          2312
         ],
         "properties": {
           "ABBREV": "Nor.",
@@ -4205,12 +4919,54 @@
         }
       },
       {
+        "id": 118,
+        "type": 1,
+        "geometry": [
+          9,
+          6458,
+          4064
+        ],
+        "properties": {
+          "ABBREV": "Sing.",
+          "ADM0_A3": "SGP",
+          "ADM0_DIF": 0,
+          "ADMIN": "Singapore",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 237300,
+          "GEOUNIT": "Singapore",
+          "GEOU_DIF": 0,
+          "GU_A3": "SGP",
+          "ISO_A2": "SG",
+          "ISO_A3": "SGP",
+          "ISO_N3": 702,
+          "LEVEL": 2,
+          "LabelRank": 3,
+          "MAP_COLOR": 3,
+          "NAME": "Singapore",
+          "NAME_FORMA": "Republic of Singapore",
+          "NAME_SORT": "Singapore",
+          "OID_": 226,
+          "POP_EST": 4657542,
+          "POSTAL": "SG",
+          "SOVEREIGNT": "Singapore",
+          "SOV_A3": "SGP",
+          "SUBUNIT": "Singapore",
+          "SU_A3": "SGP",
+          "SU_DIF": 0,
+          "ScaleRank": 3,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "SGP"
+        }
+      },
+      {
         "id": 119,
         "type": 1,
         "geometry": [
           9,
-          10170,
-          6070
+          5084,
+          3034
         ],
         "properties": {
           "ABBREV": "Geo.",
@@ -4251,8 +5007,8 @@
         "type": 1,
         "geometry": [
           9,
-          9000,
-          5946
+          4500,
+          2972
         ],
         "properties": {
           "ABBREV": "B.H.",
@@ -4293,8 +5049,8 @@
         "type": 1,
         "geometry": [
           9,
-          9122,
-          7892
+          4560,
+          3946
         ],
         "properties": {
           "ABBREV": "C.A.R.",
@@ -4335,8 +5091,8 @@
         "type": 1,
         "geometry": [
           9,
-          8962,
-          5848
+          4480,
+          2924
         ],
         "properties": {
           "ABBREV": "Cro.",
@@ -4377,8 +5133,8 @@
         "type": 1,
         "geometry": [
           9,
-          9486,
-          5748
+          4742,
+          2874
         ],
         "properties": {
           "ABBREV": "Mda.",
@@ -4419,8 +5175,8 @@
         "type": 1,
         "geometry": [
           9,
-          4360,
-          7734
+          2180,
+          3866
         ],
         "properties": {
           "ABBREV": "C.R.",
@@ -4457,12 +5213,54 @@
         }
       },
       {
+        "id": 125,
+        "type": 1,
+        "geometry": [
+          9,
+          8030,
+          5146
+        ],
+        "properties": {
+          "ABBREV": "N.Z.",
+          "ADM0_A3": "NZL",
+          "ADM0_DIF": 0,
+          "ADMIN": "New Zealand",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 116700,
+          "GEOUNIT": "New Zealand",
+          "GEOU_DIF": 0,
+          "GU_A3": "NZL",
+          "ISO_A2": "NZ",
+          "ISO_A3": "NZL",
+          "ISO_N3": 554,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 4,
+          "NAME": "New Zealand",
+          "NAME_FORMA": "",
+          "NAME_SORT": "New Zealand",
+          "OID_": 22,
+          "POP_EST": 4213418,
+          "POSTAL": "NZ",
+          "SOVEREIGNT": "New Zealand",
+          "SOV_A3": "NZ1",
+          "SUBUNIT": "New Zealand",
+          "SU_A3": "NZL",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Country",
+          "ne_10m_adm": "NZL"
+        }
+      },
+      {
         "id": 126,
         "type": 1,
         "geometry": [
           9,
-          7832,
-          5294
+          3916,
+          2646
         ],
         "properties": {
           "ABBREV": "Ire.",
@@ -4503,8 +5301,8 @@
         "type": 1,
         "geometry": [
           9,
-          9826,
-          6544
+          4912,
+          3272
         ],
         "properties": {
           "ABBREV": "Leb.",
@@ -4545,8 +5343,8 @@
         "type": 1,
         "geometry": [
           9,
-          8914,
-          8174
+          4456,
+          4086
         ],
         "properties": {
           "ABBREV": "Rep. Congo",
@@ -4587,8 +5385,8 @@
         "type": 1,
         "geometry": [
           9,
-          5166,
-          7348
+          2582,
+          3674
         ],
         "properties": {
           "ABBREV": "P.R.",
@@ -4629,8 +5427,8 @@
         "type": 1,
         "geometry": [
           9,
-          9106,
-          6158
+          4552,
+          3078
         ],
         "properties": {
           "ABBREV": "Alb.",
@@ -4671,8 +5469,8 @@
         "type": 1,
         "geometry": [
           9,
-          9278,
-          5144
+          4638,
+          2572
         ],
         "properties": {
           "ABBREV": "Lith.",
@@ -4713,8 +5511,8 @@
         "type": 1,
         "geometry": [
           9,
-          10296,
-          7746
+          5148,
+          3872
         ],
         "properties": {
           "ABBREV": "Solnd.",
@@ -4755,8 +5553,8 @@
         "type": 1,
         "geometry": [
           9,
-          5642,
-          9774
+          2820,
+          4886
         ],
         "properties": {
           "ABBREV": "Ury.",
@@ -4797,8 +5595,8 @@
         "type": 1,
         "geometry": [
           9,
-          7760,
-          7898
+          3880,
+          3948
         ],
         "properties": {
           "ABBREV": "Liberia",
@@ -4839,8 +5637,8 @@
         "type": 1,
         "geometry": [
           9,
-          10784,
-          7204
+          5392,
+          3602
         ],
         "properties": {
           "ABBREV": "Oman",
@@ -4881,8 +5679,8 @@
         "type": 1,
         "geometry": [
           9,
-          4542,
-          7784
+          2270,
+          3892
         ],
         "properties": {
           "ABBREV": "Pan.",
@@ -4923,8 +5721,8 @@
         "type": 1,
         "geometry": [
           9,
-          7694,
-          7250
+          3846,
+          3624
         ],
         "properties": {
           "ABBREV": "Mrt.",
@@ -4961,12 +5759,54 @@
         }
       },
       {
+        "id": 138,
+        "type": 1,
+        "geometry": [
+          9,
+          6440,
+          2882
+        ],
+        "properties": {
+          "ABBREV": "Mong.",
+          "ADM0_A3": "MNG",
+          "ADM0_DIF": 0,
+          "ADMIN": "Mongolia",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 9476,
+          "GEOUNIT": "Mongolia",
+          "GEOU_DIF": 0,
+          "GU_A3": "MNG",
+          "ISO_A2": "MN",
+          "ISO_A3": "MNG",
+          "ISO_N3": 496,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 6,
+          "NAME": "Mongolia",
+          "NAME_FORMA": "",
+          "NAME_SORT": "Mongolia",
+          "OID_": 186,
+          "POP_EST": 3041142,
+          "POSTAL": "MN",
+          "SOVEREIGNT": "Mongolia",
+          "SOV_A3": "MNG",
+          "SUBUNIT": "Mongolia",
+          "SU_A3": "MNG",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "MNG"
+        }
+      },
+      {
         "id": 139,
         "type": 1,
         "geometry": [
           9,
-          10220,
-          6166
+          5110,
+          3082
         ],
         "properties": {
           "ABBREV": "Arm.",
@@ -5007,8 +5847,8 @@
         "type": 1,
         "geometry": [
           9,
-          4672,
-          7348
+          2336,
+          3674
         ],
         "properties": {
           "ABBREV": "Jam.",
@@ -5049,8 +5889,8 @@
         "type": 1,
         "geometry": [
           9,
-          10356,
-          6794
+          5178,
+          3396
         ],
         "properties": {
           "ABBREV": "Kwt.",
@@ -5091,8 +5931,8 @@
         "type": 1,
         "geometry": [
           9,
-          9796,
-          6654
+          4898,
+          3326
         ],
         "properties": {
           "ABBREV": "W.B.",
@@ -5133,8 +5973,8 @@
         "type": 1,
         "geometry": [
           9,
-          9342,
-          5024
+          4670,
+          2512
         ],
         "properties": {
           "ABBREV": "Lat.",
@@ -5175,8 +6015,8 @@
         "type": 1,
         "geometry": [
           9,
-          9476,
-          9602
+          4738,
+          4800
         ],
         "properties": {
           "ABBREV": "Les.",
@@ -5217,8 +6057,8 @@
         "type": 1,
         "geometry": [
           9,
-          8974,
-          9230
+          4486,
+          4614
         ],
         "properties": {
           "ABBREV": "Nam.",
@@ -5259,8 +6099,8 @@
         "type": 1,
         "geometry": [
           9,
-          9178,
-          6106
+          4588,
+          3052
         ],
         "properties": {
           "ABBREV": "Mkd.",
@@ -5301,8 +6141,8 @@
         "type": 1,
         "geometry": [
           9,
-          8858,
-          5820
+          4428,
+          2910
         ],
         "properties": {
           "ABBREV": "Slo.",
@@ -5343,8 +6183,8 @@
         "type": 1,
         "geometry": [
           9,
-          9292,
-          9212
+          4646,
+          4606
         ],
         "properties": {
           "ABBREV": "Bwa.",
@@ -5385,8 +6225,8 @@
         "type": 1,
         "geometry": [
           9,
-          9140,
-          6046
+          4570,
+          3022
         ],
         "properties": {
           "ABBREV": "Kos.",
@@ -5427,8 +6267,8 @@
         "type": 1,
         "geometry": [
           9,
-          7462,
-          7572
+          3730,
+          3786
         ],
         "properties": {
           "ABBREV": "Gambia",
@@ -5469,8 +6309,8 @@
         "type": 1,
         "geometry": [
           9,
-          9754,
-          6686
+          4876,
+          3342
         ],
         "properties": {
           "ABBREV": "Gaza",
@@ -5511,8 +6351,8 @@
         "type": 1,
         "geometry": [
           9,
-          7510,
-          7640
+          3754,
+          3820
         ],
         "properties": {
           "ABBREV": "GnB.",
@@ -5553,8 +6393,8 @@
         "type": 1,
         "geometry": [
           9,
-          8724,
-          8222
+          4362,
+          4110
         ],
         "properties": {
           "ABBREV": "Gabon",
@@ -5595,8 +6435,8 @@
         "type": 1,
         "geometry": [
           9,
-          5404,
-          7712
+          2702,
+          3856
         ],
         "properties": {
           "ABBREV": "Tr.T.",
@@ -5637,8 +6477,8 @@
         "type": 1,
         "geometry": [
           9,
-          9364,
-          4864
+          4682,
+          2432
         ],
         "properties": {
           "ABBREV": "Est.",
@@ -5679,8 +6519,8 @@
         "type": 1,
         "geometry": [
           9,
-          10824,
-          9132
+          5412,
+          4566
         ],
         "properties": {
           "ABBREV": "Mus.",
@@ -5717,12 +6557,54 @@
         }
       },
       {
+        "id": 157,
+        "type": 1,
+        "geometry": [
+          9,
+          6960,
+          4294
+        ],
+        "properties": {
+          "ABBREV": "E.T.",
+          "ADM0_A3": "TLS",
+          "ADM0_DIF": 0,
+          "ADMIN": "East Timor",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 2520,
+          "GEOUNIT": "East Timor",
+          "GEOU_DIF": 0,
+          "GU_A3": "TLS",
+          "ISO_A2": "TL",
+          "ISO_A3": "TLS",
+          "ISO_N3": 626,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 3,
+          "NAME": "East Timor",
+          "NAME_FORMA": "East Timor (Timor Leste)",
+          "NAME_SORT": "East Timor (Timor Leste)",
+          "OID_": 122,
+          "POP_EST": 1131612,
+          "POSTAL": "TL",
+          "SOVEREIGNT": "East Timor",
+          "SOV_A3": "TLS",
+          "SUBUNIT": "East Timor",
+          "SU_A3": "TLS",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "TLS"
+        }
+      },
+      {
         "id": 158,
         "type": 1,
         "geometry": [
           9,
-          9624,
-          9446
+          4812,
+          4722
         ],
         "properties": {
           "ABBREV": "Swz.",
@@ -5759,12 +6641,54 @@
         }
       },
       {
+        "id": 159,
+        "type": 1,
+        "geometry": [
+          9,
+          7820,
+          4498
+        ],
+        "properties": {
+          "ABBREV": "Fiji",
+          "ADM0_A3": "FJI",
+          "ADM0_DIF": 0,
+          "ADMIN": "Fiji",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 3579,
+          "GEOUNIT": "Fiji",
+          "GEOU_DIF": 0,
+          "GU_A3": "FJI",
+          "ISO_A2": "FJ",
+          "ISO_A3": "FJI",
+          "ISO_N3": 242,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 2,
+          "NAME": "Fiji",
+          "NAME_FORMA": "Republic of the Fiji Islands",
+          "NAME_SORT": "Fiji",
+          "OID_": 131,
+          "POP_EST": 944720,
+          "POSTAL": "FJ",
+          "SOVEREIGNT": "Fiji",
+          "SOV_A3": "FJI",
+          "SUBUNIT": "Fiji",
+          "SU_A3": "FJI",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "FJI"
+        }
+      },
+      {
         "id": 160,
         "type": 1,
         "geometry": [
           9,
-          10520,
-          7000
+          5260,
+          3500
         ],
         "properties": {
           "ABBREV": "Qatar",
@@ -5805,8 +6729,8 @@
         "type": 1,
         "geometry": [
           9,
-          5506,
-          7966
+          2752,
+          3982
         ],
         "properties": {
           "ABBREV": "Guy.",
@@ -5847,8 +6771,8 @@
         "type": 1,
         "geometry": [
           9,
-          10178,
-          8736
+          5088,
+          4368
         ],
         "properties": {
           "ABBREV": "Com.",
@@ -5889,8 +6813,8 @@
         "type": 1,
         "geometry": [
           9,
-          10492,
-          6962
+          5246,
+          3480
         ],
         "properties": {
           "ABBREV": "Bahr.",
@@ -5927,12 +6851,54 @@
         }
       },
       {
+        "id": 164,
+        "type": 1,
+        "geometry": [
+          9,
+          6152,
+          3446
+        ],
+        "properties": {
+          "ABBREV": "Bhutan",
+          "ADM0_A3": "BTN",
+          "ADM0_DIF": 0,
+          "ADMIN": "Bhutan",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 3524,
+          "GEOUNIT": "Bhutan",
+          "GEOU_DIF": 0,
+          "GU_A3": "BTN",
+          "ISO_A2": "BT",
+          "ISO_A3": "BTN",
+          "ISO_N3": 64,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 8,
+          "NAME": "Bhutan",
+          "NAME_FORMA": "Kingdom of Bhutan",
+          "NAME_SORT": "Bhutan",
+          "OID_": 95,
+          "POP_EST": 691141,
+          "POSTAL": "BT",
+          "SOVEREIGNT": "Bhutan",
+          "SOV_A3": "BTN",
+          "SUBUNIT": "Bhutan",
+          "SU_A3": "BTN",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "BTN"
+        }
+      },
+      {
         "id": 165,
         "type": 1,
         "geometry": [
           9,
-          9066,
-          6032
+          4532,
+          3016
         ],
         "properties": {
           "ABBREV": "Mont.",
@@ -5973,8 +6939,8 @@
         "type": 1,
         "geometry": [
           9,
-          8662,
-          8114
+          4330,
+          4056
         ],
         "properties": {
           "ABBREV": "Eq. G.",
@@ -6011,12 +6977,96 @@
         }
       },
       {
+        "id": 167,
+        "type": 1,
+        "geometry": [
+          9,
+          7728,
+          4298
+        ],
+        "properties": {
+          "ABBREV": "S. Is.",
+          "ADM0_A3": "SLB",
+          "ADM0_DIF": 0,
+          "ADMIN": "Solomon Islands",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 1078,
+          "GEOUNIT": "Solomon Islands",
+          "GEOU_DIF": 0,
+          "GU_A3": "SLB",
+          "ISO_A2": "SB",
+          "ISO_A3": "SLB",
+          "ISO_N3": 90,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 6,
+          "NAME": "Solomon Is.",
+          "NAME_FORMA": "",
+          "NAME_SORT": "Solomon Islands",
+          "OID_": 229,
+          "POP_EST": 595613,
+          "POSTAL": "SB",
+          "SOVEREIGNT": "Solomon Islands",
+          "SOV_A3": "SLB",
+          "SUBUNIT": "Solomon Islands",
+          "SU_A3": "SLB",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "SLB"
+        }
+      },
+      {
+        "id": 168,
+        "type": 1,
+        "geometry": [
+          9,
+          6678,
+          3578
+        ],
+        "properties": {
+          "ABBREV": "Mac.",
+          "ADM0_A3": "MAC",
+          "ADM0_DIF": 1,
+          "ADMIN": "Macau S.A.R",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 18140,
+          "GEOUNIT": "Macau S.A.R",
+          "GEOU_DIF": 0,
+          "GU_A3": "MAC",
+          "ISO_A2": "MO",
+          "ISO_A3": "MAC",
+          "ISO_N3": 446,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 3,
+          "NAME": "Macau",
+          "NAME_FORMA": "Macau Special Administrative Region",
+          "NAME_SORT": "Macau S.A.R",
+          "OID_": 13,
+          "POP_EST": 559846,
+          "POSTAL": "MO",
+          "SOVEREIGNT": "China",
+          "SOV_A3": "CH1",
+          "SUBUNIT": "Macau S.A.R",
+          "SU_A3": "MAC",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "China",
+          "TYPE": "Country",
+          "ne_10m_adm": "MAC"
+        }
+      },
+      {
         "id": 169,
         "type": 1,
         "geometry": [
           9,
-          9692,
-          6494
+          4846,
+          3246
         ],
         "properties": {
           "ABBREV": "Cyp.",
@@ -6057,8 +7107,8 @@
         "type": 1,
         "geometry": [
           9,
-          10128,
-          7652
+          5064,
+          3826
         ],
         "properties": {
           "ABBREV": "Dji.",
@@ -6099,8 +7149,8 @@
         "type": 1,
         "geometry": [
           9,
-          8468,
-          5572
+          4234,
+          2786
         ],
         "properties": {
           "ABBREV": "Lux.",
@@ -6141,8 +7191,8 @@
         "type": 1,
         "geometry": [
           9,
-          5646,
-          8008
+          2822,
+          4004
         ],
         "properties": {
           "ABBREV": "Sur.",
@@ -6183,8 +7233,8 @@
         "type": 1,
         "geometry": [
           9,
-          7100,
-          7456
+          3550,
+          3728
         ],
         "properties": {
           "ABBREV": "C.Vd.",
@@ -6225,8 +7275,8 @@
         "type": 1,
         "geometry": [
           9,
-          8846,
-          6438
+          4422,
+          3218
         ],
         "properties": {
           "ABBREV": "Malta",
@@ -6267,8 +7317,8 @@
         "type": 1,
         "geometry": [
           9,
-          11528,
-          8024
+          5764,
+          4012
         ],
         "properties": {
           "ABBREV": "Mald.",
@@ -6305,12 +7355,54 @@
         }
       },
       {
+        "id": 176,
+        "type": 1,
+        "geometry": [
+          9,
+          6706,
+          3992
+        ],
+        "properties": {
+          "ABBREV": "Brunei",
+          "ADM0_A3": "BRN",
+          "ADM0_DIF": 0,
+          "ADMIN": "Brunei",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 20250,
+          "GEOUNIT": "Brunei",
+          "GEOU_DIF": 0,
+          "GU_A3": "BRN",
+          "ISO_A2": "BN",
+          "ISO_A3": "BRN",
+          "ISO_N3": 96,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 12,
+          "NAME": "Brunei",
+          "NAME_FORMA": "Negara Brunei Darussalam",
+          "NAME_SORT": "Brunei",
+          "OID_": 100,
+          "POP_EST": 388190,
+          "POSTAL": "BN",
+          "SOVEREIGNT": "Brunei",
+          "SOV_A3": "BRN",
+          "SUBUNIT": "Brunei",
+          "SU_A3": "BRN",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "BRN"
+        }
+      },
+      {
         "id": 177,
         "type": 1,
         "geometry": [
           9,
-          4706,
-          7052
+          2352,
+          3526
         ],
         "properties": {
           "ABBREV": "Bhs.",
@@ -6351,8 +7443,8 @@
         "type": 1,
         "geometry": [
           9,
-          4154,
-          7396
+          2076,
+          3698
         ],
         "properties": {
           "ABBREV": "Belize",
@@ -6393,8 +7485,8 @@
         "type": 1,
         "geometry": [
           9,
-          7356,
-          4260
+          3678,
+          2130
         ],
         "properties": {
           "ABBREV": "Iceland",
@@ -6435,8 +7527,8 @@
         "type": 1,
         "geometry": [
           9,
-          1588,
-          8896
+          794,
+          4448
         ],
         "properties": {
           "ABBREV": "Fr. Poly.",
@@ -6477,8 +7569,8 @@
         "type": 1,
         "geometry": [
           9,
-          5480,
-          7586
+          2740,
+          3792
         ],
         "properties": {
           "ABBREV": "Barb.",
@@ -6519,8 +7611,8 @@
         "type": 1,
         "geometry": [
           9,
-          9720,
-          6474
+          4860,
+          3236
         ],
         "properties": {
           "ABBREV": "N. Cy.",
@@ -6557,12 +7649,54 @@
         }
       },
       {
+        "id": 183,
+        "type": 1,
+        "geometry": [
+          9,
+          7866,
+          4592
+        ],
+        "properties": {
+          "ABBREV": "New C.",
+          "ADM0_A3": "NCL",
+          "ADM0_DIF": 1,
+          "ADMIN": "New Caledonia",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 3158,
+          "GEOUNIT": "New Caledonia",
+          "GEOU_DIF": 0,
+          "GU_A3": "NCL",
+          "ISO_A2": "NC",
+          "ISO_A3": "NCL",
+          "ISO_N3": 540,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 11,
+          "NAME": "New Caledonia",
+          "NAME_FORMA": "Territory of New Caledonia and Dependencies",
+          "NAME_SORT": "New Caledonia",
+          "OID_": 40,
+          "POP_EST": 227436,
+          "POSTAL": "NC",
+          "SOVEREIGNT": "France",
+          "SOV_A3": "FR1",
+          "SUBUNIT": "New Caledonia",
+          "SU_A3": "NCL",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "Fr.",
+          "TYPE": "Dependency",
+          "ne_10m_adm": "NCL"
+        }
+      },
+      {
         "id": 184,
         "type": 1,
         "geometry": [
           9,
-          356,
-          8824
+          178,
+          4412
         ],
         "properties": {
           "ABBREV": "Samoa",
@@ -6599,12 +7733,54 @@
         }
       },
       {
+        "id": 185,
+        "type": 1,
+        "geometry": [
+          9,
+          7912,
+          4470
+        ],
+        "properties": {
+          "ABBREV": "Van.",
+          "ADM0_A3": "VUT",
+          "ADM0_DIF": 0,
+          "ADMIN": "Vanuatu",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 988.5,
+          "GEOUNIT": "Vanuatu",
+          "GEOU_DIF": 0,
+          "GU_A3": "VUT",
+          "ISO_A2": "VU",
+          "ISO_A3": "VUT",
+          "ISO_N3": 548,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 3,
+          "NAME": "Vanuatu",
+          "NAME_FORMA": "Republic of Vanuatu",
+          "NAME_SORT": "Vanuatu",
+          "OID_": 259,
+          "POP_EST": 218519,
+          "POSTAL": "VU",
+          "SOVEREIGNT": "Vanuatu",
+          "SOV_A3": "VUT",
+          "SUBUNIT": "Vanuatu",
+          "SU_A3": "VUT",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "VUT"
+        }
+      },
+      {
         "id": 186,
         "type": 1,
         "geometry": [
           9,
-          8498,
-          8170
+          4248,
+          4084
         ],
         "properties": {
           "ABBREV": "S.T.P.",
@@ -6641,12 +7817,54 @@
         }
       },
       {
+        "id": 187,
+        "type": 1,
+        "geometry": [
+          9,
+          7390,
+          3786
+        ],
+        "properties": {
+          "ABBREV": "Guam",
+          "ADM0_A3": "GUM",
+          "ADM0_DIF": 1,
+          "ADMIN": "Guam",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 2500,
+          "GEOUNIT": "Guam",
+          "GEOU_DIF": 0,
+          "GU_A3": "GUM",
+          "ISO_A2": "GU",
+          "ISO_A3": "GUM",
+          "ISO_N3": 316,
+          "LEVEL": 2,
+          "LabelRank": 8,
+          "MAP_COLOR": 1,
+          "NAME": "Guam",
+          "NAME_FORMA": "Territory of Guam",
+          "NAME_SORT": "Guam",
+          "OID_": 62,
+          "POP_EST": 178430,
+          "POSTAL": "GU",
+          "SOVEREIGNT": "United States of America",
+          "SOV_A3": "US1",
+          "SUBUNIT": "Guam",
+          "SU_A3": "GUM",
+          "SU_DIF": 0,
+          "ScaleRank": 3,
+          "TERR_": "U.S.A.",
+          "TYPE": "Dependency",
+          "ne_10m_adm": "GUM"
+        }
+      },
+      {
         "id": 188,
         "type": 1,
         "geometry": [
           9,
-          5416,
-          7552
+          2708,
+          3776
         ],
         "properties": {
           "ABBREV": "S.L.",
@@ -6687,8 +7905,8 @@
         "type": 1,
         "geometry": [
           9,
-          5052,
-          7632
+          2526,
+          3816
         ],
         "properties": {
           "ABBREV": "Cur.",
@@ -6729,8 +7947,8 @@
         "type": 1,
         "geometry": [
           9,
-          234,
-          9120
+          116,
+          4560
         ],
         "properties": {
           "ABBREV": "Tongo",
@@ -6771,8 +7989,8 @@
         "type": 1,
         "geometry": [
           9,
-          658,
-          8240
+          328,
+          4120
         ],
         "properties": {
           "ABBREV": "Kir.",
@@ -6813,8 +8031,8 @@
         "type": 1,
         "geometry": [
           9,
-          5242,
-          7360
+          2620,
+          3680
         ],
         "properties": {
           "ABBREV": "V.I. (U.S.)",
@@ -6851,12 +8069,54 @@
         }
       },
       {
+        "id": 193,
+        "type": 1,
+        "geometry": [
+          9,
+          7628,
+          3932
+        ],
+        "properties": {
+          "ABBREV": "F.S.M.",
+          "ADM0_A3": "FSM",
+          "ADM0_DIF": 0,
+          "ADMIN": "Federated States of Micronesia",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 238.1,
+          "GEOUNIT": "Federated States of Micronesia",
+          "GEOU_DIF": 0,
+          "GU_A3": "FSM",
+          "ISO_A2": "FM",
+          "ISO_A3": "FSM",
+          "ISO_N3": 583,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 13,
+          "NAME": "Micronesia",
+          "NAME_FORMA": "Federated States of Micronesia",
+          "NAME_SORT": "Micronesia, Federated States of",
+          "OID_": 130,
+          "POP_EST": 107434,
+          "POSTAL": "FSM",
+          "SOVEREIGNT": "Federated States of Micronesia",
+          "SOV_A3": "FSM",
+          "SUBUNIT": "Federated States of Micronesia",
+          "SU_A3": "FSM",
+          "SU_DIF": 0,
+          "ScaleRank": 3,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "FSM"
+        }
+      },
+      {
         "id": 194,
         "type": 1,
         "geometry": [
           9,
-          5406,
-          7584
+          2702,
+          3792
         ],
         "properties": {
           "ABBREV": "St.V.G.",
@@ -6897,8 +8157,8 @@
         "type": 1,
         "geometry": [
           9,
-          5006,
-          7616
+          2502,
+          3808
         ],
         "properties": {
           "ABBREV": "Aruba",
@@ -6939,8 +8199,8 @@
         "type": 1,
         "geometry": [
           9,
-          8094,
-          5610
+          4046,
+          2804
         ],
         "properties": {
           "ABBREV": "Jey.",
@@ -6981,8 +8241,8 @@
         "type": 1,
         "geometry": [
           9,
-          5384,
-          7634
+          2692,
+          3816
         ],
         "properties": {
           "ABBREV": "Gren.",
@@ -7019,12 +8279,54 @@
         }
       },
       {
+        "id": 198,
+        "type": 1,
+        "geometry": [
+          9,
+          7408,
+          3722
+        ],
+        "properties": {
+          "ABBREV": "N.M.I.",
+          "ADM0_A3": "MNP",
+          "ADM0_DIF": 1,
+          "ADMIN": "Northern Mariana Islands",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 900,
+          "GEOUNIT": "Northern Mariana Islands",
+          "GEOU_DIF": 0,
+          "GU_A3": "MNP",
+          "ISO_A2": "MP",
+          "ISO_A3": "MNP",
+          "ISO_N3": 580,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 1,
+          "NAME": "N. Mariana Is.",
+          "NAME_FORMA": "Commonwealth of the Northern Mariana Islands",
+          "NAME_SORT": "Mariana Islands, Northern",
+          "OID_": 63,
+          "POP_EST": 88662,
+          "POSTAL": "MP",
+          "SOVEREIGNT": "United States of America",
+          "SOV_A3": "US1",
+          "SUBUNIT": "Northern Mariana Islands",
+          "SU_A3": "MNP",
+          "SU_DIF": 0,
+          "ScaleRank": 3,
+          "TERR_": "Commonwealth of U.S.A.",
+          "TYPE": "Dependency",
+          "ne_10m_adm": "MNP"
+        }
+      },
+      {
         "id": 199,
         "type": 1,
         "geometry": [
           9,
-          10552,
-          8492
+          5276,
+          4246
         ],
         "properties": {
           "ABBREV": "Syc.",
@@ -7065,8 +8367,8 @@
         "type": 1,
         "geometry": [
           9,
-          5378,
-          7392
+          2688,
+          3696
         ],
         "properties": {
           "ABBREV": "Ant.B.",
@@ -7107,8 +8409,8 @@
         "type": 1,
         "geometry": [
           9,
-          8262,
-          6048
+          4130,
+          3024
         ],
         "properties": {
           "ABBREV": "And.",
@@ -7149,8 +8451,8 @@
         "type": 1,
         "geometry": [
           9,
-          7984,
-          5242
+          3992,
+          2620
         ],
         "properties": {
           "ABBREV": "IoMan",
@@ -7191,8 +8493,8 @@
         "type": 1,
         "geometry": [
           9,
-          5398,
-          7480
+          2698,
+          3740
         ],
         "properties": {
           "ABBREV": "D'inca",
@@ -7233,8 +8535,8 @@
         "type": 1,
         "geometry": [
           9,
-          11076,
-          5830
+          5538,
+          2914
         ],
         "properties": {
           "ABBREV": "Bayk.",
@@ -7275,8 +8577,8 @@
         "type": 1,
         "geometry": [
           9,
-          5244,
-          6636
+          2622,
+          3318
         ],
         "properties": {
           "ABBREV": "Berm.",
@@ -7317,8 +8619,8 @@
         "type": 1,
         "geometry": [
           9,
-          8076,
-          5592
+          4038,
+          2796
         ],
         "properties": {
           "ABBREV": "Guern.",
@@ -7359,8 +8661,8 @@
         "type": 1,
         "geometry": [
           9,
-          436,
-          8846
+          218,
+          4422
         ],
         "properties": {
           "ABBREV": "Am. Samoa",
@@ -7397,12 +8699,54 @@
         }
       },
       {
+        "id": 208,
+        "type": 1,
+        "geometry": [
+          9,
+          7966,
+          3932
+        ],
+        "properties": {
+          "ABBREV": "M. Is.",
+          "ADM0_A3": "MHL",
+          "ADM0_DIF": 0,
+          "ADMIN": "Marshall Islands",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 133.5,
+          "GEOUNIT": "Marshall Islands",
+          "GEOU_DIF": 0,
+          "GU_A3": "MHL",
+          "ISO_A2": "MH",
+          "ISO_A3": "MHL",
+          "ISO_N3": 584,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 3,
+          "NAME": "Marshall Is.",
+          "NAME_FORMA": "Republic of the Marshall Islands",
+          "NAME_SORT": "Marshall Islands",
+          "OID_": 180,
+          "POP_EST": 64522,
+          "POSTAL": "MH",
+          "SOVEREIGNT": "Marshall Islands",
+          "SOV_A3": "MHL",
+          "SUBUNIT": "Marshall Islands",
+          "SU_A3": "MHL",
+          "SU_DIF": 0,
+          "ScaleRank": 5,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "MHL"
+        }
+      },
+      {
         "id": 209,
         "type": 1,
         "geometry": [
           9,
-          6356,
-          3078
+          3178,
+          1538
         ],
         "properties": {
           "ABBREV": "Grlnd.",
@@ -7443,8 +8787,8 @@
         "type": 1,
         "geometry": [
           9,
-          4510,
-          7290
+          2254,
+          3644
         ],
         "properties": {
           "ABBREV": "Cym. Is.",
@@ -7485,8 +8829,8 @@
         "type": 1,
         "geometry": [
           9,
-          7878,
-          4562
+          3938,
+          2280
         ],
         "properties": {
           "ABBREV": "Faroe Is.",
@@ -7527,8 +8871,8 @@
         "type": 1,
         "geometry": [
           9,
-          5338,
-          7392
+          2668,
+          3696
         ],
         "properties": {
           "ABBREV": "St.K.N.",
@@ -7569,8 +8913,8 @@
         "type": 1,
         "geometry": [
           9,
-          5320,
-          7356
+          2660,
+          3678
         ],
         "properties": {
           "ABBREV": "St. M.",
@@ -7611,8 +8955,8 @@
         "type": 1,
         "geometry": [
           9,
-          8626,
-          5752
+          4312,
+          2876
         ],
         "properties": {
           "ABBREV": "Liech.",
@@ -7653,8 +8997,8 @@
         "type": 1,
         "geometry": [
           9,
-          8528,
-          5972
+          4264,
+          2986
         ],
         "properties": {
           "ABBREV": "Mco.",
@@ -7695,8 +9039,8 @@
         "type": 1,
         "geometry": [
           9,
-          8758,
-          5960
+          4378,
+          2980
         ],
         "properties": {
           "ABBREV": "S.M.",
@@ -7737,8 +9081,8 @@
         "type": 1,
         "geometry": [
           9,
-          5322,
-          7354
+          2660,
+          3676
         ],
         "properties": {
           "ABBREV": "St. M.",
@@ -7779,8 +9123,8 @@
         "type": 1,
         "geometry": [
           9,
-          7946,
-          6426
+          3972,
+          3212
         ],
         "properties": {
           "ABBREV": "Gib.",
@@ -7821,8 +9165,8 @@
         "type": 1,
         "geometry": [
           9,
-          9102,
-          4738
+          4550,
+          2368
         ],
         "properties": {
           "ABBREV": "Aland",
@@ -7863,8 +9207,8 @@
         "type": 1,
         "geometry": [
           9,
-          5256,
-          7334
+          2628,
+          3666
         ],
         "properties": {
           "ABBREV": "V.I. (Br.)",
@@ -7905,8 +9249,8 @@
         "type": 1,
         "geometry": [
           9,
-          4920,
-          7174
+          2460,
+          3586
         ],
         "properties": {
           "ABBREV": "T.C. Is.",
@@ -7943,12 +9287,54 @@
         }
       },
       {
+        "id": 222,
+        "type": 1,
+        "geometry": [
+          9,
+          7152,
+          3932
+        ],
+        "properties": {
+          "ABBREV": "Palau",
+          "ADM0_A3": "PLW",
+          "ADM0_DIF": 0,
+          "ADMIN": "Palau",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 164,
+          "GEOUNIT": "Palau",
+          "GEOU_DIF": 0,
+          "GU_A3": "PLW",
+          "ISO_A2": "PW",
+          "ISO_A3": "PLW",
+          "ISO_N3": 585,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 12,
+          "NAME": "Palau",
+          "NAME_FORMA": "Republic of Palau",
+          "NAME_SORT": "Palau",
+          "OID_": 202,
+          "POP_EST": 20796,
+          "POSTAL": "PW",
+          "SOVEREIGNT": "Palau",
+          "SOV_A3": "PLW",
+          "SUBUNIT": "Palau",
+          "SU_A3": "PLW",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "PLW"
+        }
+      },
+      {
         "id": 223,
         "type": 1,
         "geometry": [
           9,
-          9728,
-          6488
+          4864,
+          3244
         ],
         "properties": {
           "ABBREV": "Dhek.",
@@ -7989,8 +9375,8 @@
         "type": 1,
         "geometry": [
           9,
-          9692,
-          6510
+          4846,
+          3254
         ],
         "properties": {
           "ABBREV": "Akr.",
@@ -8031,8 +9417,8 @@
         "type": 1,
         "geometry": [
           9,
-          126,
-          8828
+          62,
+          4414
         ],
         "properties": {
           "ABBREV": "Wlf.",
@@ -8073,8 +9459,8 @@
         "type": 1,
         "geometry": [
           9,
-          5322,
-          7348
+          2660,
+          3674
         ],
         "properties": {
           "ABBREV": "Ang.",
@@ -8111,12 +9497,96 @@
         }
       },
       {
+        "id": 227,
+        "type": 1,
+        "geometry": [
+          9,
+          7894,
+          4106
+        ],
+        "properties": {
+          "ABBREV": "Nauru",
+          "ADM0_A3": "NRU",
+          "ADM0_DIF": 0,
+          "ADMIN": "Nauru",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 60,
+          "GEOUNIT": "Nauru",
+          "GEOU_DIF": 0,
+          "GU_A3": "NRU",
+          "ISO_A2": "NR",
+          "ISO_A3": "NRU",
+          "ISO_N3": 520,
+          "LEVEL": 2,
+          "LabelRank": 3,
+          "MAP_COLOR": 9,
+          "NAME": "Nauru",
+          "NAME_FORMA": "Republic of Nauru",
+          "NAME_SORT": "Nauru",
+          "OID_": 192,
+          "POP_EST": 14019,
+          "POSTAL": "NR",
+          "SOVEREIGNT": "Nauru",
+          "SOV_A3": "NRU",
+          "SUBUNIT": "Nauru",
+          "SU_A3": "NRU",
+          "SU_DIF": 0,
+          "ScaleRank": 3,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "NRU"
+        }
+      },
+      {
+        "id": 228,
+        "type": 1,
+        "geometry": [
+          9,
+          8158,
+          4272
+        ],
+        "properties": {
+          "ABBREV": "Tuv.",
+          "ADM0_A3": "TUV",
+          "ADM0_DIF": 0,
+          "ADMIN": "Tuvalu",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 14.94,
+          "GEOUNIT": "Tuvalu",
+          "GEOU_DIF": 0,
+          "GU_A3": "TUV",
+          "ISO_A2": "TV",
+          "ISO_A3": "TUV",
+          "ISO_N3": 798,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 5,
+          "NAME": "Tuvalu",
+          "NAME_FORMA": "",
+          "NAME_SORT": "Tuvalu",
+          "OID_": 252,
+          "POP_EST": 12373,
+          "POSTAL": "TV",
+          "SOVEREIGNT": "Tuvalu",
+          "SOV_A3": "TUV",
+          "SUBUNIT": "Tuvalu",
+          "SU_A3": "TUV",
+          "SU_DIF": 0,
+          "ScaleRank": 5,
+          "TERR_": "",
+          "TYPE": "Sovereign country",
+          "ne_10m_adm": "TUV"
+        }
+      },
+      {
         "id": 229,
         "type": 1,
         "geometry": [
           9,
-          964,
-          9116
+          482,
+          4558
         ],
         "properties": {
           "ABBREV": "Cook Is.",
@@ -8157,8 +9627,8 @@
         "type": 1,
         "geometry": [
           9,
-          7726,
-          9476
+          3862,
+          4738
         ],
         "properties": {
           "ABBREV": "St.H.",
@@ -8199,8 +9669,8 @@
         "type": 1,
         "geometry": [
           9,
-          5332,
-          7362
+          2666,
+          3680
         ],
         "properties": {
           "ABBREV": "St. B.",
@@ -8241,8 +9711,8 @@
         "type": 1,
         "geometry": [
           9,
-          5628,
-          5766
+          2814,
+          2882
         ],
         "properties": {
           "ABBREV": "St. P.M.",
@@ -8283,8 +9753,8 @@
         "type": 1,
         "geometry": [
           9,
-          11704,
-          6466
+          5852,
+          3232
         ],
         "properties": {
           "ABBREV": "",
@@ -8325,8 +9795,8 @@
         "type": 1,
         "geometry": [
           9,
-          5360,
-          7418
+          2680,
+          3708
         ],
         "properties": {
           "ABBREV": "Monts.",
@@ -8363,12 +9833,96 @@
         }
       },
       {
+        "id": 235,
+        "type": 1,
+        "geometry": [
+          9,
+          4534,
+          7324
+        ],
+        "properties": {
+          "ABBREV": "Ant.",
+          "ADM0_A3": "ATA",
+          "ADM0_DIF": 0,
+          "ADMIN": "Antarctica",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 0,
+          "GEOUNIT": "Antarctica",
+          "GEOU_DIF": 0,
+          "GU_A3": "ATA",
+          "ISO_A2": "AQ",
+          "ISO_A3": "ATA",
+          "ISO_N3": 10,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 0,
+          "NAME": "Antarctica",
+          "NAME_FORMA": "",
+          "NAME_SORT": "Antarctica",
+          "OID_": 69,
+          "POP_EST": 4000,
+          "POSTAL": "AQ",
+          "SOVEREIGNT": "Antarctica",
+          "SOV_A3": "ATA",
+          "SUBUNIT": "Antarctica",
+          "SU_A3": "ATA",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "Multiple claims held in abeyance",
+          "TYPE": "Indeterminate",
+          "ne_10m_adm": "ATA"
+        }
+      },
+      {
+        "id": 236,
+        "type": 1,
+        "geometry": [
+          9,
+          6476,
+          4340
+        ],
+        "properties": {
+          "ABBREV": "Ind. Oc. Ter.",
+          "ADM0_A3": "IOA",
+          "ADM0_DIF": 1,
+          "ADMIN": "Indian Ocean Territories",
+          "FIPS_10_": -99,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 0,
+          "GEOUNIT": "Indian Ocean Territories",
+          "GEOU_DIF": 0,
+          "GU_A3": "IOA",
+          "ISO_A2": "-99",
+          "ISO_A3": "-99",
+          "ISO_N3": -99,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 7,
+          "NAME": "Indian Ocean Ter.",
+          "NAME_FORMA": "",
+          "NAME_SORT": "Indian Ocean Territories",
+          "OID_": 34,
+          "POP_EST": 4000,
+          "POSTAL": "IOT",
+          "SOVEREIGNT": "Australia",
+          "SOV_A3": "AU1",
+          "SUBUNIT": "Indian Ocean Territories",
+          "SU_A3": "IOA",
+          "SU_DIF": 0,
+          "ScaleRank": 5,
+          "TERR_": "Auz.",
+          "TYPE": "Dependency",
+          "ne_10m_adm": "IOA"
+        }
+      },
+      {
         "id": 237,
         "type": 1,
         "geometry": [
           9,
-          11482,
-          8518
+          5740,
+          4258
         ],
         "properties": {
           "ABBREV": "I.O.T.",
@@ -8409,8 +9963,8 @@
         "type": 1,
         "geometry": [
           9,
-          5488,
-          10952
+          2744,
+          5476
         ],
         "properties": {
           "ABBREV": "Flk. Is.",
@@ -8447,12 +10001,54 @@
         }
       },
       {
+        "id": 239,
+        "type": 1,
+        "geometry": [
+          9,
+          7916,
+          4786
+        ],
+        "properties": {
+          "ABBREV": "Nfk. I.",
+          "ADM0_A3": "NFK",
+          "ADM0_DIF": 1,
+          "ADMIN": "Norfolk Island",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 0,
+          "GEOUNIT": "Norfolk Island",
+          "GEOU_DIF": 0,
+          "GU_A3": "NFK",
+          "ISO_A2": "NF",
+          "ISO_A3": "NFK",
+          "ISO_N3": 574,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 7,
+          "NAME": "Norfolk Island",
+          "NAME_FORMA": "Territory of Norfolk Island",
+          "NAME_SORT": "Norfolk Island",
+          "OID_": 35,
+          "POP_EST": 2141,
+          "POSTAL": "NF",
+          "SOVEREIGNT": "Australia",
+          "SOV_A3": "AU1",
+          "SUBUNIT": "Norfolk Island",
+          "SU_A3": "NFK",
+          "SU_DIF": 0,
+          "ScaleRank": 5,
+          "TERR_": "Auz.",
+          "TYPE": "Dependency",
+          "ne_10m_adm": "NFK"
+        }
+      },
+      {
         "id": 240,
         "type": 1,
         "geometry": [
           9,
-          460,
-          9074
+          230,
+          4536
         ],
         "properties": {
           "ABBREV": "Niue",
@@ -8493,8 +10089,8 @@
         "type": 1,
         "geometry": [
           9,
-          8758,
-          6086
+          4378,
+          3042
         ],
         "properties": {
           "ABBREV": "Vat.",
@@ -8535,8 +10131,8 @@
         "type": 1,
         "geometry": [
           9,
-          11332,
-          10764
+          5666,
+          5382
         ],
         "properties": {
           "ABBREV": "Fr. S.A.L.",
@@ -8577,8 +10173,8 @@
         "type": 1,
         "geometry": [
           9,
-          2344,
-          9338
+          1172,
+          4668
         ],
         "properties": {
           "ABBREV": "Pit. Is.",
@@ -8619,8 +10215,8 @@
         "type": 1,
         "geometry": [
           9,
-          6560,
-          11180
+          3280,
+          5590
         ],
         "properties": {
           "ABBREV": "S.G. S.S. Is.",
@@ -8657,12 +10253,96 @@
         }
       },
       {
+        "id": 245,
+        "type": 1,
+        "geometry": [
+          9,
+          7538,
+          4524
+        ],
+        "properties": {
+          "ABBREV": "C.S.I.",
+          "ADM0_A3": "CSI",
+          "ADM0_DIF": 1,
+          "ADMIN": "Coral Sea Islands",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 0,
+          "GEOUNIT": "Coral Sea Islands",
+          "GEOU_DIF": 0,
+          "GU_A3": "CSI",
+          "ISO_A2": "-99",
+          "ISO_A3": "-99",
+          "ISO_N3": -99,
+          "LEVEL": 2,
+          "LabelRank": 5,
+          "MAP_COLOR": 7,
+          "NAME": "Coral Sea Is.",
+          "NAME_FORMA": "Coral Sea Islands Territory",
+          "NAME_SORT": "Coral Sea Islands",
+          "OID_": 32,
+          "POP_EST": 4,
+          "POSTAL": "CS",
+          "SOVEREIGNT": "Australia",
+          "SOV_A3": "AU1",
+          "SUBUNIT": "Coral Sea Islands",
+          "SU_A3": "CSI",
+          "SU_DIF": 0,
+          "ScaleRank": 5,
+          "TERR_": "",
+          "TYPE": "Dependency",
+          "ne_10m_adm": "CSI"
+        }
+      },
+      {
+        "id": 246,
+        "type": 1,
+        "geometry": [
+          9,
+          6908,
+          4380
+        ],
+        "properties": {
+          "ABBREV": "A.C.Is.",
+          "ADM0_A3": "ATC",
+          "ADM0_DIF": 1,
+          "ADMIN": "Ashmore and Cartier Islands",
+          "FIPS_10_": 0,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 0,
+          "GEOUNIT": "Ashmore and Cartier Islands",
+          "GEOU_DIF": 0,
+          "GU_A3": "ATC",
+          "ISO_A2": "AU",
+          "ISO_A3": "AUS",
+          "ISO_N3": 36,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 7,
+          "NAME": "Ashmore and Cartier Is.",
+          "NAME_FORMA": "Territory of Ashmore and Cartier Islands",
+          "NAME_SORT": "Ashmore and Cartier Islands",
+          "OID_": 31,
+          "POP_EST": 0,
+          "POSTAL": "AU",
+          "SOVEREIGNT": "Australia",
+          "SOV_A3": "AU1",
+          "SUBUNIT": "Ashmore and Cartier Islands",
+          "SU_A3": "ATC",
+          "SU_DIF": 0,
+          "ScaleRank": 5,
+          "TERR_": "",
+          "TYPE": "Dependency",
+          "ne_10m_adm": "ATC"
+        }
+      },
+      {
         "id": 247,
         "type": 1,
         "geometry": [
           9,
-          3220,
-          7720
+          1610,
+          3860
         ],
         "properties": {
           "ABBREV": "Clp. I.",
@@ -8703,8 +10383,8 @@
         "type": 1,
         "geometry": [
           9,
-          9706,
-          6480
+          4852,
+          3240
         ],
         "properties": {
           "ABBREV": "",
@@ -8745,8 +10425,8 @@
         "type": 1,
         "geometry": [
           9,
-          11536,
-          11052
+          5768,
+          5526
         ],
         "properties": {
           "ABBREV": "H.M.Is.",
@@ -8783,12 +10463,54 @@
         }
       },
       {
+        "id": 250,
+        "type": 1,
+        "geometry": [
+          9,
+          6996,
+          3152
+        ],
+        "properties": {
+          "ABBREV": "",
+          "ADM0_A3": "KNM",
+          "ADM0_DIF": 0,
+          "ADMIN": "Korea No Mans Area",
+          "FIPS_10_": -99,
+          "FeatureCla": "Adm-0 country",
+          "GDP_MD_EST": 0,
+          "GEOUNIT": "Korea No Mans Area",
+          "GEOU_DIF": 0,
+          "GU_A3": "KNM",
+          "ISO_A2": "-99",
+          "ISO_A3": "-99",
+          "ISO_N3": -99,
+          "LEVEL": 2,
+          "LabelRank": 2,
+          "MAP_COLOR": 0,
+          "NAME": "",
+          "NAME_FORMA": "",
+          "NAME_SORT": "Korea No Mans Area",
+          "OID_": 72,
+          "POP_EST": 0,
+          "POSTAL": "",
+          "SOVEREIGNT": "Korea No Mans Area",
+          "SOV_A3": "KNM",
+          "SUBUNIT": "Korea No Mans Area",
+          "SU_A3": "KNM",
+          "SU_DIF": 0,
+          "ScaleRank": 1,
+          "TERR_": "",
+          "TYPE": "Indeterminate",
+          "ne_10m_adm": "KNM"
+        }
+      },
+      {
         "id": 251,
         "type": 1,
         "geometry": [
           9,
-          3798,
-          7520
+          1898,
+          3760
         ],
         "properties": {
           "ABBREV": "U.S. MOI",
@@ -8829,8 +10551,8 @@
         "type": 1,
         "geometry": [
           9,
-          7604,
-          7072
+          3802,
+          3536
         ],
         "properties": {
           "ABBREV": "W. Sah.",
@@ -8871,8 +10593,8 @@
         "type": 1,
         "geometry": [
           9,
-          4770,
-          7266
+          2384,
+          3632
         ],
         "properties": {
           "ABBREV": "G. Bay",

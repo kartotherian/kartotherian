@@ -35,7 +35,6 @@ function Vector(uri, callback) {
     this._format = uri.format || undefined;
     this._source = uri.source || undefined;
     this._backend = uri.backend || undefined;
-    this._legacy = uri.legacy || false;
     this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
     this._base = path.resolve(uri.base || __dirname);
 
@@ -114,8 +113,9 @@ Vector.prototype.getTile = function(z, x, y, callback) {
     var format = callback.format || this._format;
     var scale = callback.scale || this._scale;
     var profile = callback.profile || false;
-    var width = (!this._legacy) ? scale * 256 | 0 || 256 : 256;
-    var height = (!this._legacy) ? scale * 256 | 0 || 256 : 256;
+    var legacy = callback.legacy || false;
+    var width = !legacy ? scale * 256 | 0 || 256 : 256;
+    var height = !legacy ? scale * 256 | 0 || 256 : 256;
 
     var source = this;
     var drawtime;
@@ -197,6 +197,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
     };
     cb.format = format;
     cb.scale = scale;
+    cb.legacy = legacy;
     source._backend.getTile(z, x, y, cb);
 };
 
