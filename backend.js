@@ -10,7 +10,6 @@ function Backend(opts, callback) {
     this._scale = opts.scale || 1;
     this._deflate = typeof opts.deflate === 'boolean' ? opts.deflate : true;
     this._source = null;
-    this._legacy = opts.legacy || false;
     var backend = this;
     if (opts.source) {
         setsource(opts.source, opts);
@@ -54,7 +53,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
     var backend = this;
     var source = backend._source;
     var now = +new Date;
-    var legacy = backend._legacy;
+    var legacy = callback.legacy || false;
     var scale = callback.scale || backend._scale;
 
     // If scale > 1 adjusts source data zoom level inversely.

@@ -96,7 +96,7 @@ describe('tiles', function() {
         'a@vt': new Vector({ backend: new Vector.Backend('test:///a'), xml: xml.a }),
         b: new Vector({ backend: new Testsource('b'), xml: xml.b }),
         'b@2x': new Vector({ backend: new Testsource('b'), xml: xml.b }),
-        c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale: 2, legacy: true }),
+        c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale: 2 }),
         d: new Vector({ backend: new Testsource('a'), xml: xml.a }),
         e: new Vector({ backend: new Testsource('a'), xml: xml.a, format:'png8:c=2' }),
         f: new Vector({ backend: new Testsource('a'), xml: xml.a.replace('png8:m=h', 'png8:c=2') }),
@@ -189,6 +189,10 @@ describe('tiles', function() {
                 if (/\@2x/.test(source)) {
                     cbTile.scale = 2;
                     cbHead.scale = 2;
+                }
+                if (source === 'c') {
+                    cbTile.legacy = true;
+                    cbHead.legacy = true;
                 }
                 sources[source].getTile(z,x,y, cbTile);
                 sources[source].getHeaders(z,x,y, cbHead);

@@ -141,6 +141,9 @@ describe('tiles', function() {
                     }
                     done();
                 };
+                if (source === 'c') {
+                    cbTile.legacy = true;
+                }
                 sources[source].getTile(z,x,y, cbTile);
             });
         });
