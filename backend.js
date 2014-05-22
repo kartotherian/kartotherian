@@ -65,9 +65,9 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         var bx = Math.floor(x / Math.pow(2, z - bz));
         var by = Math.floor(y / Math.pow(2, z - bz));
     } else {
-        var bz = z;
-        var bx = x;
-        var by = y;
+        var bz = z | 0;
+        var bx = x | 0;
+        var by = y | 0;
     }
 
     // Overzooming support.
