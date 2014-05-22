@@ -70,7 +70,8 @@ describe('tiles', function() {
     var sources = {
         a: new Backend({ source: new Testsource('a'), minzoom:0, maxzoom: 1 }),
         b: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1 }),
-        c: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2 }),
+        c: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2, legacy: true }),
+        h: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2 }),
         i: new Backend({ source: new Testsource('i'), minzoom:0, maxzoom: 1 })
     };
     sources.d = new Backend({ source: sources.a, minzoom:0, maxzoom:1 });
@@ -83,11 +84,12 @@ describe('tiles', function() {
         // 2.1.1 should use z2 vector tile -- a coastline shapefile
         // 2.1.2 should use maskLevel -- place dots, like the others
         b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],
-        // test scale factor. unlike previous test, 3.2.2/3.2.3 will be coast
-        // and 3.2.4 should fallback to the maskLevel
+        // test the a legacy flag overriding the scale factor of the request affecting the output tile size
         c: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
         // proxies through vector tiles (rather than PBFs) from a source.
         d: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
+        // test the scale factor of the request affecting the output tile size
+        h: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
         // wraps image source with vector tiles.
         i: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.0.0', '2.0.1'],
     };
@@ -117,14 +119,31 @@ describe('tiles', function() {
                     // Size stats attached to buffer.
                     assert.equal('number', typeof vtile._srcbytes);
                     // Compare vtile contents to expected fixtures.
-                    var fixtpath = __dirname + '/expected/backend-' + source + '.' + key + '.json';
-                    if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), null, 2));
-                    assert.deepEqual(
-                        JSON.parse(JSON.stringify(vtile.toJSON())),
-                        JSON.parse(fs.readFileSync(fixtpath))
-                    );
+                    // if source is c, test legacy scale factor
+                    // at zoom > 1 it will compare with data at previous zoom level.
+                    if (source === 'c') {
+                        if (key[0] > 1) {
+                            key[0] -= 1;
+                            var fixtpath = __dirname + '/expected/backend-' + source + '.' + key + '.json';
+                            if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), null, 2));
+                            assert.deepEqual(
+                                JSON.parse(JSON.stringify(vtile.toJSON())),
+                                JSON.parse(fs.readFileSync(fixtpath))
+                            );
+                        }
+                    } else {
+                        var fixtpath = __dirname + '/expected/backend-' + source + '.' + key + '.json';
+                        if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), null, 2));
+                        assert.deepEqual(
+                            JSON.parse(JSON.stringify(vtile.toJSON())),
+                            JSON.parse(fs.readFileSync(fixtpath))
+                        );
+                    }
                     done();
                 };
+                if (source === 'c') {
+                    cbTile.legacy = true;
+                }
                 sources[source].getTile(z,x,y, cbTile);
             });
         });

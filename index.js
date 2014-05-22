@@ -108,12 +108,14 @@ Vector.prototype.update = function(opts, callback) {
 
 Vector.prototype.getTile = function(z, x, y, callback) {
     if (!this._map) return callback(new Error('Tilesource not loaded'));
-
     // Hack around tilelive API - allow params to be passed per request
     // as attributes of the callback function.
     var format = callback.format || this._format;
     var scale = callback.scale || this._scale;
     var profile = callback.profile || false;
+    var legacy = callback.legacy || false;
+    var width = !legacy ? scale * 256 | 0 || 256 : 256;
+    var height = !legacy ? scale * 256 | 0 || 256 : 256;
 
     var source = this;
     var drawtime;
@@ -160,13 +162,13 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             try { return callback(null, vtile.toJSON(), headers); }
             catch(err) { return callback(err); }
         } else if (format === 'utf') {
-            var surface = new mapnik.Grid(256,256);
+            var surface = new mapnik.Grid(width,height);
             opts.layer = source._map.parameters.interactivity_layer;
             opts.fields = source._map.parameters.interactivity_fields.split(',');
         } else if (format === 'svg') {
-            var surface = new mapnik.CairoSurface('svg',256,256);
+            var surface = new mapnik.CairoSurface('svg',width,height);
         } else {
-            var surface = new mapnik.Image(256,256);
+            var surface = new mapnik.Image(width,height);
         }
         vtile.render(source._map, surface, opts, function(err, image) {
             if (err) return callback(err);
@@ -195,6 +197,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
     };
     cb.format = format;
     cb.scale = scale;
+    cb.legacy = legacy;
     source._backend.getTile(z, x, y, cb);
 };
 
@@ -252,7 +255,7 @@ Vector.prototype.getInfo = function(callback) {
 // the right tile to use.
 Vector.prototype.queryTile = function(z, lon, lat, options, callback) {
     var xyz = sm.xyz([lon, lat, lon, lat], z);
-    this._backend.getTile(z, xyz.minX, xyz.minY, function(err, vtile, headers) {
+    this._backend.getTile(z, xyz.minX, xyz.minY, function(err, vtile, head) {
         if (err) return callback(err);
         try {
             var features = vtile.query(lon, lat, options);
@@ -268,7 +271,12 @@ Vector.prototype.queryTile = function(z, lon, lat, options, callback) {
                 attributes: features[i].attributes()
             });
         }
+        var headers = {};
         headers['Content-Type'] = 'application/json';
+        headers['ETag'] = JSON.stringify(crypto.createHash('md5')
+            .update(head && head['ETag'] || (z+','+lon+','+lat))
+            .digest('hex'));
+        headers['Last-Modified'] = new Date(head && head['Last-Modified'] || 0).toUTCString();
         return callback(null, results, headers);
     });
 };

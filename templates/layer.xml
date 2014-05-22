@@ -11,7 +11,7 @@
   <Rule>
     <Filter>([mapnik::geometry_type] = 1)</Filter>
     <MarkersSymbolizer allow-overlap="true" width="4" height="4" stroke-width="0" stroke="#ffffff" fill="rgba(%s,0.5)" />
-    <TextSymbolizer allow-overlap="true" justify-alignment="left" face-name="Source Sans Pro Regular" fill="rgba(%s,0.5)" size="12" dy="6" ><![CDATA[[name]]]></TextSymbolizer>
+    <TextSymbolizer allow-overlap="true" justify-alignment="left" face-name="Source Sans Pro Regular" fill="rgba(%s,0.75)" size="12" dy="6" ><![CDATA[[name]]]></TextSymbolizer>
   </Rule>
 </Style>
 
