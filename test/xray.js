@@ -51,6 +51,22 @@ describe('xray', function() {
             done();
         });
     });
+    it('loads raster source', function(done) {
+        new xray({uri:'test:///i'}, function(err, source) {
+            assert.ifError(err);
+            assert.ok(!!source);
+            source.getTile(0,0,0, function(err,buffer) {
+                assert.ifError(err);
+                if (UPDATE) {
+                    fs.writeFileSync(__dirname + '/expected/xray-i-0-0-0.png', buffer);
+                }
+                imageEqualsFile(buffer, __dirname + '/expected/xray-i-0-0-0.png', function(err) {
+                    assert.ifError(err);
+                    done();
+                });
+            });
+        });
+    });
     it('color', function() {
         var results = {
             '': [68,68,68],
