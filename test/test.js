@@ -96,11 +96,12 @@ describe('tiles', function() {
         'a@vt': new Vector({ backend: new Vector.Backend('test:///a'), xml: xml.a }),
         b: new Vector({ backend: new Testsource('b'), xml: xml.b }),
         'b@2x': new Vector({ backend: new Testsource('b'), xml: xml.b }),
-        c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale:2 }),
+        c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale: 2 }),
         d: new Vector({ backend: new Testsource('a'), xml: xml.a }),
         e: new Vector({ backend: new Testsource('a'), xml: xml.a, format:'png8:c=2' }),
         f: new Vector({ backend: new Testsource('a'), xml: xml.a.replace('png8:m=h', 'png8:c=2') }),
-        g: new Vector({ backend: new Testsource('a'), xml: xml.a.replace('"scale">1', '"scale">2') })
+        g: new Vector({ backend: new Testsource('a'), xml: xml.a.replace('"scale">1', '"scale">2') }),
+        h: new Vector({ backend: new Testsource('b'), xml: xml.b, scale: 2 }),
     };
     var tests = {
         // 2.0.0, 2.0.1 test overzooming.
@@ -111,10 +112,9 @@ describe('tiles', function() {
         // 2.1.1 should use z2 vector tile -- a coastline shapefile
         // 2.1.2 should use maskLevel -- place dots, like the others
         b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],
-        // test scale factor. unlike previous test, 3.2.2/3.2.3 will be coast
-        // and 3.2.4 should fallback to the maskLevel
+        // test legacy scale factor which holds 256x256 tile size constant.
         c: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
-        // should match results for 'c' which has a 2x factor map object.
+        // should match results for 'h' which has a 2x factor map object.
         'b@2x': ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
         // Checks for ETag stability.
         d: ['0.0.0', '1.0.0', '1.0.1', '1.1.0'],
@@ -122,8 +122,11 @@ describe('tiles', function() {
         e: ['0.0.0'],
         // Checks that format in map parameters beats default code fallback.
         f: ['0.0.0'],
-        // Checks that scale in map parameters beats default code fallback.
-        g: ['0.0.0']
+        // Checks that scale in map parameters beats default code fallback
+        // will produce a 512 tile at scale2.
+        g: ['0.0.0'],
+        // test the scale factor of the request affecting the output tile size
+        h: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4']
     };
     var formats = {
         json: { ctype: 'application/json' },
@@ -186,6 +189,10 @@ describe('tiles', function() {
                 if (/\@2x/.test(source)) {
                     cbTile.scale = 2;
                     cbHead.scale = 2;
+                }
+                if (source === 'c') {
+                    cbTile.legacy = true;
+                    cbHead.legacy = true;
                 }
                 sources[source].getTile(z,x,y, cbTile);
                 sources[source].getHeaders(z,x,y, cbHead);

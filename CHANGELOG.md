@@ -1,5 +1,10 @@
 # Changlog
 
+## 0.13.0
+
+- Tile size as function of scale for retina and print - 512px at scale 2, 1024px at scale 4
+- Legacy flag for api-maps v1-3
+
 ## 0.12.0
 
  - Adds queryTile method and removes xray interactivity for inspection
