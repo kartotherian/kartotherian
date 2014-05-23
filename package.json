@@ -13,7 +13,7 @@
     }
   ],
   "dependencies": {
-    "mapnik": "https://github.com/mapnik/node-mapnik/tarball/raster-pbf",
+    "mapnik": "~1.4.4",
     "tiletype": "0.0.x",
     "tilelive": "4.5.x",
     "tar": "~0.1.18",
