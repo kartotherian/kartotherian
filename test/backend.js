@@ -125,17 +125,17 @@ describe('tiles', function() {
                         if (key[0] > 1) {
                             key[0] -= 1;
                             var fixtpath = __dirname + '/expected/backend-' + source + '.' + key + '.json';
-                            if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), null, 2));
+                            if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), replacer, 2));
                             assert.deepEqual(
-                                JSON.parse(JSON.stringify(vtile.toJSON())),
+                                JSON.parse(JSON.stringify(vtile.toJSON(), replacer)),
                                 JSON.parse(fs.readFileSync(fixtpath))
                             );
                         }
                     } else {
                         var fixtpath = __dirname + '/expected/backend-' + source + '.' + key + '.json';
-                        if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), null, 2));
+                        if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), replacer, 2));
                         assert.deepEqual(
-                            JSON.parse(JSON.stringify(vtile.toJSON())),
+                            JSON.parse(JSON.stringify(vtile.toJSON(), replacer)),
                             JSON.parse(fs.readFileSync(fixtpath))
                         );
                     }
@@ -162,4 +162,20 @@ describe('tiles', function() {
         });
     });
 });
+
+function replacer(key, value) {
+    if (key === 'raster') {
+        if (Array.isArray(value)) {
+            var buffer = new Buffer(value.length);
+            for (var i = 0; i < value.length; i++) buffer.writeUInt8(value[i], i);
+            return buffer.toString('hex');
+        } else {
+            var buffer = new Buffer(Object.keys(value).length);
+            for (var k in value) buffer.writeUInt8(value[k], k);
+            return buffer.toString('hex');
+        }
+    } else {
+        return value;
+    }
+}
 
