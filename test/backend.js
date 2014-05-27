@@ -170,8 +170,9 @@ function replacer(key, value) {
             for (var i = 0; i < value.length; i++) buffer.writeUInt8(value[i], i);
             return buffer.toString('hex');
         } else {
-            var buffer = new Buffer(Object.keys(value).length);
-            for (var k in value) buffer.writeUInt8(value[k], k|0);
+            var length = value.length;
+            var buffer = new Buffer(length);
+            for (var i = 0; i < length; i++) buffer.writeUInt8(value[i], i);
             return buffer.toString('hex');
         }
     } else {
