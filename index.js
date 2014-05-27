@@ -35,7 +35,6 @@ function Vector(uri, callback) {
     this._format = uri.format || undefined;
     this._source = uri.source || undefined;
     this._backend = uri.backend || undefined;
-    this._deflate = typeof uri.deflate === 'boolean' ? uri.deflate : true;
     this._base = path.resolve(uri.base || __dirname);
 
     if (callback) this.once('open', callback);
@@ -91,8 +90,7 @@ Vector.prototype.update = function(opts, callback) {
             if (!source) return callback(new Error('No backend'));
             new Backend({
                 uri: source,
-                scale: s._scale,
-                deflate: s._uri.deflate
+                scale: s._scale
             }, function(err, backend) {
                 if (err) return callback(err);
                 s._source = map.parameters.source || opts.source;
