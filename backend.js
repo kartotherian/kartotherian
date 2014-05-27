@@ -1,3 +1,4 @@
+var tiletype = require('tiletype');
 var tilelive = require('tilelive');
 var crypto = require('crypto');
 var mapnik = require('mapnik');
@@ -7,8 +8,8 @@ var zlib = require('zlib');
 module.exports = Backend;
 
 function Backend(opts, callback) {
+    this._layer = opts.layer || 'image';
     this._scale = opts.scale || 1;
-    this._deflate = typeof opts.deflate === 'boolean' ? opts.deflate : true;
     this._source = null;
     var backend = this;
     if (opts.source) {
@@ -64,9 +65,9 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         var bx = Math.floor(x / Math.pow(2, z - bz));
         var by = Math.floor(y / Math.pow(2, z - bz));
     } else {
-        var bz = z;
-        var bx = x;
-        var by = y;
+        var bz = z | 0;
+        var bx = x | 0;
+        var by = y | 0;
     }
 
     // Overzooming support.
@@ -90,20 +91,33 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         }
         if (err && err.message !== 'Tile does not exist') return callback(err);
 
-        if (!body) {
-            return makevtile();
-        } else if (body instanceof mapnik.VectorTile) {
+        if (body instanceof mapnik.VectorTile) {
             size = body._srcbytes;
             headers = head || {};
             return makevtile(null, body);
+        }
+
+        var type = body && tiletype.type(body);
+        if (!body || !body.length || !type) {
+            return makevtile();
+        } else if (type === 'pbf') {
+            size = body.length;
+            headers = head || {};
+            return zlib.inflate(body, function(err, data) {
+                if (err) return callback(err);
+                return makevtile(null, data, type);
+            });
+        // Image sources do not allow overzooming (yet).
+        } else if (bz < z) {
+            return makevtile();
         } else {
             size = body.length;
             headers = head || {};
-            return backend._deflate ? zlib.inflate(body, makevtile) : makevtile(null, body);
+            return makevtile(null, body, type);
         }
     });
 
-    function makevtile(err, data) {
+    function makevtile(err, data, type) {
         if (err && err.message !== 'Tile does not exist') return callback(err);
 
         // If no last modified is provided, use epoch.
@@ -127,7 +141,11 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         if (!data || !data.length) return callback(null, vtile, headers);
 
         try {
-            vtile.setData(data);
+            if (type === 'pbf') {
+                vtile.setData(data);
+            } else {
+                vtile.addImage(data, backend._layer);
+            }
         } catch (err) {
             return callback(err);
         }

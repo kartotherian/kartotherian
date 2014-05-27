@@ -26,6 +26,10 @@
     <MarkersSymbolizer allow-overlap="true" width="4" height="4" stroke-width="0" stroke="#ffffff" fill="rgba(255,170,238,0.5)" />
     <TextSymbolizer allow-overlap="true" justify-alignment="left" face-name="Source Sans Pro Regular" fill="rgba(255,170,238,0.75)" size="12" dy="6" ><![CDATA[[name]]]></TextSymbolizer>
   </Rule>
+  <Rule>
+    <ElseFilter></ElseFilter>
+    <RasterSymbolizer opacity="0.75" />
+  </Rule>
 </Style>
 
 <Layer name="coastline" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
@@ -46,6 +50,10 @@
     <Filter>([mapnik::geometry_type] = 1)</Filter>
     <MarkersSymbolizer allow-overlap="true" width="4" height="4" stroke-width="0" stroke="#ffffff" fill="rgba(255,221,238,0.5)" />
     <TextSymbolizer allow-overlap="true" justify-alignment="left" face-name="Source Sans Pro Regular" fill="rgba(255,221,238,0.75)" size="12" dy="6" ><![CDATA[[name]]]></TextSymbolizer>
+  </Rule>
+  <Rule>
+    <ElseFilter></ElseFilter>
+    <RasterSymbolizer opacity="0.75" />
   </Rule>
 </Style>
 
@@ -68,6 +76,10 @@
     <MarkersSymbolizer allow-overlap="true" width="4" height="4" stroke-width="0" stroke="#ffffff" fill="rgba(136,170,238,0.5)" />
     <TextSymbolizer allow-overlap="true" justify-alignment="left" face-name="Source Sans Pro Regular" fill="rgba(136,170,238,0.75)" size="12" dy="6" ><![CDATA[[name]]]></TextSymbolizer>
   </Rule>
+  <Rule>
+    <ElseFilter></ElseFilter>
+    <RasterSymbolizer opacity="0.75" />
+  </Rule>
 </Style>
 
 <Layer name="water" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
@@ -88,6 +100,10 @@
     <Filter>([mapnik::geometry_type] = 1)</Filter>
     <MarkersSymbolizer allow-overlap="true" width="4" height="4" stroke-width="0" stroke="#ffffff" fill="rgba(85,153,255,0.5)" />
     <TextSymbolizer allow-overlap="true" justify-alignment="left" face-name="Source Sans Pro Regular" fill="rgba(85,153,255,0.75)" size="12" dy="6" ><![CDATA[[name]]]></TextSymbolizer>
+  </Rule>
+  <Rule>
+    <ElseFilter></ElseFilter>
+    <RasterSymbolizer opacity="0.75" />
   </Rule>
 </Style>
 

@@ -23,7 +23,6 @@ describe('backend', function() {
         new Backend({ uri:'test:///a' }, function(err, source) {
             assert.ifError(err);
             assert.equal(1, source._scale);
-            assert.equal(true, source._deflate);
             assert.equal(0, source._minzoom);
             assert.equal(1, source._maxzoom);
             assert.equal(undefined, source._maskLevel);
@@ -33,7 +32,6 @@ describe('backend', function() {
     it('sync default opts', function(done) {
         var source = new Backend({ source: new Testsource('a') });
         assert.equal(1, source._scale);
-        assert.equal(true, source._deflate);
         assert.equal(0, source._minzoom);
         assert.equal(22, source._maxzoom);
         assert.equal(undefined, source._maskLevel);
@@ -45,7 +43,6 @@ describe('backend', function() {
             maskLevel: 4
         });
         assert.equal(1, source._scale);
-        assert.equal(true, source._deflate);
         assert.equal(2, source._minzoom);
         assert.equal(22, source._maxzoom);
         assert.equal(4, source._maskLevel);
@@ -74,7 +71,8 @@ describe('tiles', function() {
         a: new Backend({ source: new Testsource('a'), minzoom:0, maxzoom: 1 }),
         b: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1 }),
         c: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2, legacy: true }),
-        h: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2 })
+        h: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2 }),
+        i: new Backend({ source: new Testsource('i'), minzoom:0, maxzoom: 1 })
     };
     sources.d = new Backend({ source: sources.a, minzoom:0, maxzoom:1 });
     var tests = {
@@ -91,7 +89,9 @@ describe('tiles', function() {
         // proxies through vector tiles (rather than PBFs) from a source.
         d: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
         // test the scale factor of the request affecting the output tile size
-        h: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4']
+        h: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],
+        // wraps image source with vector tiles.
+        i: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.0.0', '2.0.1'],
     };
     Object.keys(tests).forEach(function(source) {
         tests[source].forEach(function(key) {
@@ -106,7 +106,7 @@ describe('tiles', function() {
                     assert.ok(vtile instanceof mapnik.VectorTile);
                     // No backend tiles last modified defaults to Date 0.
                     // Otherwise, Last-Modified from backend should be passed.
-                    if (['1.1.2','1.1.3'].indexOf(key) >= 0) {
+                    if (['1.1.2','1.1.3'].indexOf(key) >= 0 || (source == 'i' && ['2.0.0','2.0.1'].indexOf(key) >= 0)) {
                         assert.equal(headers['Last-Modified'], new Date(0).toUTCString());
                     } else {
                         assert.equal(headers['Last-Modified'], Testsource.now.toUTCString());
@@ -125,17 +125,17 @@ describe('tiles', function() {
                         if (key[0] > 1) {
                             key[0] -= 1;
                             var fixtpath = __dirname + '/expected/backend-' + source + '.' + key + '.json';
-                            if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), null, 2));
+                            if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), replacer, 2));
                             assert.deepEqual(
-                                JSON.parse(JSON.stringify(vtile.toJSON())),
+                                JSON.parse(JSON.stringify(vtile.toJSON(), replacer)),
                                 JSON.parse(fs.readFileSync(fixtpath))
                             );
                         }
                     } else {
                         var fixtpath = __dirname + '/expected/backend-' + source + '.' + key + '.json';
-                        if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), null, 2));
+                        if (UPDATE) fs.writeFileSync(fixtpath, JSON.stringify(vtile.toJSON(), replacer, 2));
                         assert.deepEqual(
-                            JSON.parse(JSON.stringify(vtile.toJSON())),
+                            JSON.parse(JSON.stringify(vtile.toJSON(), replacer)),
                             JSON.parse(fs.readFileSync(fixtpath))
                         );
                     }
@@ -148,9 +148,10 @@ describe('tiles', function() {
             });
         });
     });
-    it('errors out on bad deflate', function(done) {
-        sources.a.getTile(1, 0, 2, function(err) {
-            assert.equal('Z_DATA_ERROR', err.code);
+    it('empty tile on bad deflate', function(done) {
+        sources.a.getTile(1, 0, 2, function(err, vtile) {
+            assert.ifError(err);
+            assert.deepEqual([], vtile.toJSON());
             done();
         });
     });
@@ -161,4 +162,14 @@ describe('tiles', function() {
         });
     });
 });
+
+function replacer(key, value) {
+    if (key === 'raster') {
+        var buffer = new Buffer(value.length);
+        for (var i = 0; i < value.length; i++) buffer.writeUInt8(value[i], i);
+        return buffer.toString('hex');
+    } else {
+        return value;
+    }
+}
 

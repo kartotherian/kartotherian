@@ -129,7 +129,7 @@ describe('tm2z', function() {
     });
     it('errors out on invalid project.xml', function(done) {
         tilelive.load('tm2z://' + fixtureDir + '/malformed.tm2z', function(err, source) {
-            assert.equal(err.message.split(':')[0], 'XML document not well formed');
+            assert.equal(err.message.split(':')[0], 'expected < at line 1');
             done();
         });
     });
