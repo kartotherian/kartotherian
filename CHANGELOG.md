@@ -1,5 +1,9 @@
 # Changlog
 
+## 1.0.0
+
+- Adds support for embedded rasters in mapnik vector tiles
+
 ## 0.13.0
 
 - Tile size as function of scale for retina and print - 512px at scale 2, 1024px at scale 4
