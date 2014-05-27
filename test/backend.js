@@ -171,7 +171,7 @@ function replacer(key, value) {
             return buffer.toString('hex');
         } else {
             var buffer = new Buffer(Object.keys(value).length);
-            for (var k in value) buffer.writeUInt8(value[k], k);
+            for (var k in value) buffer.writeUInt8(value[k], k|0);
             return buffer.toString('hex');
         }
     } else {
