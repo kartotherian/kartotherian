@@ -165,16 +165,9 @@ describe('tiles', function() {
 
 function replacer(key, value) {
     if (key === 'raster') {
-        if (Array.isArray(value)) {
-            var buffer = new Buffer(value.length);
-            for (var i = 0; i < value.length; i++) buffer.writeUInt8(value[i], i);
-            return buffer.toString('hex');
-        } else {
-            var length = value.length;
-            var buffer = new Buffer(length);
-            for (var i = 0; i < length; i++) buffer.writeUInt8(value[i], i);
-            return buffer.toString('hex');
-        }
+        var buffer = new Buffer(value.length);
+        for (var i = 0; i < value.length; i++) buffer.writeUInt8(value[i], i);
+        return buffer.toString('hex');
     } else {
         return value;
     }
