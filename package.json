@@ -1,0 +1,24 @@
+{
+  "name": "Tile-Printer",
+  "version": "0.0.0",
+  "description": "stitches map tiles together for exporting from tm2",
+  "main": "index.js",
+  "engines": {
+    "node": "~0.10.x"
+  },
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mapbox/tile-printer.git"
+  },
+  "dependencies": {
+    "queue-async": "1.0.7",
+    "sphericalmercator": "1.0.x",
+    "blend": "0.10.1"
+  },
+  "devDependencies":{
+    "mocha": "1.17.1"
+  }
+}
