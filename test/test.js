@@ -21,10 +21,11 @@ describe('Get center from corner coords', function(){
                 y: 1
             }
         };
-        printer.coordsFromCorners(zoom, scale, corners, function(err){
-            assert.equal(err.message, 'Incorrect coordinates -- bottom right corner must be lower and to the east of the top left corner');
-            done();
-        });
+
+        assert.throws( function(){
+            printer.coordsFromCorners(zoom, scale, corners);
+        }, /Incorrect coordinates -- bottom right corner must be lower and to the east of the top left corner/);
+        done();
     });
     it('should fail if (x1, y1) and (x2,y2) are equal', function(done){
         var corners = {
@@ -37,10 +38,10 @@ describe('Get center from corner coords', function(){
                 y: 0
             }
         };
-        printer.coordsFromCorners(zoom, scale, corners, function(err){
-            assert.equal(err.message, 'Incorrect coordinates -- bottom right corner must be lower and to the east of the top left corner');
-            done();
-        });
+        assert.throws( function(){
+            printer.coordsFromCorners(zoom, scale, corners);
+        }, /Incorrect coordinates -- bottom right corner must be lower and to the east of the top left corner/);
+        done();
     });
     it('should fail if the image is too large', function(done){
         var corners = {
@@ -53,10 +54,10 @@ describe('Get center from corner coords', function(){
                 y: -60
             }
         };
-        var center = printer.coordsFromCorners(7, 2, corners, function(err){
-            assert.equal(err.message, 'Desired image is too large.');
-            done();
-        });
+        assert.throws( function(){
+            printer.coordsFromCorners(7, 2, corners);
+        }, /Desired image is too large./);
+        done();
     });
     it('should return the correct coordinates', function(done){
         var corners = {
@@ -69,13 +70,12 @@ describe('Get center from corner coords', function(){
                 y: -60
             }
         };
-        printer.coordsFromCorners(zoom, scale, corners, function(err, center){
-            assert.deepEqual(center.w, 10920);
-            assert.deepEqual(center.h, 13736);
-            assert.deepEqual(center.x, x);
-            assert.deepEqual(center.y, y);
-            done();
-        });
+        var center = printer.coordsFromCorners(zoom, scale, corners);
+        assert.deepEqual(center.w, 10920);
+        assert.deepEqual(center.h, 13736);
+        assert.deepEqual(center.x, x);
+        assert.deepEqual(center.y, y);
+        done();
     });
 });
 
@@ -87,10 +87,10 @@ describe('get coordinates from center', function(){
             w: 4752,
             h: 4752
         };
-        printer.coordsFromCenter(zoom, scale, center, function(err){
-            assert.equal(err.message, 'Desired image is too large.');
-            done();
-        });
+        assert.throws( function(){
+            printer.coordsFromCenter(zoom, scale, center);
+        }, /Desired image is too large./);
+        done();
     });
     it('should return correct origin coords', function(done){
         var center = {
@@ -99,16 +99,18 @@ describe('get coordinates from center', function(){
             w: 800,
             h: 800
         };
-        printer.coordsFromCenter(zoom, scale, center, function(err, center){
-            assert.equal(center.x, x);
-            assert.equal(center.y, y);
-            done();
-        });
+
+        center =  printer.coordsFromCenter(zoom, scale, center);
+        assert.equal(center.x, x);
+        assert.equal(center.y, y);
+        done();
     });
 });
 
 describe('create list of tile coordinates', function(){
-    var expectedTiles = { 
+    var center =  {x: x, y: y, w: 1824, h: 1832 };
+
+    var expectedCoords = {
         tiles: [{ z: 5, x: 15, y: 15, px: -112, py: -108 },
                 { z: 5, x: 15, y: 16, px: -112, py: 916 },
                 { z: 5, x: 16, y: 15, px: 912, py: -108 },
@@ -117,17 +119,15 @@ describe('create list of tile coordinates', function(){
         center: { row: 16, column: 16, zoom: 5 },
         scale: 4
     };
-    var center =  {x: x, y: y, w: 1824, h: 1832 };
     it('should return a tiles object with correct coords', function(done){
-        printer.tileList(zoom, scale, center, function(err, tiles){
-            assert.deepEqual(JSON.stringify(tiles), JSON.stringify(expectedTiles));
-            done();
-        });
+        var coords = printer.tileList(zoom, scale, center)
+        assert.deepEqual(JSON.stringify(coords), JSON.stringify(expectedCoords));
+        done();
     });
 });
 
 describe('stitch tiles into single png', function(){
-    var expectedTiles = { 
+    var expectedCoords = {
         tiles: [ { z: 1, x: 0, y: 0, px: 0, py: 0 },
                  { z: 1, x: 0, y: 1, px: 0, py: 256 },
                  { z: 1, x: 1, y: 0, px: 256, py: 0 },
@@ -144,7 +144,7 @@ describe('stitch tiles into single png', function(){
         });
     });
     it('should fail if no valid tileGetter', function(done){
-        printer.stitchTiles(expectedTiles, 'png', getTileFake, function(err){
+        printer.stitchTiles(expectedCoords, 'png', getTileFake, function(err){
             assert.equal(err.message, 'No tiles to stitch.');
             done();
         });

@@ -18,39 +18,28 @@ function abaculus(arg, callback){
 
     if (center) {
         // get center coordinates in px from lng,lat
-        abaculus.coordsFromCenter(z, s, center, function(err, center){
-            if (err) return callback(err);
-            // generate list of tile coordinates center
-            abaculus.tileList(z, s, center, function(err, coords){
-                if (err) return callback(err);
-                // get tiles based on coordinate list and stitch them together
-                abaculus.stitchTiles(coords, format, getTile, callback);
-            });
-        });
+        center = abaculus.coordsFromCenter(z, s, center);
     } else if (corners) {
         // get center coordinates in px from ne & sw corners
-        abaculus.coordsFromCorners(z, s, corners, function(err, center){
-            if (err) return callback(err);
-            // generate list of tile coordinates center
-            abaculus.tileList(z, s, center, function(err, coords){
-                if (err) return callback(err);
-                // get tiles based on coordinate list and stitch them together
-                abaculus.stitchTiles(coords, format, getTile, callback);
-            });
-        });
+        center = abaculus.coordsFromCorners(z, s, corners);
     } else {
         return callback(new Error('No coordinates provided.'));
     }
+    // generate list of tile coordinates center
+    var coords = abaculus.tileList(z, s, center);
+
+    // get tiles based on coordinate list and stitch them together
+    abaculus.stitchTiles(coords, format, getTile, callback);
 }
 
-abaculus.coordsFromCorners = function(z, s, corners, done){
+abaculus.coordsFromCorners = function(z, s, corners){
     sm.size = 256 * s;
     var topLeft = sm.px([corners.topLeft.x, corners.topLeft.y], z),
         bottomRight = sm.px([corners.bottomRight.x, corners.bottomRight.y], z);
     var center = {};
     center.w = bottomRight[0] - topLeft[0];
     center.h = bottomRight[1] - topLeft[1];
-    if (center.w <= 0 || center.h <= 0) return done(new Error('Incorrect coordinates -- bottom right corner must be lower and to the east of the top left corner'));
+    if (center.w <= 0 || center.h <= 0) throw new Error('Incorrect coordinates -- bottom right corner must be lower and to the east of the top left corner');
     
     var origin = [topLeft[0] + center.w/2, topLeft[1] + center.h/2];
     center.x = origin[0];
@@ -58,24 +47,24 @@ abaculus.coordsFromCorners = function(z, s, corners, done){
     center.w = center.w * s;
     center.h = center.h * s;
 
-    if (center.w >= limit || center.h >= limit) return done(new Error('Desired image is too large.'));
-    return done(null, center);
+    if (center.w >= limit || center.h >= limit) throw new Error('Desired image is too large.');
+    return center;
 };
 
-abaculus.coordsFromCenter = function(z, s, center, done){
+abaculus.coordsFromCenter = function(z, s, center){
     var origin = sm.px([center.x, center.y], z);
     center.x = origin[0];
     center.y = origin[1];
     center.w = center.w * s;
     center.h = center.h * s;
 
-    if (center.w >= limit || center.h >= limit) return done(new Error('Desired image is too large.'));
-    return done(null, center);
+    if (center.w >= limit || center.h >= limit) throw new Error('Desired image is too large.');
+    return center;
 };
 
 // Generate the zxy and px/py offsets needed for each tile in a static image.
 // x, y are center coordinates in pixels
-abaculus.tileList = function(z, s, center, callback) {
+abaculus.tileList = function(z, s, center) {
     var x = center.x,
         y = center.y,
         w = center.w,
@@ -149,7 +138,7 @@ abaculus.tileList = function(z, s, center, callback) {
     coords.center = floorObj(centerCoordinate);
     coords.scale = s;
 
-    return callback(null, coords);
+    return coords;
 };
 
 abaculus.stitchTiles = function(coords, format, getTile, callback){
