@@ -41,12 +41,12 @@ function abaculus(arg, callback){
     } else {
         return callback(new Error('No coordinates provided.'));
     }
-};
+}
 
 abaculus.coordsFromCorners = function(z, s, corners, done){
     sm.size = 256 * s;
-    topLeft = sm.px([corners.topLeft.x, corners.topLeft.y], z);
-    bottomRight = sm.px([corners.bottomRight.x, corners.bottomRight.y], z);
+    var topLeft = sm.px([corners.topLeft.x, corners.topLeft.y], z),
+        bottomRight = sm.px([corners.bottomRight.x, corners.bottomRight.y], z);
     var center = {};
     center.w = bottomRight[0] - topLeft[0];
     center.h = bottomRight[1] - topLeft[1];
@@ -60,7 +60,7 @@ abaculus.coordsFromCorners = function(z, s, corners, done){
 
     if (center.w >= limit || center.h >= limit) return done(new Error('Desired image is too large.'));
     return done(null, center);
-}
+};
 
 abaculus.coordsFromCenter = function(z, s, center, done){
     var origin = sm.px([center.x, center.y], z);
@@ -71,7 +71,7 @@ abaculus.coordsFromCenter = function(z, s, center, done){
 
     if (center.w >= limit || center.h >= limit) return done(new Error('Desired image is too large.'));
     return done(null, center);
-}
+};
 
 // Generate the zxy and px/py offsets needed for each tile in a static image.
 // x, y are center coordinates in pixels
@@ -101,7 +101,7 @@ abaculus.tileList = function(z, s, center, callback) {
 
     function coordinatePoint(coord) {
         // Return an x, y point on the map image for a given coordinate.
-        if (coord.zoom != z) coord = coord.zoomTo(zoom);
+        if (coord.zoom != z) coord = coord.zoomTo(z);
         return {
             x: w / 2 + tileSize * (coord.column - centerCoordinate.column),
             y: h / 2 + tileSize * (coord.row - centerCoordinate.row)
@@ -118,7 +118,7 @@ abaculus.tileList = function(z, s, center, callback) {
 
     var tl = floorObj(pointCoordinate({x: 0, y:0}));
     var br = floorObj(pointCoordinate(dimensions));
-    coords = {};
+    var coords = {};
     coords.tiles = [];
     var tileCount = (br.column - tl.column + 1) * (br.row - tl.row + 1);
 
@@ -150,7 +150,7 @@ abaculus.tileList = function(z, s, center, callback) {
     coords.scale = s;
 
     return callback(null, coords);
-}
+};
 
 abaculus.stitchTiles = function(coords, format, getTile, callback){
     if (!coords) return callback(new Error('No coords object.'));
@@ -184,4 +184,4 @@ abaculus.stitchTiles = function(coords, format, getTile, callback){
     }
 
     tileQueue.awaitAll(tileQueueFinish);
-}
+};

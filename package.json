@@ -1,7 +1,7 @@
 {
-  "name": "Tile-Printer",
+  "name": "abaculus",
   "version": "0.0.0",
-  "description": "stitches map tiles together for exporting from tm2",
+  "description": "stitches map tiles together for high-res exporting from tm2",
   "main": "index.js",
   "engines": {
     "node": "~0.10.x"
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:mapbox/tile-printer.git"
+    "url": "git@github.com:mapbox/abaculus.git"
   },
   "dependencies": {
     "queue-async": "1.0.7",
