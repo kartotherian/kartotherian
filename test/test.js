@@ -9,68 +9,27 @@ var zoom = 5,
     x = 4096,
     y = 4096;
 
-describe('Get center from corner coords', function(){
-    it('should fail if (x2,y2) is to the north or west of (x1, y1)', function(done){
-        var corners = {
-            topLeft: {
-                x: 0,
-                y: 0
-            },
-            bottomRight: {
-                x: -1,
-                y: 1
-            }
-        };
+describe('Get center from bbox', function(){
+    it('should fail if (x1, y1) and (x2,y2) are equal', function(done){
+        var bbox = [0, 0, 0, 0];
 
         assert.throws( function(){
-            printer.coordsFromCorners(zoom, scale, corners);
-        }, /Incorrect coordinates -- bottom right corner must be lower and to the east of the top left corner/);
-        done();
-    });
-    it('should fail if (x1, y1) and (x2,y2) are equal', function(done){
-        var corners = {
-            topLeft: {
-                x: 0,
-                y: 0
-            },
-            bottomRight: {
-                x: 0,
-                y: 0
-            }
-        };
-        assert.throws( function(){
-            printer.coordsFromCorners(zoom, scale, corners);
-        }, /Incorrect coordinates -- bottom right corner must be lower and to the east of the top left corner/);
+            printer.coordsFromBbox(zoom, scale, bbox);
+        }, /Incorrect coordinates/);
         done();
     });
     it('should fail if the image is too large', function(done){
-        var corners = {
-            topLeft: {
-                x: -60,
-                y: 60
-            },
-            bottomRight: {
-                x: 60,
-                y: -60
-            }
-        };
+        var bbox = [-60, -60, 60, 60];
+
         assert.throws( function(){
-            printer.coordsFromCorners(7, 2, corners);
+            printer.coordsFromBbox(7, 2, bbox);
         }, /Desired image is too large./);
         done();
     });
     it('should return the correct coordinates', function(done){
-        var corners = {
-            topLeft: {
-                x: -60,
-                y: 60
-            },
-            bottomRight: {
-                x: 60,
-                y: -60
-            }
-        };
-        var center = printer.coordsFromCorners(zoom, scale, corners);
+        var bbox = [-60, -60, 60, 60];
+
+        var center = printer.coordsFromBbox(zoom, scale, bbox);
         assert.deepEqual(center.w, 10920);
         assert.deepEqual(center.h, 13736);
         assert.deepEqual(center.x, x);
@@ -100,7 +59,7 @@ describe('get coordinates from center', function(){
             h: 800
         };
 
-        center =  printer.coordsFromCenter(zoom, scale, center);
+        center = printer.coordsFromCenter(zoom, scale, center);
         assert.equal(center.x, x);
         assert.equal(center.y, y);
         done();
@@ -120,7 +79,7 @@ describe('create list of tile coordinates', function(){
         scale: 4
     };
     it('should return a tiles object with correct coords', function(done){
-        var coords = printer.tileList(zoom, scale, center)
+        var coords = printer.tileList(zoom, scale, center);
         assert.deepEqual(JSON.stringify(coords), JSON.stringify(expectedCoords));
         done();
     });

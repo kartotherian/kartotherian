@@ -10,7 +10,7 @@ function abaculus(arg, callback){
     var z = arg.zoom || 1,
         s = arg.scale || 1,
         center = arg.center || null,
-        corners = arg.corners || null,
+        bbox = arg.bbox || null,
         getTile = arg.getTile || null,
         format = arg.format || 'png';
     if (!getTile) 
@@ -19,9 +19,9 @@ function abaculus(arg, callback){
     if (center) {
         // get center coordinates in px from lng,lat
         center = abaculus.coordsFromCenter(z, s, center);
-    } else if (corners) {
+    } else if (bbox) {
         // get center coordinates in px from ne & sw corners
-        center = abaculus.coordsFromCorners(z, s, corners);
+        center = abaculus.coordsFromBbox(z, s, bbox);
     } else {
         return callback(new Error('No coordinates provided.'));
     }
@@ -32,16 +32,17 @@ function abaculus(arg, callback){
     abaculus.stitchTiles(coords, format, getTile, callback);
 }
 
-abaculus.coordsFromCorners = function(z, s, corners){
+abaculus.coordsFromBbox = function(z, s, bbox){
     sm.size = 256 * s;
-    var topLeft = sm.px([corners.topLeft.x, corners.topLeft.y], z),
-        bottomRight = sm.px([corners.bottomRight.x, corners.bottomRight.y], z);
+    var topRight = sm.px([bbox[3], bbox[2]], z),
+        bottomLeft = sm.px([bbox[1], bbox[0]], z);
     var center = {};
-    center.w = bottomRight[0] - topLeft[0];
-    center.h = bottomRight[1] - topLeft[1];
-    if (center.w <= 0 || center.h <= 0) throw new Error('Incorrect coordinates -- bottom right corner must be lower and to the east of the top left corner');
-    
-    var origin = [topLeft[0] + center.w/2, topLeft[1] + center.h/2];
+    center.w = topRight[0] - bottomLeft[0];
+    center.h = bottomLeft[1] - topRight[1];
+
+    if (center.w <= 0 || center.h <= 0) throw new Error('Incorrect coordinates');
+
+    var origin = [topRight[0] - center.w/2, topRight[1] + center.h/2];
     center.x = origin[0];
     center.y = origin[1];
     center.w = center.w * s;

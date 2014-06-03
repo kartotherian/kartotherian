@@ -15,6 +15,8 @@ Uses node-blend to stitch tiles together.
 
 `zoom` denotes zoom level
 
+`[w, s, e, n]` is the bounding box for the west (lat val), south (lng val), east (lat val), north (lng val) for the desired area
+
 `x` is a longitude coordinate, `y` is a latitude coordinate
 
 `width` and `height` are the desired pixel bounds for a map with a center coordinate. Will be multiplied by scale to maintain resolution.
@@ -25,16 +27,7 @@ Uses node-blend to stitch tiles together.
 var params = {
 	zoom: {zoom},
 	scale: {scale}
-    corners: {   
-        topLeft: {
-            x: {x}, 
-            y: {y}
-        },
-        bottomRight: {
-            x: {x}, 
-            y: {x}
-        }
-    },
+    bbox: [{w}, {s}, {e}, {n}],
     format: 'png',
     getTile = {[Function]}
 };
