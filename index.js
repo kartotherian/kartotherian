@@ -5,6 +5,7 @@ var tar = require('tar');
 var url = require('url');
 var zlib = require('zlib');
 var path = require('path');
+var os = require('os');
 var util = require('util');
 var crypto = require('crypto');
 var request = require('request');
@@ -395,7 +396,7 @@ function tm2z(uri, callback) {
     if (tm2z.sources[id]) return tm2z.sources[id].open(callback);
 
     var xml;
-    var base = '/tmp/' + md5(id).substr(0,8) + '-' + path.basename(id);
+    var base = path.join(os.tmpdir(), md5(id).substr(0,8) + '-' + path.basename(id));
     var parser = tar.Parse();
     var gunzip = zlib.Gunzip();
     var unpacked = false;
