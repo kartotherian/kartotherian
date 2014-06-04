@@ -1,5 +1,5 @@
 var assert = require('assert');
-var printer = require('../index.js');
+var printer = require('../');
 var fs = require('fs');
 var path = require('path');
 
@@ -102,21 +102,17 @@ describe('stitch tiles into single png', function(){
             done();
         });
     });
-    it('should fail if no valid tileGetter', function(done){
-        printer.stitchTiles(expectedCoords, 'png', getTileFake, function(err){
-            assert.equal(err.message, 'No tiles to stitch.');
+    it('should return tiles and stitch them together', function(done){
+        printer.stitchTiles(expectedCoords, 'png', getTileTest, function(err, image){
+            for (var i = 0; i < image.length; i++){
+                assert.equal(image[i], expectedImage[i]);
+            }
             done();
         });
     });
-    // need different fixtures for this
-    // it('should return tiles and stitch them together', function(done){
-    //  st.stitchTiles(expectedTiles, 'png', getTileTest, function(err, image){
-    //      assert();
-    //      done();
-    //  });
-    // });
 });
 
+var expectedImage = fs.readFileSync(path.resolve(__dirname + '/fixtures/expected.png'));
 var tiles = fs.readdirSync(path.resolve(__dirname + '/fixtures')).reduce(function(memo, basename) {
                 var key = basename.split('.').slice(0,3).join('.');
                 memo[key] = fs.readFileSync(path.resolve(__dirname + '/fixtures/' + basename));
@@ -138,8 +134,4 @@ function getTileTest(z,x,y,callback) {
     } else {
         return callback(null, tiles[key], headers);
     }
-}
-
-function getTileFake(z, x, y, callback){
-    return callback('wat');
 }

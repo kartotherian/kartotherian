@@ -144,7 +144,7 @@ abaculus.tileList = function(z, s, center) {
 
 abaculus.stitchTiles = function(coords, format, getTile, callback){
     if (!coords) return callback(new Error('No coords object.'));
-    var tileQueue = new queue(1);
+    var tileQueue = queue(32);
     var dat = [];
     var w = coords.dimensions.x,
         h = coords.dimensions.y,
@@ -156,7 +156,7 @@ abaculus.stitchTiles = function(coords, format, getTile, callback){
             done.scale = s;
             done.format = format;
             // getTile is a function that returns 
-            // a tile given z, x, y, & done
+            // a tile given z, x, y, & callback
             getTile(z, x, y, done);
         }, t.z, t.x, t.y);
     });

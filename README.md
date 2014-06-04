@@ -21,7 +21,7 @@ Uses node-blend to stitch tiles together.
 
 `width` and `height` are the desired pixel bounds for a map with a center coordinate. Will be multiplied by scale to maintain resolution.
 
-`getTile` is a function that returns a tile buffer based on `z`, `x`, `y` arguments, such as from [tilelive-vector](http://github.com/mapbox/tilelive-vector).
+`getTile` should be a function that returns a tile buffer (png or otherwise) given `z`, `x`, `y`, and a callback, such as from [tilelive-vector](https://github.com/mapbox/tilelive-vector/blob/master/index.js#L107-L200).
 
 ```javascript
 var params = {
@@ -29,7 +29,10 @@ var params = {
 	scale: {scale}
     bbox: [{w}, {s}, {e}, {n}],
     format: 'png',
-    getTile = {[Function]}
+    getTile: function(z,x,y, callback){
+    			// do something
+			    return callback(null, buffer, headers);
+			}
 };
 ```
 or 
@@ -44,14 +47,17 @@ var params = {
     	h: {height}
     },
     format: 'png',
-    getTile = {[Function]}
+    getTile: function(z,x,y, callback){
+    			// do something
+			    return callback(null, buffer, headers);
+			}
 };
 ```
 #### usage:
 ``` javascript
 abaculus(params, function(err, image){
        if (err) return err;
-       return image;
+       // do something with image
 	});
 ```
 
