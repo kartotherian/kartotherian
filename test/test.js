@@ -7,7 +7,9 @@ var path = require('path');
 var zoom = 5,
     scale = 4,
     x = 4096,
-    y = 4096;
+    y = 4096,
+    quality = 256,
+    format = 'png';
 
 describe('Get center from bbox', function(){
     it('should fail if (x1, y1) and (x2,y2) are equal', function(done){
@@ -97,13 +99,13 @@ describe('stitch tiles into single png', function(){
         };
 
     it('should fail if no coordinates object', function(done){
-        printer.stitchTiles(null, 'png', function(){}, function(err){
+        printer.stitchTiles(null, format, quality, function(){}, function(err){
             assert.equal(err.message, 'No coords object.');
             done();
         });
     });
     it('should return tiles and stitch them together', function(done){
-        printer.stitchTiles(expectedCoords, 'png', getTileTest, function(err, image){
+        printer.stitchTiles(expectedCoords, format, quality, getTileTest, function(err, image, header){
             for (var i = 0; i < image.length; i++){
                 assert.equal(image[i], expectedImage[i]);
             }
