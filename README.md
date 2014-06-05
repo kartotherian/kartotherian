@@ -21,9 +21,11 @@ Uses node-blend to stitch tiles together.
 
 `width` and `height` are the desired pixel bounds for a map with a center coordinate. Will be multiplied by scale to maintain resolution.
 
-`format` is `png` or `jpeg`, and `quality` is optional. For `jpeg` it defaults to 80, and has a range of 2-256 for `png`.
+`format` (optional) is `png` or `jpeg`, default is `png`. `quality` (optional) for `jpeg` defaults to 80, and has a range of 2-256 for `png`.
 
-`getTile` should be a function that returns a tile buffer (png or otherwise) given `z`, `x`, `y`, and a callback, such as from [tilelive-vector](https://github.com/mapbox/tilelive-vector/blob/master/index.js#L107-L200).
+`getTile` should be a function that returns a tile buffer (png or otherwise) and headers given `z`, `x`, `y`, and a callback, such as from [tilelive-vector](https://github.com/mapbox/tilelive-vector/blob/master/index.js#L107-L200).
+
+`limit` (optional) is a max image size in pixels. Default is 19008px.
 
 ```javascript
 var params = {
@@ -35,7 +37,8 @@ var params = {
     getTile: function(z,x,y, callback){
     			// do something
 			    return callback(null, buffer, headers);
-			}
+			},
+	limit: {limit}
 };
 ```
 or 
@@ -54,7 +57,8 @@ var params = {
     getTile: function(z,x,y, callback){
     			// do something
 			    return callback(null, buffer, headers);
-			}
+			},
+	limit: {limit}
 };
 ```
 #### usage:

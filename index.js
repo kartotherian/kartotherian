@@ -5,8 +5,6 @@ var crypto = require('crypto');
 
 module.exports = abaculus;
 
-var limit = 19008;
-
 function abaculus(arg, callback){
     var z = arg.zoom || 1,
         s = arg.scale || 1,
@@ -15,16 +13,17 @@ function abaculus(arg, callback){
         getTile = arg.getTile || null,
         format = arg.format || 'png',
         quality = arg.quality || (format === 'jpeg') ? 80 : 256;
+        limit = arg.limit || 19008;
 
     if (!getTile) 
         return callback(new Error('Invalid function for getting tiles'));
 
     if (center) {
         // get center coordinates in px from lng,lat
-        center = abaculus.coordsFromCenter(z, s, center);
+        center = abaculus.coordsFromCenter(z, s, center, limit);
     } else if (bbox) {
-        // get center coordinates in px from ne & sw corners
-        center = abaculus.coordsFromBbox(z, s, bbox);
+        // get center coordinates in px from [w,s,e,n] bbox
+        center = abaculus.coordsFromBbox(z, s, bbox, limit);
     } else {
         return callback(new Error('No coordinates provided.'));
     }
@@ -35,7 +34,7 @@ function abaculus(arg, callback){
     abaculus.stitchTiles(coords, format, quality, getTile, callback);
 }
 
-abaculus.coordsFromBbox = function(z, s, bbox){
+abaculus.coordsFromBbox = function(z, s, bbox, limit){
     sm.size = 256 * s;
     var topRight = sm.px([bbox[3], bbox[2]], z),
         bottomLeft = sm.px([bbox[1], bbox[0]], z);
@@ -55,7 +54,7 @@ abaculus.coordsFromBbox = function(z, s, bbox){
     return center;
 };
 
-abaculus.coordsFromCenter = function(z, s, center){
+abaculus.coordsFromCenter = function(z, s, center, limit){
     var origin = sm.px([center.x, center.y], z);
     center.x = origin[0];
     center.y = origin[1];
