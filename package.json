@@ -1,6 +1,6 @@
 {
   "name": "abaculus",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "stitches map tiles together for high-res exporting from tm2",
   "main": "index.js",
   "engines": {
