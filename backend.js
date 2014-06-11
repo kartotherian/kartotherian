@@ -8,7 +8,7 @@ var zlib = require('zlib');
 module.exports = Backend;
 
 function Backend(opts, callback) {
-    this._layer = opts.layer || 'image';
+    this._layer = opts.layer || '_image';
     this._scale = opts.scale || 1;
     this._source = null;
     var backend = this;

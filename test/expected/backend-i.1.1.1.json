@@ -1,6 +1,6 @@
 [
   {
-    "name": "image",
+    "name": "_image",
     "extent": 4096,
     "version": 1,
     "features": [
