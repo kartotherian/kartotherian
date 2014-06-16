@@ -36,8 +36,8 @@ function abaculus(arg, callback){
 
 abaculus.coordsFromBbox = function(z, s, bbox, limit){
     sm.size = 256 * s;
-    var topRight = sm.px([bbox[3], bbox[2]], z),
-        bottomLeft = sm.px([bbox[1], bbox[0]], z);
+    var topRight = sm.px([bbox[2], bbox[3]], z),
+        bottomLeft = sm.px([bbox[0], bbox[1]], z);
     var center = {};
     center.w = topRight[0] - bottomLeft[0];
     center.h = bottomLeft[1] - topRight[1];
@@ -55,7 +55,7 @@ abaculus.coordsFromBbox = function(z, s, bbox, limit){
 };
 
 abaculus.coordsFromCenter = function(z, s, center, limit){
-    var origin = sm.px([center.x, center.y], z);
+    var origin = sm.px([center.y, center.x], z);
     center.x = origin[0];
     center.y = origin[1];
     center.w = center.w * s;
