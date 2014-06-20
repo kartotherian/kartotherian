@@ -1,6 +1,6 @@
 var sm = new (require('sphericalmercator'));
 var queue = require('queue-async');
-var blend = require('blend');
+var blend = require('mapnik').blend;
 var crypto = require('crypto');
 
 module.exports = abaculus;
