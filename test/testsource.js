@@ -59,19 +59,19 @@ var infos = {
     }
 };
 var tiles = {
-    a: fs.readdirSync(path.resolve(__dirname + '/fixtures/a')).reduce(function(memo, basename) {
+    a: fs.readdirSync(path.resolve(path.join(__dirname, 'fixtures','a'))).reduce(function(memo, basename) {
         var key = basename.split('.').slice(0,3).join('.');
-        memo[key] = fs.readFileSync(path.resolve(__dirname + '/fixtures/a/' + basename));
+        memo[key] = fs.readFileSync(path.resolve(path.join(__dirname, 'fixtures', 'a', basename)));
         return memo;
     }, {}),
-    b: fs.readdirSync(path.resolve(__dirname + '/fixtures/b')).reduce(function(memo, basename) {
+    b: fs.readdirSync(path.resolve(path.join(__dirname, 'fixtures','b'))).reduce(function(memo, basename) {
         var key = basename.split('.').slice(0,3).join('.');
-        memo[key] = fs.readFileSync(path.resolve(__dirname + '/fixtures/b/' + basename));
+        memo[key] = fs.readFileSync(path.resolve(path.join(__dirname, 'fixtures', 'b', basename)));
         return memo;
     }, {}),
-    i: fs.readdirSync(path.resolve(__dirname + '/fixtures/i')).reduce(function(memo, basename) {
+    i: fs.readdirSync(path.resolve(path.join(__dirname, 'fixtures','i'))).reduce(function(memo, basename) {
         var key = basename.split('.').slice(0,3).join('.');
-        memo[key] = fs.readFileSync(path.resolve(__dirname + '/fixtures/i/' + basename));
+        memo[key] = fs.readFileSync(path.resolve(path.join(__dirname, 'fixtures', 'i', basename)));
         return memo;
     }, {})
 };
@@ -127,4 +127,3 @@ Testsource.prototype.getTile = function(z,x,y,callback) {
 Testsource.prototype.getInfo = function(callback) {
     return callback(null, this.data);
 };
-
