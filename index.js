@@ -552,9 +552,9 @@ xray.xml = function(opts) {
 
 // Templates for generating xray styles.
 xray.templates = {};
-xray.templates.map = fs.readFileSync(__dirname + '/templates/map.xml', 'utf8');
-xray.templates.layer = fs.readFileSync(__dirname + '/templates/layer.xml', 'utf8');
-xray.templates.params = fs.readFileSync(__dirname + '/templates/params.xml', 'utf8');
+xray.templates.map = fs.readFileSync(path.join(__dirname, 'templates', 'map.xml'), 'utf8');
+xray.templates.layer = fs.readFileSync(path.join(__dirname, 'templates', 'layer.xml'), 'utf8');
+xray.templates.params = fs.readFileSync(path.join(__dirname, 'templates', 'params.xml'), 'utf8');
 
 xray.color = function(str) {
     var rgb = [0, 0, 0];
