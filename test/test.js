@@ -2,6 +2,7 @@ var assert = require('assert');
 var printer = require('../');
 var fs = require('fs');
 var path = require('path');
+var mapnik = require('mapnik');
 
 // defaults
 var zoom = 5,
@@ -107,9 +108,16 @@ describe('stitch tiles into single png', function(){
     });
     it('should return tiles and stitch them together', function(done){
         printer.stitchTiles(expectedCoords, format, quality, getTileTest, function(err, image, header){
-            for (var i = 0; i < image.length; i++){
-                assert.equal(image[i], expectedImage[i]);
+            var actual = new mapnik.Image.fromBytes(image);
+            var expected = new mapnik.Image.fromBytes(expectedImage);
+            var max_diff_pixels = 0;
+            var compare_alpha = true;
+            var threshold = 16;
+            var diff_pixels = actual.compare(expected,{threshold:threshold,alpha:compare_alpha});
+            if (diff_pixels > max_diff_pixels) {
+                expected.save("test/fixtures/expected.fail.png");
             }
+            assert.equal(max_diff_pixels,diff_pixels);
             done();
         });
     });
