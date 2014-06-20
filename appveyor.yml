@@ -1,6 +1,6 @@
 environment:
   matrix:
-    - nodejs_version: 0.10
+    - nodejs_version: 0.11
 
 platform:
 # mapnik 64 bit is almost ready but not yet
