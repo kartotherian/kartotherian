@@ -110,7 +110,14 @@ describe('stitch tiles into single png', function(){
         printer.stitchTiles(expectedCoords, format, quality, getTileTest, function(err, image, header){
             var actual = new mapnik.Image.fromBytes(image);
             var expected = new mapnik.Image.fromBytes(expectedImage);
-            assert.equal(0,actual.compare(expected,{threshold:0,alpha:true}));
+            var max_diff_pixels = 0;
+            var compare_alpha = true;
+            var threshold = 16;
+            var diff_pixels = actual.compare(expected,{threshold:threshold,alpha:compare_alpha});
+            if (diff_pixels > max_diff_pixels) {
+                expected.save("test/fixtures/expected.fail.png");
+            }
+            assert.equal(max_diff_pixels,diff_pixels);
             done();
         });
     });

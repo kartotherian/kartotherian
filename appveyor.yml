@@ -22,10 +22,10 @@ install:
   - npm install
   - npm test
 
+artifacts:
+  - path: test
+    name: TestOutputs
+
 build: OFF
-
 test: OFF
-
-test_script: OFF
-
 deploy: OFF
