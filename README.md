@@ -4,7 +4,11 @@ a small block of stone, tile, glass, or other material used in the construction 
 or, 
 
 a library for creating static maps from tiles based on center or corner lng,lat coordinates.
-Uses node-blend to stitch tiles together.
+Uses node-mapnik to stitch tiles together.
+
+[![Build Status](https://travis-ci.org/mapbox/abaculus.svg?branch=master)](https://travis-ci.org/mapbox/abaculus)
+
+[![Build status](https://ci.appveyor.com/api/projects/status/k5e2v42uhbda1ihx)](https://ci.appveyor.com/project/Mapbox/abaculus)
 
 ### usage
 
