@@ -4,6 +4,7 @@ var url = require('url');
 var assert = require('assert');
 var path = require('path');
 var fs = require('fs');
+var os = require('os');
 var crypto = require('crypto');
 var Vector = require('..');
 
@@ -16,7 +17,8 @@ var fixtureDir = path.resolve(__dirname, 'fixtures', 'tm2z'),
     remotePath = 'http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z.tm2z',
     xml = fs.readFileSync(path.join(fixtureDir, 'project', 'project.xml'), 'utf8');
 
-console.log(fixtureDir);
+// Remove CR line-endings on windows for string comparison
+if (os.platform() === 'win32') xml = xml.replace(/\r/g, '');
 
 // Register vector:, tm2z:, tm2z+http: and mapbox: tilelive protocols
 Vector.registerProtocols(tilelive);
@@ -131,7 +133,9 @@ describe('tm2z', function() {
     });
     it('errors out on invalid project.xml', function(done) {
         tilelive.load('tm2z://' + path.join(fixtureDir, 'malformed.tm2z'), function(err, source) {
-            assert.equal(err.message.split(':')[0], 'expected < at line 1');
+            assert.equal('EMAPNIK', err.code);
+            // err.message on windows is completely different
+            //assert(err.message.split(':')[0], 'expected < at line 1');
             done();
         });
     });
