@@ -16,6 +16,8 @@ var fixtureDir = path.resolve(__dirname, 'fixtures', 'tm2z'),
     remotePath = 'http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z.tm2z',
     xml = fs.readFileSync(path.join(fixtureDir, 'project', 'project.xml'));
 
+console.log(fixtureDir);
+
 // Register vector:, tm2z:, tm2z+http: and mapbox: tilelive protocols
 Vector.registerProtocols(tilelive);
 tilelive.protocols['mapbox:'] = function Source(uri, callback) {
@@ -71,7 +73,7 @@ describe('tm2z', function() {
     it('errors out if file size exceeds custom max size', function(done) {
         tilelive.load({
             protocol: 'tm2z:',
-            pathname: fixtureDir + '/filesize.tm2z',
+            pathname: path.join(fixtureDir, 'filesize.tm2z'),
             filesize: 500 * 1024
         }, function(err, source) {
             assert.equal(err instanceof RangeError, true);
@@ -89,7 +91,7 @@ describe('tm2z', function() {
     it('errors out if unzipped size exceeds custom max size', function(done) {
         tilelive.load({
             protocol: 'tm2z:',
-            pathname: fixtureDir + '/gunzipsize.tm2z',
+            pathname: path.join(fixtureDir, 'gunzipsize.tm2z'),
             gunzipsize: 1024 * 1024
         }, function(err, source) {
             assert.equal(err instanceof RangeError, true);
@@ -107,7 +109,7 @@ describe('tm2z', function() {
     it('errors out if unzipped project.xml size exceeds custom max size', function(done) {
         tilelive.load({
             protocol: 'tm2z:',
-            pathname: fixtureDir + '/xmlsize.tm2z',
+            pathname: path.join(fixtureDir, 'xmlsize.tm2z'),
             xmlsize: 300 * 1024
         }, function(err, source) {
             assert.equal(err instanceof RangeError, true);
