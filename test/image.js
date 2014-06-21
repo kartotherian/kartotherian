@@ -18,7 +18,7 @@ exec('compare -h', function(error, stdout, stderr) {
 function imageEqualsFile(buffer, file, meanError, callback) {
     if (typeof meanError == 'function') {
         callback = meanError;
-        meanError = 0.001;
+        meanError = 0.02;
     }
 
     var fixturesize = fs.statSync(file).size;
