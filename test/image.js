@@ -31,7 +31,6 @@ function imageEqualsFile(buffer, file, meanError, callback) {
     var diff = expectImage.compare(resultImage);
 
     if (diff > 0) {
-        fs.writeFileSync('/Users/r/tmp/wut.png', buffer, 'binary');
         callback(new Error('Image is too different from fixture: ' + diff));
     } else {
         callback();
