@@ -165,11 +165,11 @@ describe('tiles', function() {
 
 function replacer(key, value) {
     if (key === 'raster') {
-        var buffer = new Buffer(value.length);
-        for (var i = 0; i < value.length; i++) buffer.writeUInt8(value[i], i);
+        var ln = value.length || 0;
+        var buffer = new Buffer(ln);
+        for (var i = 0; i < ln; i++) buffer.writeUInt8(value[i], i);
         return buffer.toString('hex');
     } else {
         return value;
     }
 }
-
