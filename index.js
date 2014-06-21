@@ -72,7 +72,7 @@ Vector.prototype.update = function(opts, callback) {
     var map = new mapnik.Map(256,256);
     map.fromString(opts.xml, {
         strict: true,
-        base: this._base
+        base: this._base + path.sep
     }, function(err) {
         if (err) {
             err.code = 'EMAPNIK';
