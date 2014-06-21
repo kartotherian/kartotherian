@@ -541,12 +541,12 @@ function xray(opts, callback) {
             backend: backend
         }, callback);
     });
-};
+}
 
 xray.xml = function(opts) {
     return util.format(xray.templates.map, opts.vector_layers.map(function(layer){
         var rgb = xray.color(layer.id).join(',');
-        return util.format(xray.templates.layer, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id)
+        return util.format(xray.templates.layer, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id);
     }).join('\n'));
 };
 

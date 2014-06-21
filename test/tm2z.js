@@ -12,9 +12,9 @@ function md5(str) {
 }
 
 // Load fixture data.
-var fixtureDir = path.resolve(__dirname + '/fixtures/tm2z'),
+var fixtureDir = path.resolve(__dirname, 'fixtures', 'tm2z'),
     remotePath = 'http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z.tm2z',
-    xml = fs.readFileSync(fixtureDir + '/project/project.xml');
+    xml = fs.readFileSync(path.join(fixtureDir, 'project', 'project.xml'));
 
 // Register vector:, tm2z:, tm2z+http: and mapbox: tilelive protocols
 Vector.registerProtocols(tilelive);
@@ -23,46 +23,46 @@ tilelive.protocols['mapbox:'] = function Source(uri, callback) {
 };
 
 // Register font
-Vector.mapnik.register_fonts(__dirname + '/fonts/source-sans-pro/');
+Vector.mapnik.register_fonts(path.join(__dirname, 'fonts', 'source-sans-pro'));
 
 describe('tm2z', function() {
     it('exposes the mapnik binding', function() {
         assert.ok(Vector.mapnik);
     });
     it('loads a tm2z url', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'project.tm2z'), function(err, source) {
             assert.ifError(err);
             done();
         });
     });
     it('matches expected xml', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'project.tm2z'), function(err, source) {
             assert.ifError(err);
             assert.equal(source._xml, xml);
             done();
         });
     });
     it('gunzips then untars', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/project.tar.gz', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'project.tar.gz'), function(err, source) {
             assert.ifError(err);
             done();
         });
     });
     it('errors out if not gzipped', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/project.tar', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'project.tar'), function(err, source) {
             assert.equal(err.code, 'Z_DATA_ERROR');
             assert.equal(err.message, 'incorrect header check');
             done();
         });
     });
     it('errors out on bad gunzip', function(done) {
-       tilelive.load('tm2z://' + fixtureDir + '/doublezip.tm2z', function(err, source) {
+       tilelive.load('tm2z://' + path.join(fixtureDir, 'doublezip.tm2z'), function(err, source) {
             assert.equal(err.message, 'invalid tar file');
             done();
         });
     });
     it('errors out if file size exceeds max size', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/filesize.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'filesize.tm2z'), function(err, source) {
             assert.equal(err instanceof RangeError, true);
             assert.equal(err.message, 'Upload size should not exceed 750KB.');
             done();
@@ -80,7 +80,7 @@ describe('tm2z', function() {
         });
     });
     it('errors out if unzipped size exceeds max size', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/gunzipsize.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'gunzipsize.tm2z'), function(err, source) {
             assert.equal(err instanceof RangeError, true);
             assert.equal(err.message, 'Unzipped size should not exceed 5MB.');
             done();
@@ -98,7 +98,7 @@ describe('tm2z', function() {
         });
     });
     it('errors out if unzipped project.xml size exceeds max size', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/xmlsize.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'xmlsize.tm2z'), function(err, source) {
             assert.equal(err instanceof RangeError, true);
             assert.equal(err.message, 'Unzipped project.xml size should not exceed 750KB.');
             done();
@@ -116,38 +116,38 @@ describe('tm2z', function() {
         });
     });
     it('errors out if not a directory', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/nodirectory.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'nodirectory.tm2z'), function(err, source) {
             assert.equal(err.message.split(',')[0], 'EISDIR');
             done();
         });
     });
     it('errors out if missing project.xml', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/empty.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'empty.tm2z'), function(err, source) {
             assert.equal(err.message, 'project.xml not found in package');
             done();
         });
     });
     it('errors out on invalid project.xml', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/malformed.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'malformed.tm2z'), function(err, source) {
             assert.equal(err.message.split(':')[0], 'expected < at line 1');
             done();
         });
     });
     it('errors out if style references a missing font', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/missing_font.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'missing_font.tm2z'), function(err, source) {
             assert.equal('EMAPNIK', err.code);
             assert.equal(err.message.split("'")[0], 'Failed to find font face ');
             done();
         });
     });
     it('does not error out if style references a registered font', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'project.tm2z'), function(err, source) {
             assert.ifError(err);
             done();
         });
     });
     it('errors out if style references a missing image', function(done) {
-        tilelive.load('tm2z://' + fixtureDir + '/missing_image.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'missing_image.tm2z'), function(err, source) {
             assert.equal('EMAPNIK', err.code);
             assert.equal(err.message.split(':')[0], 'file could not be found');
             done();
@@ -155,7 +155,7 @@ describe('tm2z', function() {
     });
     it('profiles a tm2z file', function(done) {
         this.timeout(0);
-        tilelive.load('tm2z://' + fixtureDir + '/project.tm2z', function(err, source) {
+        tilelive.load('tm2z://' + path.join(fixtureDir, 'project.tm2z'), function(err, source) {
             assert.ifError(err);
             source.profile(function(err, profile) {
                 assert.ifError(err);
