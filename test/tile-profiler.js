@@ -66,7 +66,8 @@ describe('profiler', function() {
         assert.equal(ss.min(coastline.duplicateCoordCount), 0);
 
         // Max/Min distance between consecutive coords
-        assert.equal(ss.max(coastline.coordDistance), 570446.5598775251);
+        var diff = Math.abs(ss.max(coastline.coordDistance) - 570446.5598775251);
+        assert(diff < 0.1);
         assert.equal(ss.min(coastline.coordDistance), 0);
 
         // Expected jsonsize
