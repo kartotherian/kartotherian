@@ -14,7 +14,7 @@ function md5(str) {
 // Load fixture data.
 var fixtureDir = path.resolve(__dirname, 'fixtures', 'tm2z'),
     remotePath = 'http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z.tm2z',
-    xml = fs.readFileSync(path.join(fixtureDir, 'project', 'project.xml'));
+    xml = fs.readFileSync(path.join(fixtureDir, 'project', 'project.xml'), 'utf8');
 
 console.log(fixtureDir);
 
