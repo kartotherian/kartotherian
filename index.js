@@ -16,7 +16,7 @@ var profiler = require('./tile-profiler');
 var Backend = require('./backend');
 
 // Register fonts for xray styles.
-mapnik.register_fonts(path.resolve(__dirname + '/fonts'));
+mapnik.register_fonts(path.resolve(__dirname, 'fonts'));
 
 module.exports = Vector;
 module.exports.tm2z = tm2z;
@@ -72,7 +72,7 @@ Vector.prototype.update = function(opts, callback) {
     var map = new mapnik.Map(256,256);
     map.fromString(opts.xml, {
         strict: true,
-        base: this._base + '/'
+        base: this._base
     }, function(err) {
         if (err) {
             err.code = 'EMAPNIK';
