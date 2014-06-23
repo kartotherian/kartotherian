@@ -35,7 +35,7 @@ function abaculus(arg, callback){
 }
 
 abaculus.coordsFromBbox = function(z, s, bbox, limit){
-    sm.size = 256 * s;
+    sm.size = Math.round(256 * s);
     var topRight = sm.px([bbox[2], bbox[3]], z),
         bottomLeft = sm.px([bbox[0], bbox[1]], z);
     var center = {};
@@ -47,8 +47,8 @@ abaculus.coordsFromBbox = function(z, s, bbox, limit){
     var origin = [topRight[0] - center.w/2, topRight[1] + center.h/2];
     center.x = origin[0];
     center.y = origin[1];
-    center.w = center.w * s;
-    center.h = center.h * s;
+    center.w = Math.round(center.w * s);
+    center.h = Math.round(center.h * s);
 
     if (center.w >= limit || center.h >= limit) throw new Error('Desired image is too large.');
     return center;
@@ -58,8 +58,8 @@ abaculus.coordsFromCenter = function(z, s, center, limit){
     var origin = sm.px([center.y, center.x], z);
     center.x = origin[0];
     center.y = origin[1];
-    center.w = center.w * s;
-    center.h = center.h * s;
+    center.w = Math.round(center.w * s);
+    center.h = Math.round(center.h * s);
 
     if (center.w >= limit || center.h >= limit) throw new Error('Desired image is too large.');
     return center;
@@ -73,7 +73,7 @@ abaculus.tileList = function(z, s, center) {
         w = center.w,
         h = center.h;
     var dimensions = {x: w, y: h};
-    var tileSize = 256 * s;
+    var tileSize = Math.round(256 * s);
 
     var centerCoordinate = {
             column: x / 256,
