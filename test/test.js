@@ -59,7 +59,7 @@ var xml = {
                 t.deepEqual([0,0,2], info.center);
                 t.deepEqual([-180,-85.0511,180,85.0511], info.bounds);
                 t.deepEqual({"level2":"property"}, info.level1, 'JSON key stores deep attribute data');
-                t.deepEqual(1, info.scale, 'JSON key does not overwrite other params');
+                t.deepEqual('1', info.scale, 'JSON key does not overwrite other params');
                 t.end();
             });
         });
