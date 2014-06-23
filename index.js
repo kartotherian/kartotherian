@@ -16,7 +16,7 @@ var profiler = require('./tile-profiler');
 var Backend = require('./backend');
 
 // Register fonts for xray styles.
-mapnik.register_fonts(path.resolve(__dirname + '/fonts'));
+mapnik.register_fonts(path.resolve(__dirname, 'fonts'));
 
 module.exports = Vector;
 module.exports.tm2z = tm2z;
@@ -72,7 +72,7 @@ Vector.prototype.update = function(opts, callback) {
     var map = new mapnik.Map(256,256);
     map.fromString(opts.xml, {
         strict: true,
-        base: this._base + '/'
+        base: this._base + path.sep
     }, function(err) {
         if (err) {
             err.code = 'EMAPNIK';
@@ -541,20 +541,20 @@ function xray(opts, callback) {
             backend: backend
         }, callback);
     });
-};
+}
 
 xray.xml = function(opts) {
     return util.format(xray.templates.map, opts.vector_layers.map(function(layer){
         var rgb = xray.color(layer.id).join(',');
-        return util.format(xray.templates.layer, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id)
+        return util.format(xray.templates.layer, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id);
     }).join('\n'));
 };
 
 // Templates for generating xray styles.
 xray.templates = {};
-xray.templates.map = fs.readFileSync(__dirname + '/templates/map.xml', 'utf8');
-xray.templates.layer = fs.readFileSync(__dirname + '/templates/layer.xml', 'utf8');
-xray.templates.params = fs.readFileSync(__dirname + '/templates/params.xml', 'utf8');
+xray.templates.map = fs.readFileSync(path.join(__dirname, 'templates', 'map.xml'), 'utf8');
+xray.templates.layer = fs.readFileSync(path.join(__dirname, 'templates', 'layer.xml'), 'utf8');
+xray.templates.params = fs.readFileSync(path.join(__dirname, 'templates', 'params.xml'), 'utf8');
 
 xray.color = function(str) {
     var rgb = [0, 0, 0];

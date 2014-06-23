@@ -1,0 +1,24 @@
+environment:
+  matrix:
+    - nodejs_version: 0.10
+
+platform:
+# mapnik 64 bit is almost ready but not yet
+#  - x64
+  - x86
+
+install:
+  - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild $env:nodejs_version) $env:Platform
+  - node --version
+  - npm --version
+  - node -e "console.log('node version ' + process.version + ', architecture ' + process.arch);"
+  - npm install
+  - npm test
+
+build: OFF
+
+test: OFF
+
+test_script: OFF
+
+deploy: OFF

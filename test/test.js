@@ -1,7 +1,7 @@
+var test = require('tape');
 var tilelive = require('tilelive');
 var url = require('url');
 var zlib = require('zlib');
-var assert = require('assert');
 var Vector = require('..');
 var path = require('path');
 var fs = require('fs');
@@ -19,79 +19,76 @@ var xml = {
     i: fs.readFileSync(path.resolve(__dirname + '/fixtures/i.xml'), 'utf8')
 };
 
-describe('init', function() {
-    it('should fail without backend', function(done) {
+    test('should fail without backend', function(t) {
         new Vector({ xml: xml.c }, function(err) {
-            assert.equal(err.message, 'No backend');
-            done();
+            t.equal(err.message, 'No backend');
+            t.end();
         });
     });
-    it('should fail without xml', function(done) {
+    test('should fail without xml', function(t) {
         new Vector({ backend: new Testsource() }, function(err) {
-            assert.equal(err.message, 'No xml');
-            done();
+            t.equal(err.message, 'No xml');
+            t.end();
         });
     });
-    it('should load with callback', function(done) {
+    test('should load with callback', function(t) {
         new Vector({ backend: new Testsource(), xml: xml.a }, function(err, source) {
-            assert.ifError(err);
-            assert.ok(source);
-            done();
+            t.ifError(err);
+            t.ok(source);
+            t.end();
         });
     });
-    it('#open should call all listeners', function(done) {
+    test('#open should call all listeners', function(t) {
         var v = new Vector({ backend: new Testsource(), xml: xml.a });
         var remaining = 3;
         for (var i = 0; i < remaining; i++) v.open(function(err, source) {
-            assert.ifError(err);
-            assert.ok(source);
-            if (!--remaining) done();
+            t.ifError(err);
+            t.ok(source);
+            if (!--remaining) t.end();
         });
     });
-    it('should get info', function(done) {
+    test('should get info', function(t) {
         new Vector({ backend: new Testsource(), xml: xml.a }, function(err, source) {
-            assert.ifError(err);
-            assert.ok(source);
+            t.ifError(err);
+            t.ok(source);
             source.getInfo(function(err, info) {
-                assert.ifError(err);
-                assert.equal('test-a', info.name);
-                assert.equal(0, info.minzoom);
-                assert.equal(8, info.maxzoom);
-                assert.deepEqual([0,0,2], info.center);
-                assert.deepEqual([-180,-85.0511,180,85.0511], info.bounds);
-                assert.deepEqual({"level2":"property"}, info.level1, 'JSON key stores deep attribute data');
-                assert.deepEqual(1, info.scale, 'JSON key does not overwrite other params');
-                done();
+                t.ifError(err);
+                t.equal('test-a', info.name);
+                t.equal(0, info.minzoom);
+                t.equal(8, info.maxzoom);
+                t.deepEqual([0,0,2], info.center);
+                t.deepEqual([-180,-85.0511,180,85.0511], info.bounds);
+                t.deepEqual({"level2":"property"}, info.level1, 'JSON key stores deep attribute data');
+                t.deepEqual('1', info.scale, 'JSON key does not overwrite other params');
+                t.end();
             });
         });
     });
-    it('should update xml, backend', function(done) {
+    test('should update xml, backend', function(t) {
         new Vector({xml:xml.a}, function(err, source) {
-            assert.ifError(err);
+            t.ifError(err);
             source.getInfo(function(err, info) {
-                assert.ifError(err);
-                assert.equal('test-a', info.name);
+                t.ifError(err);
+                t.equal('test-a', info.name);
                 source.update({xml:xml.b}, function(err) {
-                    assert.ifError(err);
+                    t.ifError(err);
                     source.getInfo(function(err, info) {
-                        assert.ifError(err);
-                        assert.equal('test-b', info.name);
-                        done();
+                        t.ifError(err);
+                        t.equal('test-b', info.name);
+                        t.end();
                     });
                 });
             });
         });
     });
-    it('should use fallback backend', function(done) {
+    test('should use fallback backend', function(t) {
         new Vector({ source:'test:///a', xml: xml.c }, function(err, source) {
-            assert.ifError(err);
-            assert.ok(source);
-            done();
+            t.ifError(err);
+            t.ok(source);
+            t.end();
         });
     });
-});
 
-describe('tiles', function() {
     var sources = {
         a: new Vector({ backend: new Testsource('a'), xml: xml.a }),
         'a@vt': new Vector({ backend: new Vector.Backend('test:///a'), xml: xml.a }),
@@ -141,54 +138,51 @@ describe('tiles', function() {
     };
     var etags = {};
     Object.keys(tests).forEach(function(source) {
-        before(function(done) { sources[source].open(done); });
-    });
-    Object.keys(tests).forEach(function(source) {
         tests[source].forEach(function(key) {
             var z = key.split('.')[0] | 0;
             var x = key.split('.')[1] | 0;
             var y = key.split('.')[2] | 0;
             var remaining = 2;
-            it('should render ' + source + ' (' + key + ')', function(done) {
+            test('should render ' + source + ' (' + key + ')', function(t) {
                 var cbTile = function(err, buffer, headers) {
-                    assert.ifError(err);
+                    t.ifError(err);
                     // No backend tiles last modified defaults to Date 0.
                     // Otherwise, Last-Modified from backend should be passed.
                     if (['1.1.2','1.1.3'].indexOf(key) >= 0) {
-                        assert.equal(headers['Last-Modified'], new Date(0).toUTCString());
+                        t.equal(headers['Last-Modified'], new Date(0).toUTCString());
                     } else {
-                        assert.equal(headers['Last-Modified'], Testsource.now.toUTCString());
+                        t.equal(headers['Last-Modified'], Testsource.now.toUTCString());
                     }
                     // Check for presence of ETag and store away for later
                     // ETag comparison.
-                    assert.ok('ETag' in headers);
+                    t.ok('ETag' in headers);
                     etags[source] = etags[source] || {};
                     etags[source][key] = headers['ETag'];
                     // Content-Type.
-                    assert.equal(headers['Content-Type'], 'image/png');
+                    t.equal(headers['Content-Type'], 'image/png');
                     // Load/draw stats attached to buffer.
-                    assert.equal('number', typeof buffer._loadtime);
-                    assert.equal('number', typeof buffer._drawtime);
+                    t.equal('number', typeof buffer._loadtime);
+                    t.equal('number', typeof buffer._drawtime);
                     if (UPDATE) {
                         fs.writeFileSync(__dirname + '/expected/' + source + '.' + key + '.png', buffer);
                     }
                     imageEqualsFile(buffer, __dirname + '/expected/' + source + '.' + key + '.png', function(err) {
-                        assert.ifError(err);
-                        if (!--remaining) done();
+                        t.ifError(err);
+                        if (!--remaining) t.end();
                     });
                 };
                 var cbHead = function(err, headers) {
-                    assert.ifError(err);
+                    t.ifError(err);
                     // No backend tiles last modified defaults to Date 0.
                     // Otherwise, Last-Modified from backend should be passed.
                     if (['1.1.2','1.1.3'].indexOf(key) >= 0) {
-                        assert.equal(headers['Last-Modified'], new Date(0).toUTCString());
+                        t.equal(headers['Last-Modified'], new Date(0).toUTCString());
                     } else {
-                        assert.equal(headers['Last-Modified'], Testsource.now.toUTCString());
+                        t.equal(headers['Last-Modified'], Testsource.now.toUTCString());
                     }
                     // Content-Type.
-                    assert.equal(undefined, headers['Content-Type']);
-                    if (!--remaining) done();
+                    t.equal(undefined, headers['Content-Type']);
+                    if (!--remaining) t.end();
                 };
                 if (/\@2x/.test(source)) {
                     cbTile.scale = 2;
@@ -204,32 +198,32 @@ describe('tiles', function() {
         });
     });
     Object.keys(formats).forEach(function(format) {
-        it('format a (0.0.0) as ' + format, function(done) {
+        test('format a (0.0.0) as ' + format, function(t) {
             var source = 'a';
             var key = '0.0.0';
             var filepath = __dirname + '/expected/' + source + '.' + key + '.' + format;
             var cbTile = function(err, buffer, headers) {
-                assert.ifError(err);
-                assert.equal(headers['Content-Type'], formats[format].ctype);
+                t.ifError(err);
+                t.equal(headers['Content-Type'], formats[format].ctype);
                 if (format === 'utf' || format === 'json') {
                     if (UPDATE) {
                         fs.writeFileSync(filepath, JSON.stringify(buffer, null, 2));
                     }
-                    assert.deepEqual(buffer, JSON.parse(fs.readFileSync(filepath, 'utf8')));
-                    done();
+                    t.deepEqual(buffer, JSON.parse(fs.readFileSync(filepath, 'utf8')));
+                    t.end();
                 } else if (format === 'svg') {
                     if (UPDATE) {
                         fs.writeFileSync(filepath, buffer);
                     }
-                    assert.equal(buffer.length, fs.readFileSync(filepath).length);
-                    done();
+                    t.equal(buffer.length, fs.readFileSync(filepath).length);
+                    t.end();
                 } else {
                     if (UPDATE) {
                         fs.writeFileSync(filepath, buffer);
                     }
                     imageEqualsFile(buffer, filepath, function(err) {
-                        assert.ifError(err);
-                        done();
+                        t.ifError(err);
+                        t.end();
                     });
                 }
             };
@@ -238,55 +232,52 @@ describe('tiles', function() {
             sources[source].getTile(0,0,0, cbTile);
         });
     });
-    it('query', function(done) {
-        this.timeout(5000);
+    test('query', function(t) {
         var lonlat = [-77.0131, 38.8829];
         var filepath = __dirname + '/expected/query-' + lonlat.join(',') + '.json';
         sources.a.queryTile(22, lonlat[0], lonlat[1], { tolerance: 10000 }, function(err, data, headers) {
-            assert.ifError(err);
-            assert.equal(headers['Content-Type'], 'application/json');
+            t.ifError(err);
+            t.equal(headers['Content-Type'], 'application/json');
             if (UPDATE) {
                 fs.writeFileSync(filepath, JSON.stringify(data, null, 2));
             }
-            assert.deepEqual(
+            t.deepEqual(
                 JSON.parse(JSON.stringify(data)),
                 JSON.parse(fs.readFileSync(filepath, 'utf8'))
             );
-            done();
+            t.end();
         });
     });
-    it('errors out on bad deflate', function(done) {
+    test('errors out on bad deflate', function(t) {
         sources.a.getTile(1, 0, 2, function(err) {
-            assert.ifError(err);
-            done();
+            t.ifError(err);
+            t.end();
         });
     });
-    it('errors out on bad protobuf', function(done) {
+    test('errors out on bad protobuf', function(t) {
         sources.a.getTile(1, 0, 3, function(err) {
-            assert.equal('could not parse buffer as protobuf', err.message);
-            done();
+            t.equal('could not parse buffer as protobuf', err.message);
+            t.end();
         });
     });
-    it('same backend/xml => same ETags', function(done) {
+    test('same backend/xml => same ETags', function(t) {
         tests.a.slice(0,4).forEach(function(key) {
-            assert.equal(etags.a[key], etags.d[key]);
+            t.equal(etags.a[key], etags.d[key]);
         });
-        done();    });
-    it('diff blank tiles => diff ETags', function(done) {
-        assert.notEqual(etags.a['1.1.2'], etags.a['1.1.3']);
-        done();
+        t.end();    });
+    test('diff blank tiles => diff ETags', function(t) {
+        t.notEqual(etags.a['1.1.2'], etags.a['1.1.3']);
+        t.end();
     });
-    it('diff backend => diff ETags', function(done) {
+    test('diff backend => diff ETags', function(t) {
         tests.a.slice(0,4).forEach(function(key) {
-            assert.notEqual(etags.a[key], etags.b[key]);
+            t.notEqual(etags.a[key], etags.b[key]);
         });
-        done();
+        t.end();
     });
-    it('diff scale => diff ETags', function(done) {
+    test('diff scale => diff ETags', function(t) {
         tests.a.slice(0,4).forEach(function(key) {
-            assert.notEqual(etags.b[key], etags.c[key]);
+            t.notEqual(etags.b[key], etags.c[key]);
         });
-        done();
+        t.end();
     });
-});
-
