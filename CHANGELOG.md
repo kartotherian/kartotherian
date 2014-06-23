@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+
+- Windows support
+
 ## 1.0.0
 
 - Adds support for embedded rasters in mapnik vector tiles
