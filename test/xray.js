@@ -6,7 +6,6 @@ var xray = require('..').xray;
 var fs = require('fs');
 var UPDATE = process.env.UPDATE;
 var path = require('path');
-var os = require('os');
 
 // Tilelive test source.
 tilelive.protocols['test:'] = Testsource;
@@ -102,10 +101,6 @@ tilelive.protocols['test:'] = Testsource;
                 fs.writeFileSync(path.join(__dirname, 'expected', key), results[key]);
             }
             var expected = fs.readFileSync(path.join(__dirname, 'expected', key), 'utf8');
-            if (os.platform() === 'win32') {
-                expected = expected.replace(/\r/g, '');
-                results[key] = results[key].replace(/\r/g, '');
-            }
             t.equal(expected, results[key]);
         }
         t.end();
