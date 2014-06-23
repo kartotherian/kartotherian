@@ -6,15 +6,6 @@ var exec = require('child_process').exec;
 var existsSync = require('fs').existsSync || require('path').existsSync;
 var mapnik = require('mapnik');
 
-var image_magick_available = true;
-var overwrite = false;
-
-exec('compare -h', function(error, stdout, stderr) {
-    if (error !== null) {
-      image_magick_available = false;
-    }
-});
-
 function imageEqualsFile(buffer, file, meanError, callback) {
     if (typeof meanError == 'function') {
         callback = meanError;
@@ -28,10 +19,13 @@ function imageEqualsFile(buffer, file, meanError, callback) {
     }
     var expectImage = new mapnik.Image.open(file);
     var resultImage = new mapnik.Image.fromBytesSync(buffer);
-    var diff = expectImage.compare(resultImage);
+    var pxDiff = expectImage.compare(resultImage);
 
-    if (diff > 0) {
-        callback(new Error('Image is too different from fixture: ' + diff));
+    // Allow < 2% of pixels to vary by > default comparison threshold of 16.
+    var pxThresh = resultImage.width() * resultImage.height() * 0.02;
+
+    if (pxDiff > pxThresh) {
+        callback(new Error('Image is too different from fixture: ' + pxDiff + ' pixels > ' + pxThresh + ' pixels'));
     } else {
         callback();
     }
