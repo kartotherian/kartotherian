@@ -25,11 +25,12 @@
   },
   "devDependencies": {
     "mocha": "1.x",
+    "tape": "2.13.x",
     "tilejson": "~0.6.0",
     "simple-statistics": "~0.8.0"
   },
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "tape test/*.js"
   },
   "engines": {
     "node": "0.8.x || 0.10.x"

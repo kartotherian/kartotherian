@@ -1,5 +1,5 @@
+var test = require('tape');
 var tilelive = require('tilelive');
-var assert = require('assert');
 var imageEqualsFile = require('./image.js');
 var Testsource = require('./testsource');
 var xray = require('..').xray;
@@ -11,36 +11,35 @@ var os = require('os');
 // Tilelive test source.
 tilelive.protocols['test:'] = Testsource;
 
-describe('xray', function() {
-    it('invalid', function(done) {
+    test('invalid', function(t) {
         new xray({}, function(err) {
-            assert.equal('Error: opts.uri or opts.source must be set', err.toString());
-            done();
+            t.equal('Error: opts.uri or opts.source must be set', err.toString());
+            t.end();
         });
     });
-    it('invalid-novector', function(done) {
+    test('invalid-novector', function(t) {
         new xray({uri:'test:///invalid-novector'}, function(err) {
-            assert.equal('Error: source must contain a vector_layers property', err.toString());
-            done();
+            t.equal('Error: source must contain a vector_layers property', err.toString());
+            t.end();
         });
     });
-    it('loads uri', function(done) {
+    test('loads uri', function(t) {
         new xray({uri:'test:///a'}, function(err, source) {
-            assert.ifError(err);
-            assert.ok(!!source);
+            t.ifError(err);
+            t.ok(!!source);
             source.getTile(0,0,0, function(err,buffer) {
-                assert.ifError(err);
+                t.ifError(err);
                 if (UPDATE) {
                     fs.writeFileSync(path.join(__dirname, 'expected', 'xray-a-0-0-0.png'), buffer);
                 }
                 imageEqualsFile(buffer, path.join(__dirname, 'expected', 'xray-a-0-0-0.png'), function(err) {
-                    assert.ifError(err);
-                    done();
+                    t.ifError(err);
+                    t.end();
                 });
             });
         });
     });
-    it('loads source', function(done) {
+    test('loads source', function(t) {
         var source = new Testsource('a');
         new xray({
             source: source,
@@ -48,28 +47,28 @@ describe('xray', function() {
             maxzoom: 1,
             vector_layers: [{ id:'coastline' }]
         }, function(err, source) {
-            assert.ifError(err);
-            assert.ok(!!source);
-            done();
+            t.ifError(err);
+            t.ok(!!source);
+            t.end();
         });
     });
-    it('loads raster source', function(done) {
+    test('loads raster source', function(t) {
         new xray({uri:'test:///i'}, function(err, source) {
-            assert.ifError(err);
-            assert.ok(!!source);
+            t.ifError(err);
+            t.ok(!!source);
             source.getTile(0,0,0, function(err,buffer) {
-                assert.ifError(err);
+                t.ifError(err);
                 if (UPDATE) {
                     fs.writeFileSync(__dirname + '/expected/xray-i-0-0-0.png', buffer);
                 }
                 imageEqualsFile(buffer, __dirname + '/expected/xray-i-0-0-0.png', function(err) {
-                    assert.ifError(err);
-                    done();
+                    t.ifError(err);
+                    t.end();
                 });
             });
         });
     });
-    it('color', function() {
+    test('color', function(t) {
         var results = {
             '': [68,68,68],
             'a': [68,170,68],
@@ -78,10 +77,11 @@ describe('xray', function() {
             'rivers and lakes': [170,153,85]
         };
         for (var key in results) {
-            assert.deepEqual(xray.color(key), results[key]);
+            t.deepEqual(xray.color(key), results[key]);
         }
+        t.end();
     });
-    it('xml', function() {
+    test('xml', function(t) {
         var results = {
             'xray-single.xml': xray.xml({
                 vector_layers: [
@@ -106,7 +106,7 @@ describe('xray', function() {
                 expected = expected.replace(/\r/g, '');
                 results[key] = results[key].replace(/\r/g, '');
             }
-            assert.equal(expected, results[key]);
+            t.equal(expected, results[key]);
         }
+        t.end();
     });
-});
