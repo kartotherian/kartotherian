@@ -14,53 +14,53 @@ tilelive.protocols['test:'] = Testsource;
 
 var xml = fs.readFileSync(path.resolve(__dirname + '/fixtures/a.xml'), 'utf8');
 
-    test('finds layer information', function(t) {
-        new Vector({ uri:'test:///a', xml: xml }, function(err, source) {
+test('finds layer information', function(t) {
+    new Vector({ uri:'test:///a', xml: xml }, function(err, source) {
+        t.ifError(err);
+        var cb = function(err, vtile, headers) {
             t.ifError(err);
-            var cb = function(err, vtile, headers) {
-                t.ifError(err);
-                t.ok(vtile._layerInfo);
-                t.end();
-            };
-            cb.profile = true;
-            source.getTile(0,0,0,cb);
+            t.ok(vtile._layerInfo);
+            t.end();
+        };
+        cb.profile = true;
+        source.getTile(0,0,0,cb);
+    });
+});
+
+test('returns expected layer information', function(t) {
+    new Vector({ uri:'test:///a', xml: xml }, function(err, source) {
+        t.ifError(err);
+        source._backend.getTile(0,0,0, function(err, vtile, headers) {
+            if (err) throw err;
+            var tile = vtile;
+            var layerInfo = profiler.layerInfo(tile);
+
+            // Tile has a 'coastline' layer
+            var coastline = _(layerInfo).where({ name: 'coastline' })[0];
+            t.ok(coastline);
+
+            // Tile contains 4177 features
+            t.equal(coastline.coordCount.length, 4177);
+            t.equal(coastline.features, 4177);
+
+            // Longest/shortest features
+            t.equal(ss.max(coastline.coordCount), 381);
+            t.equal(ss.min(coastline.coordCount), 2);
+
+            // Most/least duplication
+            t.equal(ss.max(coastline.duplicateCoordCount), 9);
+            t.equal(ss.min(coastline.duplicateCoordCount), 0);
+
+            // Max/Min distance between consecutive coords
+            var diff = Math.abs(ss.max(coastline.coordDistance) - 570446.5598775251);
+            t.ok(diff < 0.1);
+            t.equal(ss.min(coastline.coordDistance), 0);
+
+            // Expected jsonsize
+            t.equal(coastline.jsonsize, 520120);
+
+            t.end();
         });
     });
-
-    test('returns expected layer information', function(t) {
-        new Vector({ uri:'test:///a', xml: xml }, function(err, source) {
-            t.ifError(err);
-            source._backend.getTile(0,0,0, function(err, vtile, headers) {
-                if (err) throw err;
-                var tile = vtile;
-                var layerInfo = profiler.layerInfo(tile);
-
-                // Tile has a 'coastline' layer
-                var coastline = _(layerInfo).where({ name: 'coastline' })[0];
-                t.ok(coastline);
-
-                // Tile contains 4177 features
-                t.equal(coastline.coordCount.length, 4177);
-                t.equal(coastline.features, 4177);
-
-                // Longest/shortest features
-                t.equal(ss.max(coastline.coordCount), 381);
-                t.equal(ss.min(coastline.coordCount), 2);
-
-                // Most/least duplication
-                t.equal(ss.max(coastline.duplicateCoordCount), 9);
-                t.equal(ss.min(coastline.duplicateCoordCount), 0);
-
-                // Max/Min distance between consecutive coords
-                var diff = Math.abs(ss.max(coastline.coordDistance) - 570446.5598775251);
-                t.ok(diff < 0.1);
-                t.equal(ss.min(coastline.coordDistance), 0);
-
-                // Expected jsonsize
-                t.equal(coastline.jsonsize, 520120);
-
-                t.end();
-            });
-        });
-    });
+});
 
