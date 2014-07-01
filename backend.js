@@ -8,7 +8,7 @@ var zlib = require('zlib');
 module.exports = Backend;
 
 function Backend(opts, callback) {
-    this._layer = opts.layer || 'image';
+    this._layer = opts.layer || undefined;
     this._scale = opts.scale || 1;
     this._source = null;
     var backend = this;
@@ -30,6 +30,9 @@ function Backend(opts, callback) {
         backend._minzoom = info.minzoom || 0;
         backend._maxzoom = info.maxzoom || 22;
         backend._vector_layers = info.vector_layers || undefined;
+        backend._layer = backend._layer ||
+            (info.vector_layers && info.vector_layers.length && info.vector_layers[0].id) ||
+            'image';
         // @TODO some sources filter out custom keys @ getInfo forcing us
         // to access info/data properties directly. Fix this.
         if ('maskLevel' in info && !isNaN(parseInt(info.maskLevel, 10))) {
