@@ -9,7 +9,7 @@ var mapnik = require('mapnik');
 function imageEqualsFile(buffer, file, meanError, callback) {
     if (typeof meanError == 'function') {
         callback = meanError;
-        meanError = 0.02;
+        meanError = 0.05;
     }
 
     var fixturesize = fs.statSync(file).size;

@@ -45,13 +45,7 @@ var infos = {
     i: {
         minzoom:0,
         maxzoom:1,
-        vector_layers: [
-            {
-                "id": "image",
-                "description": "",
-                "fields": {}
-            }
-        ]
+        vector_layers: []
     },
     'invalid-novector': {
         minzoom:0,

@@ -32,7 +32,7 @@ function Backend(opts, callback) {
         backend._vector_layers = info.vector_layers || undefined;
         backend._layer = backend._layer ||
             (info.vector_layers && info.vector_layers.length && info.vector_layers[0].id) ||
-            'image';
+            '_image';
         // @TODO some sources filter out custom keys @ getInfo forcing us
         // to access info/data properties directly. Fix this.
         if ('maskLevel' in info && !isNaN(parseInt(info.maskLevel, 10))) {
