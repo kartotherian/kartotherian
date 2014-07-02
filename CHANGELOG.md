@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.0
+
+- Update to tilelive v5.0.x
+
+## 1.1.0
+
+- Windows support
+
 ## 1.0.0
 
 - Adds support for embedded rasters in mapnik vector tiles

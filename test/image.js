@@ -3,52 +3,32 @@ var util = require('util');
 var path = require('path');
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
-var existsSync = require('fs').existsSync || require('path').existsSync
+var existsSync = require('fs').existsSync || require('path').existsSync;
+var mapnik = require('mapnik');
 
-var image_magick_available = true;
-var overwrite = false;
-
-exec('compare -h', function(error, stdout, stderr) {
-    if (error !== null) {
-      image_magick_available = false;
-    }
-});
-
-module.exports = function imageEqualsFile(buffer, file, meanError, callback) {
+function imageEqualsFile(buffer, file, meanError, callback) {
     if (typeof meanError == 'function') {
         callback = meanError;
-        meanError = 0.001;
+        meanError = 0.02;
     }
 
-    file = path.resolve(file);
-    if (!image_magick_available) {
-        throw new Error("imagemagick 'compare' tool is not available, please install before running tests");
+    var fixturesize = fs.statSync(file).size;
+    var sizediff = Math.abs(fixturesize - buffer.length) / fixturesize;
+    if (sizediff > meanError) {
+        return callback(new Error('Image size is too different from fixture: ' + buffer.length + ' vs. ' + fixturesize));
     }
-    
-    var type = path.extname(file);
-    var result = path.join(path.dirname(file), path.basename(file, type) + '.result' + type);
-    fs.writeFileSync(result, buffer);
-    var compare = spawn('compare', ['-metric', 'MAE', result, file, '/dev/null' ]);
-    var error = '';
-    compare.stderr.on('data', function(data) {
-        error += data.toString();
-    });
-    compare.on('exit', function(code, signal) {
-        if (code) {
-            return callback(new Error((error || 'Exited with code ' + code) + ': ' + result));
-        }
-        var similarity = parseFloat(error.match(/^\d+(?:\.\d+)?\s+\(([^\)]+)\)\s*$/)[1]);
-        if (similarity > meanError) {
-            var err = new Error('Images not equal: ' + error.trim() + ':\n' + result + '\n'+file);
-            err.similarity = similarity;
-            callback(err);
-        } else {
-            if (existsSync(result)) {
-                // clean up old failures
-                fs.unlinkSync(result);
-            }
-            callback(null);
-        }
-    });
-    compare.stdin.end();
-};
+    var expectImage = new mapnik.Image.open(file);
+    var resultImage = new mapnik.Image.fromBytesSync(buffer);
+    var pxDiff = expectImage.compare(resultImage);
+
+    // Allow < 2% of pixels to vary by > default comparison threshold of 16.
+    var pxThresh = resultImage.width() * resultImage.height() * 0.02;
+
+    if (pxDiff > pxThresh) {
+        callback(new Error('Image is too different from fixture: ' + pxDiff + ' pixels > ' + pxThresh + ' pixels'));
+    } else {
+        callback();
+    }
+}
+
+module.exports = imageEqualsFile;
