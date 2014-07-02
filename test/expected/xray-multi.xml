@@ -28,7 +28,7 @@
   </Rule>
   <Rule>
     <ElseFilter></ElseFilter>
-    <RasterSymbolizer opacity="0.75" />
+    <RasterSymbolizer opacity="1" />
   </Rule>
 </Style>
 
@@ -53,7 +53,7 @@
   </Rule>
   <Rule>
     <ElseFilter></ElseFilter>
-    <RasterSymbolizer opacity="0.75" />
+    <RasterSymbolizer opacity="1" />
   </Rule>
 </Style>
 
@@ -78,7 +78,7 @@
   </Rule>
   <Rule>
     <ElseFilter></ElseFilter>
-    <RasterSymbolizer opacity="0.75" />
+    <RasterSymbolizer opacity="1" />
   </Rule>
 </Style>
 
@@ -103,7 +103,7 @@
   </Rule>
   <Rule>
     <ElseFilter></ElseFilter>
-    <RasterSymbolizer opacity="0.75" />
+    <RasterSymbolizer opacity="1" />
   </Rule>
 </Style>
 
