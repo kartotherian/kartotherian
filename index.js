@@ -45,6 +45,21 @@ tm.sortkeys = function(obj) {
   } catch(e) { return obj };
 };
 
+// Return an augmented uri object from url.parse with the pathname
+// transformed into an unescaped dirname.
+tm.parse = function(str) {
+  var uri = url.parse(str);
+  if (uri.pathname) uri.dirname = unescape(uri.pathname);
+  return uri;
+};
+
+// Return true/false depending on whether a path is absolute.
+tm.absolute = function(str) {
+  if (str.charAt(0) === '/') return true;
+  if ((/^[a-z]\:/i).test(str)) return true;
+  return false;
+};
+
 var defaults = {
   name:'',
   description:'',
@@ -112,8 +127,7 @@ var normalize = function(data) {
     info.fields = [];
     var opts = _(l.Datasource).clone();
 
-    // Ugh. Also, Windows.
-    if (opts.file && opts.file.charAt(0) !== '/') opts.base = url.parse(data.id).pathname;
+    if (opts.file && !tm.absolute(opts.file)) opts.base = tm.parse(data.id).dirname;
 
     var fields = new mapnik.Datasource(opts).describe().fields;
     info.fields = _(fields).reduce(function(memo, type, field) {
