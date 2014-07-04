@@ -178,6 +178,9 @@ var toXML = function(data, callback) {
 var TMSource = function(uri, callback) {
   uri = url.parse(uri);
 
+  uri.pathname = path.resolve(uri.hostname + uri.pathname);
+  uri.hostname = "";
+
   var self = this,
       filename = path.join(uri.hostname + uri.pathname, "data.yml");
 
@@ -192,6 +195,7 @@ var TMSource = function(uri, callback) {
       return callback(err);
     }
 
+    self.info.id = url.format(uri);
     self.info = normalize(self.info);
 
     return toXML(self.info, function(err, xml) {
@@ -200,7 +204,7 @@ var TMSource = function(uri, callback) {
       }
 
       uri.xml = xml;
-      uri.base = uri.hostname + uri.pathname;
+      uri.base = uri.pathname;
 
       return Bridge.call(self, uri, callback);
     });
