@@ -36,6 +36,12 @@ test('loads a tm2z url', function(t) {
         t.end();
     });
 });
+test('loads a tm2z url once', function(t) {
+    tilelive.load('tm2z://' + path.join(fixtureDir, 'doublecall.tm2z'), function(err, source) {
+        t.ifError(err);
+        t.end();
+    });
+});
 test('matches expected xml', function(t) {
     tilelive.load('tm2z://' + path.join(fixtureDir, 'project.tm2z'), function(err, source) {
         t.ifError(err);
