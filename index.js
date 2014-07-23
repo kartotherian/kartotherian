@@ -475,7 +475,7 @@ function tm2z(uri, callback) {
 
             todo.push(function(next) { fs.writeFile(base + '/.unpacked', '', next); });
             var next = function(err) {
-                if (err && err.code !== 'EEXIST') return callback(err);
+                if (err && err.code !== 'EEXIST') return error(err);
                 if (todo.length) {
                     todo.shift()(next);
                 } else {
@@ -510,6 +510,7 @@ function tm2z(uri, callback) {
     };
 
     function load() {
+        if (once++) return;
         if (!xml) return callback(new Error('project.xml not found in package'));
         tm2z.sources[id] = new Vector({
             source: 'mapbox:///mapbox.mapbox-streets-v2',
