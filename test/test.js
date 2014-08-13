@@ -133,7 +133,8 @@ var formats = {
     json: { ctype: 'application/json' },
     jpeg: { ctype: 'image/jpeg' },
     png: { ctype: 'image/png' },
-    svg: { ctype: 'image/svg+xml' },
+    svg: { ctype: 'image/svg+xml', renderer: 'cairo' },
+    svg: { ctype: 'image/svg+xml', renderer: 'svg' },
     utf: { ctype: 'application/json' }
 };
 var etags = {};
@@ -212,6 +213,7 @@ Object.keys(formats).forEach(function(format) {
                 t.deepEqual(buffer, JSON.parse(fs.readFileSync(filepath, 'utf8')));
                 t.end();
             } else if (format === 'svg') {
+                filepath = filepath.replace(key,key+'-'+formats[format].renderer);
                 if (UPDATE) {
                     fs.writeFileSync(filepath, buffer);
                 }
@@ -229,6 +231,9 @@ Object.keys(formats).forEach(function(format) {
         };
         cbTile.format = format;
         if (format == 'png') cbTile.format = 'png8:m=h';
+        if (formats[format].renderer) {
+            cbTile.renderer = formats[format].renderer;
+        }
         sources[source].getTile(0,0,0, cbTile);
     });
 });

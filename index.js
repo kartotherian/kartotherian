@@ -34,6 +34,7 @@ function Vector(uri, callback) {
     this._uri = uri;
     this._scale = uri.scale || undefined;
     this._format = uri.format || undefined;
+    this._renderer = uri.renderer || undefined;
     this._source = uri.source || undefined;
     this._backend = uri.backend || undefined;
     this._base = path.resolve(uri.base || __dirname);
@@ -166,6 +167,9 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             opts.fields = source._map.parameters.interactivity_fields.split(',');
         } else if (format === 'svg') {
             var surface = new mapnik.CairoSurface('svg',width,height);
+            if (callback.renderer || this._renderer) {
+                opts.renderer = callback.renderer || this._renderer;
+            }
         } else {
             var surface = new mapnik.Image(width,height);
         }
