@@ -50,6 +50,23 @@ var infos = {
     'invalid-novector': {
         minzoom:0,
         maxzoom:1
+    },
+    gz: {
+        minzoom:0,
+        maxzoom:0,
+        vector_layers: [
+            {
+                "id": "coastline",
+                "description": "",
+                "minzoom": 0,
+                "maxzoom": 22,
+                "fields": {
+                    "FeatureCla": "String",
+                    "Note": "String",
+                    "ScaleRank": "Number"
+                }
+            }
+        ]
     }
 };
 var tiles = {
@@ -66,6 +83,11 @@ var tiles = {
     i: fs.readdirSync(path.resolve(path.join(__dirname, 'fixtures','i'))).reduce(function(memo, basename) {
         var key = basename.split('.').slice(0,3).join('.');
         memo[key] = fs.readFileSync(path.resolve(path.join(__dirname, 'fixtures', 'i', basename)));
+        return memo;
+    }, {}),
+    gz: fs.readdirSync(path.resolve(path.join(__dirname, 'fixtures','gz'))).reduce(function(memo, basename) {
+        var key = basename.split('.').slice(0,3).join('.');
+        memo[key] = fs.readFileSync(path.resolve(path.join(__dirname, 'fixtures', 'gz', basename)));
         return memo;
     }, {})
 };
