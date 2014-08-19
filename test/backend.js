@@ -148,10 +148,10 @@ tilelive.protocols['test:'] = Testsource;
             });
         });
     });
-    test('empty tile on bad deflate', function(t) {
+    test('treats unknown buffer as image', function(t) {
         sources.a.getTile(1, 0, 2, function(err, vtile) {
             t.ifError(err);
-            t.deepEqual([], vtile.toJSON());
+            t.deepEqual(vtile.toJSON()[0].name, '_image');
             t.end();
         });
     });
