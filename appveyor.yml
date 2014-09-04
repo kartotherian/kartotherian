@@ -7,6 +7,10 @@ platform:
 #  - x64
   - x86
 
+environment:
+  MapboxAccessToken:
+    secure: 01rO70zKIKzh2l8htHugNS3cCk9u3LfTu2SXojFaYkveumhZRDgRrH/BroS+fIv8T6YB5l0P2nvKAjqhdDW2yuaLWGIB5KdBmhywp4dXa0g=
+
 install:
   - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild $env:nodejs_version) $env:Platform
   - node --version
