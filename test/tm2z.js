@@ -20,7 +20,9 @@ var fixtureDir = path.resolve(__dirname, 'fixtures', 'tm2z'),
 // Register vector:, tm2z:, tm2z+http: and mapbox: tilelive protocols
 Vector.registerProtocols(tilelive);
 tilelive.protocols['mapbox:'] = function Source(uri, callback) {
-    return new TileJSON('http://a.tiles.mapbox.com/v3' + uri.pathname + '.json', callback);
+    var MapboxAccessToken = process.env.MapboxAccessToken;
+    if (!MapboxAccessToken) return callback(new Error('env var MapboxAccessToken is required'));
+    return new TileJSON('http://a.tiles.mapbox.com/v4' + uri.pathname + '.json?access_token=' + MapboxAccessToken, callback);
 };
 
 // Register font
