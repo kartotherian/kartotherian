@@ -1,6 +1,8 @@
 environment:
   matrix:
     - nodejs_version: 0.10
+  MapboxAccessToken:
+    secure: 01rO70zKIKzh2l8htHugNS3cCk9u3LfTu2SXojFaYkveumhZRDgRrH/BroS+fIv8T6YB5l0P2nvKAjqhdDW2yuaLWGIB5KdBmhywp4dXa0g=
 
 platform:
 # mapnik 64 bit is almost ready but not yet
