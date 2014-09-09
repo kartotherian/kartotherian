@@ -55,7 +55,7 @@ abaculus.coordsFromBbox = function(z, s, bbox, limit){
 };
 
 abaculus.coordsFromCenter = function(z, s, center, limit){
-    var origin = sm.px([center.y, center.x], z);
+    var origin = sm.px([center.x, center.y], z);
     center.x = origin[0];
     center.y = origin[1];
     center.w = Math.round(center.w * s);

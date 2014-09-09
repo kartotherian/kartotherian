@@ -58,14 +58,14 @@ describe('get coordinates from center', function(){
     it('should return correct origin coords', function(done){
         var center = {
             x: 0,
-            y: 0,
+            y: 20,
             w: 800,
             h: 800
         };
-
+        console.log(center)
         center = printer.coordsFromCenter(zoom, scale, center, limit);
         assert.equal(center.x, x);
-        assert.equal(center.y, y);
+        assert.equal(center.y, 3631);
         done();
     });
 });
