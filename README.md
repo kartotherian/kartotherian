@@ -13,7 +13,7 @@ Uses node-mapnik to stitch tiles together.
 ### usage
 
 #### input:
-`scale`: an integer between 1-4 and sets resolution (`scale: 1` is 72dpi, `scale: 4`, is 288dpi)
+`scale`: integer between 1-4 and sets resolution (`scale: 1` is 72dpi, `scale: 4`, is 288dpi)
 
 `zoom`: zoom level
 
@@ -25,13 +25,13 @@ Uses node-mapnik to stitch tiles together.
 
 `width` and `height`: desired pixel bounds for a map with a center coordinate. Will be multiplied by scale to maintain resolution.
 
-`format` (optional): is `png` or `jpeg`, default is `png`. 
+`format` (optional): `png` or `jpeg`, default is `png`. 
 
 `quality` (optional): for `jpeg` defaults to 80, and has a range of 2-256 for `png`.
 
 `getTile`: a function that returns a tile buffer (png or otherwise) and headers given `z`, `x`, `y`, and a callback, such as from [tilelive-vector](https://github.com/mapbox/tilelive-vector/blob/master/index.js#L107-L200).
 
-`limit` (optional): is a max image size in pixels. Default is 19008px.
+`limit` (optional): max image size in pixels. Default is 19008px.
 
 ```javascript
 // Calculate image bounds from W,S,E,N bounding box.
