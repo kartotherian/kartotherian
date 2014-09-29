@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.0
+
+- Update to tilelive v5.2.x
+
 ## 2.1.0
 
 - Detects and supports gzipped vector tiles
