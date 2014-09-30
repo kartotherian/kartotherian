@@ -174,7 +174,7 @@ abaculus.stitchTiles = function(coords, format, quality, getTile, callback){
     });
 
     function tileQueueFinish(err, data) {
-        if (err) console.log(err, data);
+        if (err) return callback(err);
         if (!data) return callback(new Error('No tiles to stitch.'));
         var headers = [];
         data.forEach(function(d, i){

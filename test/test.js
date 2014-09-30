@@ -62,7 +62,6 @@ describe('get coordinates from center', function(){
             w: 800,
             h: 800
         };
-        console.log(center)
         center = printer.coordsFromCenter(zoom, scale, center, limit);
         assert.equal(center.x, x);
         assert.equal(center.y, 3631);
