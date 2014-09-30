@@ -16,7 +16,7 @@
   "dependencies": {
     "queue-async": "1.0.7",
     "sphericalmercator": "1.0.x",
-    "mapnik": "~1.4.10"
+    "mapnik": "https://github.com/mapnik/node-mapnik/archive/master.tar.gz"
   },
   "devDependencies":{
     "mocha": "1.x"
