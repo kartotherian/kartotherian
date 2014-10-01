@@ -384,6 +384,8 @@ Vector.prototype.profile = function(callback) {
 };
 
 function tm2z(uri, callback) {
+    uri = typeof uri === 'string' ? url.parse(uri) : uri;
+
     var maxsize = {
         file: uri.filesize || 750 * 1024,
         gunzip: uri.gunzipsize || 5 * 1024 * 1024,
