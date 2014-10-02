@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.0
+
+- Remove in-memory cache of tm2z sources.
+
 ## 2.2.0
 
 - Update to tilelive v5.2.x

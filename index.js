@@ -384,6 +384,8 @@ Vector.prototype.profile = function(callback) {
 };
 
 function tm2z(uri, callback) {
+    uri = typeof uri === 'string' ? url.parse(uri) : uri;
+
     var maxsize = {
         file: uri.filesize || 750 * 1024,
         gunzip: uri.gunzipsize || 5 * 1024 * 1024,
@@ -391,9 +393,6 @@ function tm2z(uri, callback) {
     };
 
     var id = url.format(uri);
-
-    // Cache hit.
-    if (tm2z.sources[id]) return tm2z.sources[id].open(callback);
 
     var xml;
     var base = path.join(os.tmpDir(), md5(id).substr(0,8) + '-' + path.basename(id));
@@ -512,22 +511,13 @@ function tm2z(uri, callback) {
     function load() {
         if (once++) return;
         if (!xml) return callback(new Error('project.xml not found in package'));
-        tm2z.sources[id] = new Vector({
+        new Vector({
             source: 'mapbox:///mapbox.mapbox-streets-v2',
             base: base,
             xml: xml
-        });
-        tm2z.sources[id].open(function(err, source) {
-            if (err) {
-                delete tm2z.sources[id];
-                return callback(err);
-            }
-            callback(null, source);
-        });
+        }, callback);
     };
 };
-
-tm2z.sources = {};
 
 tm2z.findID = function(source, id, callback) {
     callback(new Error('id not found'));
