@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0
+
+- Update to node-mapnik@3.0.x. Requires C++11 support.
+
 ## 2.3.0
 
 - Remove in-memory cache of tm2z sources.
