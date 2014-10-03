@@ -1,26 +1,22 @@
 environment:
   matrix:
     - nodejs_version: 0.10
+    # not working yet, will hit this later (dane)
+    #- nodejs_version: 0.11.13
   MapboxAccessToken:
     secure: 01rO70zKIKzh2l8htHugNS3cCk9u3LfTu2SXojFaYkveumhZRDgRrH/BroS+fIv8T6YB5l0P2nvKAjqhdDW2yuaLWGIB5KdBmhywp4dXa0g=
 
 platform:
-# mapnik 64 bit is almost ready but not yet
-#  - x64
+  - x64
   - x86
 
 install:
-  - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild $env:nodejs_version) $env:Platform
-  - node --version
-  - npm --version
-  - node -e "console.log('node version ' + process.version + ', architecture ' + process.arch);"
+  - ps: Install-Product node $env:nodejs_version $env:Platform
+  - ps: Start-FileDownload "https://mapnik.s3.amazonaws.com/dist/dev/VS-2014-runtime/vcredist_$env:Platform.exe"
+  - .\vcredist_%platform%.exe /q /norestart
   - npm install
   - npm test
 
 build: OFF
-
 test: OFF
-
-test_script: OFF
-
 deploy: OFF
