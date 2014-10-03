@@ -4,21 +4,17 @@ environment:
     # - nodejs_version: 0.11
 
 platform:
+  - x64
   - x86
 
 install:
-  - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild $env:nodejs_version)
-  - node --version
-  - node -e "console.log(process.version)"
-  - node -e "console.log(process.arch)"
-  - npm --version
+  - ps: Install-Product node $env:nodejs_version $env:Platform
+  - ps: Start-FileDownload "https://mapnik.s3.amazonaws.com/dist/dev/VS-2014-runtime/vcredist_$env:Platform.exe"
+  - .\vcredist_%platform%.exe /q /norestart
   - npm install
   - npm test
-
-artifacts:
-  - path: test
-    name: TestOutputs
 
 build: OFF
 test: OFF
 deploy: OFF
+
