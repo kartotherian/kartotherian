@@ -31,7 +31,7 @@ Uses node-mapnik to stitch tiles together.
 
 `getTile`: a function that returns a tile buffer (png or otherwise) and headers given `z`, `x`, `y`, and a callback, such as from [tilelive-vector](https://github.com/mapbox/tilelive-vector/blob/master/index.js#L107-L200).
 
-`limit` (optional): max width or height of _generated image_ in pixels. Default is `19008`.
+`limit` (optional): max width or height of generated image in pixels. Default is `19008`.
 
 ```javascript
 // Calculate image bounds from W,S,E,N bounding box.
