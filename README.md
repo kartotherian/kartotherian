@@ -1,7 +1,7 @@
 ## abaculus
 a small block of stone, tile, glass, or other material used in the construction of a mosaic
 
-or, 
+or,
 
 a library for creating static maps from tiles based on center or corner lng,lat coordinates.
 Uses node-mapnik to stitch tiles together.
@@ -25,9 +25,9 @@ Uses node-mapnik to stitch tiles together.
 
 `width` and `height`: desired pixel bounds for a map with a center coordinate. Will be multiplied by scale to maintain resolution.
 
-`format` (optional): `png` or `jpeg`, default is `png`. 
+`format` (optional): `png` or `jpeg`, default is `png`.
 
-`quality` (optional): for `jpeg` defaults to 80, and has a range of 2-256 for `png`.
+`quality` (optional): when used with `jpeg` format, accepts 1-100 and defaults to 80. when used with `png` format, accepts 2-256 (# of colors to reduce the image to) and defaults to none.
 
 `getTile`: a function that returns a tile buffer (png or otherwise) and headers given `z`, `x`, `y`, and a callback, such as from [tilelive-vector](https://github.com/mapbox/tilelive-vector/blob/master/index.js#L107-L200).
 
@@ -48,14 +48,14 @@ var params = {
 	limit: {limit}
 };
 ```
-or 
+or
 ```javascript
-// Calculate image bounds from center lng,lat coordinates and 
+// Calculate image bounds from center lng,lat coordinates and
 // pixel dimensions of final image (will be multipled by scale).
 var params = {
 	zoom: {zoom},
 	scale: {scale}
-    center: {   
+    center: {
     	x: {x},
     	y: {y},
     	w: {width},

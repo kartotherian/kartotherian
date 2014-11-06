@@ -12,10 +12,10 @@ function abaculus(arg, callback){
         bbox = arg.bbox || null,
         getTile = arg.getTile || null,
         format = arg.format || 'png',
-        quality = arg.quality || (format === 'png' ? 256 : 80);
+        quality = arg.quality || null;
         limit = arg.limit || 19008;
 
-    if (!getTile) 
+    if (!getTile)
         return callback(new Error('Invalid function for getting tiles'));
 
     if (center) {
@@ -114,7 +114,7 @@ abaculus.tileList = function(z, s, center) {
     coords.tiles = [];
     var tileCount = (br.column - tl.column + 1) * (br.row - tl.row + 1);
 
-    for (var column = tl.column; column <= br.column; column++) { 
+    for (var column = tl.column; column <= br.column; column++) {
         for (var row = tl.row; row <= br.row; row++) {
             var c = { column: column,
                     row: row,
@@ -167,7 +167,7 @@ abaculus.stitchTiles = function(coords, format, quality, getTile, callback){
             }
             cb.scale = s;
             cb.format = format;
-            // getTile is a function that returns 
+            // getTile is a function that returns
             // a tile given z, x, y, & callback
             getTile(z, x, y, cb);
         }, t.z, t.x, t.y, t.px, t.py);
