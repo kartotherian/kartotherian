@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1
+
+- Updates tilelive.js and node-mapnik dependencies
+
 ## 3.0.0
 
 - Update to node-mapnik@3.0.x. Requires C++11 support.
