@@ -1,7 +1,6 @@
 var _ = require('underscore');
 var spherical = require('spherical');
 
-
 module.exports = {
     layerInfo: function(vtile) {
         var jsonsizes = vtile.toJSON().reduce(function(memo, l) {
@@ -9,7 +8,7 @@ module.exports = {
             return memo;
         }, {});
 
-        return vtile.toGeoJSON('__array__').map(function(layer) {
+        return JSON.parse(vtile.toGeoJSON('__array__')).map(function(layer) {
             var info = {
                 name: layer.name,                  // name of the layer
                 coordCount: [],                    // # coords per feature
@@ -50,6 +49,7 @@ function findDistances(coord, index, coordinates) {
 
 function flattenGeoJsonCoords(geometry) {
     if (geometry.type === 'Point') return [ geometry.coordinates ];
-    if (geometry.type === 'LineString') return geometry.coordinates;
-    if (geometry.type == 'Polygon') return _(geometry.coordinates).flatten(true);
+    if (geometry.type === 'LineString' || geometry.type === 'MultiPoint') return geometry.coordinates;
+    if (geometry.type == 'Polygon' || geometry.type === 'MultiLineString') return _(geometry.coordinates).flatten(true);
+    if (geometry.type === 'MultiPolygon') return _(geometry.coordinates).flatten();
 }
