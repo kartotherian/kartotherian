@@ -237,6 +237,9 @@ Vector.prototype.getInfo = function(callback) {
         case 'maxzoom':
             memo[key] = parseInt(params[key], 10);
             break;
+        case 'scale':
+            memo[key] = params[key].toString();
+            break;
         default:
             memo[key] = params[key];
             break;
