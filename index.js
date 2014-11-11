@@ -65,9 +65,6 @@ Vector.prototype.close = function(callback) {
 
 // Allows in-place update of XML/backends.
 Vector.prototype.update = function(opts, callback) {
-    // If the XML has changed update the map.
-    if (!opts.xml || this._xml === opts.xml) return callback();
-
     var s = this;
     var map = new mapnik.Map(256,256);
     map.fromString(opts.xml, {
