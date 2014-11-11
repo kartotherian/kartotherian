@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.2
+
+- Calls to #update() always update regardless of XML diff.
+
 ## 3.0.1
 
 - Updates tilelive.js and node-mapnik dependencies
