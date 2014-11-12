@@ -16,7 +16,7 @@
   "dependencies": {
     "queue-async": "1.0.7",
     "sphericalmercator": "1.0.x",
-    "mapnik": "3.0.x"
+    "mapnik": "3.1.x"
   },
   "devDependencies":{
     "mocha": "1.x"
