@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.3
+
+- Update request dependency
+
 ## 3.0.2
 
 - Calls to #update() always update regardless of XML diff.
