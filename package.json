@@ -16,7 +16,7 @@
     "mapnik": "~3.1.0",
     "tilelive": "5.3.x",
     "tar": "~0.1.18",
-    "request": "~2.27.0",
+    "request": "~2.48.0",
     "numeral": "~1.5.3",
     "sphericalmercator": "~1.0.2",
     "spherical": "0.0.1",
