@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.4
+
+- Update tilelive.js dependency
+
 ## 3.0.3
 
 - Update request dependency
