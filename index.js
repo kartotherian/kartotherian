@@ -3,6 +3,7 @@ var mapnik = require('mapnik');
 var fs = require('fs');
 var tar = require('tar');
 var url = require('url');
+var qs = require('querystring');
 var zlib = require('zlib');
 var path = require('path');
 var os = require('os');
@@ -384,7 +385,10 @@ Vector.prototype.profile = function(callback) {
 };
 
 function tm2z(uri, callback) {
-    uri = typeof uri === 'string' ? url.parse(uri) : uri;
+    if (typeof uri === 'string') {
+        uri = url.parse(uri, true);
+        uri.pathname = qs.unescape(uri.pathname);
+    }    
 
     var maxsize = {
         file: uri.filesize || 750 * 1024,
