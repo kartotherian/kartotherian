@@ -15,22 +15,16 @@ tilelive.protocols['mapbox:'] = function Source(uri, callback) {
 // Register font
 Vector.mapnik.register_fonts(path.join(__dirname, 'fonts', 'source-sans-pro'));
 
-test('npm MODULE_NOT_FOUND', function(assert) {
-    Vector.npm('vector+npm:///does-not-exist', function(err, source) {
-        assert.equal(err.code, 'MODULE_NOT_FOUND');
-        assert.end();
-    });
-});
-
-test('npm ENOENT', function(assert) {
-    Vector.npm('vector+npm:///tilelive', function(err, source) {
+test('file ENOENT', function(assert) {
+    Vector('/does-not-exist', function(err, source) {
         assert.equal(err.code, 'ENOENT');
         assert.end();
     });
 });
 
-test('npm', function(assert) {
-    Vector.npm('vector+npm:///mapbox-studio-default-style', function(err, source) {
+test('file xml', function(assert) {
+    var filepath = path.join(path.dirname(require.resolve('mapbox-studio-default-style')),'project.xml');
+    Vector(filepath, function(err, source) {
         assert.ifError(err);
         assert.equal(source instanceof Vector, true, 'returns source');
         assert.equal(source._base, path.dirname(require.resolve('mapbox-studio-default-style')), 'sets base');
