@@ -21,6 +21,7 @@ mapnik.register_fonts(path.resolve(__dirname, 'fonts'));
 module.exports = Vector;
 module.exports.tm2z = tm2z;
 module.exports.xray = xray;
+module.exports.npm = npm;
 module.exports.mapnik = mapnik;
 module.exports.Backend = Backend;
 
@@ -49,6 +50,7 @@ Vector.registerProtocols = function(tilelive) {
     tilelive.protocols['vector:'] = Vector;
     tilelive.protocols['tm2z:'] = tm2z;
     tilelive.protocols['tm2z+http:'] = tm2z;
+    tilelive.protocols['vector+npm:'] = npm;
 };
 
 // Helper for callers to ensure source is open. This is not built directly
@@ -561,3 +563,22 @@ xray.color = function(str) {
     b = (b * 16) + b;
     return [r,g,b];
 };
+
+// Load a vector style from an npm package assuming it contains a
+// project.xml file at its root.
+function npm(uri, callback) {
+    uri = typeof uri === 'string' ? url.parse(uri) : uri;
+
+    var moduleName = uri.pathname.split('/').pop();
+    var base;
+    try {
+        base = path.dirname(require.resolve(moduleName));
+    } catch(err) {
+        return callback(err);
+    }
+    fs.readFile(path.join(base, 'project.xml'), function(err, xml) {
+        if (err) return callback(err);
+        new Vector({ xml: xml.toString(), base: base }, callback);
+    });
+}
+

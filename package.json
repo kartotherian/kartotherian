@@ -23,6 +23,7 @@
     "underscore": "~1.6.0"
   },
   "devDependencies": {
+    "mapbox-studio-default-style": "1.0.1",
     "tape": "2.13.x",
     "tilejson": "~0.6.0",
     "simple-statistics": "~0.8.0"
