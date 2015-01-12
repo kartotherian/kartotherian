@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.1
+ 
+ - Update tilelive.js dependency
+
 ## 3.2.0
 
 - Allow a filepath to a mapnik XML file to be passed in constructor URI
