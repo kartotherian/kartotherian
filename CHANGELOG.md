@@ -1,5 +1,9 @@
 # Changes
 
+## v0.1.3 - 1/15/15
+
+* Relax `mapnik` dependency to work with 3.x.x
+
 ## v0.1.2 - 7/3/14
 
 * Handle relative paths in datasource files properly
