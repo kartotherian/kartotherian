@@ -3,6 +3,8 @@
 ## v0.2.0 - 1/15/15
 
 * Fix use of `mapnik-reference`
+* Update dependencies
+* Use synchronous `carto.render()`
 
 ## v0.1.3 - 1/15/15
 

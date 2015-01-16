@@ -172,7 +172,17 @@ var toXML = function(data, callback) {
     vector_layers: data.vector_layers
   });
 
-  return new carto.Renderer().render(tm.sortkeys(opts), callback);
+  try {
+    return callback(null, new carto.Renderer().render(tm.sortkeys(opts)));
+  } catch(err) {
+    if (Array.isArray(err)) {
+        err.forEach(function(e) {
+            carto.writeError(e, options);
+        });
+    } else {
+      return callback(err);
+    }
+  }
 };
 
 
