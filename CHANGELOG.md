@@ -1,5 +1,9 @@
 # Changes
 
+## v0.3.0 - 1/15/15
+
+* Declare a peer dependency on `mapnik`
+
 ## v0.2.0 - 1/15/15
 
 * Fix use of `mapnik-reference`
