@@ -1,5 +1,9 @@
 # Changes
 
+## v0.2.0 - 1/15/15
+
+* Fix use of `mapnik-reference`
+
 ## v0.1.3 - 1/15/15
 
 * Relax `mapnik` dependency to work with 3.x.x
