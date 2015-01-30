@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.2
+
+ - Update tilelive.js to 5.6.x
+
 ## 3.2.1
  
  - Update tilelive.js dependency
