@@ -1,0 +1,43 @@
+# Info about this config. Used for packaging & other purposes.
+info: 
+  name: service-template-node
+  version: 0.0.1
+  description: A blueprint for MediaWiki REST API services
+
+# Package settings. Modeled on Debian, but likely to transfer to rpm as well.
+packaging:
+  depends:
+    nodejs: '>=0.10.0'
+  enhances: mediawiki
+
+
+# Number of worker processes to spawn. 
+# Set to 0 to run everything in a single process without clustering.
+# Use 'ncpu' to run as many workers as there are CPU units
+num_workers: ncpu
+
+# Logger info
+logging:
+  level: warn
+  streams:
+  # Use gelf-stream -> logstash
+  - type: gelf
+    host: logstash1003.eqiad.wmnet
+    port: 12201
+
+# Statsd metrics reporter
+metrics:
+  type: txstatsd
+  host: localhost:8125
+
+services:
+  - name: service-template-node
+    # a relative path or the name of an npm package, if different from name
+    module: ./index.js
+    # optionally, a version constraint of the npm package
+    # version: ^0.4.0
+    # per-service config
+    conf:
+      port: 6927
+      #interface: localhost
+      # more per-service config settings
