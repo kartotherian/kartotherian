@@ -56,6 +56,26 @@ router.get('/version', function(req, res) {
 });
 
 
+/**
+ * ALL /home
+ * Redirects to the service's home page if one is given,
+ * returns a 404 otherwise
+ */
+router.all('/home', function(req, res) {
+
+    var home = app.locals.homepage;
+    if(home && /^http/.test(home)) {
+        // we have a home page URI defined, so send it
+        res.redirect(301, home);
+        return;
+    } else {
+        // no URI defined for the home page, error out
+        res.status(404).end('No home page URL defined for ' + app.locals.name);
+    }
+
+});
+
+
 module.exports = function(appObj) {
 
     app = appObj;
