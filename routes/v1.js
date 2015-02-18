@@ -2,7 +2,7 @@
 
 
 var express = require('express');
-var fs = Promise.promisifyAll(require('fs'));
+var fs = BBPromise.promisifyAll(require('fs'));
 var yaml = require('js-yaml');
 
 

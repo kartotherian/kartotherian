@@ -1,9 +1,17 @@
 'use strict';
 
 
+var bluebird = require('bluebird');
+// install the bluebird promise in the
+// global namespace
+if(!global.BBPromise) {
+    global.BBPromise = bluebird;
+}
+
 var http = require('http');
 var pkg_info = require('./package.json');
 var appModule = require('./app');
+
 
 
 /**
@@ -36,7 +44,7 @@ module.exports = function(options) {
         // return a promise which creates an HTTP server,
         // attaches the app to it, and starts accepting
         // incoming client requests
-        return new Promise(function(resolve) {
+        return new BBPromise(function(resolve) {
             http.createServer(app).listen(
                 app.locals.conf.port,
                 app.locals.conf.interface,
@@ -53,7 +61,7 @@ module.exports = function(options) {
 
 if(module.parent === null) {
     // not included, so run the cluster manager
-    var Servisor = require('servisor');
-    return new Servisor().run();
+    var ServiceRunner = require('service-runner');
+    return new ServiceRunner().run();
 }
 

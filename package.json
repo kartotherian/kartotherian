@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "A blueprint for MediaWiki REST API services",
   "scripts": {
-    "start": "servisor"
+    "start": "service-runner"
   },
   "repository": {
     "type": "git",
@@ -22,9 +22,10 @@
   },
   "homepage": "https://github.com/wikimedia/service-template-node",
   "dependencies": {
+    "bluebird": "^2.9.9",
     "express": "^4.11.2",
     "js-yaml": "^3.2.6",
-    "servisor": "git+https://github.com/wikimedia/servisor#master"
+    "service-runner": "^0.0.1"
   },
   "devDependencies": {}
 }
