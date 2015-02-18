@@ -3,6 +3,9 @@
 
 var express = require('express');
 var compression = require('compression');
+var bodyParser = require('body-parser');
+var multer = require('multer');
+
 var fs = BBPromise.promisifyAll(require('fs'));
 
 /**
@@ -18,6 +21,12 @@ app.set('x-powered-by', false);
 app.set('etag', false);
 // enable compression
 app.use(compression({level: 3}));
+// use the JSON body parser
+app.use(bodyParser.json());
+// use the application/x-www-form-urlencoded parser
+app.use(bodyParser.urlencoded({ extended: true }));
+// use the multipart/form-data
+app.use(multer());
 
 /*** More configuration of app comes here ***/
 
