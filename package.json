@@ -23,6 +23,7 @@
   "homepage": "https://github.com/wikimedia/service-template-node",
   "dependencies": {
     "bluebird": "^2.9.9",
+    "compression": "^1.4.1",
     "express": "^4.11.2",
     "js-yaml": "^3.2.6",
     "service-runner": "^0.0.1"

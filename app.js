@@ -2,6 +2,7 @@
 
 
 var express = require('express');
+var compression = require('compression');
 var fs = BBPromise.promisifyAll(require('fs'));
 
 /**
@@ -9,6 +10,14 @@ var fs = BBPromise.promisifyAll(require('fs'));
  */
 var app = express();
 
+/* Basic configuration */
+
+// disable the X-Powered-By header
+app.set('x-powered-by', false);
+// disable the ETag header - users should provide them!
+app.set('etag', false);
+// enable compression
+app.use(compression({level: 3}));
 
 /*** More configuration of app comes here ***/
 
