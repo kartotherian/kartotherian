@@ -5,16 +5,22 @@ Template for creating MediaWiki Services in Node.js
 
 1. Clone the repository
 
-    git clone https://github.com/wikimedia/service-template-node.git
+```
+git clone https://github.com/wikimedia/service-template-node.git
+```
 
 2. Install the dependencies
 
-    cd service-template-node
-    npm install
+```
+cd service-template-node
+npm install
+```
 
 3. Activate the development configuration file
 
-    ln -s config.dev.yaml config.yaml
+```
+ln -s config.dev.yaml config.yaml
+```
 
 4. Work!
   * Inspect/modify/configure `app.js`
