@@ -23,10 +23,10 @@ router.get('/', function(req, res) {
 
     // simple sync return
     res.json({
-        name: app.locals.name,
-        version: app.locals.version,
-        description: app.locals.description,
-        homepage: app.locals.homepage
+        name: app.info.name,
+        version: app.info.version,
+        description: app.info.description,
+        homepage: app.info.homepage
     });
 
 });
@@ -39,7 +39,7 @@ router.get('/', function(req, res) {
 router.get('/name', function(req, res) {
 
     // simple return
-    res.json({ name: app.locals.name });
+    res.json({ name: app.info.name });
 
 });
 
@@ -51,7 +51,7 @@ router.get('/name', function(req, res) {
 router.get('/version', function(req, res) {
 
     // simple return
-    res.json({ version: app.locals.version });
+    res.json({ version: app.info.version });
 
 });
 
@@ -63,14 +63,14 @@ router.get('/version', function(req, res) {
  */
 router.all('/home', function(req, res) {
 
-    var home = app.locals.homepage;
+    var home = app.info.homepage;
     if(home && /^http/.test(home)) {
         // we have a home page URI defined, so send it
         res.redirect(301, home);
         return;
     } else {
         // no URI defined for the home page, error out
-        res.status(404).end('No home page URL defined for ' + app.locals.name);
+        res.status(404).end('No home page URL defined for ' + app.info.name);
     }
 
 });

@@ -29,30 +29,25 @@ module.exports = function(options) {
     .then(function(appObj) {
         app = appObj;
         // get the options and make them available in the app
-        app.locals.logger = options.logger,    // the logging device
-        app.locals.metrics = options.metrics,  // the metrics
-        app.locals.conf = options.config       // this app's config options
-        app.locals.info = pkg_info             // this app's package info
-        // for convenience:
-        app.locals.name = pkg_info.name;
-        app.locals.version = pkg_info.version;
-        app.locals.description = pkg_info.description;
-        app.locals.homepage = pkg_info.homepage;
+        app.logger = options.logger,    // the logging device
+        app.metrics = options.metrics,  // the metrics
+        app.conf = options.config       // this app's config options
+        app.info = pkg_info             // this app's package info
         // ensure some sane defaults
-        if(!app.locals.conf.port) { app.locals.conf.port = 8888 }
-        if(!app.locals.conf.interface) { app.locals.conf.interface = '0.0.0.0' }
+        if(!app.conf.port) { app.conf.port = 8888 }
+        if(!app.conf.interface) { app.conf.interface = '0.0.0.0' }
         // return a promise which creates an HTTP server,
         // attaches the app to it, and starts accepting
         // incoming client requests
         return new BBPromise(function(resolve) {
             http.createServer(app).listen(
-                app.locals.conf.port,
-                app.locals.conf.interface,
+                app.conf.port,
+                app.conf.interface,
                 resolve
             );
         }).then(function() {
-            app.locals.logger.log('info', 'Worker ' + process.pid + ' listening on '
-                + app.locals.conf.interface + ':' + app.locals.conf.port);
+            app.logger.log('info', 'Worker ' + process.pid + ' listening on '
+                + app.conf.interface + ':' + app.conf.port);
         });
     });
 
