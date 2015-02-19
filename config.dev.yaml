@@ -18,7 +18,7 @@ num_workers: 0
 
 # Logger info
 logging:
-  level: debug
+  level: trace
 #  streams:
 #  # Use gelf-stream -> logstash
 #  - type: gelf
