@@ -29,6 +29,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // use the multipart/form-data
 app.use(multer());
+// server static files from static/
+app.use("/static", express.static(__dirname + '/static'));
 
 /*** More configuration of app comes here ***/
 
