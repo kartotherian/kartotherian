@@ -1,12 +1,14 @@
 'use strict';
 
 
+var BBPromise = require('bluebird');
 var express = require('express');
 var compression = require('compression');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 
 var fs = BBPromise.promisifyAll(require('fs'));
+
 
 /**
  * The main application object

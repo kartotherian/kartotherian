@@ -1,13 +1,7 @@
 'use strict';
 
 
-var bluebird = require('bluebird');
-// install the bluebird promise in the
-// global namespace
-if(!global.BBPromise) {
-    global.BBPromise = bluebird;
-}
-
+var BBPromise = require('bluebird');
 var http = require('http');
 var pkg_info = require('./package.json');
 var appModule = require('./app');

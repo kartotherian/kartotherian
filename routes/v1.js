@@ -1,6 +1,7 @@
 'use strict';
 
 
+var BBPromise = require('bluebird');
 var express = require('express');
 var preq = require('preq');
 
