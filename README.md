@@ -41,5 +41,5 @@ you may query (with a browser, or `curl` and friends):
 * `http://localhost:6927/_info/name`
 * `http://localhost:6927/_info/version`
 * `http://localhost:6927/_info/home`
-* `http://localhost:6927/v1/wiki(/uri)`
+* `http://localhost:6927/v1/siteinfo/{uri}{/prop}`
 

@@ -17,55 +17,25 @@ var app;
 
 
 /**
- * GET/POST/HEAD /wiki{/url}
- * Fetches site info for a wiki with the given URI. This example shows how to:
- * 1) manage multiple methods for the same URI (using router.all)
- * 2) use named URI parameters (by prefixing them with a double colon)
- * 3) use optional URI parameters (by suffixing them with a question mark)
- * 4) extract URI and query parameters, as well as body data
- * 5) issue external requests
- * 6) use Promises to achieve (5) and return the result
+ * GET /siteinfo/{uri}{/prop}
+ * Fetches site info for a wiki with the given URI, optionally
+ * returning only the specified property. This example shows how to:
+ * 1) use named URI parameters (by prefixing them with a double colon)
+ * 2) use optional URI parameters (by suffixing them with a question mark)
+ * 3) extract URI parameters
+ * 4) issue external requests
+ * 5) use Promises to achieve (4) and return the result
  *
  * There are multiple ways of calling this endpoint:
- * 1) GET /v1/wiki/en.wikipedia.org
- * 2) GET /v1/wiki?uri=en.wikipedia.org
- * 3) POST /v1/wiki (with body: uri=en.wikipedia.org)
- * 4) HEAD (with the URI as in (1) or (2))
+ * 1) GET /v1/siteinfo/en.wikipedia.org
+ * 2) GET /v1/siteinfo/en.wikipedia.org/mainpage (or other props available in
+ *      the general siprop, as supported by MWAPI)
  */
-router.all('/wiki/:uri?', function(req, res) {
+router.get('/siteinfo/:uri/:prop?', function(req, res) {
 
-    var uri;
-    var method = req.method.toLowerCase();
-
-    // first, allow only GET, POST and HEAD methods, and
-    // response with a 200 for HEAD right away
-    if(method === 'head') {
-        res.status(200).set('Connection', 'Close').end();
-        return; // needs to be here!
-    } else if(!/^(get|post)$/.test(method)) {
-        res.status(404).end();
-        return; // needs to be here!
-    }
-
-    // let's try to find out how did the user supply the parameter
-    if(req.params && req.params.uri) {
-        // the caller used the optional path segment
-        uri = req.params.uri;
-    } else if(req.query && req.query.uri) {
-        // the user supplied the URI in the query parameter
-        uri = req.query.uri;
-    } else if(req.body && req.body.uri) {
-        // the users issued a POST request and put the URI in the body
-        uri = req.body.uri;
-    } else {
-        // nothing of the above, error out
-        res.status(400).end();
-        return; // don't forget this one!
-    }
-
-    // construct the request
+    // construct the request for the MW Action API
     var apiReq = {
-        uri: 'http://' + uri + '/w/api.php' ,
+        uri: 'http://' + req.params.uri + '/w/api.php' ,
         body: {
             format: 'json',
             action: 'query',
@@ -79,10 +49,30 @@ router.all('/wiki/:uri?', function(req, res) {
     preq.post(apiReq)
     // and then return the result to the caller
     .then(function(apiRes) {
-        // preq returns the parsed object, so we can use res.json
-        // to send the response body back to the client
+        // preq returns the parsed object
+        // check if the query succeeded
+        if(apiRes.status !== 200 || !apiRes.body.query) {
+            // there was an error in the MW API, propagate that
+            res.status(apiRes.status).json(apiRes.body);
+            return;  // important for it to be here!
+        }
+        // do we have to return only one prop?
+        if(req.params.prop) {
+            // check it exists in the response body
+            if(apiRes.body.query.general[req.params.prop] === undefined) {
+                // nope, error out
+                res.status(404).end('Property ' + req.params.prop + ' not found in MW API response!');
+                return;  // watch out not to continue this method!
+            }
+            // ok, return that prop
+            var ret = {};
+            ret[req.params.prop] = apiRes.body.query.general[req.params.prop];
+            res.status(200).json(ret);
+            return;
+        }
         // set the response code as returned by the MW API
-        res.status(apiRes.status).json(apiRes.body);
+        // and return the whole response (contained in body.query.general)
+        res.status(200).json(apiRes.body.query.general);
     });
 
 });
