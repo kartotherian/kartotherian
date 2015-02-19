@@ -26,7 +26,7 @@ router.get('/', function(req, res) {
         name: app.info.name,
         version: app.info.version,
         description: app.info.description,
-        homepage: app.info.homepage
+        home: app.info.homepage
     });
 
 });

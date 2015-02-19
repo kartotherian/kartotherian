@@ -23,13 +23,13 @@ module.exports = function(options) {
     .then(function(appObj) {
         app = appObj;
         // get the options and make them available in the app
-        app.logger = options.logger,    // the logging device
-        app.metrics = options.metrics,  // the metrics
-        app.conf = options.config       // this app's config options
-        app.info = pkg_info             // this app's package info
+        app.logger = options.logger;    // the logging device
+        app.metrics = options.metrics;  // the metrics
+        app.conf = options.config;      // this app's config options
+        app.info = pkg_info;            // this app's package info
         // ensure some sane defaults
-        if(!app.conf.port) { app.conf.port = 8888 }
-        if(!app.conf.interface) { app.conf.interface = '0.0.0.0' }
+        if(!app.conf.port) { app.conf.port = 8888; }
+        if(!app.conf.interface) { app.conf.interface = '0.0.0.0'; }
         // return a promise which creates an HTTP server,
         // attaches the app to it, and starts accepting
         // incoming client requests
@@ -45,7 +45,7 @@ module.exports = function(options) {
         });
     });
 
-}
+};
 
 
 if(module.parent === null) {
