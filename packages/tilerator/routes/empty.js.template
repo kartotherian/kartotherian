@@ -1,0 +1,32 @@
+'use strict';
+
+
+var BBPromise = require('bluebird');
+var express = require('express');
+var preq = require('preq');
+
+
+/**
+ * The main router object
+ */
+var router = express.Router();
+
+/**
+ * The main application object reported when this module is require()d
+ */
+var app;
+
+
+
+
+module.exports = function(appObj) {
+
+    app = appObj;
+
+    return {
+        path: '/full/path/to/mount/routes/to',
+        router: router
+    };
+
+};
+
