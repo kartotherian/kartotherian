@@ -1,12 +1,12 @@
 'use strict';
 
-
+var http = require('http');
 var BBPromise = require('bluebird');
 var express = require('express');
 var compression = require('compression');
 var bodyParser = require('body-parser');
 var multer = require('multer');
-
+var pkg_info = require('./package.json');
 var fs = BBPromise.promisifyAll(require('fs'));
 
 
@@ -35,7 +35,7 @@ app.use('/static', express.static(__dirname + '/static'));
 /*** More configuration of app comes here ***/
 
 
-module.exports = function() {
+function loadRoutes () {
 
     // get the list of files in routes/
     return fs.readdirAsync(__dirname + '/routes')
@@ -59,5 +59,42 @@ module.exports = function() {
         return app;
     });
 
-};
+}
 
+
+/**
+ * The service's entry point. It takes over the configuration
+ * options and the logger- and metrics-reporting objects from
+ * servisor and starts an HTTP server, attaching the application
+ * object to it.
+ */
+module.exports = function(options) {
+
+    var app;
+
+    // get the application object
+    return loadRoutes()
+    .then(function(app) {
+        // get the options and make them available in the app
+        app.logger = options.logger;    // the logging device
+        app.metrics = options.metrics;  // the metrics
+        app.conf = options.config;      // this app's config options
+        app.info = pkg_info;            // this app's package info
+        // ensure some sane defaults
+        if(!app.conf.port) { app.conf.port = 8888; }
+        if(!app.conf.interface) { app.conf.interface = '0.0.0.0'; }
+        // return a promise which creates an HTTP server,
+        // attaches the app to it, and starts accepting
+        // incoming client requests
+        return new BBPromise(function(resolve) {
+            http.createServer(app).listen(
+                app.conf.port,
+                app.conf.interface,
+                resolve
+            );
+        }).then(function() {
+            app.logger.log('info', 'Worker ' + process.pid + ' listening on '
+                + app.conf.interface + ':' + app.conf.port);
+        });
+    });
+};
