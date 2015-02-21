@@ -96,10 +96,9 @@ function getBody(title) {
     // get the page from enwiki
     return preq.get({
         uri: 'http://en.wikipedia.org/w/index.php',
-        qs: {
+        query: {
             title: title
-        },
-        useQuerystring: true
+        }
     }).then(function(callRes) {
         // and then load and parse the page
         return domino.createDocument(callRes.body);
