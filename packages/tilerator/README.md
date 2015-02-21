@@ -1,4 +1,5 @@
-# service-template-node
+# service-template-node [![Build Status](https://travis-ci.org/wikimedia/service-template-node.svg?branch=master)](https://travis-ci.org/wikimedia/service-template-node)
+
 Template for creating MediaWiki Services in Node.js
 
 # Getting Started
@@ -46,6 +47,8 @@ you may query (with a browser, or `curl` and friends):
 * `http://localhost:6927/_info/version`
 * `http://localhost:6927/_info/home`
 * `http://localhost:6927/v1/siteinfo/{uri}{/prop}`
+* `http://localhost:6927/v1/page/{title}`
+* `http://localhost:6927/v1/page/{title}/lead`
 
 ## Tests
 

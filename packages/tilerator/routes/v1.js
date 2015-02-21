@@ -4,6 +4,7 @@
 var BBPromise = require('bluebird');
 var express = require('express');
 var preq = require('preq');
+var domino = require('domino');
 
 
 /**
@@ -76,6 +77,76 @@ router.get('/siteinfo/:uri/:prop?', function(req, res) {
         res.status(200).json(apiRes.body.query.general);
     });
 
+});
+
+
+/****************************
+ *  PAGE MASSAGING SECTION  *
+ ****************************/
+
+/**
+ * A helper function that obtains the HTML form enwiki and
+ * loads it into a domino DOM document instance.
+ *
+ * @param {String} title the title of the page to get
+ * @return {Promise} a promise resolving as the HTML element object
+ */
+function getBody(title) {
+
+    // get the page from enwiki
+    return preq.get({
+        uri: 'http://en.wikipedia.org/w/index.php',
+        query: {
+            title: title
+        }
+    }).then(function(callRes) {
+        // and then load and parse the page
+        return domino.createDocument(callRes.body);
+    });
+
+}
+
+
+/**
+ * GET /page/{title}
+ * Gets the body of a given enwiki page.
+ */
+router.get('/page/:title', function(req, res) {
+    // get the page's HTML directly
+    return getBody(req.params.title)
+    // and then return it
+    .then(function(doc) {
+        res.status(200).type('html').end(doc.body.innerHTML);
+    });
+});
+
+
+/**
+ * GET /page/{title}/lead
+ * Gets the leading section of a given enwiki page.
+ */
+router.get('/page/:title/lead', function(req, res) {
+    // get the page's HTML directly
+    return getBody(req.params.title)
+    // and then find the leading section and return it
+    .then(function(doc) {
+        var leadSec = '';
+        // get the content div
+        var content = doc.getElementById('mw-content-text');
+        // find all paragraphs in it
+        var ps = content && content.querySelectorAll('p') || [];
+        for(var idx = 0; idx < ps.length; idx++) {
+            var child = ps[idx];
+            // find the first paragraph that is not empty
+            if(!/^\s*$/.test(child.innerHTML) ) {
+                // that must be our leading section
+                // so enclose it in a <div>
+                leadSec = '<div id="lead_section">' + child.innerHTML + '</div>';
+                break;
+            }
+        }
+        res.status(200).type('html').end(leadSec);
+    });
 });
 
 
