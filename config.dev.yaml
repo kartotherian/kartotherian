@@ -34,5 +34,5 @@ services:
     # per-service config
     conf:
       port: 6927
-      interface: localhost
+      # interface: localhost # uncomment to only listen on localhost
       # more per-service config settings
