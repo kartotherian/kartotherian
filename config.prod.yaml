@@ -4,13 +4,6 @@ info:
   version: 0.0.1
   description: A blueprint for MediaWiki REST API services
 
-# Package settings. Modeled on Debian, but likely to transfer to rpm as well.
-packaging:
-  depends:
-    nodejs: '>=0.10.0'
-  enhances: mediawiki
-
-
 # Number of worker processes to spawn. 
 # Set to 0 to run everything in a single process without clustering.
 # Use 'ncpu' to run as many workers as there are CPU units
@@ -28,7 +21,7 @@ logging:
 # Statsd metrics reporter
 metrics:
   type: txstatsd
-  host: localhost
+  host: statsd.eqiad.wmnet
   port: 8125
 
 services:
