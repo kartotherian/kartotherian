@@ -15,7 +15,7 @@ var router = express.Router();
 var app;
 
 
-/** 
+/**
  * GET /
  * Gets some basic info about this service
  */
@@ -44,7 +44,7 @@ router.get('/name', function(req, res) {
 });
 
 
-/** 
+/**
  * GET /version
  * Gets the service's version as defined in package.json
  */
