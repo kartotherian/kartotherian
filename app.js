@@ -6,7 +6,6 @@ var express = require('express');
 var compression = require('compression');
 var bodyParser = require('body-parser');
 var multer = require('multer');
-var packageInfo = require('./package.json');
 var fs = BBPromise.promisifyAll(require('fs'));
 
 
@@ -19,12 +18,27 @@ function initApp(options) {
     return new BBPromise(function (resolve) {
         // The main application object
         var app = express();
+
+        // get the options and make them available in the app
+        app.logger = options.logger;    // the logging device
+        app.metrics = options.metrics;  // the metrics
+        app.conf = options.config;      // this app's config options
+        app.info = require('./package.json'); // this app's package info
+
+        // ensure some sane defaults
+        if (!app.conf.port) {
+            app.conf.port = 8888;
+        }
+        if (!app.conf.interface) {
+            app.conf.interface = '0.0.0.0';
+        }
+
         // disable the X-Powered-By header
         app.set('x-powered-by', false);
         // disable the ETag header - users should provide them!
         app.set('etag', false);
         // enable compression
-        app.use(compression({level: 3}));
+        app.use(compression(app.conf.compressionLevel ? {level: app.conf.compressionLevel} : {}));
         // use the JSON body parser
         app.use(bodyParser.json());
         // use the application/x-www-form-urlencoded parser
@@ -34,19 +48,6 @@ function initApp(options) {
         // serve static files from static/
         app.use('/static', express.static(__dirname + '/static'));
 
-        // get the options and make them available in the app
-        app.logger = options.logger;    // the logging device
-        app.metrics = options.metrics;  // the metrics
-        app.conf = options.config;      // this app's config options
-        app.hostOptions = options;      // for additional access to service runner options
-        app.info = packageInfo;         // this app's package info
-        // ensure some sane defaults
-        if (!app.conf.port) {
-            app.conf.port = 8888;
-        }
-        if (!app.conf.interface) {
-            app.conf.interface = '0.0.0.0';
-        }
         resolve(app);
     });
 }

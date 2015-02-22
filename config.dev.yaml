@@ -1,11 +1,11 @@
 # Info about this config. Used for packaging & other purposes.
-info: 
+info:
   name: service-template-node
   version: 0.0.1
   description: A blueprint for MediaWiki REST API services
 
 
-# Number of worker processes to spawn. 
+# Number of worker processes to spawn.
 # Set to 0 to run everything in a single process without clustering.
 # Use 'ncpu' to run as many workers as there are CPU units
 num_workers: 0
