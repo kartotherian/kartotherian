@@ -34,5 +34,4 @@ services:
     conf:
       port: 6927
       # interface: localhost # uncomment to only listen on localhost
-      # compressionLevel: 3 # output gzip compression level, 6 by default
       # more per-service config settings

@@ -27,14 +27,14 @@ function initApp(options) {
         // ensure some sane defaults
         if (!app.conf.hasOwnProperty('port')) { app.conf.port = 8888; }
         if (!app.conf.hasOwnProperty('interface')) { app.conf.interface = '0.0.0.0'; }
-        if (!app.conf.hasOwnProperty('compressionLevel')) { app.conf.compressionLevel = 3; }
+        if (!app.conf.hasOwnProperty('compression_level')) { app.conf.compression_level = 3; }
 
         // disable the X-Powered-By header
         app.set('x-powered-by', false);
         // disable the ETag header - users should provide them!
         app.set('etag', false);
         // enable compression
-        app.use(compression({level: app.conf.compressionLevel}));
+        app.use(compression({level: app.conf.compression_level}));
         // use the JSON body parser
         app.use(bodyParser.json());
         // use the application/x-www-form-urlencoded parser
