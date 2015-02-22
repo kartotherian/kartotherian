@@ -15,9 +15,8 @@ var fs = BBPromise.promisifyAll(require('fs'));
  * @returns {bluebird}
  */
 function initApp(options) {
-    return new BBPromise(function (resolve) {
-        // The main application object
-        var app = express();
+    // The main application object
+    return BBPromise.resolve(express()).then(function(app){
 
         // get the options and make them available in the app
         app.logger = options.logger;    // the logging device
@@ -26,19 +25,16 @@ function initApp(options) {
         app.info = require('./package.json'); // this app's package info
 
         // ensure some sane defaults
-        if (!app.conf.port) {
-            app.conf.port = 8888;
-        }
-        if (!app.conf.interface) {
-            app.conf.interface = '0.0.0.0';
-        }
+        if (!app.conf.hasOwnProperty('port')) { app.conf.port = 8888; }
+        if (!app.conf.hasOwnProperty('interface')) { app.conf.interface = '0.0.0.0'; }
+        if (!app.conf.hasOwnProperty('compressionLevel')) { app.conf.compressionLevel = 3; }
 
         // disable the X-Powered-By header
         app.set('x-powered-by', false);
         // disable the ETag header - users should provide them!
         app.set('etag', false);
         // enable compression
-        app.use(compression(app.conf.compressionLevel ? {level: app.conf.compressionLevel} : {}));
+        app.use(compression({level: app.conf.compressionLevel}));
         // use the JSON body parser
         app.use(bodyParser.json());
         // use the application/x-www-form-urlencoded parser
@@ -48,7 +44,7 @@ function initApp(options) {
         // serve static files from static/
         app.use('/static', express.static(__dirname + '/static'));
 
-        resolve(app);
+        return app;
     });
 }
 
@@ -98,16 +94,15 @@ function createServer(app) {
             resolve
         );
     }).then(function () {
-            app.logger.log('info',
-                'Worker ' + process.pid + ' listening on ' +
-                app.conf.interface + ':' + app.conf.port);
-        });
+        app.logger.log('info',
+            'Worker ' + process.pid + ' listening on ' + app.conf.interface + ':' + app.conf.port);
+    });
 }
 
 /**
  * The service's entry point. It takes over the configuration
  * options and the logger- and metrics-reporting objects from
- * supervisor and starts an HTTP server, attaching the application
+ * service-runner and starts an HTTP server, attaching the application
  * object to it.
  */
 module.exports = function(options) {

@@ -13,7 +13,7 @@ num_workers: 0
 logging:
   level: trace
 #  streams:
-#    # Use gelf-stream -> logstash
+#  # Use gelf-stream -> logstash
 #  - type: gelf
 #    host: logstash1003.eqiad.wmnet
 #    port: 12201

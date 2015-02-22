@@ -28,7 +28,7 @@ var app;
  * 4) issue external requests
  * 5) use Promises to achieve (4) and return the result
  *
- * URI parsing doc: https://www.npmjs.com/package/path-to-regexp
+ * For more info about routing see http://expressjs.com/guide/routing.html
  *
  * There are multiple ways of calling this endpoint:
  * 1) GET /v1/siteinfo/en.wikipedia.org
