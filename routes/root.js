@@ -7,7 +7,10 @@ var router = require('express').Router();
  * no indexing
  */
 router.get('/robots.txt', function(req, res) {
-    res.end( 'User-agent: *\nDisallow: /\n' );
+    res.set({
+        'User-agent': '*',
+        'Disallow': '/'
+    }).end();
 });
 
 module.exports = function(appObj) {
