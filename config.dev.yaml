@@ -4,7 +4,6 @@ info:
   version: 0.0.1
   description: A blueprint for MediaWiki REST API services
 
-
 # Number of worker processes to spawn.
 # Set to 0 to run everything in a single process without clustering.
 # Use 'ncpu' to run as many workers as there are CPU units
@@ -14,7 +13,7 @@ num_workers: 0
 logging:
   level: trace
 #  streams:
-#  # Use gelf-stream -> logstash
+#    # Use gelf-stream -> logstash
 #  - type: gelf
 #    host: logstash1003.eqiad.wmnet
 #    port: 12201
@@ -35,4 +34,5 @@ services:
     conf:
       port: 6927
       # interface: localhost # uncomment to only listen on localhost
+      # compressionLevel: 3 # output gzip compression level, 6 by default
       # more per-service config settings

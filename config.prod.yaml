@@ -13,7 +13,7 @@ num_workers: ncpu
 logging:
   level: warn
   streams:
-  # Use gelf-stream -> logstash
+    # Use gelf-stream -> logstash
   - type: gelf
     host: logstash1003.eqiad.wmnet
     port: 12201
@@ -33,5 +33,6 @@ services:
     # per-service config
     conf:
       port: 6927
-      #interface: localhost
+      # interface: localhost # uncomment to only listen on localhost
+      # compressionLevel: 3 # output gzip compression level, 6 by default
       # more per-service config settings
