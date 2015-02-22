@@ -7,7 +7,7 @@ var compression = require('compression');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var fs = BBPromise.promisifyAll(require('fs'));
-
+var packageInfo = require('./package.json');
 
 /**
  * Promise create an express app and initialize it
@@ -22,7 +22,7 @@ function initApp(options) {
         app.logger = options.logger;    // the logging device
         app.metrics = options.metrics;  // the metrics
         app.conf = options.config;      // this app's config options
-        app.info = require('./package.json'); // this app's package info
+        app.info = packageInfo; // this app's package info
 
         // ensure some sane defaults
         if (!app.conf.hasOwnProperty('port')) { app.conf.port = 8888; }
