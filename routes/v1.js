@@ -22,11 +22,13 @@ var app;
  * GET /siteinfo/{uri}{/prop}
  * Fetches site info for a wiki with the given URI, optionally
  * returning only the specified property. This example shows how to:
- * 1) use named URI parameters (by prefixing them with a double colon)
+ * 1) use named URI parameters (by prefixing them with a colon)
  * 2) use optional URI parameters (by suffixing them with a question mark)
  * 3) extract URI parameters
  * 4) issue external requests
  * 5) use Promises to achieve (4) and return the result
+ *
+ * For more info about routing see http://expressjs.com/guide/routing.html
  *
  * There are multiple ways of calling this endpoint:
  * 1) GET /v1/siteinfo/en.wikipedia.org

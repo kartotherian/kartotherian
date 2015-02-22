@@ -1,6 +1,6 @@
 {
   "name": "service-template-node",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A blueprint for MediaWiki REST API services",
   "scripts": {
     "start": "service-runner",
@@ -18,6 +18,8 @@
     "MediaWiki"
   ],
   "author": "Wikimedia Service Team <services@wikimedia.org>",
+  "contributors": [
+  ],
   "license": "Apache2",
   "bugs": {
     "url": "https://phabricator.wikimedia.org/tag/services/"
