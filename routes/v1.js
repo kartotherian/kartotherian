@@ -5,6 +5,7 @@ var BBPromise = require('bluebird');
 var express = require('express');
 var preq = require('preq');
 var domino = require('domino');
+var sUtil = require('../lib/util');
 
 
 /**
@@ -103,7 +104,7 @@ function getBody(title) {
         }
     }).then(function(callRes) {
         // and then load and parse the page
-        return domino.createDocument(callRes.body);
+        return BBPromise.resolve(domino.createDocument(callRes.body));
     });
 
 }
