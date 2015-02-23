@@ -16,6 +16,15 @@ describe('express app', function() {
 
     before(function () { return server.start(); });
 
+    it('should get robots.txt', function() {
+        return preq.get({
+            uri: server.config.uri + 'robots.txt'
+        }).then(function(res) {
+            assert.deepEqual(res.status, 200);
+            assert.deepEqual(res.headers['disallow'], '/');
+        });
+    });
+
     it('should get static content gzipped', function() {
         return preq.get({
             uri: server.config.uri + 'static/index.html',
