@@ -114,12 +114,14 @@ function getBody(title) {
  * Gets the body of a given enwiki page.
  */
 router.get('/page/:title', function(req, res) {
+
     // get the page's HTML directly
     return getBody(req.params.title)
     // and then return it
     .then(function(doc) {
         res.status(200).type('html').end(doc.body.innerHTML);
     });
+
 });
 
 
@@ -128,6 +130,7 @@ router.get('/page/:title', function(req, res) {
  * Gets the leading section of a given enwiki page.
  */
 router.get('/page/:title/lead', function(req, res) {
+
     // get the page's HTML directly
     return getBody(req.params.title)
     // and then find the leading section and return it
@@ -149,6 +152,7 @@ router.get('/page/:title/lead', function(req, res) {
         }
         res.status(200).type('html').end(leadSec);
     });
+
 });
 
 
