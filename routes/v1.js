@@ -51,7 +51,7 @@ router.get('/siteinfo/:uri/:prop?', function(req, res) {
 
     // send it
     // NOTE: preq uses bluebird, so we can safely chain it with a .then() call
-    preq.post(apiReq)
+    return preq.post(apiReq)
     // and then return the result to the caller
     .then(function(apiRes) {
         // preq returns the parsed object

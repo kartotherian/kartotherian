@@ -56,5 +56,17 @@ describe('wiki site info', function() {
         });
     });
 
+    it('should fail to get info from a non-existent wiki', function() {
+        return preq.get({
+            uri: server.config.uri + 'v1/siteinfo/non.existent.wiki'
+        }).then(function(res) {
+            // if we are here, no error was thrown, not good
+            throw new Error('Expected an error to be thrown, got status: ', res.status);
+        }, function(err) {
+            // inspect the status
+            assert.deepEqual(err.status, 500);
+        });
+    });
+
 });
 
