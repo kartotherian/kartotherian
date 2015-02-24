@@ -4,6 +4,7 @@
 var BBPromise = require('bluebird');
 var express = require('express');
 var preq = require('preq');
+var sUtil = require('../lib/util');
 
 
 /**
@@ -17,6 +18,7 @@ var router = express.Router();
 var app;
 
 
+/** ROUTE DECLARATIONS GO HERE **/
 
 
 module.exports = function(appObj) {

@@ -8,6 +8,7 @@ var compression = require('compression');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var fs = BBPromise.promisifyAll(require('fs'));
+var sUtil = require('./lib/util');
 var packageInfo = require('./package.json');
 
 
@@ -72,11 +73,15 @@ function loadRoutes (app) {
         route = route(app);
         // check that the route exports the object we need
         if (route.constructor !== Object || !route.path || !route.router) {
-            throw new Error('routes/' + fname + ' does not export the correct object!');
+            throw new TypeError('routes/' + fname + ' does not export the correct object!');
         }
+        // wrap the route handlers with Promise.try() blocks
+        sUtil.wrapRouteHandlers(route.router);
         // all good, use that route
         app.use(route.path, route.router);
     }).then(function () {
+        // catch errors
+        sUtil.setErrorHandler(app);
         // route loading is now complete, return the app object
         return BBPromise.resolve(app);
     });
