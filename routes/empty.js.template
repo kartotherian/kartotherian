@@ -6,6 +6,9 @@ var express = require('express');
 var preq = require('preq');
 var sUtil = require('../lib/util');
 
+// shortcut
+var HTTPError = sUtil.HTTPError;
+
 
 /**
  * The main router object
