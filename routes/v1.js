@@ -7,6 +7,9 @@ var preq = require('preq');
 var domino = require('domino');
 var sUtil = require('../lib/util');
 
+// shortcut
+var HTTPError = sUtil.HTTPError;
+
 
 /**
  * The main router object
@@ -58,16 +61,24 @@ router.get('/siteinfo/:uri/:prop?', function(req, res) {
         // check if the query succeeded
         if(apiRes.status !== 200 || !apiRes.body.query) {
             // there was an error in the MW API, propagate that
-            res.status(apiRes.status).json(apiRes.body);
-            return;  // important for it to be here!
+            throw new HTTPError({
+                status: apiRes.status,
+                type: 'api_error',
+                title: 'MW API error',
+                detail: apiRes.body
+            });
         }
         // do we have to return only one prop?
         if(req.params.prop) {
             // check it exists in the response body
             if(apiRes.body.query.general[req.params.prop] === undefined) {
                 // nope, error out
-                res.status(404).end('Property ' + req.params.prop + ' not found in MW API response!');
-                return;  // watch out not to continue this method!
+                throw new HTTPError({
+                    status: 404,
+                    type: 'not_found',
+                    title: 'No such property',
+                    detail: 'Property ' + req.params.prop + ' not found in MW API response!'
+                });
             }
             // ok, return that prop
             var ret = {};
