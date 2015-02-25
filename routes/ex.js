@@ -2,7 +2,6 @@
 
 
 var BBPromise = require('bluebird');
-var express = require('express');
 var preq = require('preq');
 var sUtil = require('../lib/util');
 var fs = BBPromise.promisifyAll(require('fs'));
@@ -14,7 +13,7 @@ var HTTPError = sUtil.HTTPError;
 /**
  * The main router object
  */
-var router = express.Router();
+var router = sUtil.router();
 
 /**
  * The main application object reported when this module is require()d
@@ -125,6 +124,7 @@ module.exports = function(appObj) {
 
     return {
         path: '/ex',
+        skip_domain: true,
         router: router
     };
 

@@ -2,7 +2,6 @@
 
 
 var BBPromise = require('bluebird');
-var express = require('express');
 var preq = require('preq');
 var domino = require('domino');
 var sUtil = require('../lib/util');
@@ -14,7 +13,7 @@ var HTTPError = sUtil.HTTPError;
 /**
  * The main router object
  */
-var router = express.Router();
+var router = sUtil.router();
 
 /**
  * The main application object reported when this module is require()d
@@ -23,8 +22,8 @@ var app;
 
 
 /**
- * GET /siteinfo/{uri}{/prop}
- * Fetches site info for a wiki with the given URI, optionally
+ * GET /siteinfo{/prop}
+ * Fetches site info for the given domain, optionally
  * returning only the specified property. This example shows how to:
  * 1) use named URI parameters (by prefixing them with a colon)
  * 2) use optional URI parameters (by suffixing them with a question mark)
@@ -35,15 +34,15 @@ var app;
  * For more info about routing see http://expressjs.com/guide/routing.html
  *
  * There are multiple ways of calling this endpoint:
- * 1) GET /v1/siteinfo/en.wikipedia.org
- * 2) GET /v1/siteinfo/en.wikipedia.org/mainpage (or other props available in
+ * 1) GET /{domain}/v1/siteinfo/
+ * 2) GET /{domain}/v1/siteinfo/mainpage (or other props available in
  *      the general siprop, as supported by MWAPI)
  */
-router.get('/siteinfo/:uri/:prop?', function(req, res) {
+router.get('/siteinfo/:prop?', function(req, res) {
 
     // construct the request for the MW Action API
     var apiReq = {
-        uri: 'http://' + req.params.uri + '/w/api.php' ,
+        uri: 'http://' + req.params.domain + '/w/api.php' ,
         body: {
             format: 'json',
             action: 'query',
@@ -102,14 +101,15 @@ router.get('/siteinfo/:uri/:prop?', function(req, res) {
  * A helper function that obtains the HTML form enwiki and
  * loads it into a domino DOM document instance.
  *
+ * @param {String} domain the domain to contact
  * @param {String} title the title of the page to get
  * @return {Promise} a promise resolving as the HTML element object
  */
-function getBody(title) {
+function getBody(domain, title) {
 
     // get the page from enwiki
     return preq.get({
-        uri: 'http://en.wikipedia.org/w/index.php',
+        uri: 'http://' + domain + '/w/index.php',
         query: {
             title: title
         }
@@ -128,7 +128,7 @@ function getBody(title) {
 router.get('/page/:title', function(req, res) {
 
     // get the page's HTML directly
-    return getBody(req.params.title)
+    return getBody(req.params.domain, req.params.title)
     // and then return it
     .then(function(doc) {
         res.status(200).type('html').end(doc.body.innerHTML);
@@ -144,7 +144,7 @@ router.get('/page/:title', function(req, res) {
 router.get('/page/:title/lead', function(req, res) {
 
     // get the page's HTML directly
-    return getBody(req.params.title)
+    return getBody(req.params.domain, req.params.title)
     // and then find the leading section and return it
     .then(function(doc) {
         var leadSec = '';
@@ -173,7 +173,8 @@ module.exports = function(appObj) {
     app = appObj;
 
     return {
-        path: '/v1',
+        path: '/',
+        api_version: 1,
         router: router
     };
 
