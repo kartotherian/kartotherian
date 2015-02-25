@@ -6,7 +6,6 @@ var BBPromise = require('bluebird');
 var express = require('express');
 var compression = require('compression');
 var bodyParser = require('body-parser');
-var multer = require('multer');
 var fs = BBPromise.promisifyAll(require('fs'));
 var sUtil = require('./lib/util');
 var packageInfo = require('./package.json');
@@ -43,8 +42,6 @@ function initApp(options) {
     app.use(bodyParser.json());
     // use the application/x-www-form-urlencoded parser
     app.use(bodyParser.urlencoded({extended: true}));
-    // use the multipart/form-data
-    app.use(multer());
     // serve static files from static/
     app.use('/static', express.static(__dirname + '/static'));
 

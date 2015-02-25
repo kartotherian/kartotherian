@@ -36,7 +36,6 @@
     "domino": "^1.0.18",
     "express": "^4.11.2",
     "js-yaml": "^3.2.6",
-    "multer": "^0.1.7",
     "preq": "^0.3.9",
     "service-runner": "^0.1.3"
   },
