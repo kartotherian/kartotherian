@@ -17,7 +17,7 @@ describe('wiki site info', function() {
     before(function () { return server.start(); });
 
     // common URI prefix for v1
-    var uri = server.config.uri + 'v1/siteinfo/en.wikipedia.org/';
+    var uri = server.config.uri + 'en.wikipedia.org/v1/siteinfo/';
 
     it('should get all general enwiki site info', function() {
         return preq.get({
@@ -58,7 +58,7 @@ describe('wiki site info', function() {
 
     it('should fail to get info from a non-existent wiki', function() {
         return preq.get({
-            uri: server.config.uri + 'v1/siteinfo/non.existent.wiki'
+            uri: server.config.uri + 'non.existent.wiki/v1/siteinfo/'
         }).then(function(res) {
             // if we are here, no error was thrown, not good
             throw new Error('Expected an error to be thrown, got status: ', res.status);

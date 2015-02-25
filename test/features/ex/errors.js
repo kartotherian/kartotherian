@@ -75,7 +75,7 @@ describe('errors', function() {
         });
     });
 
-    it('access denied error', function() {
+    it('authorisation error', function() {
         return preq.get({
             uri: uri + 'manual/auth'
         }).then(function(res) {
