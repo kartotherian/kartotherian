@@ -72,13 +72,18 @@ function loadRoutes (app) {
         var route = require(__dirname + '/routes/' + fname);
         route = route(app);
         // check that the route exports the object we need
-        if (route.constructor !== Object || !route.path || !route.router) {
+        if (route.constructor !== Object || !route.path || !route.router || !(route.api_version || route.skip_domain)) {
             throw new TypeError('routes/' + fname + ' does not export the correct object!');
         }
         // wrap the route handlers with Promise.try() blocks
         sUtil.wrapRouteHandlers(route.router);
+        // determine the path prefix
+        var prefix = '';
+        if(!route.skip_domain) {
+            prefix = '/:domain/v' + route.api_version;
+        }
         // all good, use that route
-        app.use(route.path, route.router);
+        app.use(prefix + route.path, route.router);
     }).then(function () {
         // catch errors
         sUtil.setErrorHandler(app);

@@ -1,13 +1,13 @@
 'use strict';
 
 
-var express = require('express');
+var sUtil = require('../lib/util');
 
 
 /**
  * The main router object
  */
-var router = express.Router();
+var router = sUtil.router();
 
 /**
  * The main application object reported when this module is require()d
@@ -82,6 +82,7 @@ module.exports = function(appObj) {
 
     return {
         path: '/_info',
+        skip_domain: true,
         router: router
     };
 
