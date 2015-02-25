@@ -55,10 +55,12 @@ function build_img() {
  * Starts the container either using the default script
  * (npm start) or the test script (npm test) if do_tests is set
  *
- * @param {Boolean} do_tests whether to start the tests or the service normally
+ * @param {Object} options additional options
+ *   @prop {Boolean} tests whether to start the tests instead of the service
+ *   @prop {Boolean} coverage whether to start the tests and coverage instead of the service
  * @return {Promise} the promise starting the container
  */
-function start_container(do_tests) {
+function start_container(options) {
 
     var cmd = ['docker', 'run', '--name', name];
 
@@ -73,9 +75,11 @@ function start_container(do_tests) {
     cmd.push(img_name);
 
     // use a different command to run inside if
-    // we have to run the tests
-    if(do_tests) {
+    // we have to run the tests or coverage
+    if(options.tests) {
         cmd.push('/usr/bin/npm', 'test');
+    } else if(options.coverage) {
+        cmd.push('/usr/bin/npm', 'run-script', 'coverage');
     }
 
     // ok, start the container
@@ -106,7 +110,7 @@ function sig_handle() {
 }
 
 
-function main(opts) {
+function main(options) {
 
     // trap exit signals
     process.on('SIGINT', sig_handle);
@@ -118,7 +122,7 @@ function main(opts) {
     // start the process
     return build_img()
     .then(function() {
-        return start_container(opts.do_tests);
+        return start_container(options);
     })
     .then(remove_container);
 
@@ -127,7 +131,10 @@ function main(opts) {
 
 if(module.parent === null) {
 
-    var opts = {do_tests: false};
+    var opts = {
+        tests: false,
+        coverage: false
+    };
 
     // check for command-line args
     var args = process.argv.slice(2);
@@ -136,13 +143,18 @@ if(module.parent === null) {
         switch(arg) {
             case '-t':
             case '--test':
-                opts.do_tests = true;
+                opts.tests = true;
+                break;
+            case '-c':
+            case '--cover':
+                opts.coverage = true;
                 break;
             default:
-                console.log('ARG: ' + arg);
                 console.log('This is a utility script for starting service containers using docker.');
-                console.log('Usage: ' + process.argv.slice(0, 2).join(' ') + ' [-t|--test]');
+                console.log('Usage: ' + process.argv.slice(0, 2).join(' ') + ' [OPTIONS]');
+                console.log('Options are:');
                 console.log('  -t, --test   instead of starting the service, run the tests');
+                console.log('  -c, --cover  run the tests and report the coverage info');
                 process.exit(/^-(h|-help)/.test(arg) ? 0 : 1);
         }
     }
