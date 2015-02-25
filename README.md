@@ -46,9 +46,9 @@ you may query (with a browser, or `curl` and friends):
 * `http://localhost:6927/_info/name`
 * `http://localhost:6927/_info/version`
 * `http://localhost:6927/_info/home`
-* `http://localhost:6927/v1/siteinfo/{uri}{/prop}`
-* `http://localhost:6927/v1/page/{title}`
-* `http://localhost:6927/v1/page/{title}/lead`
+* `http://localhost:6927/{domain}/v1/siteinfo{/prop}`
+* `http://localhost:6927/{domain}/v1/page/{title}`
+* `http://localhost:6927/{domain}/v1/page/{title}/lead`
 * `http://localhost:6927/ex/err/array`
 * `http://localhost:6927/ex/err/file`
 * `http://localhost:6927/ex/err/manual/error`
