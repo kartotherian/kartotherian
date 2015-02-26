@@ -69,6 +69,7 @@ can be automatically generated.
 The above is just a short list of things you should think about when designing
 your API. Here are some resources you might find useful at this step:
 
+- https://github.com/Wikia/guidelines/tree/master/APIDesign
 - https://restful-api-design.readthedocs.org/en/latest/
 - http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api
 - http://www.thoughtworks.com/insights/blog/rest-api-design-resource-modeling
