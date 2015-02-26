@@ -15,8 +15,8 @@ least) the following fields:
 - `bugs`
 - `homepage`
 
-Now change the service's name in [`config.dev.yaml`](../config.dev.yaml#26) and
-[`config.prod.yaml`](../config.prod.yaml#26). While you are there, you might
+Now change the service's name in [`config.dev.yaml`](../config.dev.yaml#L26) and
+[`config.prod.yaml`](../config.prod.yaml#L26). While you are there, you might
 want to look at and play with other configuration parameters, such as:
 
 - `num_workers` - the number of workers to start; some special values are:
