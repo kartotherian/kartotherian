@@ -43,7 +43,7 @@ router.get('/err/array', function(req, res) {
 
 /**
  * GET /err/file
- * Showcases promise error handling. The function si trying to
+ * Showcases promise error handling. The function is trying to
  * read a non-existent file, which will produce an error,
  * automatically handled by the template.
  */
