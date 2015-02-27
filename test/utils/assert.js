@@ -5,7 +5,7 @@ var assert = require('assert');
 
 
 /**
- * Asserts whether the return satus was as expected
+ * Asserts whether the return status was as expected
  */
 function status(res, expected) {
 
