@@ -148,10 +148,8 @@ router.get('/page/:title/lead', function(req, res) {
     // and then find the leading section and return it
     .then(function(doc) {
         var leadSec = '';
-        // get the content div
-        var content = doc.getElementById('mw-content-text');
-        // find all paragraphs in it
-        var ps = content && content.querySelectorAll('p') || [];
+        // find all paragraphs directly under the content div
+        var ps = doc.querySelectorAll('#mw-content-text > p') || [];
         for(var idx = 0; idx < ps.length; idx++) {
             var child = ps[idx];
             // find the first paragraph that is not empty
