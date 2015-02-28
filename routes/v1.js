@@ -98,7 +98,7 @@ router.get('/siteinfo/:prop?', function(req, res) {
  ****************************/
 
 /**
- * A helper function that obtains the HTML form enwiki and
+ * A helper function that obtains the HTML for a given title and
  * loads it into a domino DOM document instance.
  *
  * @param {String} domain the domain to contact
@@ -107,7 +107,7 @@ router.get('/siteinfo/:prop?', function(req, res) {
  */
 function getBody(domain, title) {
 
-    // get the page from enwiki
+    // get the page
     return preq.get({
         uri: 'http://' + domain + '/w/index.php',
         query: {
@@ -123,7 +123,7 @@ function getBody(domain, title) {
 
 /**
  * GET /page/{title}
- * Gets the body of a given enwiki page.
+ * Gets the body of a given page.
  */
 router.get('/page/:title', function(req, res) {
 
@@ -139,7 +139,7 @@ router.get('/page/:title', function(req, res) {
 
 /**
  * GET /page/{title}/lead
- * Gets the leading section of a given enwiki page.
+ * Gets the leading section of a given page.
  */
 router.get('/page/:title/lead', function(req, res) {
 
