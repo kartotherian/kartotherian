@@ -70,14 +70,14 @@ block on them and continue serving other requests until the action is completed.
 
 Coming back to our example route, let's say that we want to serve a simple HTML
 document on the endpoint `/people/:name/about`. To do so, first we need to
-require and **promisify** the `fs` module. Put this line in the header of your
+require and *promisify* the `fs` module. Put this line in the header of your
 routes file (right below line 6):
 
 ```javascript
 var fs = BBPromise.promisifyAll(require('fs'));
 ```
 
-This creates additional functions, which are **promisified** versions of the
+This creates additional functions, which are *promisified* versions of the
 original ones exported by the `fs` module. Henceforth, we can read a file either
 using the built-in `fs.readFile()` or its promise-aware counterpart
 `fs.readFileAsync()`.
@@ -189,7 +189,7 @@ Additionally, it is good practice to attach a component name to the log level as
 it eases log indexing and filtering later in production. For example, if a log
 entry has the `debug` level and pertains to one of our example routes, the log
 level could be set to `debug/people`. The `what` portion of the log entry can be
-either a string message, or any **stringifiable** object. As an example, let's
+either a string message, or any *stringifiable* object. As an example, let's
 log the person's name given to the `/people/:name/about` route and the file name
 that is going to be looked up:
 

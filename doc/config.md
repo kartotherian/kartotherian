@@ -43,3 +43,7 @@ want to look at and play with other configuration parameters, such as:
       as long as it is [valid YAML](http://www.yaml.org/spec/1.2/spec.html);
       these will be accessible via the `app.conf` object
 
+For more information on configuration possibilities, take a look at the
+[service-runner
+documentation](https://github.com/wikimedia/service-runner#config-loading).
+
