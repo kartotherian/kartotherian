@@ -2,6 +2,17 @@
 
 Let's get started! 
 
+- [Route Set-up](#route-set-up)
+- [Routes](#routes)
+- [Promises](#promises)
+  - [I/O](#io)
+  - [External Requests](#external-requests)
+- [Error Handling](#error-handling)
+- [Logging and Metrics](#logging-and-metrics)
+  - [Logging](#logging)
+  - [Metrics Collection](#metrics-collection)
+- [Test Cases](#test-cases)
+
 ## Route Set-up
 
 All of the routes are read from the [routes directory](../routes) and are

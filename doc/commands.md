@@ -1,5 +1,9 @@
 # Useful Commands
 
+- [npm 101](#npm-101)
+- [Service-related Tasks](#service-related-tasks)
+- [Docker](#docker)
+
 ## npm 101
 
 [npm](https://www.npmjs.com/) is the package manager for Node.js modules. It is

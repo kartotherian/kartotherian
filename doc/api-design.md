@@ -4,6 +4,13 @@ Before you start coding your service, you need to think hard about your API's
 design, especially for a public service exposing its API. Below are a couple of
 practices you should follow.
 
+- [Statelessness](#statelessness)
+- [Versioning](#versioning)
+- [Hierarchical URI Layout](#hierarchical-uri-layout)
+- [HTTP Verbs](#http-verbs)
+- [Documentation](#documentation)
+- [See Also](#see-also)
+
 ## Statelessness
 
 RESTful API services should be

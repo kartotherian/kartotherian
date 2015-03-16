@@ -3,6 +3,9 @@
 This service template allows you to quickly dive into coding your own RESTful API
 service.
 
+- [Stack](#stack)
+- [Repository Outline](#repository-outline)
+
 ## Stack
 
 The template makes use the following components:
