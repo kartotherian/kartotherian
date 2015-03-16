@@ -2,9 +2,9 @@
 
 Template for creating MediaWiki Services in Node.js
 
-# Getting Started
+## Getting Started
 
-## Installation
+### Installation
 
 First, clone the repository
 
@@ -26,7 +26,7 @@ You are now ready to get to work!
 
 You can also read [the documentation](doc/).
 
-## Running the examples
+### Running the examples
 
 The template is a fully-working example, so you may try it right away. To
 start the server hosting the REST API, simply run (inside the repo's directory)
@@ -51,7 +51,7 @@ routes you may query (with a browser, or `curl` and friends):
 * `http://localhost:6927/ex/err/manual/deny`
 * `http://localhost:6927/ex/err/auth`
 
-## Tests
+### Tests
 
 The template also includes a test suite a small set of executable tests. To fire
 them up, simply run:
@@ -69,7 +69,7 @@ reporting the percentage of code covered. Start it with:
 npm run-script coverage
 ```
 
-## Troubleshooting
+### Troubleshooting
 
 In a lot of cases when there is an issue with node it helps to recreate the
 `node_modules` directory:
