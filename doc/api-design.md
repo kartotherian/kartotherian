@@ -1,14 +1,14 @@
 # API Design
 
 Before you start coding your service, you need to think hard about your API's
-design, especially for public a public service exposing its API. Below are a
-couple of practices you should follow.
+design, especially for a public service exposing its API. Below are a couple of
+practices you should follow.
 
 ## Statelessness
 
 RESTful API services should be
 [stateless](https://en.wikipedia.org/wiki/Service_statelessness_principle), since
-they are conceptually modelled around *resurces* (as opposed to *systems*).
+they are conceptually modelled around *resources* (as opposed to *systems*).
 Accordingly, your service should take actions depending on assumptions about the
 caller or the current state of the service's process (e.g. that the user is
 logged in, that they are allowed to modify a resource, etc.)

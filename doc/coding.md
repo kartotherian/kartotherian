@@ -232,8 +232,8 @@ one of the following methods:
 - `app.metrics.gauge`
 - `app.metrics.unique`
 
-How can one them? Let's show it on `/people/:name/news`. This route uses an
-external request to complete its action, which means that you have little
+How can one collect them? Let's show it on `/people/:name/news`. This route uses
+an external request to complete its action, which means that you have little
 control over your service's response time, as it is dominated by the request to
 Wikinews. Two interesting metrics that we can collect here (and that directly
 affect the service's response time) are the external request's response time and

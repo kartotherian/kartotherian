@@ -54,7 +54,7 @@ unit tests.
 
 ## Docker
 
-Included in the template is also a Dockerfile, allowing you to run an test your
+Included in the template is also a Dockerfile, allowing you to run and test your
 service in a production-like environment inside of a Docker container. You need
 to have [docker](https://www.docker.com/) installed if you are on a Linux host,
 or [boot2docker](http://boot2docker.io/) in case of OSX/Windows hosts.
