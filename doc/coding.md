@@ -181,11 +181,11 @@ creating / throwing the error.
 
 Logging and metrics collection is supported out of the box via
 [service-runner](https://github.com/wikimedia/service-runner). They are exposed
-in route handler files via the `app.logger` and `app.metrics` objects.
+in route handler files via the `req.logger` and `app.metrics` objects.
 
 ### Logging
 
-To log something, simply use `app.logger.log(level, what)`. The logger itself is
+To log something, simply use `req.logger.log(level, what)`. The logger itself is
 a [bunyan](https://github.com/trentm/node-bunyan) wrapper, and thus supports the
 following levels:
 
@@ -213,7 +213,7 @@ router.get('/:name/about', function(req, res) {
             + encodeURIComponent(req.params.name) + '.html'
     };
 
-    app.logger.log('debug/people/about', info);
+    req.logger.log('debug/people/about', info);
 
     return fs.readFileAsync(info.path)
     .then(function(src) {
@@ -229,6 +229,12 @@ router.get('/:name/about', function(req, res) {
 
 });
 ```
+
+As you can see, the request object (`req`) has an additional property -
+`req.logger`, which allows you to log messages and objects in the context of the
+current request. To do so, it attaches a unique *request ID* to each logged
+information. If you would like to log context-free information, you can use the
+`app.logger` object instead, even though that is not recommended.
 
 ### Metrics Collection
 
