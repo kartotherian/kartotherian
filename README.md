@@ -19,16 +19,12 @@ cd service-template-node
 npm install
 ```
 
-Finally, activate the development configuration file
-
-```
-ln -s config.dev.yaml config.yaml
-```
-
 You are now ready to get to work!
 
 * Inspect/modify/configure `app.js`
 * Add routes by placing files in `routes/` (look at the files there for examples)
+
+You can also read [the documentation](doc/).
 
 ## Running the examples
 
@@ -39,8 +35,8 @@ start the server hosting the REST API, simply run (inside the repo's directory)
 npm start
 ```
 
-This starts an HTTP server listening on `localhost:6927`. There are several routes
-you may query (with a browser, or `curl` and friends):
+This starts an HTTP server listening on `localhost:6927`. There are several
+routes you may query (with a browser, or `curl` and friends):
 
 * `http://localhost:6927/_info/`
 * `http://localhost:6927/_info/name`
@@ -75,7 +71,9 @@ npm run-script coverage
 
 ## Troubleshooting
 
-In a lot of cases when there is an issue with node it helps to recreate the `node_modules` directory:
+In a lot of cases when there is an issue with node it helps to recreate the
+`node_modules` directory:
+
 ```
 rm -r node_modules
 npm install
