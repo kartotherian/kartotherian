@@ -1,6 +1,6 @@
 {
   "name": "service-template-node",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A blueprint for MediaWiki REST API services",
   "main": "./app.js",
   "scripts": {
@@ -22,28 +22,28 @@
     "MediaWiki"
   ],
   "author": "Wikimedia Service Team <services@wikimedia.org>",
-  "contributors": [
-  ],
+  "contributors": [],
   "license": "Apache2",
   "bugs": {
     "url": "https://phabricator.wikimedia.org/tag/services/"
   },
   "homepage": "https://github.com/wikimedia/service-template-node",
   "dependencies": {
-    "bluebird": "^2.9.9",
-    "body-parser": "^1.12.0",
-    "compression": "^1.4.1",
+    "bluebird": "^2.9.14",
+    "body-parser": "^1.12.1",
+    "bunyan": "^1.3.4",
+    "compression": "^1.4.3",
     "domino": "^1.0.18",
-    "express": "^4.11.2",
-    "js-yaml": "^3.2.6",
-    "preq": "^0.3.9",
-    "service-runner": "^0.1.3"
+    "express": "^4.12.2",
+    "js-yaml": "^3.2.7",
+    "node-uuid": "^1.4.3",
+    "preq": "^0.3.12",
+    "service-runner": "^0.1.4"
   },
   "devDependencies": {
     "assert": "^1.3.0",
-    "bunyan": "^1.3.4",
-    "istanbul": "^0.3.6",
-    "mocha": "^2.1.0",
+    "istanbul": "^0.3.8",
+    "mocha": "^2.2.1",
     "mocha-jshint": "0.0.9",
     "mocha-lcov-reporter": "0.0.1"
   }

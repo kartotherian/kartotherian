@@ -2,7 +2,7 @@
 
 var bunyan = require('bunyan');
 
-function logStream() {
+function logStream(logStdout) {
 
   var log = [];
   var parrot = bunyan.createLogger({
@@ -14,7 +14,7 @@ function logStream() {
     try {
         var entry = JSON.parse(chunk);
         var levelMatch = /^(\w+)/.exec(entry.levelPath);
-        if (levelMatch) {
+        if (logStdout && levelMatch) {
             var level = levelMatch[1];
             if (parrot[level]) {
                 parrot[level](entry);

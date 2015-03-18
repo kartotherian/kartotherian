@@ -18,9 +18,9 @@ logging:
 
 # Statsd metrics reporter
 metrics:
-  type: txstatsd
-  host: localhost
-  port: 8125
+  type: log
+  #host: localhost
+  #port: 8125
 
 services:
   - name: service-template-node

@@ -28,9 +28,9 @@ function initApp(options) {
     app.info = packageInfo;         // this app's package info
 
     // ensure some sane defaults
-    if (!app.conf.port) { app.conf.port = 8888; }
-    if (!app.conf.interface) { app.conf.interface = '0.0.0.0'; }
-    if (!app.conf.compression_level) { app.conf.compression_level = 3; }
+    if(!app.conf.port) { app.conf.port = 8888; }
+    if(!app.conf.interface) { app.conf.interface = '0.0.0.0'; }
+    if(!app.conf.compression_level) { app.conf.compression_level = 3; }
 
     // disable the X-Powered-By header
     app.set('x-powered-by', false);
@@ -62,18 +62,18 @@ function loadRoutes (app) {
     .map(function (fname) {
         // ... and then load each route
         // but only if it's a js file
-        if (!/\.js$/.test(fname)) {
+        if(!/\.js$/.test(fname)) {
             return;
         }
         // import the route file
         var route = require(__dirname + '/routes/' + fname);
         route = route(app);
         // check that the route exports the object we need
-        if (route.constructor !== Object || !route.path || !route.router || !(route.api_version || route.skip_domain)) {
+        if(route.constructor !== Object || !route.path || !route.router || !(route.api_version || route.skip_domain)) {
             throw new TypeError('routes/' + fname + ' does not export the correct object!');
         }
         // wrap the route handlers with Promise.try() blocks
-        sUtil.wrapRouteHandlers(route.router);
+        sUtil.wrapRouteHandlers(route.router, app);
         // determine the path prefix
         var prefix = '';
         if(!route.skip_domain) {
