@@ -246,10 +246,6 @@ Vector.prototype.getInfo = function(callback) {
         case 'center':
             memo[key] = params[key].split(',').map(function(v) { return parseFloat(v) });
             break;
-        case 'minzoom':
-        case 'maxzoom':
-            memo[key] = parseInt(params[key], 10);
-            break;
         case 'scale':
             memo[key] = params[key].toString();
             break;
