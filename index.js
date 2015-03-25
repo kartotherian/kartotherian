@@ -185,7 +185,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
                 headers['Content-Type'] = 'image/svg+xml';
                 return callback(null, image.getData(), headers);
             } else if (format === 'utf') {
-                image.encode(format, {}, function(err, buffer) {
+                image.encode({}, function(err, buffer) {
                     if (err) return callback(err);
                     return callback(null, buffer, headers);
                 });
