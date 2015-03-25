@@ -1,6 +1,6 @@
 {
   "name": "abaculus",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "stitches map tiles together for high-res exporting from tm2",
   "main": "index.js",
   "engines": {
@@ -16,7 +16,7 @@
   "dependencies": {
     "queue-async": "1.0.7",
     "sphericalmercator": "1.0.x",
-    "mapnik": "3.1.x"
+    "mapnik": "~3.2.0"
   },
   "devDependencies":{
     "mocha": "1.x"
