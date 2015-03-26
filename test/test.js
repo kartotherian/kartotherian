@@ -255,7 +255,7 @@ test('query', function(t) {
 });
 test('errors out on bad deflate', function(t) {
     sources.a.getTile(1, 0, 2, function(err) {
-        t.ifError(err);
+        t.equal('image_reader: can\'t determine type from input data', err.message);
         t.end();
     });
 });

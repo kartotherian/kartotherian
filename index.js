@@ -29,6 +29,19 @@ function md5(str) {
 };
 
 function Vector(uri, callback) {
+    if (typeof uri === 'string' || (uri.protocol && !uri.xml)) {
+        uri = typeof uri === 'string' ? url.parse(uri) : uri;
+        var filepath = path.resolve(uri.pathname);
+        fs.readFile(filepath, 'utf8', function(err, xml) {
+            if (err) return callback(err);
+            new Vector({
+                xml:xml,
+                base:path.dirname(filepath)
+            }, callback);
+        });
+        return;
+    }
+
     if (!uri.xml) return callback && callback(new Error('No xml'));
 
     this._uri = uri;
@@ -66,9 +79,6 @@ Vector.prototype.close = function(callback) {
 
 // Allows in-place update of XML/backends.
 Vector.prototype.update = function(opts, callback) {
-    // If the XML has changed update the map.
-    if (!opts.xml || this._xml === opts.xml) return callback();
-
     var s = this;
     var map = new mapnik.Map(256,256);
     map.fromString(opts.xml, {
@@ -179,7 +189,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
                 headers['Content-Type'] = 'image/svg+xml';
                 return callback(null, image.getData(), headers);
             } else if (format === 'utf') {
-                image.encode(format, {}, function(err, buffer) {
+                image.encode({}, function(err, buffer) {
                     if (err) return callback(err);
                     return callback(null, buffer, headers);
                 });
@@ -240,9 +250,8 @@ Vector.prototype.getInfo = function(callback) {
         case 'center':
             memo[key] = params[key].split(',').map(function(v) { return parseFloat(v) });
             break;
-        case 'minzoom':
-        case 'maxzoom':
-            memo[key] = parseInt(params[key], 10);
+        case 'scale':
+            memo[key] = params[key].toString();
             break;
         default:
             memo[key] = params[key];
@@ -388,6 +397,8 @@ Vector.prototype.profile = function(callback) {
 };
 
 function tm2z(uri, callback) {
+    uri = typeof uri === 'string' ? url.parse(uri) : uri;
+
     var maxsize = {
         file: uri.filesize || 750 * 1024,
         gunzip: uri.gunzipsize || 5 * 1024 * 1024,
@@ -395,9 +406,6 @@ function tm2z(uri, callback) {
     };
 
     var id = url.format(uri);
-
-    // Cache hit.
-    if (tm2z.sources[id]) return tm2z.sources[id].open(callback);
 
     var xml;
     var base = path.join(os.tmpDir(), md5(id).substr(0,8) + '-' + path.basename(id));
@@ -516,22 +524,13 @@ function tm2z(uri, callback) {
     function load() {
         if (once++) return;
         if (!xml) return callback(new Error('project.xml not found in package'));
-        tm2z.sources[id] = new Vector({
+        new Vector({
             source: 'mapbox:///mapbox.mapbox-streets-v2',
             base: base,
             xml: xml
-        });
-        tm2z.sources[id].open(function(err, source) {
-            if (err) {
-                delete tm2z.sources[id];
-                return callback(err);
-            }
-            callback(null, source);
-        });
+        }, callback);
     };
 };
-
-tm2z.sources = {};
 
 tm2z.findID = function(source, id, callback) {
     callback(new Error('id not found'));
@@ -575,3 +574,4 @@ xray.color = function(str) {
     b = (b * 16) + b;
     return [r,g,b];
 };
+

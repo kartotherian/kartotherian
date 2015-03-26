@@ -23,7 +23,7 @@
   </Rule>
   <Rule>
     <Filter>([mapnik::geometry_type] = 1)</Filter>
-    <MarkersSymbolizer allow-overlap="true" width="4" height="4" stroke-width="0" stroke="#ffffff" fill="rgba(255,170,238,0.5)" />
+    <DotSymbolizer width="5" fill="rgba(255,170,238,0.5)" />
     <TextSymbolizer allow-overlap="true" justify-alignment="left" face-name="Source Sans Pro Regular" fill="rgba(255,170,238,0.75)" size="12" dy="6" ><![CDATA[[name]]]></TextSymbolizer>
   </Rule>
   <Rule>

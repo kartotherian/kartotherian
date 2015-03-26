@@ -1,6 +1,6 @@
 {
   "name": "tilelive-vector",
-  "version": "2.1.0",
+  "version": "3.2.3",
   "main": "./index.js",
   "description": "Vector tile => raster tile backend for tilelive",
   "repository": {
@@ -13,16 +13,17 @@
     }
   ],
   "dependencies": {
-    "mapnik": "~1.4.10",
-    "tilelive": "5.0.x",
+    "mapnik" : "~3.2.0",
+    "tilelive": "5.5.x",
     "tar": "~0.1.18",
-    "request": "~2.27.0",
+    "request": "~2.48.0",
     "numeral": "~1.5.3",
     "sphericalmercator": "~1.0.2",
     "spherical": "0.0.1",
     "underscore": "~1.6.0"
   },
   "devDependencies": {
+    "mapbox-studio-default-style": "1.0.1",
     "tape": "2.13.x",
     "tilejson": "~0.6.0",
     "simple-statistics": "~0.8.0"

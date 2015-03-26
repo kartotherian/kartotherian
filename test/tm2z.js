@@ -20,7 +20,9 @@ var fixtureDir = path.resolve(__dirname, 'fixtures', 'tm2z'),
 // Register vector:, tm2z:, tm2z+http: and mapbox: tilelive protocols
 Vector.registerProtocols(tilelive);
 tilelive.protocols['mapbox:'] = function Source(uri, callback) {
-    return new TileJSON('http://a.tiles.mapbox.com/v3' + uri.pathname + '.json', callback);
+    var MapboxAccessToken = process.env.MapboxAccessToken;
+    if (!MapboxAccessToken) return callback(new Error('env var MapboxAccessToken is required'));
+    return new TileJSON('http://a.tiles.mapbox.com/v4' + uri.pathname + '.json?access_token=' + MapboxAccessToken, callback);
 };
 
 // Register font
@@ -29,6 +31,18 @@ Vector.mapnik.register_fonts(path.join(__dirname, 'fonts', 'source-sans-pro'));
 test('exposes the mapnik binding', function(t) {
     t.ok(Vector.mapnik);
     t.end();
+});
+test('direct load (string uri)', function(t) {
+    Vector.tm2z('tm2z://' + path.join(fixtureDir, 'project.tm2z'), function(err, source) {
+        t.ifError(err);
+        t.end();
+    });
+});
+test('direct load (object uri)', function(t) {
+    Vector.tm2z({ protocol:'tm2z:', pathname: path.join(fixtureDir, 'project.tm2z') }, function(err, source) {
+        t.ifError(err);
+        t.end();
+    });
 });
 test('loads a tm2z url', function(t) {
     tilelive.load('tm2z://' + path.join(fixtureDir, 'project.tm2z'), function(err, source) {

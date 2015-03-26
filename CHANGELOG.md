@@ -1,5 +1,45 @@
 # Changelog
 
+## 3.2.2
+
+ - Update tilelive.js to 5.6.x
+
+## 3.2.1
+ 
+ - Update tilelive.js dependency
+
+## 3.2.0
+
+- Allow a filepath to a mapnik XML file to be passed in constructor URI
+
+## 3.0.4
+
+- Update tilelive.js dependency
+
+## 3.0.3
+
+- Update request dependency
+
+## 3.0.2
+
+- Calls to #update() always update regardless of XML diff.
+
+## 3.0.1
+
+- Updates tilelive.js and node-mapnik dependencies
+
+## 3.0.0
+
+- Update to node-mapnik@3.0.x. Requires C++11 support.
+
+## 2.3.0
+
+- Remove in-memory cache of tm2z sources.
+
+## 2.2.0
+
+- Update to tilelive v5.2.x
+
 ## 2.1.0
 
 - Detects and supports gzipped vector tiles
