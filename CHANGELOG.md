@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.2.4
+
+ - Updated to tilelive.js 5.6.x again (3.2.3 ended up getting tilelive.js 5.5.x)
+
+## 3.2.3
+
+ - Upgrade node-mapnik to 3.2.0
+
 ## 3.2.2
 
  - Update tilelive.js to 5.6.x
