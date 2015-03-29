@@ -24,7 +24,7 @@ describe('errors', function() {
             uri: uri + 'array'
         }).then(function(res) {
             // if we are here, no error was thrown, not good
-            throw new Error('Expected an error to be thrown, got status: ', res.status);
+            throw new Error('Expected an error to be thrown, got status: ' + res.status);
         }, function(err) {
             // inspect the status
             assert.deepEqual(err.status, 500);
@@ -38,7 +38,7 @@ describe('errors', function() {
             uri: uri + 'file'
         }).then(function(res) {
             // if we are here, no error was thrown, not good
-            throw new Error('Expected an error to be thrown, got status: ', res.status);
+            throw new Error('Expected an error to be thrown, got status: ' + res.status);
         }, function(err) {
             // inspect the status
             assert.deepEqual(err.status, 500);
@@ -52,7 +52,7 @@ describe('errors', function() {
             uri: uri + 'manual/error'
         }).then(function(res) {
             // if we are here, no error was thrown, not good
-            throw new Error('Expected an error to be thrown, got status: ', res.status);
+            throw new Error('Expected an error to be thrown, got status: ' + res.status);
         }, function(err) {
             // inspect the status
             assert.deepEqual(err.status, 500);
@@ -66,7 +66,7 @@ describe('errors', function() {
             uri: uri + 'manual/deny'
         }).then(function(res) {
             // if we are here, no error was thrown, not good
-            throw new Error('Expected an error to be thrown, got status: ', res.status);
+            throw new Error('Expected an error to be thrown, got status: ' + res.status);
         }, function(err) {
             // inspect the status
             assert.deepEqual(err.status, 403);
@@ -80,7 +80,7 @@ describe('errors', function() {
             uri: uri + 'manual/auth'
         }).then(function(res) {
             // if we are here, no error was thrown, not good
-            throw new Error('Expected an error to be thrown, got status: ', res.status);
+            throw new Error('Expected an error to be thrown, got status: ' + res.status);
         }, function(err) {
             // inspect the status
             assert.deepEqual(err.status, 401);
