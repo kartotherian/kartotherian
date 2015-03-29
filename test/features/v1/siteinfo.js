@@ -50,9 +50,12 @@ describe('wiki site info', function() {
     it('should fail to get a non-existent setting of enwiki', function() {
         return preq.get({
             uri: uri + 'dummy_wiki_setting'
-        }).catch(function(res) {
-            // check the status
-            assert.status(res, 404);
+        }).then(function(res) {
+            // if we are here, no error was thrown, not good
+            throw new Error('Expected an error to be thrown, got status: ' + res.status);
+        }, function(err) {
+            // inspect the status
+            assert.deepEqual(err.status, 404);
         });
     });
 
@@ -61,7 +64,7 @@ describe('wiki site info', function() {
             uri: server.config.uri + 'non.existent.wiki/v1/siteinfo/'
         }).then(function(res) {
             // if we are here, no error was thrown, not good
-            throw new Error('Expected an error to be thrown, got status: ', res.status);
+            throw new Error('Expected an error to be thrown, got status: ' + res.status);
         }, function(err) {
             // inspect the status
             assert.deepEqual(err.status, 500);
