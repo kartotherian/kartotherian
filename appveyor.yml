@@ -9,7 +9,7 @@ platform:
 
 install:
   - ps: Install-Product node $env:nodejs_version $env:Platform
-  - ps: Start-FileDownload "https://mapnik.s3.amazonaws.com/dist/dev/VS-2014-runtime/vcredist_$env:Platform.exe"
+  - ps: Start-FileDownload "http://mapbox.s3.amazonaws.com/windows-builds/visual-studio-runtimes/vcredist-VS2014-CTP4/vcredist_$env:Platform.exe"
   - .\vcredist_%platform%.exe /q /norestart
   - npm install
   - npm test
