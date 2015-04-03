@@ -27,6 +27,7 @@ class ScriptData
       self.instance_variable_set "@#{key}".to_sym, value
     end
     @service_name = @name
+    @no_file ||= 10000
   end
 
   def generate output_dir
