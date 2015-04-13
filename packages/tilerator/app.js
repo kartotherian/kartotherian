@@ -31,6 +31,31 @@ function initApp(options) {
     if(!app.conf.port) { app.conf.port = 8888; }
     if(!app.conf.interface) { app.conf.interface = '0.0.0.0'; }
     if(!app.conf.compression_level) { app.conf.compression_level = 3; }
+    if(app.conf.cors === undefined) { app.conf.cors = '*'; }
+    if(!app.conf.csp) {
+        app.conf.csp =
+            "default-src 'self'; object-src 'none'; media-src *; img-src *; style-src *; frame-ancestors 'self'";
+    }
+
+    // set outgoing proxy
+    if(app.conf.proxy) {
+        process.env.HTTP_PROXY = app.conf.proxy;
+    }
+
+    // set the CORS and CSP headers
+    app.all('*', function(req, res, next) {
+        if(app.conf.cors !== false) {
+            res.header('Access-Control-Allow-Origin', app.conf.cors);
+            res.header('Access-Control-Allow-Headers', 'Accept, X-Requested-With, Content-Type');
+        }
+        res.header('X-XSS-Protection', '1; mode=block');
+        res.header('X-Content-Type-Options', 'nosniff');
+        res.header('X-Frame-Options', 'SAMEORIGIN');
+        res.header('Content-Security-Policy', app.conf.csp);
+        res.header('X-Content-Security-Policy', app.conf.csp);
+        res.header('X-WebKit-CSP', app.conf.csp);
+        next();
+    });
 
     // disable the X-Powered-By header
     app.set('x-powered-by', false);
