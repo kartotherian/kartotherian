@@ -25,6 +25,30 @@ describe('express app', function() {
         });
     });
 
+    it('should set CORS headers', function() {
+        return preq.get({
+            uri: server.config.uri + 'robots.txt'
+        }).then(function(res) {
+            assert.deepEqual(res.status, 200);
+            assert.deepEqual(res.headers['access-control-allow-origin'], '*');
+            assert.notDeepEqual(res.headers['access-control-allow-headers'], undefined);
+        });
+    });
+
+    it('should set CSP headers', function() {
+        return preq.get({
+            uri: server.config.uri + 'robots.txt'
+        }).then(function(res) {
+            assert.deepEqual(res.status, 200);
+            assert.deepEqual(res.headers['x-xss-protection'], '1; mode=block');
+            assert.deepEqual(res.headers['x-content-type-options'], 'nosniff');
+            assert.deepEqual(res.headers['x-frame-options'], 'SAMEORIGIN');
+            assert.deepEqual(res.headers['content-security-policy'], 'default-src');
+            assert.deepEqual(res.headers['x-content-security-policy'], 'default-src');
+            assert.deepEqual(res.headers['x-webkit-csp'], 'default-src');
+        });
+    });
+
     it('should get static content gzipped', function() {
         return preq.get({
             uri: server.config.uri + 'static/index.html',
