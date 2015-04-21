@@ -95,3 +95,7 @@ sudo gpasswd -a <your_username> docker
 After you log out completely and log back in, you should be able to run the
 above scripts without resorting to `sudo`.
 
+## Deployment
+
+See [this document](deployment.md) for how to get ready to deploy your service.
+

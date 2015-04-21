@@ -8,6 +8,7 @@ The documentation should be read in the following order:
 3. [Configuration](config.md)
 4. [Useful Commands](commands.md)
 5. [Coding Guide](coding.md)
+6. [Deployment](deployment.md)
 
 Have fun while creating RESTful API services!
 

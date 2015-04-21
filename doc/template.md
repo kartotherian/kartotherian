@@ -41,7 +41,7 @@ out.
 The WMF is in the process of switching its production servers to Debian Jessie.
 As people developing services might use different platforms, the template
 provides also a Dockerfile, with which one can execute their service inside a
-container running Debian Jessie.
+container running the production OS.
 
 ## Repository Outline
 
@@ -62,6 +62,6 @@ for service development.
   client-side JS, etc.)
 - [`test`](../test/) - contains the test files for the example routes in the
   template; you should add your own here
-- [`scripts/docker.js`](../scripts/docker.js) - a utility script building the
-  service's docker image and starting the container
+- docker script - a utility script building the service's docker image and
+  starting the container, now part of [service-runner](wikimedia/service-runner)
 
