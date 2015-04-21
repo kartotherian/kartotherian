@@ -1,14 +1,13 @@
 {
   "name": "service-template-node",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A blueprint for MediaWiki REST API services",
   "main": "./app.js",
   "scripts": {
     "start": "service-runner",
     "test": "mocha",
-    "docker-start": "./scripts/docker.js",
-    "docker-test": "./scripts/docker.js --test",
-    "docker-cover": "./scripts/docker.js --cover",
+    "docker-start": "service-runner docker-start",
+    "docker-test": "service-runner docker-test",
     "coverage": "istanbul cover _mocha -- -R spec"
   },
   "repository": {
@@ -25,26 +24,32 @@
   "contributors": [],
   "license": "Apache2",
   "bugs": {
-    "url": "https://phabricator.wikimedia.org/tag/services/"
+    "url": "https://phabricator.wikimedia.org/tag/service-template-node/"
   },
   "homepage": "https://github.com/wikimedia/service-template-node",
   "dependencies": {
-    "bluebird": "^2.9.14",
-    "body-parser": "^1.12.1",
-    "bunyan": "^1.3.4",
+    "bluebird": "^2.9.24",
+    "body-parser": "^1.12.3",
+    "bunyan": "^1.3.5",
     "compression": "^1.4.3",
     "domino": "^1.0.18",
-    "express": "^4.12.2",
+    "express": "^4.12.3",
     "js-yaml": "^3.2.7",
     "node-uuid": "^1.4.3",
-    "preq": "^0.3.12",
-    "service-runner": "^0.1.6"
+    "preq": "^0.3.13",
+    "service-runner": "^0.1.8"
   },
   "devDependencies": {
     "assert": "^1.3.0",
-    "istanbul": "^0.3.8",
-    "mocha": "^2.2.1",
+    "istanbul": "^0.3.13",
+    "mocha": "^2.2.4",
     "mocha-jshint": "0.0.9",
     "mocha-lcov-reporter": "0.0.1"
+  },
+  "deploy": {
+    "target": "ubuntu",
+    "dependencies": {
+      "_all": []
+    }
   }
 }
