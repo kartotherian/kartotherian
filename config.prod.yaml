@@ -18,7 +18,7 @@ logging:
 
 # Statsd metrics reporter
 metrics:
-  type: txstatsd
+  type: statsd
   host: statsd.eqiad.wmnet
   port: 8125
 
