@@ -40,6 +40,15 @@ function initApp(options) {
     // set outgoing proxy
     if(app.conf.proxy) {
         process.env.HTTP_PROXY = app.conf.proxy;
+        // if there is a list of domains which should
+        // not be proxied, set it
+        if(app.conf.no_proxy_list) {
+            if(Array.isArray(app.conf.no_proxy_list)) {
+                process.env.NO_PROXY = app.conf.no_proxy_list.join(',');
+            } else {
+                process.env.NO_PROXY = app.conf.no_proxy_list;
+            }
+        }
     }
 
     // set the CORS and CSP headers
