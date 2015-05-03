@@ -5,7 +5,7 @@ num_workers: 0
 
 # Log error messages and gracefully restart a worker if v8 reports that it
 # uses more heap (note: not RSS) than this many mb.
-worker_heap_limit_mb: 250
+worker_heap_limit_mb: 500
 
 # Logger info
 logging:
@@ -31,7 +31,7 @@ services:
     # per-service config
     conf:
       port: 4000
-      interface: localhost
+      # interface: localhost # uncomment to only listen on localhost
       # more per-service config settings
 
       data: ./map/osm-bright.tm2source/data.xml
@@ -39,6 +39,3 @@ services:
       generateVectors: true
       saveVectors: true
       vectorsDir: ./vectors
-
-      # TODO: This does not work, not sure of the exact reqs here, manually disabling for now
-      csp: default-src 'self'; script-src 'self' 'unsafe-inline';
