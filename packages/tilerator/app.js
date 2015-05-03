@@ -51,9 +51,11 @@ function initApp(options) {
         res.header('X-XSS-Protection', '1; mode=block');
         res.header('X-Content-Type-Options', 'nosniff');
         res.header('X-Frame-Options', 'SAMEORIGIN');
-        res.header('Content-Security-Policy', app.conf.csp);
-        res.header('X-Content-Security-Policy', app.conf.csp);
-        res.header('X-WebKit-CSP', app.conf.csp);
+
+        // TODO: Uncomment once we figure out the needed CSP setting in config
+        // res.header('Content-Security-Policy', app.conf.csp);
+        // res.header('X-Content-Security-Policy', app.conf.csp);
+        // res.header('X-WebKit-CSP', app.conf.csp);
         next();
     });
 
