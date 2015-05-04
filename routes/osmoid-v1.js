@@ -32,21 +32,12 @@ tmsource.prototype.getTile = function(z, x, y, callback) {
         x: x,
         y: y
     });
-    BBPromise
-        .resolve(state)
+    stateToPromise(state)
         .then(getDataFromStateAsync)
         .catch(function (err) {
-            if (!conf.generateVectors) {
-                throw err;
-            }
             // Vector file does not exist, generate it
-            var promise = getTileAsync(vectorSource, state);
-            if (conf.saveVectors) {
-                // Save vector file to disk cache
-                promise.then(ensureDirAsync)
-                    .then(writeVectorFileAsync);
-            }
-            return promise.then(getDataFromStateAsync);
+            return generateVector(state, err)
+                .then(getDataFromStateAsync);
         })
         .then(function (data) {
             callback(null, data, vectorHeaders);
@@ -90,6 +81,23 @@ function sendReplyAsync(state) {
     });
 }
 
+function generateVector(state, err) {
+    if (!conf.generateVectors) {
+        if (err) {
+            throw err;
+        } else {
+            throw Error('Dynamic vector generation is disabled');
+        }
+    }
+    var statePromise = stateToPromise(state).then(getVectorTileAsync);
+    if (conf.saveVectors) {
+        // Save vector file to disk cache
+        statePromise.then(ensureDirAsync)
+            .then(writeVectorFileAsync);
+    }
+    return statePromise;
+}
+
 function getDataFromStateAsync(state) {
     return new BBPromise(function(resolve, reject) {
         if (state.error) {
@@ -111,9 +119,24 @@ function setVectorPath(state) {
     if (!state.path) {
         state.path = path.join(state.dir, state.x.toString() + '-' + state.y.toString() + '.pbf');
     }
-    state.format = "vector.pbf";
-    state.headers = vectorHeaders;
+    if (!state.format) {
+        state.format = "vector.pbf";
+    }
+    if (!state.headers) {
+        state.headers = vectorHeaders;
+    }
     return state;
+}
+
+function stateToPromise(state) {
+    // Ensure that this promise does not start until needed
+    return new BBPromise(function(resolve/*, reject*/) {
+        resolve(state);
+    });
+}
+
+function getVectorTileAsync(state) {
+    return getTileAsync(vectorSource, state);
 }
 
 function getImageTileAsync(state) {
@@ -208,58 +231,74 @@ function getTile(req, res, next) {
     var scale = (req.params.scale) ? req.params.scale[1] | 0 : undefined;
     scale = scale > 4 ? 4 : scale; // limits scale to 4x (1024 x 1024 tiles or 288dpi)
 
-    switch(req.params.format) {
-        case 'vector.pbf':
-            break;
-        case 'png':
-            break;
-        default:
-
-    }
+    var format = req.params.format;
 
     var state = {
-        isBinVector: req.params.format === 'vector.pbf',
         z: req.params.z | 0,
         x: req.params.x | 0,
         y: req.params.y | 0,
         scale: scale,
+        format: format,
         response: res
     };
 
-    var promise = BBPromise.resolve(state);
-    if (state.isBinVector) {
-
-        // If vector storage is set up, try to get vector tile there first
-        // If missing, or no storage but can generate, generate it
-        // If tile generated and conf.saveVectors is true, save it
-
-        var genVectorTileAsync = false;
-        if (conf.generateVectors) {
-            genVectorTileAsync = getTileAsync(vectorSource, state);
-            if (conf.saveVectors) {
-                genVectorTileAsync.then(ensureDirAsync)
-                    .then(writeVectorFileAsync);
+    switch(format) {
+        case 'vector.pbf':
+            // If vector storage is set up, try to get vector tile there first
+            // If missing, or no storage but can generate, generate it
+            // If tile generated and conf.saveVectors is true, save it
+            if (conf.vectorsDir) {
+                return stateToPromise(state)
+                    .then(setVectorPath)
+                    .then(sendReplyAsync)
+                    .catch(function(err) {
+                        // Failed, probably due to missing vector file
+                        return generateVector(state, err)
+                            .then(sendReplyAsync)
+                    });
+            } else {
+                return generateVector(state)
+                    .then(sendReplyAsync);
             }
-            genVectorTileAsync.then(sendReplyAsync);
-        }
-
-        if (conf.vectorsDir) {
-            promise
+        case 'vector.pbf.generate':
+            // Refresh vector tile if it doesn't exist
+            if (!conf.vectorsDir || !conf.generateVectors || !conf.saveVectors) {
+                throw new Error('Vector generation not enabled');
+            }
+            return stateToPromise(state)
                 .then(setVectorPath)
-                .then(sendReplyAsync);
-            if (genVectorTileAsync) {
-                promise.catch(genVectorTileAsync);
-            }
-        } else if (genVectorTileAsync) {
-            promise.then(genVectorTileAsync);
-        }
+                .then(function(state) {
+                    return state.path;
+                })
+                .then(fsp.exists)
+                .then(function(exists) {
+                    if (exists) {
+                        state.response.send('exists');
+                        return true;
+                    } else {
+                        return generateVector(state)
+                            .then(function (state) {
+                                state.response.send('generated');
+                            });
+                    }
+                });
 
-    } else {
-        promise
-            .then(getImageTileAsync)
-            .then(sendReplyAsync);
+        case 'vector.pbf.force':
+            // Force-refresh tile
+            if (!conf.vectorsDir || !conf.generateVectors || !conf.saveVectors) {
+                throw new Error('Vector generation not enabled');
+            }
+            return generateVector(state)
+                .then(function (state) {
+                    state.response.send('generated');
+                });
+        case 'png':
+            return stateToPromise(state)
+                .then(getImageTileAsync)
+                .then(sendReplyAsync);
+        default:
+            throw new Error('Unknown format');
     }
-    return promise;
 }
 
 //function tile2(req, res, next) {
