@@ -89,11 +89,27 @@ function generateVector(state, err) {
             throw Error('Dynamic vector generation is disabled');
         }
     }
-    var statePromise = stateToPromise(state).then(getVectorTileAsync);
+    var statePromise = stateToPromise(state);
     if (conf.saveVectors) {
-        // Save vector file to disk cache
-        statePromise.then(ensureDirAsync)
-            .then(writeVectorFileAsync);
+        statePromise = statePromise.then(ensureDirAsync);
+    }
+    statePromise = statePromise.then(getVectorTileAsync);
+    if (conf.saveVectors) {
+        statePromise = statePromise
+            .catch(function(err){
+                if (err.message === 'Tile does not exist') {
+                    state.data = '';
+                    return state;
+                } else {
+                    throw err;
+                }
+            })
+            .then(function(state) {
+                return fsp.writeFile(state.path, state.data)
+            })
+            .then(function() {
+                return state;
+            });
     }
     return statePromise;
 }
@@ -106,7 +122,16 @@ function getDataFromStateAsync(state) {
             if (state.data) {
                 resolve(state.data);
             } else {
-                fsp.readFile(state.path).then(resolve, reject);
+                return fsp
+                    .stat(state.path)
+                    .then(function(info) {
+                        if (info.size === 0) {
+                            resolve('');
+                        } else {
+                            resolve(fsp.readFile(state.path));
+                        }
+                    })
+                    .catch(reject);
             }
         }
     });
@@ -155,12 +180,6 @@ function getTileAsync(source, state) {
             }
         });
     });
-}
-
-function writeVectorFileAsync(state) {
-    return fsp
-        .writeFile(state.path, state.data)
-        .then(function() { return state; });
 }
 
 /**
