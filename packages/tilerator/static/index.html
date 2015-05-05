@@ -14,7 +14,7 @@
 	<script src="leaflet/leaflet.js"></script>
 	<script>
 
-		var map = L.map('map').setView([45.74846, 4.84671], 10);
+		var map = L.map('map').setView([45.74846, 4.84671], 15);
 		L.tileLayer('/t/{z}/{x}/{y}.png', {
 			maxZoom: 15,
 			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
@@ -26,14 +26,14 @@
 
 		var popup = L.popup();
 
-		function onMapClick(e) {
-			popup
-				.setLatLng(e.latlng)
-				.setContent("You clicked the map at " + e.latlng.toString())
-				.openOn(map);
-		}
+		// function onMapClick(e) {
+		// 	popup
+		// 		.setLatLng(e.latlng)
+		// 		.setContent("You clicked the map at " + e.latlng.toString())
+		// 		.openOn(map);
+		// }
 
-		map.on('click', onMapClick);
+		// map.on('click', onMapClick);
 
 	</script>
 </body>

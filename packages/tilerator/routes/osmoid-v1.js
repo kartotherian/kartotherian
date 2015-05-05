@@ -15,7 +15,7 @@ var sUtil = require('../lib/util');
 // shortcut
 var HTTPError = sUtil.HTTPError;
 
-var vectorSource;
+var pbfStorage;
 var styleSource;
 var conf;
 var vectorHeaders = {'Content-Encoding': 'gzip'};
@@ -93,7 +93,19 @@ function generateVector(state, err) {
     if (conf.saveVectors) {
         statePromise = statePromise.then(ensureDirAsync);
     }
-    statePromise = statePromise.then(getVectorTileAsync);
+    statePromise = statePromise.then(function(state) {
+        return new BBPromise(function(resolve, reject) {
+            pbfStorage.getTile(state.z, state.x, state.y, function (err, tile, headers) {
+                if (err) {
+                    reject(err);
+                } else {
+                    state.data = tile;
+                    state.headers = headers;
+                    resolve(state);
+                }
+            });
+        });
+    });
     if (conf.saveVectors) {
         statePromise = statePromise
             .catch(function(err){
@@ -144,9 +156,6 @@ function setVectorPath(state) {
     if (!state.path) {
         state.path = path.join(state.dir, state.x.toString() + '-' + state.y.toString() + '.pbf');
     }
-    if (!state.format) {
-        state.format = "vector.pbf";
-    }
     if (!state.headers) {
         state.headers = vectorHeaders;
     }
@@ -157,28 +166,6 @@ function stateToPromise(state) {
     // Ensure that this promise does not start until needed
     return new BBPromise(function(resolve/*, reject*/) {
         resolve(state);
-    });
-}
-
-function getVectorTileAsync(state) {
-    return getTileAsync(vectorSource, state);
-}
-
-function getImageTileAsync(state) {
-    return getTileAsync(styleSource, state);
-}
-
-function getTileAsync(source, state) {
-    return new BBPromise(function(resolve, reject) {
-        source.getTile(state.z, state.x, state.y, function (err, tile, headers) {
-            if (err) {
-                reject(err);
-            } else {
-                state.data = tile;
-                state.headers = headers;
-                resolve(state);
-            }
-        });
     });
 }
 
@@ -221,7 +208,7 @@ function init(app) {
             if (err)
                 return reject(err);
             else {
-                vectorSource = source;
+                pbfStorage = source;
                 return fulfill(true);
             }
         });
@@ -246,22 +233,19 @@ function init(app) {
  * @param next callback to call if this function cannot handle the request
  */
 function getTile(req, res, next) {
-    // TODO: scaling is not implemented yet
     var scale = (req.params.scale) ? req.params.scale[1] | 0 : undefined;
     scale = scale > 4 ? 4 : scale; // limits scale to 4x (1024 x 1024 tiles or 288dpi)
-
-    var format = req.params.format;
 
     var state = {
         z: req.params.z | 0,
         x: req.params.x | 0,
         y: req.params.y | 0,
+        format: req.params.format,
         scale: scale,
-        format: format,
         response: res
     };
 
-    switch(format) {
+    switch(state.format) {
         case 'vector.pbf':
             // If vector storage is set up, try to get vector tile there first
             // If missing, or no storage but can generate, generate it
@@ -286,9 +270,7 @@ function getTile(req, res, next) {
             }
             return stateToPromise(state)
                 .then(setVectorPath)
-                .then(function(state) {
-                    return state.path;
-                })
+                .then(function(state) { return state.path; })
                 .then(fsp.exists)
                 .then(function(exists) {
                     if (exists) {
@@ -308,52 +290,46 @@ function getTile(req, res, next) {
                 throw new Error('Vector generation not enabled');
             }
             return generateVector(state)
-                .then(function (state) {
-                    state.response.send('generated');
-                });
+                .then(function (state) { state.response.send('generated'); });
+
+        case 'json':
+            state.debugJson = 'debug' in req.query;
+            // fallthrough
+        case 'headers':
+        case 'svg':
         case 'png':
+        case 'jpeg':
             return stateToPromise(state)
-                .then(getImageTileAsync)
+                .then(function(state) {
+                    return new BBPromise(function(resolve, reject) {
+                        var callback = function (err, data, headers) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                if (state.debugJson) {
+                                    data = _(data).reduce(function(memo, layer) {
+                                        memo[layer.name] = {
+                                            features: layer.features.length,
+                                            jsonsize: JSON.stringify(layer).length
+                                        };
+                                        return memo;
+                                    }, {});
+                                }
+                                state.data = data;
+                                state.headers = headers;
+                                resolve(state);
+                            }
+                        };
+                        callback.scale = state.scale;
+                        callback.format = state.format;
+                        styleSource.getTile(state.z, state.x, state.y, callback);
+                    });
+                })
                 .then(sendReplyAsync);
         default:
             throw new Error('Unknown format');
     }
 }
-
-//function tile2(req, res, next) {
-//
-//    var done = function(err, data, headers) {
-//        if (err && err.message === 'Tilesource not loaded') {
-//            return res.redirect(req.path);
-//        } else if (err) {
-//            // Set errors cookie for this style.
-//            style.error(id, err);
-//            res.cookie('errors', _(style.error(id)).join('|'));
-//            return next(err);
-//        }
-//
-//        // If debug flag is set, reduce json data.
-//        if (done.format === 'json' && 'debug' in req.query) {
-//            data = _(data).reduce(function(memo, layer) {
-//                memo[layer.name] = {
-//                    features: layer.features.length,
-//                    jsonsize: JSON.stringify(layer).length
-//                };
-//                return memo;
-//            }, {});
-//        }
-//
-//        headers['cache-control'] = 'max-age=3600';
-//        if (req.params.format === 'vector.pbf') {
-//            headers['Content-Encoding'] = 'gzip';
-//        }
-//        res.set(headers);
-//        return res.send(data);
-//    };
-//    done.scale = scale;
-//    if (req.params.format !== 'png') done.format = req.params.format;
-//    source.getTile(z,x,y, done);
-//}
 
 router.get('/t/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w\\.]+)', getTile);
 router.get('/t/:z(\\d+)/:x(\\d+)/:y(\\d+):scale(@\\d+x).:format([\\w\\.]+)', getTile);
