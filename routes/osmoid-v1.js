@@ -4,7 +4,7 @@ var BBPromise = require('bluebird');
 var _ = require('underscore');
 var mkdirp = require('mkdirp-then');
 var fsp = require('fs-promise');
-var path = require('path');
+var pathLib = require('path');
 var tilelive = require('tilelive');
 var bridge = require('tilelive-bridge');
 var Vector = require('tilelive-vector');
@@ -15,44 +15,9 @@ var sUtil = require('../lib/util');
 // shortcut
 var HTTPError = sUtil.HTTPError;
 
-var pbfStorage;
-var styleSource;
 var conf;
 var vectorHeaders = {'Content-Encoding': 'gzip'};
 var router = sUtil.router();
-
-
-function tmsource(options, callback) {
-    callback(null, this);
-}
-
-tmsource.prototype.getTile = function(z, x, y, callback) {
-    var state = setVectorPath({
-        z: z,
-        x: x,
-        y: y
-    });
-    stateToPromise(state)
-        .then(getDataFromStateAsync)
-        .catch(function (err) {
-            // Vector file does not exist, generate it
-            return generateVector(state, err)
-                .then(getDataFromStateAsync);
-        })
-        .then(function (data) {
-            callback(null, data, vectorHeaders);
-        }, function (err) {
-            callback(err);
-        });
-};
-
-tmsource.prototype.getGrid = function(z, x, y, callback) {
-    callback(null);
-};
-
-tmsource.prototype.getInfo = function(callback) {
-    callback(null, {});
-};
 
 function ensureDirAsync(state) {
     return mkdirp(state.dir).then(function() { return state; });
@@ -82,7 +47,7 @@ function sendReplyAsync(state) {
 }
 
 function generateVector(state, err) {
-    if (!conf.generateVectors) {
+    if (!state.source.generate) {
         if (err) {
             throw err;
         } else {
@@ -90,12 +55,12 @@ function generateVector(state, err) {
         }
     }
     var statePromise = stateToPromise(state);
-    if (conf.saveVectors) {
+    if (state.source.saveGenerated) {
         statePromise = statePromise.then(ensureDirAsync);
     }
     statePromise = statePromise.then(function(state) {
         return new BBPromise(function(resolve, reject) {
-            pbfStorage.getTile(state.z, state.x, state.y, function (err, tile, headers) {
+            state.source.source.getTile(state.z, state.x, state.y, function (err, tile, headers) {
                 if (err) {
                     reject(err);
                 } else {
@@ -106,7 +71,7 @@ function generateVector(state, err) {
             });
         });
     });
-    if (conf.saveVectors) {
+    if (state.source.saveGenerated) {
         statePromise = statePromise
             .catch(function(err){
                 if (err.message === 'Tile does not exist') {
@@ -149,81 +114,157 @@ function getDataFromStateAsync(state) {
     });
 }
 
-function setVectorPath(state) {
-    if (!state.dir) {
-        state.dir = path.join(__dirname, '..', conf.vectorsDir, state.z.toString());
-    }
-    if (!state.path) {
-        state.path = path.join(state.dir, state.x.toString() + '-' + state.y.toString() + '.pbf');
-    }
-    if (!state.headers) {
-        state.headers = vectorHeaders;
-    }
-    return state;
-}
-
 function stateToPromise(state) {
     // Ensure that this promise does not start until needed
     return new BBPromise(function(resolve/*, reject*/) {
+        if (!state.source.style) {
+            // This is a data source, set paths & headers
+            if (!state.dir) {
+                state.dir = pathLib.join(state.source.cacheDir, state.z.toString());
+            }
+            if (!state.path) {
+                state.path = pathLib.join(state.dir, state.x.toString() + '-' + state.y.toString() + '.pbf');
+            }
+            if (!state.headers) {
+                state.headers = vectorHeaders;
+            }
+        }
         resolve(state);
     });
 }
 
 /**
+ * Convert relative path to absolute, assuming current file is one
+ * level below the project root
+ * @param path
+ * @returns {*}
+ */
+function normalizePath(path) {
+    return pathLib.resolve(__dirname, '..', path);
+}
+
+/**
  * Initialize module
  * @param app
- * app.conf object:
- *  generateVectors - boolean, true to allow dynamic vector generation when missing as files
- *  saveVectors - boolean, true ta allow dynamic vectors to be saved as files
- *  vectorsDir - string, path to the vector file storage
  * @returns {*}
  */
 function init(app) {
     //app.set('json spaces', 4);
-    conf = app.conf;
-
-    if (typeof conf.generateVectors === 'undefined') {
-        conf.generateVectors = true;
-    }
-    if (typeof conf.saveVectors === 'undefined') {
-        conf.saveVectors = false;
-    }
-    if (typeof conf.vectorsDir === 'undefined') {
-        conf.vectorsDir = false;
-    }
-    if (conf.saveVectors && !conf.vectorsDir) {
-        throw new Error('vectorDir must be set if saveVectors is true');
-    }
-    if (conf.saveVectors && !conf.generateVectors) {
-        throw new Error('generateVectors must be true when saveVectors is true');
-    }
+    var log = app.logger.log.bind(app.logger);
 
     bridge.registerProtocols(tilelive);
+    mapnik.register_fonts(pathLib.dirname(require.resolve('mapbox-studio-pro-fonts')), {recurse: true});
+    mapnik.register_fonts(pathLib.dirname(require.resolve('mapbox-studio-default-fonts')), {recurse: true});
     tilelive.protocols['tmsource:'] = tmsource;
-    mapnik.register_fonts(path.dirname(require.resolve('mapbox-studio-pro-fonts')), {recurse: true});
-    mapnik.register_fonts(path.dirname(require.resolve('mapbox-studio-default-fonts')), {recurse: true});
 
-    return new BBPromise(function (fulfill, reject) {
-        tilelive.load('bridge://' + path.join(__dirname, '..', conf.data), function (err, source) {
-            if (err)
-                return reject(err);
-            else {
-                pbfStorage = source;
-                return fulfill(true);
-            }
+    // todo: need to crash if this fails to load
+    loadConfiguration(app.conf)
+        .then(function (c) {
+            conf = c;
         });
-    }).then(function () {
-            return new BBPromise(function (resolve, reject) {
-                new Vector('file://' + path.join(__dirname, '..', conf.style), function (err, p) {
-                    if (err) {
-                        return reject(err);
-                    } else {
-                        styleSource = p;
-                        return resolve(true);
-                    }
-                });
+}
+
+function loadConfiguration(conf) {
+    var hasSources = false,
+        hasStyles = false;
+
+    if (typeof conf.sources !== 'object')
+        throw new Error('conf.sources must be an object');
+    if (typeof conf.styles !== 'object')
+        throw new Error('conf.styles must be an object');
+    _.each(conf.sources, function (cfg, key) {
+        hasSources = true;
+        if (!/^\w+$/.test(key.toString()))
+            throw new Error('conf.sources.' + key + ' key must contain chars and digits only');
+        if (typeof cfg !== 'object')
+            throw new Error('conf.sources.' + key + ' must be an object');
+        if (typeof cfg.tm2source !== 'string')
+            throw new Error('conf.sources.' + key + '.tm2source must be a string');
+        cfg.tm2source = normalizePath(cfg.tm2source);
+        if (typeof cfg.generate !== 'boolean')
+            throw new Error('conf.sources.' + key + '.generate must be boolean');
+        if (typeof cfg.saveGenerated !== 'boolean')
+            throw new Error('conf.sources.' + key + '.saveGenerated must be boolean');
+        if (cfg.saveGenerated && !cfg.generate)
+            throw new Error('conf.sources.' + key + '.generate must be true when saveGenerated is true');
+
+        if (typeof cfg.cacheDir !== 'undefined') {
+            if (typeof cfg.cacheDir !== 'string')
+                throw new Error('conf.sources.' + key + '.cacheDir must be a string');
+            cfg.cacheDir = normalizePath(cfg.cacheDir);
+        } else if (cfg.saveGenerated) {
+            throw new Error('conf.sources.' + key + '.cacheDir must be set if saveGenerated is true');
+        }
+    });
+    _.each(conf.styles, function (cfg, key) {
+        hasStyles = true;
+        if (!/^\w+$/.test(key.toString()))
+            throw new Error('conf.styles.' + key + ' key must contain chars and digits only');
+        if (conf.sources.hasOwnProperty(key))
+            throw new Error('conf.styles.' + key + ' key already exists in conf.sources');
+        if (typeof cfg !== 'object')
+            throw new Error('conf.styles.' + key + ' must be an object');
+        if (typeof cfg.tm2 !== 'string')
+            throw new Error('conf.styles.' + key + '.tm2 must be a string');
+        cfg.tm2 = normalizePath(cfg.tm2);
+        if (typeof cfg.sourceId !== 'string' && typeof cfg.sourceId !== 'number')
+            throw new Error('conf.styles.' + key + '.sourceId must be a string or a number');
+        if (!conf.sources.hasOwnProperty(cfg.sourceId))
+            throw new Error('conf.styles.' + key + '.sourceId "' + cfg.sourceId + '" does not exist in conf.sources');
+    });
+    if (!hasSources)
+        throw new Error('conf.sources is empty');
+    if (!hasStyles)
+        throw new Error('conf.styles is empty');
+
+    return BBPromise.all(_.map(conf.sources, function (cfg) {
+        return new BBPromise(function (fulfill, reject) {
+            tilelive.load('bridge://' + cfg.tm2source, function (err, source) {
+                if (err) {
+                    return reject(err);
+                } else {
+                    cfg.source = source;
+                    return fulfill(true);
+                }
             });
         });
+    })).then(function () {
+        return BBPromise.all(_.map(conf.styles, function (cfg) {
+            return fsp
+                .readFile(cfg.tm2, 'utf8')
+                .then(function (xml) {
+                    return new BBPromise(function (resolve, reject) {
+                        // HACK: replace 'source' parameter with something we can recognize later
+                        // Expected format:
+                        // <Parameter name="source"><![CDATA[tmsource:///.../osm-bright.tm2source]]></Parameter>
+                        var replCount = 0;
+                        xml = xml.replace(
+                            /(<Parameter name="source">)(<!\[CDATA\[)?(tmsource:\/\/\/)([^\n\]]*)(]]>)?(<\/Parameter>)/g,
+                            function (whole, tag, cdata, prot, src, cdata2, tag2) {
+                                replCount++;
+                                return tag + cdata + prot + cfg.sourceId + cdata2 + tag2;
+                            }
+                        );
+                        if (replCount !== 1) {
+                            throw new Error('Unable to find "source" parameter in style ' + cfg.tm2);
+                        }
+                        new Vector({
+                            xml: xml,
+                            base: pathLib.dirname(cfg.tm2)
+                        }, function (err, style) {
+                            if (err) {
+                                return reject(err);
+                            } else {
+                                cfg.style = style;
+                                return resolve(true);
+                            }
+                        });
+                    });
+                });
+        }))
+    }).then(function () {
+        return _.extend({}, conf.sources, conf.styles);
+    });
 }
 
 /**
@@ -236,7 +277,13 @@ function getTile(req, res, next) {
     var scale = (req.params.scale) ? req.params.scale[1] | 0 : undefined;
     scale = scale > 4 ? 4 : scale; // limits scale to 4x (1024 x 1024 tiles or 288dpi)
 
+    if (!conf.hasOwnProperty(req.params.src)) {
+        throw new Error('Unknown source');
+    }
+    var source = conf[req.params.src];
+
     var state = {
+        source: source,
         z: req.params.z | 0,
         x: req.params.x | 0,
         y: req.params.y | 0,
@@ -245,94 +292,135 @@ function getTile(req, res, next) {
         response: res
     };
 
-    switch(state.format) {
-        case 'vector.pbf':
-            // If vector storage is set up, try to get vector tile there first
-            // If missing, or no storage but can generate, generate it
-            // If tile generated and conf.saveVectors is true, save it
-            if (conf.vectorsDir) {
+    if (!source.style) {
+        switch (state.format) {
+            case 'vector.pbf':
+                // If vector storage is set up, try to get vector tile there first
+                // If missing, or no storage but can generate, generate it
+                // If tile generated and source.saveGenerated is true, save it
+                if (source.cacheDir) {
+                    return stateToPromise(state)
+                        .then(sendReplyAsync)
+                        .catch(function (err) {
+                            // Failed, probably due to missing vector file
+                            return generateVector(state, err)
+                                .then(sendReplyAsync)
+                        });
+                } else {
+                    return generateVector(state)
+                        .then(sendReplyAsync);
+                }
+            case 'vector.pbf.generate':
+                // Refresh vector tile if it doesn't exist
+                if (!source.cacheDir || !source.generate || !source.saveGenerated) {
+                    throw new Error('Vector generation not enabled');
+                }
                 return stateToPromise(state)
-                    .then(setVectorPath)
-                    .then(sendReplyAsync)
-                    .catch(function(err) {
-                        // Failed, probably due to missing vector file
-                        return generateVector(state, err)
-                            .then(sendReplyAsync)
+                    .then(function (state) {
+                        return state.path;
+                    })
+                    .then(fsp.exists)
+                    .then(function (exists) {
+                        if (exists) {
+                            state.response.send('exists');
+                            return true;
+                        } else {
+                            return generateVector(state)
+                                .then(function (state) {
+                                    state.response.send('generated');
+                                });
+                        }
                     });
-            } else {
+
+            case 'vector.pbf.force':
+                // Force-refresh tile
+                if (!source.cacheDir || !source.generate || !source.saveGenerated) {
+                    throw new Error('Vector generation not enabled');
+                }
                 return generateVector(state)
-                    .then(sendReplyAsync);
-            }
-        case 'vector.pbf.generate':
-            // Refresh vector tile if it doesn't exist
-            if (!conf.vectorsDir || !conf.generateVectors || !conf.saveVectors) {
-                throw new Error('Vector generation not enabled');
-            }
-            return stateToPromise(state)
-                .then(setVectorPath)
-                .then(function(state) { return state.path; })
-                .then(fsp.exists)
-                .then(function(exists) {
-                    if (exists) {
-                        state.response.send('exists');
-                        return true;
-                    } else {
-                        return generateVector(state)
-                            .then(function (state) {
-                                state.response.send('generated');
-                            });
-                    }
-                });
-
-        case 'vector.pbf.force':
-            // Force-refresh tile
-            if (!conf.vectorsDir || !conf.generateVectors || !conf.saveVectors) {
-                throw new Error('Vector generation not enabled');
-            }
-            return generateVector(state)
-                .then(function (state) { state.response.send('generated'); });
-
-        case 'json':
-            state.debugJson = 'debug' in req.query;
-            // fallthrough
-        case 'headers':
-        case 'svg':
-        case 'png':
-        case 'jpeg':
-            return stateToPromise(state)
-                .then(function(state) {
-                    return new BBPromise(function(resolve, reject) {
-                        var callback = function (err, data, headers) {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                if (state.debugJson) {
-                                    data = _(data).reduce(function(memo, layer) {
-                                        memo[layer.name] = {
-                                            features: layer.features.length,
-                                            jsonsize: JSON.stringify(layer).length
-                                        };
-                                        return memo;
-                                    }, {});
-                                }
-                                state.data = data;
-                                state.headers = headers;
-                                resolve(state);
-                            }
-                        };
-                        callback.scale = state.scale;
-                        callback.format = state.format;
-                        styleSource.getTile(state.z, state.x, state.y, callback);
+                    .then(function (state) {
+                        state.response.send('generated');
                     });
-                })
-                .then(sendReplyAsync);
-        default:
-            throw new Error('Unknown format');
+        }
+    } else {
+        switch (state.format) {
+            case 'json':
+                state.debugJson = 'debug' in req.query;
+                // fallthrough
+            case 'headers':
+            case 'svg':
+            case 'png':
+            case 'jpeg':
+                return stateToPromise(state)
+                    .then(function (state) {
+                        return new BBPromise(function (resolve, reject) {
+                            var callback = function (err, data, headers) {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    if (state.debugJson) {
+                                        data = _(data).reduce(function (memo, layer) {
+                                            memo[layer.name] = {
+                                                features: layer.features.length,
+                                                jsonsize: JSON.stringify(layer).length
+                                            };
+                                            return memo;
+                                        }, {});
+                                    }
+                                    state.data = data;
+                                    state.headers = headers;
+                                    resolve(state);
+                                }
+                            };
+                            callback.scale = state.scale;
+                            callback.format = state.format;
+                            state.source.style.getTile(state.z, state.x, state.y, callback);
+                        });
+                    })
+                    .then(sendReplyAsync);
+        }
     }
+    throw new Error('Unknown format');
 }
 
-router.get('/t/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w\\.]+)', getTile);
-router.get('/t/:z(\\d+)/:x(\\d+)/:y(\\d+):scale(@\\d+x).:format([\\w\\.]+)', getTile);
+function tmsource(options, callback) {
+    if (options.path[0] !== '/')
+        throw new Error('Unexpected path ' + options.path);
+    this.sourceId = options.path.substr(1);
+    callback(null, this);
+}
+
+tmsource.prototype.getTile = function(z, x, y, callback) {
+    if (!conf.hasOwnProperty(this.sourceId)) {
+        return callback(new Error('Unknown source'));
+    }
+
+    var state = {source: conf[this.sourceId], z: z, x: x, y: y};
+    stateToPromise(state)
+        .then(getDataFromStateAsync)
+        .catch(function (err) {
+            // Vector file does not exist, generate it
+            return generateVector(state, err)
+                .then(getDataFromStateAsync);
+        })
+        .then(function (data) {
+            callback(null, data, vectorHeaders);
+        }, function (err) {
+            callback(err);
+        });
+};
+
+tmsource.prototype.getGrid = function(z, x, y, callback) {
+    callback(null);
+};
+
+tmsource.prototype.getInfo = function(callback) {
+    callback(null, {});
+};
+
+
+router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w\\.]+)', getTile);
+router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+):scale(@\\d+x).:format([\\w\\.]+)', getTile);
 
 module.exports = function(app) {
 
