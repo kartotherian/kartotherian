@@ -1,5 +1,5 @@
 {
-  "name": "osmoid",
+  "name": "kartotherian",
   "version": "0.0.1",
   "description": "Renders map tiles",
   "main": "./app.js",
