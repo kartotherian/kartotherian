@@ -188,12 +188,12 @@ function loadConfiguration(conf) {
         if (cfg.saveGenerated && !cfg.generate)
             throw new Error('conf.sources.' + key + '.generate must be true when saveGenerated is true');
 
-        if (typeof cfg.cacheDir !== 'undefined') {
-            if (typeof cfg.cacheDir !== 'string')
-                throw new Error('conf.sources.' + key + '.cacheDir must be a string');
-            cfg.cacheDir = normalizePath(cfg.cacheDir);
+        if (typeof cfg.cacheBaseDir !== 'undefined') {
+            if (typeof cfg.cacheBaseDir !== 'string')
+                throw new Error('conf.sources.' + key + '.cacheBaseDir must be a string');
+            cfg.cacheDir = pathLib.join(normalizePath(cfg.cacheBaseDir), key);
         } else if (cfg.saveGenerated) {
-            throw new Error('conf.sources.' + key + '.cacheDir must be set if saveGenerated is true');
+            throw new Error('conf.sources.' + key + '.cacheBaseDir must be set if saveGenerated is true');
         }
     });
     _.each(conf.styles, function (cfg, key) {
@@ -267,6 +267,97 @@ function loadConfiguration(conf) {
     });
 }
 
+function getTileFromStore(state) {
+    switch (state.format) {
+        case 'vector.pbf':
+            // If vector storage is set up, try to get vector tile there first
+            // If missing, or no storage but can generate, generate it
+            // If tile generated and source.saveGenerated is true, save it
+            if (state.source.cacheDir) {
+                return stateToPromise(state)
+                    .then(sendReplyAsync)
+                    .catch(function (err) {
+                        // Failed, probably due to missing vector file
+                        return generateVector(state, err)
+                            .then(sendReplyAsync)
+                    });
+            } else {
+                return generateVector(state)
+                    .then(sendReplyAsync);
+            }
+
+        case 'vector.pbf.generate':
+            // Refresh vector tile if it doesn't exist
+            if (!state.source.saveGenerated)
+                throw new Error('Vector generation not enabled');
+            return stateToPromise(state)
+                .then(function (state) { return state.path; })
+                .then(fsp.exists)
+                .then(function (exists) {
+                    if (exists) {
+                        state.response.send('exists');
+                        return true;
+                    } else {
+                        return generateVector(state)
+                            .then(function (state) { state.response.send('generated'); });
+                    }
+                });
+
+        case 'vector.pbf.force':
+            // Force-refresh tile
+            if (!state.source.saveGenerated)
+                throw new Error('Vector generation not enabled');
+            return generateVector(state)
+                .then(function (state) {
+                    state.response.send('generated');
+                });
+
+        default:
+            throw new Error('Unknown format');
+    }
+}
+
+function getTileFromStyle(state) {
+    switch (state.format) {
+        case 'json':
+            state.debugJson = 'debug' in req.query;
+        // fallthrough
+        case 'headers':
+        case 'svg':
+        case 'png':
+        case 'jpeg':
+            return stateToPromise(state)
+                .then(function (state) {
+                    return new BBPromise(function (resolve, reject) {
+                        var callback = function (err, data, headers) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                if (state.debugJson) {
+                                    data = _(data).reduce(function (memo, layer) {
+                                        memo[layer.name] = {
+                                            features: layer.features.length,
+                                            jsonsize: JSON.stringify(layer).length
+                                        };
+                                        return memo;
+                                    }, {});
+                                }
+                                state.data = data;
+                                state.headers = headers;
+                                resolve(state);
+                            }
+                        };
+                        callback.scale = state.scale;
+                        callback.format = state.format;
+                        state.source.style.getTile(state.z, state.x, state.y, callback);
+                    });
+                })
+                .then(sendReplyAsync);
+
+        default:
+            throw new Error('Unknown format');
+    }
+}
 /**
  * Web server (express) route handler to get requested tile
  * @param req request object
@@ -292,95 +383,7 @@ function getTile(req, res, next) {
         response: res
     };
 
-    if (!source.style) {
-        switch (state.format) {
-            case 'vector.pbf':
-                // If vector storage is set up, try to get vector tile there first
-                // If missing, or no storage but can generate, generate it
-                // If tile generated and source.saveGenerated is true, save it
-                if (source.cacheDir) {
-                    return stateToPromise(state)
-                        .then(sendReplyAsync)
-                        .catch(function (err) {
-                            // Failed, probably due to missing vector file
-                            return generateVector(state, err)
-                                .then(sendReplyAsync)
-                        });
-                } else {
-                    return generateVector(state)
-                        .then(sendReplyAsync);
-                }
-            case 'vector.pbf.generate':
-                // Refresh vector tile if it doesn't exist
-                if (!source.cacheDir || !source.generate || !source.saveGenerated) {
-                    throw new Error('Vector generation not enabled');
-                }
-                return stateToPromise(state)
-                    .then(function (state) {
-                        return state.path;
-                    })
-                    .then(fsp.exists)
-                    .then(function (exists) {
-                        if (exists) {
-                            state.response.send('exists');
-                            return true;
-                        } else {
-                            return generateVector(state)
-                                .then(function (state) {
-                                    state.response.send('generated');
-                                });
-                        }
-                    });
-
-            case 'vector.pbf.force':
-                // Force-refresh tile
-                if (!source.cacheDir || !source.generate || !source.saveGenerated) {
-                    throw new Error('Vector generation not enabled');
-                }
-                return generateVector(state)
-                    .then(function (state) {
-                        state.response.send('generated');
-                    });
-        }
-    } else {
-        switch (state.format) {
-            case 'json':
-                state.debugJson = 'debug' in req.query;
-                // fallthrough
-            case 'headers':
-            case 'svg':
-            case 'png':
-            case 'jpeg':
-                return stateToPromise(state)
-                    .then(function (state) {
-                        return new BBPromise(function (resolve, reject) {
-                            var callback = function (err, data, headers) {
-                                if (err) {
-                                    reject(err);
-                                } else {
-                                    if (state.debugJson) {
-                                        data = _(data).reduce(function (memo, layer) {
-                                            memo[layer.name] = {
-                                                features: layer.features.length,
-                                                jsonsize: JSON.stringify(layer).length
-                                            };
-                                            return memo;
-                                        }, {});
-                                    }
-                                    state.data = data;
-                                    state.headers = headers;
-                                    resolve(state);
-                                }
-                            };
-                            callback.scale = state.scale;
-                            callback.format = state.format;
-                            state.source.style.getTile(state.z, state.x, state.y, callback);
-                        });
-                    })
-                    .then(sendReplyAsync);
-        }
-    }
-    throw new Error('Unknown format');
+    return !source.style ? getTileFromStore(state) : getTileFromStyle(state);
 }
 
 function tmsource(options, callback) {
