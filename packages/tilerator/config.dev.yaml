@@ -42,7 +42,7 @@ services:
           tm2source: ./map/osm-bright.tm2source/data.xml
           generate: true
           saveGenerated: true
-          cacheDir: ./vectors/v1
+          cacheBaseDir: ./vectors
 
       styles:
         s1:
