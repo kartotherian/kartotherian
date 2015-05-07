@@ -1,7 +1,7 @@
 # Number of worker processes to spawn.
 # Set to 0 to run everything in a single process without clustering.
 # Use 'ncpu' to run as many workers as there are CPU units
-num_workers: 0
+num_workers: ncpu
 
 # Log error messages and gracefully restart a worker if v8 reports that it
 # uses more heap (note: not RSS) than this many mb.
@@ -30,12 +30,19 @@ services:
     # version: ^0.4.0
     # per-service config
     conf:
-      port: 4000
-      # interface: localhost # uncomment to only listen on localhost
-      # more per-service config settings
+      port: 80
 
-      data: ./map/osm-bright.tm2source/data.xml
-      style: ./map/osm-bright.tm2/project.xml
-      generateVectors: true
-      saveVectors: true
-      vectorsDir: ./vectors
+      # TODO: This does not work, not sure of the exact reqs here, manually disabling for now
+      csp: default-src 'self'; script-src 'self' 'unsafe-inline';
+
+      sources:
+        v1:
+          tm2source: ./map/osm-bright.tm2source/data.xml
+          generate: true
+          saveGenerated: true
+          cacheBaseDir: ./vectors
+
+      styles:
+        s1:
+          tm2: ./map/osm-bright.tm2/project.xml
+          sourceId: v1
