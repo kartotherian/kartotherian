@@ -32,7 +32,6 @@ services:
     conf:
       port: 4000
       interface: localhost
-      # more per-service config settings
 
       # TODO: This does not work, not sure of the exact reqs here, manually disabling for now
       csp: default-src 'self'; script-src 'self' 'unsafe-inline';

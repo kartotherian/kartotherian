@@ -263,7 +263,9 @@ function loadConfiguration(conf) {
                 });
         }))
     }).then(function () {
-        return _.extend({}, conf.sources, conf.styles);
+        return _.extend({
+            cache: conf.cache,
+        }, conf.sources, conf.styles);
     });
 }
 
@@ -365,6 +367,11 @@ function getTileFromStyle(state) {
  * @param next callback to call if this function cannot handle the request
  */
 function getTile(req, res, next) {
+
+    if (conf.cache) {
+        res.header('Cache-Control', conf.cache);
+    }
+
     var scale = (req.params.scale) ? req.params.scale[1] | 0 : undefined;
     scale = scale > 4 ? 4 : scale; // limits scale to 4x (1024 x 1024 tiles or 288dpi)
 
