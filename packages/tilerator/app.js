@@ -70,7 +70,13 @@ function initApp(options) {
     // use the application/x-www-form-urlencoded parser
     app.use(bodyParser.urlencoded({extended: true}));
     // serve static files from static/
-    app.use('/static', express.static(__dirname + '/static'));
+    var staticOpts = {};
+    if (app.conf.cache) {
+        staticOpts.setHeaders = function(res) {
+            res.header('Cache-Control', app.conf.cache);
+        }
+    }
+    app.use('/static', express.static(__dirname + '/static', staticOpts));
 
     return BBPromise.resolve(app);
 
