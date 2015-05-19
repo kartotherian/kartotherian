@@ -1,6 +1,8 @@
 Dockerfile
+.idea/
 coverage
 config.yaml
 node_modules
 npm-debug.log
 vectors
+map/water-polygons-split-3857
