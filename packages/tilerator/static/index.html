@@ -25,6 +25,7 @@
 	<div id='zoom-level'>Zoom Level: 15</div>
 
 	<script src="leaflet/leaflet.js"></script>
+	<script src="lib/leaflet-hash.js"></script>
 	<script>
 
 		var map = L.map('map').setView([45.777179, 4.790948], 15);
@@ -50,6 +51,8 @@
 		map.on('zoomend', function(){
 		    document.getElementById('zoom-level').innerHTML = 'Zoom Level: ' + map.getZoom();
 		});
+
+		var hash = new L.Hash(map);
 	</script>
 </body>
 </html>
