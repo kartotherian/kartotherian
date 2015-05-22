@@ -184,7 +184,10 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             var surface = new mapnik.Image(width,height);
         }
         vtile.render(source._map, surface, opts, function(err, image) {
-            if (err) return callback(err);
+            if (err) {
+                err.code = 'EMAPNIK';
+                return callback(err);
+            }
             if (format == 'svg') {
                 headers['Content-Type'] = 'image/svg+xml';
                 return callback(null, image.getData(), headers);
