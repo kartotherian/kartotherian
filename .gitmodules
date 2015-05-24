@@ -4,3 +4,12 @@
 [submodule "map/osm-bright.tm2source"]
 	path = map/osm-bright.tm2source
 	url = https://github.com/nyurik/osm2pgsql-osm-bright.tm2source.git
+[submodule "static/mapbox-gl-js"]
+	path = static/mapbox-gl-js
+	url = https://github.com/nyurik/mapbox-gl-js.git
+[submodule "static/mapbox-gl-styles"]
+	path = static/mapbox-gl-styles
+	url = https://github.com/nyurik/mapbox-gl-styles.git
+[submodule "static/mapbox-gl-leaflet"]
+	path = static/mapbox-gl-leaflet
+	url = https://github.com/mapbox/mapbox-gl-leaflet.git
