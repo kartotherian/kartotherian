@@ -17,6 +17,7 @@ var HTTPError = sUtil.HTTPError;
 
 var conf;
 var vectorHeaders = {'Content-Encoding': 'gzip'};
+var rasterHeaders = {}; // {'Content-Type': 'image/png'};
 var router = sUtil.router();
 
 function ensureDirAsync(state) {
@@ -60,7 +61,7 @@ function generateVector(state, err) {
     }
     statePromise = statePromise.then(function(state) {
         return new BBPromise(function(resolve, reject) {
-            state.source.source.getTile(state.z, state.x, state.y, function (err, tile, headers) {
+            var callback = function (err, tile, headers) {
                 if (err) {
                     reject(err);
                 } else {
@@ -68,7 +69,12 @@ function generateVector(state, err) {
                     state.headers = headers;
                     resolve(state);
                 }
-            });
+            };
+            if (state.isRaster) {
+                callback.scale = state.scale || 1;
+                callback.format = state.format;
+            }
+            state.source.source.getTile(state.z, state.x, state.y, callback);
         });
     });
     if (state.source.saveGenerated) {
@@ -119,14 +125,16 @@ function stateToPromise(state) {
     return new BBPromise(function(resolve/*, reject*/) {
         if (!state.source.style) {
             // This is a data source, set paths & headers
-            if (!state.dir) {
-                state.dir = pathLib.join(state.source.cacheDir, state.z.toString());
-            }
-            if (!state.path) {
-                state.path = pathLib.join(state.dir, state.x.toString() + '-' + state.y.toString() + '.pbf');
+            if (state.source.cacheDir) {
+                if (!state.dir) {
+                    state.dir = pathLib.join(state.source.cacheDir, state.z.toString());
+                }
+                if (!state.path) {
+                    state.path = pathLib.join(state.dir, state.x.toString() + '-' + state.y.toString() + '.pbf');
+                }
             }
             if (!state.headers) {
-                state.headers = vectorHeaders;
+                state.headers = state.isRaster ? rasterHeaders : vectorHeaders;
             }
         }
         resolve(state);
@@ -270,16 +278,21 @@ function loadConfiguration(conf) {
 }
 
 function getTileFromStore(state) {
+    state.isRaster = false;
     switch (state.format) {
+        case 'png':
+        case 'webp':
+            state.isRaster = true;
+            // fallthrough
         case 'vector.pbf':
-            // If vector storage is set up, try to get vector tile there first
+            // If storage is set up, try to get tile there first
             // If missing, or no storage but can generate, generate it
             // If tile generated and source.saveGenerated is true, save it
             if (state.source.cacheDir) {
                 return stateToPromise(state)
                     .then(sendReplyAsync)
                     .catch(function (err) {
-                        // Failed, probably due to missing vector file
+                        // Failed, probably due to missing file
                         return generateVector(state, err)
                             .then(sendReplyAsync)
                     });
@@ -289,9 +302,9 @@ function getTileFromStore(state) {
             }
 
         case 'vector.pbf.generate':
-            // Refresh vector tile if it doesn't exist
+            // Refresh tile if it doesn't exist
             if (!state.source.saveGenerated)
-                throw new Error('Vector generation not enabled');
+                throw new Error('Tile generation not enabled');
             return stateToPromise(state)
                 .then(function (state) { return state.path; })
                 .then(fsp.exists)
@@ -308,7 +321,7 @@ function getTileFromStore(state) {
         case 'vector.pbf.force':
             // Force-refresh tile
             if (!state.source.saveGenerated)
-                throw new Error('Vector generation not enabled');
+                throw new Error('Tile generation not enabled');
             return generateVector(state)
                 .then(function (state) {
                     state.response.send('generated');
@@ -322,8 +335,6 @@ function getTileFromStore(state) {
 function getTileFromStyle(state) {
     switch (state.format) {
         case 'json':
-            state.debugJson = 'debug' in req.query;
-        // fallthrough
         case 'headers':
         case 'svg':
         case 'png':
@@ -335,7 +346,7 @@ function getTileFromStyle(state) {
                             if (err) {
                                 reject(err);
                             } else {
-                                if (state.debugJson) {
+                                if ('summary' in state.response.req.query) {
                                     data = _(data).reduce(function (memo, layer) {
                                         memo[layer.name] = {
                                             features: layer.features.length,
@@ -343,6 +354,20 @@ function getTileFromStyle(state) {
                                         };
                                         return memo;
                                     }, {});
+                                } else if ('nogeo' in state.response.req.query) {
+                                    var filter = function (val, key) {
+                                        if (key === 'geometry') {
+                                            return val.length;
+                                        } else if (_.isArray(val)) {
+                                            return _.map(val, filter);
+                                        } else if (_.isObject(val)) {
+                                            _.each(val, function(v, k) {
+                                                val[k] = filter(v, k);
+                                            });
+                                        }
+                                        return val;
+                                    };
+                                    data = _.map(data, filter);
                                 }
                                 state.data = data;
                                 state.headers = headers;
@@ -409,12 +434,12 @@ tmsource.prototype.getTile = function(z, x, y, callback) {
     stateToPromise(state)
         .then(getDataFromStateAsync)
         .catch(function (err) {
-            // Vector file does not exist, generate it
+            // Tile file does not exist, generate it
             return generateVector(state, err)
                 .then(getDataFromStateAsync);
         })
         .then(function (data) {
-            callback(null, data, vectorHeaders);
+            callback(null, data, state.isRaster ? rasterHeaders : vectorHeaders);
         }, function (err) {
             callback(err);
         });
