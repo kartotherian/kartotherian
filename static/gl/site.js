@@ -3,8 +3,8 @@ var style = getStyle();
 
 var map = new mapboxgl.Map({
     container: 'map',
-    zoom: 12.5,
-    center: [38.888, -77.01866],
+    zoom: 14.5,
+    center: [45.777179, 4.790948],
     style: '../mapbox-gl-styles/styles/' + style + '-v7.json',
     hash: true
 });

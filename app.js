@@ -70,16 +70,29 @@ function initApp(options) {
     // use the application/x-www-form-urlencoded parser
     app.use(bodyParser.urlencoded({extended: true}));
     // serve static files from static/
+    if (!String.prototype.endsWith) {
+        String.prototype.endsWith = function(searchString, position) {
+            var subjectString = this.toString();
+            if (position === undefined || position > subjectString.length) {
+                position = subjectString.length;
+            }
+            position -= searchString.length;
+            var lastIndex = subjectString.indexOf(searchString, position);
+            return lastIndex !== -1 && lastIndex === position;
+        };
+    }
     var staticOpts = {};
-    if (app.conf.cache) {
-        staticOpts.setHeaders = function(res) {
+    staticOpts.setHeaders = function(res) {
+        if (app.conf.cache) {
             res.header('Cache-Control', app.conf.cache);
         }
-    }
+        if (res.req.originalUrl.endsWith('.pbf')) {
+            res.header('Content-Encoding', 'gzip');
+        }
+    };
     app.use('/static', express.static(__dirname + '/static', staticOpts));
 
     return BBPromise.resolve(app);
-
 }
 
 
