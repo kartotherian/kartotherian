@@ -33,6 +33,8 @@ services:
       port: 6927
       # interface: localhost # uncomment to only listen on localhost
       # more per-service config settings
+      # the location of the spec, defaults to spec.yaml if not specified
+      spec: ./spec.template.yaml
       # allow cross-domain requests to the API (default '*')
       cors: '*'
       # to disable use:
