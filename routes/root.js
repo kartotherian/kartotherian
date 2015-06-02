@@ -9,6 +9,11 @@ var sUtil = require('../lib/util');
  */
 var router = sUtil.router();
 
+/**
+ * The main application object reported when this module is require()d
+ */
+var app;
+
 
 /**
  * GET /robots.txt
@@ -24,7 +29,20 @@ router.get('/robots.txt', function(req, res) {
 });
 
 
+/**
+ * GET /_spec
+ * Retrieves the service's specification JSON
+ */
+router.get('/_spec', function(req, res) {
+
+    res.json(app.conf.spec);
+
+});
+
+
 module.exports = function(appObj) {
+
+    app = appObj;
 
     return {
         path: '/',
