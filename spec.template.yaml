@@ -59,7 +59,7 @@ paths:
             params:
               domain: my.fake.domain
           response:
-            status: 500
+            status: 504
             headers:
               content-type: application/json
         - title: site info check for valid prop
