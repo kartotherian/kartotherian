@@ -30,12 +30,17 @@ router.get('/robots.txt', function(req, res) {
 
 
 /**
- * GET /_spec
- * Retrieves the service's specification JSON
+ * GET /
+ * Main entry point. Currently it only responds if the spec query
+ * parameter is given, otherwise lets the next middleware handle it
  */
-router.get('/_spec', function(req, res) {
+router.get('/', function(req, res, next) {
 
-    res.json(app.conf.spec);
+    if(!(req.query || {}).hasOwnProperty('spec')) {
+        next();
+    } else {
+        res.json(app.conf.spec);
+    }
 
 });
 

@@ -28,15 +28,30 @@ paths:
             headers:
               user-agent: '*'
               disallow: '/'
-  /_spec:
+  /:
     get:
       tags:
         - Root
-        - Spec
-      description: Gets the specification of the service
+      description: The root service end-point
       produces:
         - application/json
-      x-monitor: false
+      x-amples:
+        - title: root with no query params
+          request: {}
+          response:
+            status: 404
+        - title: spec from root
+          request:
+            query:
+              spec: true
+          response:
+            status: 200
+        - title: root with wrong query param
+          request:
+            query:
+              fooo: true
+          response:
+            status: 404
   # from routes/v1.js
   /{domain}/v1/siteinfo{/prop}:
     get:

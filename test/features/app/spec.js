@@ -198,7 +198,7 @@ describe('Swagger spec', function() {
     });
 
     it('get the spec', function() {
-        return preq.get(server.config.uri + '_spec')
+        return preq.get(server.config.uri + '?spec')
         .then(function(res) {
             assert.status(200);
             assert.contentType(res, 'application/json');
