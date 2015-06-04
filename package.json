@@ -36,7 +36,7 @@
     "express": "^4.12.4",
     "js-yaml": "^3.3.1",
     "node-uuid": "^1.4.3",
-    "preq": "^0.4.1",
+    "preq": "^0.4.3",
     "service-runner": "^0.2.0"
   },
   "devDependencies": {
