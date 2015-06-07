@@ -2,15 +2,9 @@
 
 var BBPromise = require('bluebird');
 var _ = require('underscore');
-var mkdirp = require('mkdirp-then');
-var fsp = require('fs-promise');
-var pathLib = require('path');
-var tilelive = require('tilelive');
-var bridge = require('tilelive-bridge');
-var Vector = require('tilelive-vector');
-var mapnik = require('mapnik');
 
 var sUtil = require('../lib/util');
+var storage = require('../lib/storage');
 
 // shortcut
 var HTTPError = sUtil.HTTPError;
@@ -19,10 +13,6 @@ var conf;
 var vectorHeaders = {'Content-Encoding': 'gzip'};
 var rasterHeaders = {}; // {'Content-Type': 'image/png'};
 var router = sUtil.router();
-
-function ensureDirAsync(state) {
-    return mkdirp(state.dir).then(function() { return state; });
-}
 
 function sendReplyAsync(state) {
     return new BBPromise(function(resolve, reject) {
@@ -35,86 +25,7 @@ function sendReplyAsync(state) {
                 res.send(state.data);
                 resolve(state);
             } else {
-                res.sendFile(state.path, {headers: state.headers}, function (err) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(state);
-                    }
-                });
-            }
-        }
-    });
-}
-
-function generateVector(state, err) {
-    if (!state.source.generate) {
-        if (err) {
-            throw err;
-        } else {
-            throw Error('Dynamic vector generation is disabled');
-        }
-    }
-    var statePromise = stateToPromise(state);
-    if (state.source.saveGenerated) {
-        statePromise = statePromise.then(ensureDirAsync);
-    }
-    statePromise = statePromise.then(function(state) {
-        return new BBPromise(function(resolve, reject) {
-            var callback = function (err, tile, headers) {
-                if (err) {
-                    reject(err);
-                } else {
-                    state.data = tile;
-                    state.headers = headers;
-                    resolve(state);
-                }
-            };
-            if (state.isRaster) {
-                callback.scale = state.scale || 1;
-                callback.format = state.format;
-            }
-            state.source.source.getTile(state.z, state.x, state.y, callback);
-        });
-    });
-    if (state.source.saveGenerated) {
-        statePromise = statePromise
-            .catch(function(err){
-                if (err.message === 'Tile does not exist') {
-                    state.data = '';
-                    return state;
-                } else {
-                    throw err;
-                }
-            })
-            .then(function(state) {
-                return fsp.writeFile(state.path, state.data)
-            })
-            .then(function() {
-                return state;
-            });
-    }
-    return statePromise;
-}
-
-function getDataFromStateAsync(state) {
-    return new BBPromise(function(resolve, reject) {
-        if (state.error) {
-            reject(state.error);
-        } else {
-            if (state.data) {
-                resolve(state.data);
-            } else {
-                return fsp
-                    .stat(state.path)
-                    .then(function(info) {
-                        if (info.size === 0) {
-                            resolve('');
-                        } else {
-                            resolve(fsp.readFile(state.path));
-                        }
-                    })
-                    .catch(reject);
+                storage.sendResponse(state).then(resolve, reject);
             }
         }
     });
@@ -124,31 +35,14 @@ function stateToPromise(state) {
     // Ensure that this promise does not start until needed
     return new BBPromise(function(resolve/*, reject*/) {
         if (!state.source.style) {
-            // This is a data source, set paths & headers
-            if (state.source.cacheDir) {
-                if (!state.dir) {
-                    state.dir = pathLib.join(state.source.cacheDir, state.z.toString());
-                }
-                if (!state.path) {
-                    state.path = pathLib.join(state.dir, state.x.toString() + '-' + state.y.toString() + '.pbf');
-                }
-            }
+            // This is a data source, init storage & set headers
+            storage.initState(state);
             if (!state.headers) {
                 state.headers = state.isRaster ? rasterHeaders : vectorHeaders;
             }
         }
         resolve(state);
     });
-}
-
-/**
- * Convert relative path to absolute, assuming current file is one
- * level below the project root
- * @param path
- * @returns {*}
- */
-function normalizePath(path) {
-    return pathLib.resolve(__dirname, '..', path);
 }
 
 /**
@@ -160,121 +54,12 @@ function init(app) {
     //app.set('json spaces', 4);
     var log = app.logger.log.bind(app.logger);
 
-    bridge.registerProtocols(tilelive);
-    mapnik.register_fonts(pathLib.dirname(require.resolve('mapbox-studio-pro-fonts')), {recurse: true});
-    mapnik.register_fonts(pathLib.dirname(require.resolve('mapbox-studio-default-fonts')), {recurse: true});
-    tilelive.protocols['tmsource:'] = tmsource;
-
     // todo: need to crash if this fails to load
-    loadConfiguration(app.conf)
+    // todo: implement dynamic configuration reloading
+    require('../lib/conf').loadConfiguration(app.conf, tmsource)
         .then(function (c) {
             conf = c;
         });
-}
-
-function loadConfiguration(conf) {
-    var hasSources = false,
-        hasStyles = false;
-
-    if (typeof conf.sources !== 'object')
-        throw new Error('conf.sources must be an object');
-    if (typeof conf.styles !== 'object')
-        throw new Error('conf.styles must be an object');
-    _.each(conf.sources, function (cfg, key) {
-        hasSources = true;
-        if (!/^\w+$/.test(key.toString()))
-            throw new Error('conf.sources.' + key + ' key must contain chars and digits only');
-        if (typeof cfg !== 'object')
-            throw new Error('conf.sources.' + key + ' must be an object');
-        if (typeof cfg.tm2source !== 'string')
-            throw new Error('conf.sources.' + key + '.tm2source must be a string');
-        cfg.tm2source = normalizePath(cfg.tm2source);
-        if (typeof cfg.generate !== 'boolean')
-            throw new Error('conf.sources.' + key + '.generate must be boolean');
-        if (typeof cfg.saveGenerated !== 'boolean')
-            throw new Error('conf.sources.' + key + '.saveGenerated must be boolean');
-        if (cfg.saveGenerated && !cfg.generate)
-            throw new Error('conf.sources.' + key + '.generate must be true when saveGenerated is true');
-
-        if (typeof cfg.cacheBaseDir !== 'undefined') {
-            if (typeof cfg.cacheBaseDir !== 'string')
-                throw new Error('conf.sources.' + key + '.cacheBaseDir must be a string');
-            cfg.cacheDir = pathLib.join(normalizePath(cfg.cacheBaseDir), key);
-        } else if (cfg.saveGenerated) {
-            throw new Error('conf.sources.' + key + '.cacheBaseDir must be set if saveGenerated is true');
-        }
-    });
-    _.each(conf.styles, function (cfg, key) {
-        hasStyles = true;
-        if (!/^\w+$/.test(key.toString()))
-            throw new Error('conf.styles.' + key + ' key must contain chars and digits only');
-        if (conf.sources.hasOwnProperty(key))
-            throw new Error('conf.styles.' + key + ' key already exists in conf.sources');
-        if (typeof cfg !== 'object')
-            throw new Error('conf.styles.' + key + ' must be an object');
-        if (typeof cfg.tm2 !== 'string')
-            throw new Error('conf.styles.' + key + '.tm2 must be a string');
-        cfg.tm2 = normalizePath(cfg.tm2);
-        if (typeof cfg.sourceId !== 'string' && typeof cfg.sourceId !== 'number')
-            throw new Error('conf.styles.' + key + '.sourceId must be a string or a number');
-        if (!conf.sources.hasOwnProperty(cfg.sourceId))
-            throw new Error('conf.styles.' + key + '.sourceId "' + cfg.sourceId + '" does not exist in conf.sources');
-    });
-    if (!hasSources)
-        throw new Error('conf.sources is empty');
-    if (!hasStyles)
-        throw new Error('conf.styles is empty');
-
-    return BBPromise.all(_.map(conf.sources, function (cfg) {
-        return new BBPromise(function (fulfill, reject) {
-            tilelive.load('bridge://' + cfg.tm2source, function (err, source) {
-                if (err) {
-                    return reject(err);
-                } else {
-                    cfg.source = source;
-                    return fulfill(true);
-                }
-            });
-        });
-    })).then(function () {
-        return BBPromise.all(_.map(conf.styles, function (cfg) {
-            return fsp
-                .readFile(cfg.tm2, 'utf8')
-                .then(function (xml) {
-                    return new BBPromise(function (resolve, reject) {
-                        // HACK: replace 'source' parameter with something we can recognize later
-                        // Expected format:
-                        // <Parameter name="source"><![CDATA[tmsource:///.../osm-bright.tm2source]]></Parameter>
-                        var replCount = 0;
-                        xml = xml.replace(
-                            /(<Parameter name="source">)(<!\[CDATA\[)?(tmsource:\/\/\/)([^\n\]]*)(]]>)?(<\/Parameter>)/g,
-                            function (whole, tag, cdata, prot, src, cdata2, tag2) {
-                                replCount++;
-                                return tag + cdata + prot + cfg.sourceId + cdata2 + tag2;
-                            }
-                        );
-                        if (replCount !== 1) {
-                            throw new Error('Unable to find "source" parameter in style ' + cfg.tm2);
-                        }
-                        new Vector({
-                            xml: xml,
-                            base: pathLib.dirname(cfg.tm2)
-                        }, function (err, style) {
-                            if (err) {
-                                return reject(err);
-                            } else {
-                                cfg.style = style;
-                                return resolve(true);
-                            }
-                        });
-                    });
-                });
-        }))
-    }).then(function () {
-        return _.extend({
-            cache: conf.cache,
-        }, conf.sources, conf.styles);
-    });
 }
 
 function getTileFromStore(state) {
@@ -282,6 +67,7 @@ function getTileFromStore(state) {
     switch (state.format) {
         case 'png':
         case 'webp':
+        case 'jpeg':
             state.isRaster = true;
             // fallthrough
         case 'vector.pbf':
@@ -293,38 +79,24 @@ function getTileFromStore(state) {
                     .then(sendReplyAsync)
                     .catch(function (err) {
                         // Failed, probably due to missing file
-                        return generateVector(state, err)
+                        if (!state.source.generate) throw err;
+                        return storage.generateVector(state)
                             .then(sendReplyAsync)
                     });
             } else {
-                return generateVector(state)
+                return stateToPromise(state)
+                    .then(storage.generateVector)
                     .then(sendReplyAsync);
             }
 
         case 'vector.pbf.generate':
-            // Refresh tile if it doesn't exist
-            if (!state.source.saveGenerated)
-                throw new Error('Tile generation not enabled');
-            return stateToPromise(state)
-                .then(function (state) { return state.path; })
-                .then(fsp.exists)
-                .then(function (exists) {
-                    if (exists) {
-                        state.response.send('exists');
-                        return true;
-                    } else {
-                        return generateVector(state)
-                            .then(function (state) { state.response.send('generated'); });
-                    }
-                });
-
         case 'vector.pbf.force':
-            // Force-refresh tile
-            if (!state.source.saveGenerated)
-                throw new Error('Tile generation not enabled');
-            return generateVector(state)
+            // Refresh tile if it doesn't ecist, or force regenerate
+            state.regenerate = state.format === 'vector.pbf.force';
+            return stateToPromise(state)
+                .then(storage.ensureVectorExists)
                 .then(function (state) {
-                    state.response.send('generated');
+                    state.response.send(state.storageState);
                 });
 
         default:
@@ -333,6 +105,46 @@ function getTileFromStore(state) {
 }
 
 function getTileFromStyle(state) {
+    var getStyleAsync = function(state) {
+        return new BBPromise(function (resolve, reject) {
+            var callback = function (err, data, headers) {
+                if (err) {
+                    reject(err);
+                } else {
+                    if ('summary' in state.response.req.query) {
+                        data = _(data).reduce(function (memo, layer) {
+                            memo[layer.name] = {
+                                features: layer.features.length,
+                                jsonsize: JSON.stringify(layer).length
+                            };
+                            return memo;
+                        }, {});
+                    } else if ('nogeo' in state.response.req.query) {
+                        var filter = function (val, key) {
+                            if (key === 'geometry') {
+                                return val.length;
+                            } else if (_.isArray(val)) {
+                                return _.map(val, filter);
+                            } else if (_.isObject(val)) {
+                                _.each(val, function(v, k) {
+                                    val[k] = filter(v, k);
+                                });
+                            }
+                            return val;
+                        };
+                        data = _.map(data, filter);
+                    }
+                    state.data = data;
+                    state.headers = headers;
+                    resolve(state);
+                }
+            };
+            callback.scale = state.scale;
+            callback.format = state.format;
+            state.source.style.getTile(state.z, state.x, state.y, callback);
+        });
+    };
+
     switch (state.format) {
         case 'json':
         case 'headers':
@@ -340,51 +152,13 @@ function getTileFromStyle(state) {
         case 'png':
         case 'jpeg':
             return stateToPromise(state)
-                .then(function (state) {
-                    return new BBPromise(function (resolve, reject) {
-                        var callback = function (err, data, headers) {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                if ('summary' in state.response.req.query) {
-                                    data = _(data).reduce(function (memo, layer) {
-                                        memo[layer.name] = {
-                                            features: layer.features.length,
-                                            jsonsize: JSON.stringify(layer).length
-                                        };
-                                        return memo;
-                                    }, {});
-                                } else if ('nogeo' in state.response.req.query) {
-                                    var filter = function (val, key) {
-                                        if (key === 'geometry') {
-                                            return val.length;
-                                        } else if (_.isArray(val)) {
-                                            return _.map(val, filter);
-                                        } else if (_.isObject(val)) {
-                                            _.each(val, function(v, k) {
-                                                val[k] = filter(v, k);
-                                            });
-                                        }
-                                        return val;
-                                    };
-                                    data = _.map(data, filter);
-                                }
-                                state.data = data;
-                                state.headers = headers;
-                                resolve(state);
-                            }
-                        };
-                        callback.scale = state.scale;
-                        callback.format = state.format;
-                        state.source.style.getTile(state.z, state.x, state.y, callback);
-                    });
-                })
+                .then(getStyleAsync)
                 .then(sendReplyAsync);
-
         default:
             throw new Error('Unknown format');
     }
 }
+
 /**
  * Web server (express) route handler to get requested tile
  * @param req request object
@@ -432,11 +206,12 @@ tmsource.prototype.getTile = function(z, x, y, callback) {
 
     var state = {source: conf[this.sourceId], z: z, x: x, y: y};
     stateToPromise(state)
-        .then(getDataFromStateAsync)
+        .then(storage.getDataFromStateAsync)
         .catch(function (err) {
             // Tile file does not exist, generate it
-            return generateVector(state, err)
-                .then(getDataFromStateAsync);
+            if (!state.source.generate) throw err;
+            return storage.generateVector(state)
+                .then(storage.getDataFromStateAsync);
         })
         .then(function (data) {
             callback(null, data, state.isRaster ? rasterHeaders : vectorHeaders);
