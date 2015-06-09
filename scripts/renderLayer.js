@@ -1,6 +1,6 @@
 #!/usr/bin/nodejs
 
-var request = require('request');
+var preq = require('preq');
 var util = require('util');
 var argv = require('minimist')(process.argv.slice(2));
 
@@ -60,15 +60,12 @@ function renderTile(threadNo) {
 
     var url = util.format('%s/%d/%d/%d.vector.pbf.%s', baseUrl, zxy[0], zxy[1], zxy[2], mode);
     console.log('Thread ' + threadNo + ' is requesting ' + url);
-    request.get(url)
-        .on('response', function(response) {
-            if (response.statusCode != 200) {
-                console.error(url + ': HTTP ' + response.statusCode);
-            }
+    preq.get(url)
+        .then(function(response) {
             renderTile(threadNo);
         })
-        .on('error', function(err) {
-            console.error(typeof err, err);
+        .catch(function(err) {
+            console.error(err.body.stack);
             process.exit(1);
         });
 }
