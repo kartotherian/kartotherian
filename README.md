@@ -1,6 +1,6 @@
-# service-template-node [![Build Status](https://travis-ci.org/wikimedia/service-template-node.svg?branch=master)](https://travis-ci.org/wikimedia/service-template-node)
+# kartotherian [![Build Status](https://travis-ci.org/wikimedia/kartotherian.svg?branch=master)](https://travis-ci.org/wikimedia/kartotherian)
 
-Template for creating MediaWiki Services in Node.js
+OSM Tile service for Wikipedia
 
 ## Getting Started
 
@@ -9,7 +9,7 @@ Template for creating MediaWiki Services in Node.js
 First, clone the repository
 
 ```
-git clone https://github.com/wikimedia/service-template-node.git
+git clone https://github.com/nyurik/kartotherian.git
 ```
 
 Install the dependencies
