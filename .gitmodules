@@ -13,3 +13,6 @@
 [submodule "static/mapbox-gl-leaflet"]
 	path = static/mapbox-gl-leaflet
 	url = https://github.com/mapbox/mapbox-gl-leaflet.git
+[submodule "scripts/mbutils"]
+	path = scripts/mbutils
+	url = https://github.com/nyurik/postgis-vt-util.git

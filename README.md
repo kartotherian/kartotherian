@@ -1,73 +1,46 @@
-# service-template-node [![Build Status](https://travis-ci.org/wikimedia/service-template-node.svg?branch=master)](https://travis-ci.org/wikimedia/service-template-node)
+# OSM Tile service for Wikipedia
 
-Template for creating MediaWiki Services in Node.js
+Maps nodejs server for vector-based tiles designed for Wikipedia and other sites. It ties together a number of MapBox components for vector and raster rendering.
 
-## Getting Started
+TODO:  Introduction!
 
-### Installation
+* The server code is based on the service-template-node [![Build Status](https://travis-ci.org/wikimedia/service-template-node.svg?branch=master)](https://travis-ci.org/wikimedia/service-template-node)
 
-First, clone the repository
 
+## Quick start:
+
+Requirements (on Debian Jessie):
 ```
-git clone https://github.com/wikimedia/service-template-node.git
-```
-
-Install the dependencies
-
-```
-cd service-template-node
-npm install
+apt-get install git build-essential postgresql-9.4-postgis-2.1 postgresql-contrib-9.4 proj-bin libgeos-dev osm2pgsql sqlite3 nodejs-legacy
 ```
 
-You are now ready to get to work!
+Get the code:
+```
+git clone https://github.com/nyurik/kartotherian.git    # Clone the repository
+cd kartotherian
+git submodule update --init                             # update submodules
+npm install                                             # install npm dependencies
+```
 
-* Inspect/modify/configure `app.js`
-* Add routes by placing files in `routes/` (look at the files there for examples)
+Edit configuration - config.yaml:
+```
+# 0 - one instance, 1+ - multi-instance with autorestart, ncpu - multi-instance, one per CPU
+num_workers: 0
 
-You can also read [the documentation](doc/).
+# Host port
+port: 4000
 
-### Running the examples
+# Comment out this line to listen to the web
+# interface: localhost
+```
 
-The template is a fully-working example, so you may try it right away. To
-start the server hosting the REST API, simply run (inside the repo's directory)
-
+Run karthotherian:
 ```
 npm start
 ```
 
-This starts an HTTP server listening on `localhost:6927`. There are several
-routes you may query (with a browser, or `curl` and friends):
+To view it, navigate to `/static` or `/static/gl`
 
-* `http://localhost:6927/_info/`
-* `http://localhost:6927/_info/name`
-* `http://localhost:6927/_info/version`
-* `http://localhost:6927/_info/home`
-* `http://localhost:6927/{domain}/v1/siteinfo{/prop}`
-* `http://localhost:6927/{domain}/v1/page/{title}`
-* `http://localhost:6927/{domain}/v1/page/{title}/lead`
-* `http://localhost:6927/ex/err/array`
-* `http://localhost:6927/ex/err/file`
-* `http://localhost:6927/ex/err/manual/error`
-* `http://localhost:6927/ex/err/manual/deny`
-* `http://localhost:6927/ex/err/auth`
-
-### Tests
-
-The template also includes a test suite a small set of executable tests. To fire
-them up, simply run:
-
-```
-npm test
-```
-
-If you haven't changed anything in the code (and you have a working Internet
-connection), you should see all the tests passing. As testing most of the code
-is an important aspect of service development, there is also a bundled tool
-reporting the percentage of code covered. Start it with:
-
-```
-npm run-script coverage
-```
 
 ### Troubleshooting
 
@@ -78,6 +51,3 @@ In a lot of cases when there is an issue with node it helps to recreate the
 rm -r node_modules
 npm install
 ```
-
-Enjoy!
-
