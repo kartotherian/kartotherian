@@ -39,6 +39,8 @@ Run karthotherian:
 npm start
 ```
 
+To view it, navigate to `/static` or `/static/gl`
+
 
 ### Troubleshooting
 
