@@ -50,7 +50,7 @@ function nextTile() {
             return false;
         }
     }
-    var result = [zoom, x, y];
+    var result = [zoom, y, x];
     x++;
 
     return result;
