@@ -1,6 +1,6 @@
-# Server for map tiles
+# OSM Tile service for Wikipedia
 
-Maps server for vector-based tiles, targeting Wikipedia and other sites. It ties together a number of MapBox components for vector and raster rendering.
+Maps nodejs server for vector-based tiles designed for Wikipedia and other sites. It ties together a number of MapBox components for vector and raster rendering.
 
 TODO:  Introduction!
 
