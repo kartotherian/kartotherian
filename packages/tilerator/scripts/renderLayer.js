@@ -10,7 +10,7 @@ if (argv._.length < 2) {
 }
 
 var format = argv.format || 'vector.pbf';
-var mode = argv.mode || 'force';
+var mode = argv.mode || 'generate';
 if (mode != 'generate' && mode != 'force' && mode != 'normal') {
     console.error('Unknown mode\n');
     process.exit(1);
