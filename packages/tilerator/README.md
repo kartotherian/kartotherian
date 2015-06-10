@@ -4,7 +4,7 @@ Maps nodejs server for vector-based tiles designed for Wikipedia and other sites
 
 TODO:  Introduction!
 
-* The server code is based on the service-template-node [![Build Status](https://travis-ci.org/wikimedia/service-template-node.svg?branch=master)](https://travis-ci.org/wikimedia/service-template-node)
+* The server code is based on the service-template-node - https://travis-ci.org/wikimedia/service-template-node
 
 
 ## Quick start:
@@ -88,26 +88,9 @@ psql -d gis -c 'CREATE EXTENSION hstore; CREATE EXTENSION postgis;'
 osm2pgsql --create --slim --flat-nodes nodes.bin -C 26000 --number-processes 8 --hstore planet-150601.osm.pbf
 ```
 
-### Download Water polygons in Mercator format from http://openstreetmapdata.com/data/water-polygons
-```
-$ curl -O http://data.openstreetmapdata.com/water-polygons-split-3857.zip
-$ unzip water-polygons-split-3857.zip
-$ cd water-polygons-split-3857
-$ shp2pgsql -I -s 3857 -g way water_polygons.shp water_polygons | psql -d gis
-$ psql gis
-gis=# select UpdateGeometrySRID('', 'water_polygons', 'way', 900913);
-\q
-
-$ psql -d gis -f map/osm-bright.tm2source/sql/water-indexes.sql
-```
-
-### Add mapbox's helper functions
-```
-psql -d gis -f scripts/mbutils/lib.sql
-```
-
 ### Get Kartotherian code
 ```
+cd /srv
 git clone https://github.com/nyurik/kartotherian.git    # Clone the repository
 cd kartotherian
 git submodule update --init                             # update submodules
@@ -126,12 +109,23 @@ port: 4000
 # interface: localhost
 ```
 
-### Run Karthotherian:
+### Download Water polygons in Mercator format from http://openstreetmapdata.com/data/water-polygons
 ```
-npm start
-```
-In browser, navigate to `localhost:4000/static`.
+$ curl -O http://data.openstreetmapdata.com/water-polygons-split-3857.zip
+$ unzip water-polygons-split-3857.zip && rm water-polygons-split-3857.zip
+$ cd water-polygons-split-3857
+$ shp2pgsql -I -s 3857 -g way water_polygons.shp water_polygons | psql -d gis
+$ psql gis
+gis=# select UpdateGeometrySRID('', 'water_polygons', 'way', 900913);
+\q
 
+$ psql -d gis -f map/osm-bright.tm2source/sql/water-indexes.sql
+```
+
+### Add mapbox's helper functions
+```
+psql -d gis -f scripts/mbutils/lib.sql
+```
 
 ### Add Varnish caching layer (optional)
 ```
@@ -171,6 +165,13 @@ systemctl restart varnish.service
 systemctl status varnish.service  # check the service started with the right params
 varnishstat  # monitor varnish performance
 ```
+
+### Run Karthotherian:
+```
+npm start
+```
+In browser, navigate to `localhost:4000/static`.
+
 
 ### Troubleshooting
 
