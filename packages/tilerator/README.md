@@ -34,6 +34,8 @@ port: 4000
 # interface: localhost
 ```
 
+Setup a osm2pgsql database named gis.
+
 Download Water polygons in Mercator format from http://openstreetmapdata.com/data/water-polygons:
 ```
 $ curl -O http://data.openstreetmapdata.com/water-polygons-split-3857.zip
