@@ -34,6 +34,25 @@ port: 4000
 # interface: localhost
 ```
 
+Download Water polygons in Mercator format from http://openstreetmapdata.com/data/water-polygons:
+```
+$ curl -O http://data.openstreetmapdata.com/water-polygons-split-3857.zip
+$ unzip water-polygons-split-3857.zip
+$ cd water-polygons-split-3857
+$ shp2pgsql -I -s 3857 -g way water_polygons.shp water_polygons | psql -d gis
+$ psql gis
+gis=# select UpdateGeometrySRID('', 'water_polygons', 'way', 900913);
+\q
+
+$ psql -d gis -f map/osm-bright.tm2source/sql/water-indexes.sql
+```
+
+Add mapbox's helper functions:
+```
+psql -d gis -f scripts/mbutils/lib.sql
+```
+
+
 Run karthotherian:
 ```
 npm start
