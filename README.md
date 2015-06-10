@@ -1,6 +1,6 @@
 # OSM Tile service for Wikipedia
 
-Maps nodejs server for vector-based tiles designed for Wikipedia and other sites. It ties together a number of MapBox components for vector and raster rendering.
+Maps nodejs server for vector-based tiles designed for Wikipedia and other sites. It ties together a number of MapBox components for vector and raster rendering based on Mapnik 3.
 
 TODO:  Introduction!
 
@@ -33,6 +33,8 @@ port: 4000
 # Comment out this line to listen to the web
 # interface: localhost
 ```
+
+Setup a osm2pgsql database named gis.
 
 Download Water polygons in Mercator format from http://openstreetmapdata.com/data/water-polygons:
 ```
