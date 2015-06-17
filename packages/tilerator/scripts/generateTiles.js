@@ -66,12 +66,12 @@ function init() {
         log: argv.vv ? 2 : (argv.v ? 1 : 0),
         start: new Date(),
         reportStats: function () {
-            var d = new Date() - config.start;
-            console.info('%d hr %d m %d s  %s',
-                Math.floor(d/1000/60/60),
-                Math.floor(d/1000/60),
-                Math.floor(d/1000),
-                JSON.stringify(stats));
+            var sec = Math.floor((new Date() - config.start) / 1000);
+            var hr = Math.floor(sec / 60 / 60);
+            sec -= hr * 60 * 60;
+            var min = Math.floor(sec/60);
+            sec -= min * 60;
+            console.info('%d hr %d m %d s  %s', hr, min, sec, JSON.stringify(stats));
         }
     };
 
@@ -91,7 +91,7 @@ function init() {
         nextTile = getOptimizedIteratorFunc(config.zoom);
     }
 
-    config.reporter = setInterval(config.reportStats, 3000);
+    config.reporter = setInterval(config.reportStats, 60000);
 
     return fsp
         .readFile(conf.normalizePath(config.configPath))
