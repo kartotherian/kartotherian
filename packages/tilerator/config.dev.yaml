@@ -38,12 +38,13 @@ services:
 
       sources:
         v1:
-          tm2source: ./map/osm-bright.tm2source/data.xml
-          generate: true
-          saveGenerated: true
-          cacheBaseDir: ./vectors
-
+          uri: file://./vectors?safe=true&filetype=pbf
+        v1gen:
+          uri: bridge://./map/osm-bright.tm2source/data.xml
+          enabled: false
+#        v1auto:
+#          uri: autogen://?store=v1&generator=v1gen&saveafter=5
       styles:
         s1:
           tm2: ./map/osm-bright.tm2/project.xml
-          sourceId: v1
+          source: v1
