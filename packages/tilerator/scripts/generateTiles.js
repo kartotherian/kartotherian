@@ -1,7 +1,7 @@
 #!/usr/bin/nodejs
 
 var _ = require('underscore');
-var argv = require('minimist')(process.argv.slice(2));
+var argv = require('minimist')(process.argv.slice(2), {boolean: ['quiet']});
 var BBPromise = require('bluebird');
 var buffertools = require('buffertools');
 var conf = require('../lib/conf');
@@ -16,7 +16,7 @@ var stats;
 
 function init() {
     if (argv._.length < 3) {
-        console.error('Usage: nodejs renderLayer2.js [-v|-vv] [--config=<configfile>] [--threads=num] [--maxsize=value]  [-q]  [--ozmaxsize=value] [--xy=4,10] [--minzoom=6] storeid generatorid start_zoom [end_zoom]\n');
+        console.error('Usage: nodejs renderLayer2.js [-v|-vv] [--config=<configfile>] [--threads=num] [--maxsize=value]  [--quiet]  [--ozmaxsize=value] [--xy=4,10] [--minzoom=6] storeid generatorid start_zoom [end_zoom]\n');
         process.exit(1);
     }
 
@@ -31,7 +31,7 @@ function init() {
         maxsize: argv.maxsize ? parseInt(argv.maxsize) : 5 * 1024,
         // If given, sets maximum size of the overzoom tile to be used. Prevents very large tiles from being heavily used (might be slow)
         ozmaxsize: argv.ozmaxsize ? parseInt(argv.ozmaxsize) : 100 * 1024,
-        quiet: argv.q,
+        quiet: argv.quiet,
         minzoom: argv.minzoom ? parseInt(argv.minzoom) : 6,
         xy: argv.xy,
         // verbosity
@@ -191,12 +191,11 @@ function createOverzoomList(loc) {
     for (var z = loc.z - 1; z >= config.minzoom; z--) {
         x = Math.floor(x / 2);
         y = Math.floor(y / 2);
-        var t = tilecache[z];
+        var poz = loc.z - 1 - z;
+        var t = tilecache[poz];
         if (!t || t.x !== x || t.y !== y) {
             stats.cachemiss++;
-            tilecache[loc.z - 1 - z] = {z: z, x: x, y: y};
-        //} else {
-        //    break; // Optimization: assume all higher levels are already correct
+            tilecache[poz] = {z: z, x: x, y: y};
         }
     }
     return tilecache.slice(0); // clone array
