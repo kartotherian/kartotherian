@@ -13,40 +13,11 @@ var zlib = require('zlib');
 
 var generator, storage, config;
 var nextTile;
-var stats = {
-    nosave: 0,
-    notileabove: 0,
-    ozcmp: 0,
-    ozequals: 0,
-    ozerror: 0,
-    ozmissing: 0,
-    oznoteq: 0,
-    ozload: 0,
-    ozloadempty: 0,
-    ozloaderror: 0,
-    ozloadok: 0,
-    oztoobig: 0,
-    ozunkerror: 0,
-    ozunzipempty: 0,
-    save: 0,
-    started: 0,
-    tilegen: 0,
-    tilegenempty: 0,
-    tilegenerr: 0,
-    tilegenok: 0,
-    tilenodata: 0,
-    tiletoobig: 0,
-    unknerror: 0,
-    unziperr: 0,
-    unzipgz: 0,
-    unzipinfl: 0,
-    unzipno: 0,
-    unzipok: 0
-};
+var stats;
 
 function init() {
     if (argv._.length < 3) {
-        console.error('Usage: nodejs renderLayer2.js [-v|-vv] [--config=<configfile>] [--threads=num] [--maxsize=value]  [--ozmaxsize=value] [--xy=4,10] [--minzoom=5] storeid generatorid zoom\n');
+        console.error('Usage: nodejs renderLayer2.js [-v|-vv] [--config=<configfile>] [--threads=num] [--maxsize=value]  [-q]  [--ozmaxsize=value] [--xy=4,10] [--minzoom=6] storeid generatorid zoom [end_zoom]\n');
         process.exit(1);
     }
 
@@ -54,13 +25,15 @@ function init() {
         storeid: argv._[0],
         generatorid: argv._[1],
         zoom: parseInt(argv._[2]),
+        endZoom: parseInt(argv._[3]) || startZoom,
         configPath: argv.config || 'config.yaml',
         threads: argv.threads || 1,
         // If tile is bigger than maxsize (compressed), it will always be saved. Set this value to 0 to save everything
         maxsize: argv.maxsize ? parseInt(argv.maxsize) : 5 * 1024,
         // If given, sets maximum size of the overzoom tile to be used. Prevents very large tiles from being heavily used (might be slow)
         ozmaxsize: argv.ozmaxsize ? parseInt(argv.ozmaxsize) : 100 * 1024,
-        minzoom: argv.minzoom ? parseInt(argv.minzoom) : 5,
+        quiet: argv.q,
+        minzoom: argv.minzoom ? parseInt(argv.minzoom) : 6,
         xy: argv.xy,
         // verbosity
         log: argv.vv ? 2 : (argv.v ? 1 : 0),
@@ -71,7 +44,7 @@ function init() {
             sec -= hr * 60 * 60;
             var min = Math.floor(sec/60);
             sec -= min * 60;
-            console.info('%d:%d:%d %s', hr, min, sec, JSON.stringify(stats));
+            console.info('%d:%d:%d Z=%d %s', hr, min, sec, config.zoom, JSON.stringify(stats));
         }
     };
 
@@ -91,7 +64,8 @@ function init() {
         nextTile = getOptimizedIteratorFunc(config.zoom);
     }
 
-    config.reporter = setInterval(config.reportStats, 60000);
+    if (!quiet)
+        config.reporter = setInterval(config.reportStats, 60000);
 
     return fsp
         .readFile(conf.normalizePath(config.configPath))
@@ -323,12 +297,49 @@ function renderTile(threadNo) {
         });
 }
 
-init().then(function() {
+function runZoom(zoom) {
+    config.zoom = zoom;
+    stats = {
+        nosave: 0,
+        notileabove: 0,
+        ozcmp: 0,
+        ozequals: 0,
+        ozerror: 0,
+        ozmissing: 0,
+        oznoteq: 0,
+        ozload: 0,
+        ozloadempty: 0,
+        ozloaderror: 0,
+        ozloadok: 0,
+        oztoobig: 0,
+        ozunkerror: 0,
+        ozunzipempty: 0,
+        save: 0,
+        started: 0,
+        tilegen: 0,
+        tilegenempty: 0,
+        tilegenerr: 0,
+        tilegenok: 0,
+        tilenodata: 0,
+        tiletoobig: 0,
+        unknerror: 0,
+        unziperr: 0,
+        unzipgz: 0,
+        unzipinfl: 0,
+        unzipno: 0,
+        unzipok: 0
+    };
+
     return BBPromise
         .all(_.map(_.range(config.threads), renderTile))
         .then(function () {
-            clearInterval(config.reporter);
+            if (config.reporter)
+                clearInterval(config.reporter);
             config.reportStats();
-            console.log('DONE!')
+            if (zoom < config.endZoom) {
+                return runZoom(zoom + 1);
+            }
         });
-});
+}
+
+init().then(runZoom(config.zoom)).then(function() { console.log('DONE!'); });
