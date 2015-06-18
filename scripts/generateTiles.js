@@ -7,7 +7,6 @@ var buffertools = require('buffertools');
 var conf = require('../lib/conf');
 var fsp = require('fs-promise');
 var mapnik = require('mapnik');
-var util = require('util');
 var yaml = require('js-yaml');
 var zlib = require('zlib');
 
@@ -44,7 +43,7 @@ function init() {
             sec -= hr * 60 * 60;
             var min = Math.floor(sec / 60);
             sec -= min * 60;
-            console.info('%d:%d:%d Z=%d %s', hr, min, sec, config.zoom, JSON.stringify(stats));
+            console.log('%d:%d:%d Z=%d %s', hr, min, sec, config.zoom, JSON.stringify(stats));
         }
     };
     config.zoom = config.startZoom;
@@ -66,11 +65,11 @@ function init() {
         })
         .then(function (cfg) {
             if (!cfg.hasOwnProperty(config.storeid)) {
-                console.error('Invalid storeid\n');
+                console.error('Invalid storeid');
                 process.exit(1);
             }
             if (!cfg.hasOwnProperty(config.generatorid)) {
-                console.error('Invalid generatorid\n');
+                console.error('Invalid generatorid');
                 process.exit(1);
             }
             storage = cfg[config.storeid].handler;
@@ -92,28 +91,31 @@ function xyToIndex(x, y) {
     return result;
 }
 
+function indexToXY(index) {
+    // Convert a single integer into the x,y coordinates
+    // Given a 64bit integer, extract every odd or even bit into one (32bit) value
+    var x = 0, y = 0, mult = 1;
+    while (index) {
+        x += mult * (index % 2);
+        index = Math.floor(index / 2);
+        y += mult * (index % 2);
+        index = Math.floor(index / 2);
+        mult *= 2;
+    }
+    return [x, y];
+}
+
 function getOptimizedIteratorFunc(zoom, start, end) {
     var index = start || 0,
         maximum = end || Math.pow(4, zoom);
-    console.info("Generating %d tiles", maximum - index);
+    console.log("Generating %d tiles", maximum - index);
 
-    var extractBits = function (value, isOdd) {
-        // Given a 64bit integer, extract every odd or even bit into one (32bit) value
-        var result = 0;
-        if (!isOdd) {
-            value = Math.floor(value / 2);
-        }
-        while (value) {
-            result = (result * 2) + (value % 2);
-            value = Math.floor(value / 4);
-        }
-        return result;
-    };
     return function () {
         if (index >= maximum) {
             return false;
         }
-        var loc = {z: zoom, x: extractBits(index, true), y: extractBits(index, false)};
+        var xy = indexToXY(index);
+        var loc = {z: zoom, x: xy[0], y: xy[1]};
         index++;
         return loc;
     };
@@ -125,7 +127,7 @@ function getTilePromise(loc, generate) {
             var src = generate ? generator : storage;
             if (generate) stats.tilegen++; else stats.ozload++;
             if (config.log > 1)
-                console.log(util.format('INFO: %s.getTile(%d,%d,%d)', generate ? 'generator' : 'storage', loc.z, loc.x, loc.y));
+                console.log('%s.getTile(%d,%d,%d)', generate ? 'generator' : 'storage', loc.z, loc.x, loc.y);
             src.getTile(loc.z, loc.x, loc.y, function (err, tile) {
                 if (err) {
                     if (err.message === 'Tile does not exist') {
@@ -162,7 +164,7 @@ function uncompressThen(loc) {
     }
     return new BBPromise(function (fulfill, reject) {
         if (config.log > 1)
-            console.log(util.format('INFO: %s(%d,%d,%d)', compression, loc.z, loc.x, loc.y));
+            console.log('%s(%d,%d,%d)', compression, loc.z, loc.x, loc.y);
         zlib[compression](loc.data, function (err, data) {
             if (err) {
                 stats.unziperr++;
@@ -191,9 +193,10 @@ function createOverzoomList(loc) {
         y = Math.floor(y / 2);
         var t = tilecache[z];
         if (!t || t.x !== x || t.y !== y) {
+            stats.cachemiss++;
             tilecache[loc.z - 1 - z] = {z: z, x: x, y: y};
-        } else {
-            break; // Optimization: assume all higher levels are already correct
+        //} else {
+        //    break; // Optimization: assume all higher levels are already correct
         }
     }
     return tilecache.slice(0); // clone array
@@ -233,8 +236,8 @@ function renderTile(threadNo) {
                 .catch(function (err) {
                     stats.ozunkerror++;
                     oz.error = err || true;
-                    console.error(util.format('Thread %d failed to get overzoom (%d,%d,%d): %s', threadNo, oz.z, oz.x, oz.y,
-                        (err.body && (err.body.stack || err.body.detail)) || (err && err.stack) || err));
+                    console.error('Thread %d failed to get overzoom (%d,%d,%d): %s', threadNo, oz.z, oz.x, oz.y,
+                        (err.body && (err.body.stack || err.body.detail)) || err.stack || err);
                 });
         }
         return oz.promise.then(function (oz) {
@@ -281,8 +284,7 @@ function renderTile(threadNo) {
         .then(zoomOutAndTest)
         .then(function (saveTile) {
             if (config.log > 0)
-                console.log(util.format('Thread %d %s (%d,%d,%d)',
-                    threadNo, saveTile ? 'saving' : 'skipping', loc.z, loc.x, loc.y));
+                console.log('Thread %d %s (%d,%d,%d)', threadNo, saveTile ? 'saving' : 'skipping', loc.z, loc.x, loc.y);
             if (saveTile) {
                 stats.save++;
                 return new BBPromise(function (fulfill, reject) {
@@ -299,8 +301,8 @@ function renderTile(threadNo) {
             }
         }).catch(function (err) {
             stats.unknerror++;
-            console.error(util.format('Thread %d failed to process (%d,%d,%d): %s', threadNo, loc.z, loc.x, loc.y,
-                (err.body && (err.body.stack || err.body.detail)) || (err && err.stack) || err));
+            console.error('Thread %d failed to process (%d,%d,%d): %s', threadNo, loc.z, loc.x, loc.y,
+                (err.body && (err.body.stack || err.body.detail)) || err.stack || err);
         }).then(function () {
             return renderTile(threadNo);
         });
@@ -308,17 +310,18 @@ function renderTile(threadNo) {
 
 function runZoom() {
     stats = {
+        cachemiss: 0,
         nosave: 0,
         notileabove: 0,
         ozcmp: 0,
         ozequals: 0,
         ozerror: 0,
-        ozmissing: 0,
-        oznoteq: 0,
         ozload: 0,
         ozloadempty: 0,
         ozloaderror: 0,
         ozloadok: 0,
+        ozmissing: 0,
+        oznoteq: 0,
         oztoobig: 0,
         ozunkerror: 0,
         ozunzipempty: 0,
