@@ -44,7 +44,7 @@ services:
           enabled: false
         v1auto:
           # Uses other sources, must be last in the list
-          uri: autogen://?store=v1&generator=v1gen&saveafter=5&minzoom=0&maxzoom=16
+          uri: autogen://?store=v1&generator=v1gen&saveafter=8&minzoom=0&maxzoom=16
       styles:
         s1:
           tm2: ./map/osm-bright.tm2/project.xml
