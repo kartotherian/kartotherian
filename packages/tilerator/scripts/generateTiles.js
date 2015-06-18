@@ -17,15 +17,15 @@ var stats;
 
 function init() {
     if (argv._.length < 3) {
-        console.error('Usage: nodejs renderLayer2.js [-v|-vv] [--config=<configfile>] [--threads=num] [--maxsize=value]  [-q]  [--ozmaxsize=value] [--xy=4,10] [--minzoom=6] storeid generatorid zoom [end_zoom]\n');
+        console.error('Usage: nodejs renderLayer2.js [-v|-vv] [--config=<configfile>] [--threads=num] [--maxsize=value]  [-q]  [--ozmaxsize=value] [--xy=4,10] [--minzoom=6] storeid generatorid start_zoom [end_zoom]\n');
         process.exit(1);
     }
 
     config = {
         storeid: argv._[0],
         generatorid: argv._[1],
-        zoom: parseInt(argv._[2]),
-        endZoom: parseInt(argv._[3]) || startZoom,
+        startZoom: parseInt(argv._[2]),
+        endZoom: parseInt(argv._[3]) || parseInt(argv._[2]),
         configPath: argv.config || 'config.yaml',
         threads: argv.threads || 1,
         // If tile is bigger than maxsize (compressed), it will always be saved. Set this value to 0 to save everything
@@ -42,29 +42,20 @@ function init() {
             var sec = Math.floor((new Date() - config.start) / 1000);
             var hr = Math.floor(sec / 60 / 60);
             sec -= hr * 60 * 60;
-            var min = Math.floor(sec/60);
+            var min = Math.floor(sec / 60);
             sec -= min * 60;
             console.info('%d:%d:%d Z=%d %s', hr, min, sec, config.zoom, JSON.stringify(stats));
         }
     };
-
+    config.zoom = config.startZoom;
     if (config.xy) {
         // Only yield one value given by x,y pair
         config.xy = _.map(config.xy.split(','), function (v) {
             return parseInt(v);
         });
-        config.xy = {z: config.zoom, x: config.xy[0], y: config.xy[1]};
-        nextTile = function () {
-            // Yields object first time, and false on all subsequent calls
-            var loc = config.xy;
-            config.xy = false;
-            return loc;
-        };
-    } else {
-        nextTile = getOptimizedIteratorFunc(config.zoom);
     }
 
-    if (!quiet)
+    if (!config.quiet)
         config.reporter = setInterval(config.reportStats, 60000);
 
     return fsp
@@ -87,9 +78,24 @@ function init() {
         });
 }
 
-function getOptimizedIteratorFunc(zoom) {
-    var index = 0, maximum = Math.pow(4, zoom);
-    console.info("Generating %d tiles", maximum);
+function xyToIndex(x, y) {
+    // Convert x,y into a single integer with alternating bits
+    var mult = 1, result = 0;
+    while (x || y) {
+        result += (mult * (x % 2));
+        x = Math.floor(x / 2);
+        mult *= 2;
+        result += (mult * (y % 2));
+        y = Math.floor(y / 2);
+        mult *= 2;
+    }
+    return result;
+}
+
+function getOptimizedIteratorFunc(zoom, start, end) {
+    var index = start || 0,
+        maximum = end || Math.pow(4, zoom);
+    console.info("Generating %d tiles", maximum - index);
 
     var extractBits = function (value, isOdd) {
         // Given a 64bit integer, extract every odd or even bit into one (32bit) value
@@ -160,11 +166,11 @@ function uncompressThen(loc) {
         zlib[compression](loc.data, function (err, data) {
             if (err) {
                 stats.unziperr++;
-                return reject(err);
+                reject(err);
             } else {
                 stats.unzipok++;
                 loc.uncompressed = data;
-                return fulfill(loc);
+                fulfill(loc);
             }
         });
     });
@@ -281,7 +287,10 @@ function renderTile(threadNo) {
                 stats.save++;
                 return new BBPromise(function (fulfill, reject) {
                     storage.putTile(loc.z, loc.x, loc.y, loc.data, function (err) {
-                        return err ? reject(err) : fulfill();
+                        if (err)
+                            reject(err);
+                        else
+                            fulfill();
                     });
                 });
             } else {
@@ -297,8 +306,7 @@ function renderTile(threadNo) {
         });
 }
 
-function runZoom(zoom) {
-    config.zoom = zoom;
+function runZoom() {
     stats = {
         nosave: 0,
         notileabove: 0,
@@ -330,16 +338,27 @@ function runZoom(zoom) {
         unzipok: 0
     };
 
+    if (config.xy) {
+        // Yield all values under the original X,Y square
+        var mult = Math.pow(2, config.zoom - config.startZoom),
+            x = config.xy[0] * mult,
+            y = config.xy[1] * mult;
+        nextTile = getOptimizedIteratorFunc(config.zoom, xyToIndex(x, y), Math.pow(4, config.zoom - config.startZoom));
+    } else {
+        nextTile = getOptimizedIteratorFunc(config.zoom);
+    }
+
     return BBPromise
         .all(_.map(_.range(config.threads), renderTile))
         .then(function () {
             if (config.reporter)
                 clearInterval(config.reporter);
             config.reportStats();
-            if (zoom < config.endZoom) {
-                return runZoom(zoom + 1);
+            config.zoom++;
+            if (config.zoom <= config.endZoom) {
+                return runZoom();
             }
         });
 }
 
-init().then(runZoom(config.zoom)).then(function() { console.log('DONE!'); });
+init().then(function() { return runZoom(); }).then(function() { console.log('DONE!'); });
