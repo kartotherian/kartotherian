@@ -71,7 +71,7 @@ function init() {
             sec -= hr * 60 * 60;
             var min = Math.floor(sec/60);
             sec -= min * 60;
-            console.info('%d hr %d m %d s  %s', hr, min, sec, JSON.stringify(stats));
+            console.info('%d:%d:%d %s', hr, min, sec, JSON.stringify(stats));
         }
     };
 
@@ -115,6 +115,8 @@ function init() {
 
 function getOptimizedIteratorFunc(zoom) {
     var index = 0, maximum = Math.pow(4, zoom);
+    console.info("Generating %d tiles", maximum);
+
     var extractBits = function (value, isOdd) {
         // Given a 64bit integer, extract every odd or even bit into one (32bit) value
         var result = 0;
@@ -279,8 +281,8 @@ function renderTile(threadNo) {
             stats[stat]++;
             stat += oz.z;
             stats[stat] = (stat in stats) ? stats[stat] + 1 : 1;
-            return equals;
-        })
+            return !equals;
+        });
     };
 
     loc.overzoom = createOverzoomList(loc);
