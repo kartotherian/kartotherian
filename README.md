@@ -11,7 +11,7 @@ TODO:  Introduction!
 
 ### Requirements (on Debian Jessie)
 ```
-apt-get install sudo git unzip curl build-essential postgresql-9.4-postgis-2.1 postgresql-contrib-9.4 proj-bin libgeos-dev osm2pgsql sqlite3 nodejs-legacy
+apt-get install sudo git unzip curl build-essential postgresql-9.4-postgis-2.1 postgresql-contrib-9.4 proj-bin libgeos-dev osm2pgsql sqlite3 nodejs-legacy npm
 ```
 
 ### Initial server settings (The notes are for the user "yurik")
