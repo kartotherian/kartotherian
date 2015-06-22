@@ -172,6 +172,11 @@ npm start
 ```
 In browser, navigate to `localhost:4000/static`.
 
+For GL display, go to the static/mapbox-gl-js folder and run
+```
+npm install
+```
+Then in browser, navigate to `localhost:4000/static/gl`.
 
 ### Troubleshooting
 
