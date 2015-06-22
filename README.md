@@ -14,6 +14,8 @@ Looking to create high res images of maps? Abaculus was written for use in [Mapb
 
 ### usage
 
+Usage and example formatting below, or see the [tests](https://github.com/mapbox/abaculus/blob/master/test/test.js#L158-L204) for a more robust example with a `getTile` function.
+
 #### input:
 `scale`: integer between 1-4 and sets resolution (`scale: 1` is 72dpi, `scale: 4`, is 288dpi)
 
@@ -31,7 +33,7 @@ Looking to create high res images of maps? Abaculus was written for use in [Mapb
 
 `quality` (optional): when used with `jpeg` format, accepts 1-100 and defaults to 80. when used with `png` format, accepts 2-256 (# of colors to reduce the image to) and defaults to none.
 
-`getTile`: a function that returns a tile buffer (png or otherwise) and headers given `z`, `x`, `y`, and a callback, such as from [tilelive-vector](https://github.com/mapbox/tilelive-vector/blob/master/index.js#L119-L218) or this [test function](https://github.com/mapbox/abaculus/blob/master/test/test.js#L126-L147).
+`getTile`: a function that returns a tile buffer (png or otherwise) and headers given `z`, `x`, `y`, and a callback, such as from [tilelive-vector](https://github.com/mapbox/tilelive-vector/blob/master/index.js#L119-L218) or this [test function](https://github.com/mapbox/abaculus/blob/master/test/test.js#L184-L204).
 
 `limit` (optional): max width or height of generated image in pixels. Default is `19008`.
 
