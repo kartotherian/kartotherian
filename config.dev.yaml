@@ -37,15 +37,18 @@ services:
       csp: default-src 'self'; script-src 'self' 'unsafe-inline';
 
       sources:
-        v1:
+        v1store:
           uri: file://./vectors?safe=true&filetype=pbf
         v1gen:
           uri: bridge://./map/osm-bright.tm2source/data.xml
-          enabled: false
-        v1auto:
+        v1:
           # Uses other sources, must be last in the list
-          uri: autogen://?store=v1&generator=v1gen&saveafter=8&minzoom=0&maxzoom=16
+          uri: autogen://?store=v1store&generator=v1gen&saveafter=8&minzoom=0&maxzoom=16
+        v1a:
+          uri: overzoom://?source=v1store
+          public: true
       styles:
         s1:
           tm2: ./map/osm-bright.tm2/project.xml
           source: v1
+          public: true

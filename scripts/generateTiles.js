@@ -1,5 +1,7 @@
 #!/usr/bin/nodejs
 
+'use strict';
+
 var _ = require('underscore');
 var argv = require('minimist')(process.argv.slice(2), {boolean: ['quiet']});
 var BBPromise = require('bluebird');
@@ -93,7 +95,7 @@ function xyToIndex(x, y) {
 
 function indexToXY(index) {
     // Convert a single integer into the x,y coordinates
-    // Given a 64bit integer, extract every odd or even bit into one (32bit) value
+    // Given a 64bit integer, extract every odd/even bit into two 32bit values
     var x = 0, y = 0, mult = 1;
     while (index) {
         x += mult * (index % 2);
@@ -151,6 +153,7 @@ function uncompressThen(loc) {
     if (typeof loc.uncompressed !== 'undefined' || !loc.data || !loc.data.length || loc.error) {
         return loc;
     }
+    // TODO: use util.uncompressAsync() instead of this code
     var compression = false;
     if (loc.data[0] === 0x1F && loc.data[1] === 0x8B) {
         stats.unzipgz++;
