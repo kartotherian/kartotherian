@@ -183,8 +183,8 @@ function getTile(req, res, next) {
         throw new Error('Unknown source');
     }
     var source = conf[req.params.src];
-    if (!source.enabled) {
-        throw new Error('Disabled source');
+    if (!source.public) {
+        throw new Error('Source not public');
     }
 
     var state = {
