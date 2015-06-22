@@ -81,7 +81,7 @@ In bash:
 ```
 service postgresql start
 sudo -u postgres createuser -s yurik
-createdb gis
+createdb -E UTF8 -T template0 gis
 psql -d gis -c 'CREATE EXTENSION hstore; CREATE EXTENSION postgis;'
 
 # Once OSM dump is downloaded, import. Takes about 14 hours on a reasonable SSD server.
@@ -172,6 +172,11 @@ npm start
 ```
 In browser, navigate to `localhost:4000/static`.
 
+For GL display, go to the static/mapbox-gl-js folder and run
+```
+npm install
+```
+Then in browser, navigate to `localhost:4000/static/gl`.
 
 ### Troubleshooting
 
