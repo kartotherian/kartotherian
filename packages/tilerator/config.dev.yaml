@@ -37,15 +37,19 @@ services:
       csp: default-src 'self'; script-src 'self' 'unsafe-inline';
 
       sources:
+        # Source ordering is important for ref value resolution - if uri is not fully resolved before it is referenced,
+        # it might be included in incomplete form.  TODO: detect dependencies/throw on circular
         v1store:
           uri: file://./vectors?safe=true&filetype=pbf
         v1gen:
           uri: bridge://./map/osm-bright.tm2source/data.xml
-        v1:
-          # Uses other sources, must be last in the list
-          uri: autogen://?store=v1store&generator=v1gen&saveafter=8&minzoom=0&maxzoom=16
         v1a:
-          uri: overzoom://?source=v1store
+          # Uses other sources, must be last in the list
+          uri: autogen://?saveafter=8&minzoom=0&maxzoom=16
+          ref: {store: v1store, generator: v1gen}
+        v1:
+          uri: overzoom://
+          ref: {source: v1store}
           public: true
       styles:
         s1:

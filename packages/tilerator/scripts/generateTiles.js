@@ -2,15 +2,17 @@
 
 'use strict';
 
+var promisify = require('../lib/promisify');
+var BBPromise = require('bluebird');
+var util = require('../lib/util');
+var zlib = require('zlib');
 var _ = require('underscore');
 var argv = require('minimist')(process.argv.slice(2), {boolean: ['quiet']});
-var BBPromise = require('bluebird');
 var buffertools = require('buffertools');
 var conf = require('../lib/conf');
 var fsp = require('fs-promise');
 var mapnik = require('mapnik');
 var yaml = require('js-yaml');
-var zlib = require('zlib');
 
 var generator, storage, config;
 var nextTile;
@@ -39,13 +41,13 @@ function init() {
         // verbosity
         log: argv.vv ? 2 : (argv.v ? 1 : 0),
         start: new Date(),
-        reportStats: function () {
+        reportStats: function (done) {
             var sec = Math.floor((new Date() - config.start) / 1000);
             var hr = Math.floor(sec / 60 / 60);
             sec -= hr * 60 * 60;
             var min = Math.floor(sec / 60);
             sec -= min * 60;
-            console.log('%d:%d:%d Z=%d %s', hr, min, sec, config.zoom, JSON.stringify(stats));
+            console.log('%s%d:%d:%d Z=%d %s', done ? 'DONE: ' : '', hr, min, sec, config.zoom, JSON.stringify(stats));
         }
     };
     config.zoom = config.startZoom;
@@ -149,7 +151,7 @@ function getTilePromise(loc, generate) {
         });
 }
 
-function uncompressThen(loc) {
+function uncompressAsync(loc) {
     if (typeof loc.uncompressed !== 'undefined' || !loc.data || !loc.data.length || loc.error) {
         return loc;
     }
@@ -234,7 +236,7 @@ function renderTile(threadNo) {
                     }
                     return oz;
                 })
-                .then(uncompressThen)
+                .then(uncompressAsync)
                 .catch(function (err) {
                     stats.ozunkerror++;
                     oz.error = err || true;
@@ -257,10 +259,7 @@ function renderTile(threadNo) {
                 throw new Error('uncompressed is empty');
             }
             stats.ozcmp++;
-            var target = new mapnik.VectorTile(loc.z, loc.x, loc.y);
-            target.setData(oz.uncompressed);
-            target.parse();
-            var ozdata = target.getData();
+            var ozdata = util.extractSubTile(oz.uncompressed, loc.z, loc.x, loc.y, oz.z, oz.x, oz.y);
             var equals = buffertools.equals(loc.uncompressed, ozdata);
             var stat = equals ? 'ozequals' : 'oznoteq';
             stats[stat]++;
@@ -281,7 +280,7 @@ function renderTile(threadNo) {
                 stats.tiletoobig++;
                 return true; // generated tile is too big, save
             }
-            return uncompressThen(loc);
+            return uncompressAsync(loc);
         })
         .then(zoomOutAndTest)
         .then(function (saveTile) {
@@ -358,7 +357,7 @@ function runZoom() {
         .then(function () {
             if (config.reporter)
                 clearInterval(config.reporter);
-            config.reportStats();
+            config.reportStats(true);
             config.zoom++;
             if (config.zoom <= config.endZoom) {
                 return runZoom();

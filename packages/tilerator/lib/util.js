@@ -9,6 +9,8 @@ var bunyan = require('bunyan');
 var qs = require('querystring');
 var urllib = require('url');
 var promisify = require('./promisify');
+var mapnik = require('mapnik');
+var zlib     = require('zlib');
 
 /**
  * Error instance wrapping HTTP error responses
@@ -262,11 +264,44 @@ function uncompressAsync(data) {
     });
 }
 
+/**
+ * Extract portion of a higher zoom tile as a new tile
+ * @param baseTileRawPbf uncompressed vector tile pbf
+ * @param z desired zoom of the subtile
+ * @param x subtile's x
+ * @param y subtile's y
+ * @param bz source tile's zoom
+ * @param bx source tile's x
+ * @param by source tile's y
+ * @returns {string|*}
+ */
+function extractSubTile(baseTileRawPbf, z, x, y, bz, bx, by) {
+    if (bz >= z) {
+        throw new Error('Base tile zoom is not less than z');
+    }
+    var baseTile = new mapnik.VectorTile(bz, bx, by);
+    baseTile.setData(baseTileRawPbf);
+    var subTile = new mapnik.VectorTile(+z, +x, +y);
+    subTile.composite([baseTile]);
+    return subTile.getData();
+}
+
+function compressPbfAsync2(data, headers) {
+    return zlib
+        .gzipAsync(data)
+        .then(function(pbfz) {
+                headers['Content-Encoding'] = 'gzip';
+            return [pbfz, headers];
+        });
+}
+
 module.exports = {
     HTTPError: HTTPError,
     normalizeUri: normalizeUri,
     router: createRouter,
     setErrorHandler: setErrorHandler,
     uncompressAsync: uncompressAsync,
-    wrapRouteHandlers: wrapRouteHandlers
+    extractSubTile: extractSubTile,
+    wrapRouteHandlers: wrapRouteHandlers,
+    compressPbfAsync2: compressPbfAsync2
 };
