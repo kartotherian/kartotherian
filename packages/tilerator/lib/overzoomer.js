@@ -54,13 +54,13 @@ OverZoomer.prototype.getTile = function(z, x, y, callback) {
                 // either this is exactly what we were asked for initially, or an error
                 callback(err, pbfz, headers);
             } else {
+                // Extract portion of the higher zoom tile as a new tile
                 util.uncompressAsync(pbfz)
                     .then(function (pbf) {
-                        // Extract portion of the higher zoom tile as a new tile
-                        return [util.extractSubTile(pbf, z, x, y, bz, bx, by), headers];
-                    })
-                    .spread(util.compressPbfAsync2)
-                    .nodeify(callback, {spread: true});
+                        return util.extractSubTileAsync(pbf, z, x, y, bz, bx, by);
+                    }).then(function (pbf) {
+                        return util.compressPbfAsync2(pbf, headers);
+                    }).nodeify(callback, {spread: true});
             }
         });
     }
