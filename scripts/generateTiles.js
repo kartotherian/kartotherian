@@ -263,7 +263,7 @@ function renderTile(threadNo) {
             var equals = buffertools.equals(loc.uncompressed, ozdata);
             var stat = equals ? 'ozequals' : 'oznoteq';
             stats[stat]++;
-            stat += oz.z;
+            stat += String("00" + oz.z).slice(String(oz.z).length);;
             stats[stat] = (stat in stats) ? stats[stat] + 1 : 1;
             return !equals;
         });
@@ -357,7 +357,7 @@ function runZoom() {
         .then(function () {
             if (config.reporter)
                 clearInterval(config.reporter);
-            config.reportStats(true);
+            config.reportStats(truest);
             config.zoom++;
             if (config.zoom <= config.endZoom) {
                 return runZoom();
