@@ -1,10 +1,10 @@
 {
-    "description": "",
-    "center": "0,0,2",
     "bounds": "-180,-85.0511,180,85.0511",
-    "minzoom": "0",
-    "version": "1.0.0",
+    "center": "0,0,2",
+    "description": "",
+    "maxzoom": 15,
+    "minzoom": 0,
+    "name": "empty",
     "template": "",
-    "maxzoom": "15",
-    "name": "empty"
+    "version": "1.0.0"
 }
