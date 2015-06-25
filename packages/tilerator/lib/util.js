@@ -255,9 +255,9 @@ function uncompressAsync(data) {
             return result;
         }
         if (data[0] == 0x1F && data[1] == 0x8B) {
-            return promisify.zlibGunzipAsync(data);
+            return zlib.gunzipAsync(data);
         } else if (data[0] == 0x78 && data[1] == 0x9C) {
-            return promisify.zlibInflateAsync(data);
+            return zlib.inflateAsync(data);
         } else {
             return data;
         }
