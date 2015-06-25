@@ -109,9 +109,9 @@ function indexToXY(index) {
     return [x, y];
 }
 
-function getOptimizedIteratorFunc(zoom, start, end) {
+function getOptimizedIteratorFunc(zoom, start, count) {
     var index = start || 0,
-        maximum = end || Math.pow(4, zoom);
+        maximum = count ? (start + count) : Math.pow(4, zoom);
     console.log("Generating %d tiles", maximum - index);
 
     return function () {
@@ -261,6 +261,9 @@ function renderTile(threadNo) {
             stats.ozcmp++;
             return util.extractSubTileAsync(oz.uncompressed, loc.z, loc.x, loc.y, oz.z, oz.x, oz.y);
         }).then(function (ozdata) {
+            if (typeof(ozdata) === 'boolean') {
+                return ozdata;
+            }
             var equals = buffertools.equals(loc.uncompressed, ozdata);
             var stat = equals ? 'ozequals' : 'oznoteq';
             stats[stat]++;
