@@ -229,7 +229,7 @@ function renderTile(threadNo) {
         if (!oz.promise) {
             //overzoom tile not loaded
             oz.promise = getTilePromise(oz)
-                .then(function(oz) {
+                .then(function (oz) {
                     if (oz.data && oz.data.length > config.ozmaxsize) {
                         stats.oztoobig++;
                         oz.error = true; // don't use this tile or above
@@ -259,11 +259,12 @@ function renderTile(threadNo) {
                 throw new Error('uncompressed is empty');
             }
             stats.ozcmp++;
-            var ozdata = util.extractSubTile(oz.uncompressed, loc.z, loc.x, loc.y, oz.z, oz.x, oz.y);
+            return util.extractSubTileAsync(oz.uncompressed, loc.z, loc.x, loc.y, oz.z, oz.x, oz.y);
+        }).then(function (ozdata) {
             var equals = buffertools.equals(loc.uncompressed, ozdata);
             var stat = equals ? 'ozequals' : 'oznoteq';
             stats[stat]++;
-            stat += String("00" + oz.z).slice(String(oz.z).length);;
+            stat += String("00" + oz.z).slice(String(oz.z).length);
             stats[stat] = (stat in stats) ? stats[stat] + 1 : 1;
             return !equals;
         });
@@ -357,7 +358,7 @@ function runZoom() {
         .then(function () {
             if (config.reporter)
                 clearInterval(config.reporter);
-            config.reportStats(truest);
+            config.reportStats(true);
             config.zoom++;
             if (config.zoom <= config.endZoom) {
                 return runZoom();
