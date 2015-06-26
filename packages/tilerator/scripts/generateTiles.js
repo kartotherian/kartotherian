@@ -5,14 +5,12 @@
 var promisify = require('../lib/promisify');
 var BBPromise = require('bluebird');
 var util = require('../lib/util');
-var zlib = require('zlib');
 var _ = require('underscore');
 var argv = require('minimist')(process.argv.slice(2), {boolean: ['quiet']});
-var buffertools = require('buffertools');
 var conf = require('../lib/conf');
-var fsp = require('fs-promise');
 var mapnik = require('mapnik');
 var yaml = require('js-yaml');
+var fs = require("fs");
 
 var generator, storage, config;
 var nextTile;
@@ -61,8 +59,8 @@ function init() {
     if (!config.quiet)
         config.reporter = setInterval(config.reportStats, 60000);
 
-    return fsp
-        .readFile(conf.normalizePath(config.configPath))
+    return fs
+        .readFileAsync(conf.normalizePath(config.configPath))
         .then(yaml.safeLoad)
         .then(function (cfg) {
             return conf.loadConfiguration(cfg.services[0].conf);
@@ -114,7 +112,14 @@ function getOptimizedIteratorFunc(zoom, start, count) {
         maximum = count ? (start + count) : Math.pow(4, zoom);
     console.log("Generating %d tiles", maximum - index);
 
-    return function () {
+    return function (skipTile) {
+        // If parameter is given, ensure that subsequent calls do not get anything underneath that value
+        if (skipTile) {
+            var scale = Math.pow(2, zoom - skipTile.z);
+            index = Math.max(index, xyToIndex(skipTile.x * scale, skipTile.y * scale) + (scale * scale));
+            return;
+        }
+
         if (index >= maximum) {
             return false;
         }
@@ -125,85 +130,52 @@ function getOptimizedIteratorFunc(zoom, start, count) {
     };
 }
 
-function getTilePromise(loc, generate) {
-    return new BBPromise(
-        function (fulfill, reject) {
-            var src = generate ? generator : storage;
-            if (generate) stats.tilegen++; else stats.ozload++;
-            if (config.log > 1)
-                console.log('%s.getTile(%d,%d,%d)', generate ? 'generator' : 'storage', loc.z, loc.x, loc.y);
-            src.getTile(loc.z, loc.x, loc.y, function (err, tile) {
-                if (err) {
-                    if (err.message === 'Tile does not exist') {
-                        if (generate) stats.tilegenempty++; else stats.ozloadempty++;
-                        loc.data = null;
-                        fulfill(loc);
-                    } else {
-                        if (generate) stats.tilegenerr++; else stats.ozloaderror++;
-                        reject(err);
-                    }
-                } else {
-                    if (generate) stats.tilegenok++; else stats.ozloadok++;
-                    loc.data = tile;
-                    fulfill(loc);
-                }
+/**
+ * Check if tile exists
+ * @param loc
+ */
+function getTileSizeAsync(loc) {
+    if (storage.getPath) {
+        // file storage
+        return fs
+            .statAsync(storage.getPath(loc.z, loc.x, loc.y, storage.filetype))
+            .get('size')
+            .catch(function (err) {
+                return -1;
             });
-        });
-}
-
-function uncompressAsync(loc) {
-    if (typeof loc.uncompressed !== 'undefined' || !loc.data || !loc.data.length || loc.error) {
-        return loc;
-    }
-    // TODO: use util.uncompressAsync() instead of this code
-    var compression = false;
-    if (loc.data[0] === 0x1F && loc.data[1] === 0x8B) {
-        stats.unzipgz++;
-        compression = 'gunzip';
-    } else if (loc.data[0] === 0x78 && loc.data[1] === 0x9C) {
-        stats.unzipinfl++;
-        compression = 'inflate';
     } else {
-        stats.unzipno++;
-        return loc;
+        // TODO: optimize
+        return storage
+            .getTileAsync(loc.z, loc.x, loc.y)
+            .get('length')
+            .catch(function (err) {
+                return -1;
+            });
     }
-    return new BBPromise(function (fulfill, reject) {
-        if (config.log > 1)
-            console.log('%s(%d,%d,%d)', compression, loc.z, loc.x, loc.y);
-        zlib[compression](loc.data, function (err, data) {
-            if (err) {
-                stats.unziperr++;
-                reject(err);
-            } else {
-                stats.unzipok++;
-                loc.uncompressed = data;
-                fulfill(loc);
-            }
-        });
-    });
 }
 
-var tilecache;
-function createOverzoomList(loc) {
-    var overzoomLevels = loc.z - config.minzoom;
-    if (!tilecache || overzoomLevels < 0 || tilecache.length < overzoomLevels) {
-        if (overzoomLevels < 0) {
-            return [];
+function getTileAsync(loc, generate) {
+    return BBPromise.try(function () {
+        var src = generate ? generator : storage;
+        if (generate) stats.tilegen++; else stats.ozload++;
+        if (config.log > 1)
+            console.log('%s.getTile(%d,%d,%d)', generate ? 'generator' : 'storage', loc.z, loc.x, loc.y);
+        return src.getTileAsync(loc.z, loc.x, loc.y);
+    }).then(function (tile) {
+        if (generate) stats.tilegenok++; else stats.ozloadok++;
+        loc.data = tile[0];
+        loc.headers = tile[1];
+        return loc;
+    }).catch(function (err) {
+        if (err.message === 'Tile does not exist') {
+            if (generate) stats.tilegenempty++; else stats.ozloadempty++;
+            loc.data = null;
+            return loc;
+        } else {
+            if (generate) stats.tilegenerr++; else stats.ozloaderror++;
+            throw err;
         }
-        tilecache = new Array(overzoomLevels);
-    }
-    var x = loc.x, y = loc.y;
-    for (var z = loc.z - 1; z >= config.minzoom; z--) {
-        x = Math.floor(x / 2);
-        y = Math.floor(y / 2);
-        var poz = loc.z - 1 - z;
-        var t = tilecache[poz];
-        if (!t || t.x !== x || t.y !== y) {
-            stats.cachemiss++;
-            tilecache[poz] = {z: z, x: x, y: y};
-        }
-    }
-    return tilecache.slice(0); // clone array
+    });
 }
 
 function renderTile(threadNo) {
@@ -215,66 +187,7 @@ function renderTile(threadNo) {
     }
 
     stats.started++; // tiles started
-    // Check current tile against an overzoom level above (ozlvl 0 == zoom-1, 1==zoom-2)
-    var zoomOutAndTest = function (loc, ozlvl) {
-        if (typeof loc === 'boolean') {
-            return loc;
-        }
-        ozlvl = ozlvl || 0;
-        if (loc.overzoom.length <= ozlvl) {
-            stats.notileabove++;
-            return true; // No tiles above, save
-        }
-        var oz = loc.overzoom[ozlvl];
-        if (!oz.promise) {
-            //overzoom tile not loaded
-            oz.promise = getTilePromise(oz)
-                .then(function (oz) {
-                    if (oz.data && oz.data.length > config.ozmaxsize) {
-                        stats.oztoobig++;
-                        oz.error = true; // don't use this tile or above
-                    }
-                    return oz;
-                })
-                .then(uncompressAsync)
-                .catch(function (err) {
-                    stats.ozunkerror++;
-                    oz.error = err || true;
-                    console.error('Thread %d failed to get overzoom (%d,%d,%d): %s', threadNo, oz.z, oz.x, oz.y,
-                        (err.body && (err.body.stack || err.body.detail)) || err.stack || err);
-                });
-        }
-        return oz.promise.then(function (oz) {
-            if (oz.error) {
-                stats.ozerror++;
-                return true; // error above, save
-            }
-            if (!oz.data) {
-                // overzoom tile is missing, keep going up
-                stats.ozmissing++;
-                return zoomOutAndTest(loc, ozlvl + 1);
-            }
-            if (!oz.uncompressed || oz.uncompressed.length === 0) {
-                stats.ozunzipempty++;
-                throw new Error('uncompressed is empty');
-            }
-            stats.ozcmp++;
-            return util.extractSubTileAsync(oz.uncompressed, loc.z, loc.x, loc.y, oz.z, oz.x, oz.y);
-        }).then(function (ozdata) {
-            if (typeof(ozdata) === 'boolean') {
-                return ozdata;
-            }
-            var equals = buffertools.equals(loc.uncompressed, ozdata);
-            var stat = equals ? 'ozequals' : 'oznoteq';
-            stats[stat]++;
-            stat += String("00" + oz.z).slice(String(oz.z).length);
-            stats[stat] = (stat in stats) ? stats[stat] + 1 : 1;
-            return !equals;
-        });
-    };
-
-    loc.overzoom = createOverzoomList(loc);
-    return getTilePromise(loc, true)
+    return getTileAsync(loc, true)
         .then(function (loc) {
             if (!loc.data) {
                 stats.tilenodata++;
@@ -284,52 +197,42 @@ function renderTile(threadNo) {
                 stats.tiletoobig++;
                 return true; // generated tile is too big, save
             }
-            return uncompressAsync(loc);
-        })
-        .then(zoomOutAndTest)
-        .then(function (saveTile) {
-            if (config.log > 0)
-                console.log('Thread %d %s (%d,%d,%d)', threadNo, saveTile ? 'saving' : 'skipping', loc.z, loc.x, loc.y);
-            if (saveTile) {
-                stats.save++;
-                return new BBPromise(function (fulfill, reject) {
-                    storage.putTile(loc.z, loc.x, loc.y, loc.data, function (err) {
-                        if (err)
-                            reject(err);
-                        else
-                            fulfill();
-                    });
+            return util.uncompressAsync(loc.data)
+                .then(function (uncompressed) {
+                    var vt = new mapnik.VectorTile(loc.z, loc.x, loc.y);
+                    vt.setData(uncompressed);
+                    return vt.isSolidAsync();
+                }).spread(function (solid, key) {
+                    if (solid) {
+                        var stat = 'solid_' + key;
+                        stats[stat] = (stat in stats) ? stats[stat] + 1 : 1;
+                        return false;
+                    } else {
+                        stats.tilenonsolid++;
+                        return true;
+                    }
                 });
+        }).then(function (save) {
+            if (save) {
+                stats.save++;
+                return storage.putTileAsync(loc.z, loc.x, loc.y, loc.data);
             } else {
                 stats.nosave++;
-                return fsp.unlink(storage.getPath(loc.z, loc.x, loc.y, storage.filetype)).catch(function () {});
+                return fs
+                    .unlinkAsync(storage.getPath(loc.z, loc.x, loc.y, storage.filetype))
+                    .catch(function () {
+                    });
             }
-        }).catch(function (err) {
-            stats.unknerror++;
-            console.error('Thread %d failed to process (%d,%d,%d): %s', threadNo, loc.z, loc.x, loc.y,
-                (err.body && (err.body.stack || err.body.detail)) || err.stack || err);
-        }).then(function () {
-            return renderTile(threadNo);
         });
 }
 
 function runZoom() {
     stats = {
-        cachemiss: 0,
         nosave: 0,
-        notileabove: 0,
-        ozcmp: 0,
-        ozequals: 0,
-        ozerror: 0,
         ozload: 0,
         ozloadempty: 0,
         ozloaderror: 0,
         ozloadok: 0,
-        ozmissing: 0,
-        oznoteq: 0,
-        oztoobig: 0,
-        ozunkerror: 0,
-        ozunzipempty: 0,
         save: 0,
         started: 0,
         tilegen: 0,
@@ -337,13 +240,8 @@ function runZoom() {
         tilegenerr: 0,
         tilegenok: 0,
         tilenodata: 0,
-        tiletoobig: 0,
-        unknerror: 0,
-        unziperr: 0,
-        unzipgz: 0,
-        unzipinfl: 0,
-        unzipno: 0,
-        unzipok: 0
+        tilenonsolid: 0,
+        tiletoobig: 0
     };
 
     if (config.xy) {
