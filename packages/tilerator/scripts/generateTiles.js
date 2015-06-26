@@ -182,7 +182,8 @@ function renderTile(threadNo) {
     var loc = nextTile();
 
     if (!loc) {
-        console.log('Thread ' + threadNo + ' finished!');
+        if (!config.quiet)
+            console.log('Thread ' + threadNo + ' finished!');
         return true;
     }
 
@@ -221,8 +222,11 @@ function renderTile(threadNo) {
                 return fs
                     .unlinkAsync(storage.getPath(loc.z, loc.x, loc.y, storage.filetype))
                     .catch(function () {
+                        // ignore
                     });
             }
+        }).then(function() {
+            return renderTile(threadNo);
         });
 }
 
