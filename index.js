@@ -5,7 +5,7 @@ var crypto = require('crypto');
 
 module.exports = abaculus;
 
-function abaculus(arg, callback){
+function abaculus(arg, callback) {
     var z = arg.zoom || 1,
         s = arg.scale || 1,
         center = arg.center || null,
@@ -34,7 +34,7 @@ function abaculus(arg, callback){
     abaculus.stitchTiles(coords, format, quality, getTile, callback);
 }
 
-abaculus.coordsFromBbox = function(z, s, bbox, limit){
+abaculus.coordsFromBbox = function(z, s, bbox, limit) {
     sm.size = Math.round(256 * s);
     var topRight = sm.px([bbox[2], bbox[3]], z),
         bottomLeft = sm.px([bbox[0], bbox[1]], z);
@@ -54,7 +54,7 @@ abaculus.coordsFromBbox = function(z, s, bbox, limit){
     return center;
 };
 
-abaculus.coordsFromCenter = function(z, s, center, limit){
+abaculus.coordsFromCenter = function(z, s, center, limit) {
     var origin = sm.px([center.x, center.y], z);
     center.x = origin[0];
     center.y = origin[1];
@@ -144,7 +144,7 @@ abaculus.tileList = function(z, s, center) {
     return coords;
 };
 
-abaculus.stitchTiles = function(coords, format, quality, getTile, callback){
+abaculus.stitchTiles = function(coords, format, quality, getTile, callback) {
     if (!coords) return callback(new Error('No coords object.'));
     var tileQueue = queue(32);
     var dat = [];
@@ -153,9 +153,9 @@ abaculus.stitchTiles = function(coords, format, quality, getTile, callback){
         s = coords.scale,
         tiles = coords.tiles;
 
-    tiles.forEach(function(t){
-        tileQueue.defer(function(z, x, y, px, py, done){
-            var cb = function(err, buffer, headers){
+    tiles.forEach(function(t) {
+        tileQueue.defer(function(z, x, y, px, py, done) {
+            var cb = function(err, buffer, headers) {
                 if (err) return done(err);
                 done(err, {
                     buffer: buffer,
@@ -177,7 +177,7 @@ abaculus.stitchTiles = function(coords, format, quality, getTile, callback){
         if (err) return callback(err);
         if (!data) return callback(new Error('No tiles to stitch.'));
         var headers = [];
-        data.forEach(function(d, i){
+        data.forEach(function(d, i) {
             headers.push(d.headers);
         });
 
