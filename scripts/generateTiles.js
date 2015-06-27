@@ -90,34 +90,6 @@ function init() {
         });
 }
 
-function xyToIndex(x, y) {
-    // Convert x,y into a single integer with alternating bits
-    var mult = 1, result = 0;
-    while (x || y) {
-        result += (mult * (x % 2));
-        x = Math.floor(x / 2);
-        mult *= 2;
-        result += (mult * (y % 2));
-        y = Math.floor(y / 2);
-        mult *= 2;
-    }
-    return result;
-}
-
-function indexToXY(index) {
-    // Convert a single integer into the x,y coordinates
-    // Given a 64bit integer, extract every odd/even bit into two 32bit values
-    var x = 0, y = 0, mult = 1;
-    while (index) {
-        x += mult * (index % 2);
-        index = Math.floor(index / 2);
-        y += mult * (index % 2);
-        index = Math.floor(index / 2);
-        mult *= 2;
-    }
-    return [x, y];
-}
-
 function getOptimizedIteratorFunc(zoom, start, count) {
     var index = start || 0,
         maximum = count ? (start + count) : Math.pow(4, zoom);
@@ -127,14 +99,14 @@ function getOptimizedIteratorFunc(zoom, start, count) {
         // If parameter is given, ensure that subsequent calls do not get anything underneath that value
         if (skipTile) {
             var scale = Math.pow(2, zoom - skipTile.z);
-            index = Math.max(index, xyToIndex(skipTile.x * scale, skipTile.y * scale) + (scale * scale));
+            index = Math.max(index, util.xyToIndex(skipTile.x * scale, skipTile.y * scale) + (scale * scale));
             return;
         }
 
         if (index >= maximum) {
             return false;
         }
-        var xy = indexToXY(index);
+        var xy = util.indexToXY(index);
         var loc = {z: zoom, x: xy[0], y: xy[1]};
         index++;
         return loc;
@@ -292,7 +264,7 @@ function runZoom() {
         var mult = Math.pow(2, config.zoom - config.startZoom),
             x = config.xy[0] * mult,
             y = config.xy[1] * mult;
-        nextTile = getOptimizedIteratorFunc(config.zoom, xyToIndex(x, y), Math.pow(4, config.zoom - config.startZoom));
+        nextTile = getOptimizedIteratorFunc(config.zoom, util.xyToIndex(x, y), Math.pow(4, config.zoom - config.startZoom));
     } else {
         nextTile = getOptimizedIteratorFunc(config.zoom);
     }
