@@ -18,7 +18,7 @@ var stats;
 
 function init() {
     if (argv._.length < 3) {
-        console.error('Usage: nodejs renderLayer2.js [-v|-vv] [--config=<configfile>] [--threads=num] [--maxsize=value] [--check=[all|existing|missing]]  [--quiet]  [--ozmaxsize=value] [--xy=4,10] [--minzoom=6] storeid generatorid start_zoom [end_zoom]\n');
+        console.error('Usage: nodejs renderLayer2.js [-v|-vv] [--config=<configfile>] [--threads=num] [--maxsize=value] [--check=[all|[-]bytes]]  [--quiet]  [--ozmaxsize=value] [--xy=4,10] [--minzoom=6] storeid generatorid start_zoom [end_zoom]\n');
         process.exit(1);
     }
 
@@ -33,8 +33,8 @@ function init() {
         maxsize: argv.maxsize ? parseInt(argv.maxsize) : 50 * 1024,
         // If given, sets maximum size of the overzoom tile to be used. Prevents very large tiles from being heavily used (might be slow)
         ozmaxsize: argv.ozmaxsize ? parseInt(argv.ozmaxsize) : 100 * 1024,
-        // If given, sets maximum size of the overzoom tile to be used. Prevents very large tiles from being heavily used (might be slow)
-        check: argv.check || 'all',
+        // If given, positive number means only check existing tiles bigger than N, negative - smaller than N, 0 = missing
+        check: argv.check,
         quiet: argv.quiet,
         minzoom: argv.minzoom ? parseInt(argv.minzoom) : 6,
         xy: argv.xy,
@@ -42,18 +42,21 @@ function init() {
         log: argv.vv ? 2 : (argv.v ? 1 : 0),
         start: new Date(),
         reportStats: function (done) {
-            var sec = Math.floor((new Date() - config.start) / 1000);
-            var hr = Math.floor(sec / 60 / 60);
-            sec -= hr * 60 * 60;
-            var min = Math.floor(sec / 60);
-            sec -= min * 60;
-            console.log('%s%d:%d:%d Z=%d %s', done ? 'DONE: ' : '', hr, min, sec, config.zoom, JSON.stringify(stats));
+            var time = (new Date() - config.start) / 1000;
+            var min = Math.floor(time / 60);
+            var avg = (stats && stats.checked && time > 0) ? (stats.checked / time) : 0;
+            console.log('%s%dmin\tZ=%d\t%d/s\t%s', done ? 'DONE: ' : '', min, config.zoom, avg, JSON.stringify(stats));
         }
     };
 
-    if (config.check !== 'all' && config.check !== 'missing' && config.check !== 'existing') {
-        console.error('check parameter must be either all, missing, or existing\n');
-        process.exit(1);
+    if (typeof config.check === 'undefined') {
+        config.check = 'all';
+    } else if (config.check !== 'all') {
+        config.check = parseInt(config.check);
+        if (config.check.toString() !== argv.check) {
+            console.error('check parameter must be either all, or positive/negative integer\n');
+            process.exit(1);
+        }
     }
 
     config.zoom = config.startZoom;
@@ -206,20 +209,17 @@ function renderTile(threadNo) {
         promise = BBPromise.resolve(true);
     } else {
         // results in true if this tile should be tested, or false otherwise
-        promise = fs.statAsync(getStoragePath(loc)).then(function () {
-            stats.exists++;
-            return 'existing';
-        }).catch(function () {
-            stats.missing++;
-            return 'missing';
-        }).then(function (exists) {
-            return exists === config.check;
+        promise = getTileSizeAsync(loc).then(function (size) {
+            return (config.check > 0 && size >= config.check) ||
+                (config.check < 0 && size >= 0 && size <= config.check) ||
+                (config.check === 0 && size < 0);
         });
     }
     return promise
         .then(function(proceed) {
             if (!proceed)
                 return undefined;
+            stats.checked++;
             return getTileAsync(loc, true)
                 .then(function (loc) {
                     if (!loc.data) {
@@ -242,6 +242,8 @@ function renderTile(threadNo) {
                             if (solid) {
                                 var stat = 'solid_' + key;
                                 stats[stat] = (stat in stats) ? stats[stat] + 1 : 1;
+                                if (config.log > 1)
+                                    console.log('%d,%d,%d is solid %s', loc.z, loc.x, loc.y, key);
                                 return false;
                             } else {
                                 stats.tilenonsolid++;
@@ -268,8 +270,7 @@ function renderTile(threadNo) {
 
 function runZoom() {
     stats = {
-        exists: 0,
-        missing: 0,
+        checked: 0,
         nosave: 0,
         ozload: 0,
         ozloadempty: 0,
