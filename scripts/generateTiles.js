@@ -53,7 +53,7 @@ function init() {
         config.check = 'all';
     } else if (config.check !== 'all') {
         config.check = parseInt(config.check);
-        if (config.check.toString() !== argv.check) {
+        if (config.check.toString() !== argv.check.toString()) {
             console.error('check parameter must be either all, or positive/negative integer\n');
             process.exit(1);
         }
@@ -242,7 +242,7 @@ function renderTile(threadNo) {
                             if (solid) {
                                 var stat = 'solid_' + key;
                                 stats[stat] = (stat in stats) ? stats[stat] + 1 : 1;
-                                if (config.log > 1)
+                                if (config.log > 0 && key !== 'water')
                                     console.log('%d,%d,%d is solid %s', loc.z, loc.x, loc.y, key);
                                 return false;
                             } else {
