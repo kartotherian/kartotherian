@@ -30,7 +30,7 @@ function init() {
         configPath: argv.config || 'config.yaml',
         threads: argv.threads || 1,
         // If tile is bigger than maxsize (compressed), it will always be saved. Set this value to 0 to save everything
-        maxsize: argv.maxsize ? parseInt(argv.maxsize) : 5 * 1024,
+        maxsize: typeof argv.maxsize !== 'undefined' ? parseInt(argv.maxsize) : 5 * 1024,
         // If given, positive number means only check existing tiles bigger than N, negative - smaller than N, 0 = missing
         check: argv.check,
         quiet: argv.quiet,
@@ -64,6 +64,8 @@ function init() {
             return parseInt(v);
         });
     }
+
+    console.log(JSON.stringify(config));
 
     if (!config.quiet)
         config.reporter = setInterval(config.reportStats, 60000);
@@ -223,7 +225,7 @@ function renderTile(threadNo) {
                             if (solid) {
                                 var stat = 'solid_' + key;
                                 stats[stat] = (stat in stats) ? stats[stat] + 1 : 1;
-                                if (config.log > 0 && key !== 'water')
+                                if (config.log > 0 && key !== 'water' && key !== 'landuse')
                                     console.log('%d,%d,%d is solid %s', loc.z, loc.x, loc.y, key);
                                 return false;
                             } else {
@@ -287,4 +289,4 @@ function runZoom() {
         });
 }
 
-return init().then(function() { return runZoom(); }).then(function() { console.log('DONE!'); });
+init().then(function() { return runZoom(); }).then(function() { console.log('DONE!'); });
