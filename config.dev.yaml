@@ -31,7 +31,8 @@ services:
     # per-service config
     conf:
       port: 4000
-      interface: localhost
+#      Without this, allows for connections from everyone!
+#      interface: localhost
 
       # TODO: This does not work, not sure of the exact reqs here, manually disabling for now
       csp: default-src 'self'; script-src 'self' 'unsafe-inline';
@@ -43,6 +44,9 @@ services:
           uri: file://./vectors?safe=true&filetype=pbf
         v1gen:
           uri: bridge://./map/osm-bright.tm2source/data.xml
+          public: true
+        v1c:
+          uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0
         v1a:
           # Uses other sources, must be last in the list
           uri: autogen://?saveafter=8&minzoom=0&maxzoom=16
