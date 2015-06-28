@@ -129,3 +129,5 @@ CassandraStore.prototype.close = function(callback) {
         return BBPromise.try(cl.shutdownAsync).nodeify(callback);
     }
 };
+
+BBPromise.promisifyAll(Cassandra.prototype);

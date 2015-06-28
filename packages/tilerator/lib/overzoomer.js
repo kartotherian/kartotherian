@@ -69,3 +69,5 @@ OverZoomer.prototype.getTile = function(z, x, y, callback) {
 OverZoomer.prototype.getInfo = function(callback) {
     return this.source.getInfo(callback);
 };
+
+BBPromise.promisifyAll(OverZoomer.prototype);
