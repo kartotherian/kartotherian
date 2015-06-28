@@ -6,7 +6,7 @@ var promisify = require('../lib/promisify');
 var BBPromise = require('bluebird');
 var util = require('../lib/util');
 var _ = require('underscore');
-var argv = require('minimist')(process.argv.slice(2), {boolean: ['quiet']});
+var argv = require('minimist')(process.argv.slice(2), {boolean: ['quiet','v','vv']});
 var conf = require('../lib/conf');
 var mapnik = require('mapnik');
 var yaml = require('js-yaml');
@@ -18,7 +18,7 @@ var stats;
 
 function init() {
     if (argv._.length < 3) {
-        console.error('Usage: nodejs renderLayer2.js [-v|-vv] [--config=<configfile>] [--threads=num] [--maxsize=value] [--check=[all|[-]bytes]]  [--quiet]  [--ozmaxsize=value] [--xy=4,10] [--minzoom=6] storeid generatorid start_zoom [end_zoom]\n');
+        console.error('Usage: nodejs renderLayer2.js [-v|-vv] [--config=<configfile>] [--threads=num] [--maxsize=value] [--check=[all|[-]bytes]] [--quiet] [--xy=4,10] [--minzoom=6] storeid generatorid start_zoom [end_zoom]\n');
         process.exit(1);
     }
 
@@ -30,9 +30,7 @@ function init() {
         configPath: argv.config || 'config.yaml',
         threads: argv.threads || 1,
         // If tile is bigger than maxsize (compressed), it will always be saved. Set this value to 0 to save everything
-        maxsize: argv.maxsize ? parseInt(argv.maxsize) : 50 * 1024,
-        // If given, sets maximum size of the overzoom tile to be used. Prevents very large tiles from being heavily used (might be slow)
-        ozmaxsize: argv.ozmaxsize ? parseInt(argv.ozmaxsize) : 100 * 1024,
+        maxsize: argv.maxsize ? parseInt(argv.maxsize) : 5 * 1024,
         // If given, positive number means only check existing tiles bigger than N, negative - smaller than N, 0 = missing
         check: argv.check,
         quiet: argv.quiet,
@@ -113,19 +111,29 @@ function getOptimizedIteratorFunc(zoom, start, count) {
     };
 }
 
-function getStoragePath(loc) {
-    return storage.getPath(loc.z, loc.x, loc.y, storage.filetype);
+/**
+ * Delete tile from storage
+ */
+function deleteTileAsync(loc) {
+    if (storage.getPath) {
+        return fs
+            .unlinkAsync(storage.getPath(loc.z, loc.x, loc.y, storage.filetype))
+            .catch(function () {
+                // ignore
+            });
+    } else {
+        return storage.putTileAsync(loc.z, loc.x, loc.y, null);
+    }
 }
 
 /**
  * Check if tile exists
- * @param loc
  */
 function getTileSizeAsync(loc) {
     if (storage.getPath) {
         // file storage
         return fs
-            .statAsync(getStoragePath(loc))
+            .statAsync(storage.getPath(loc.z, loc.x, loc.y, storage.filetype))
             .get('size')
             .catch(function (err) {
                 return -1;
@@ -194,7 +202,7 @@ function renderTile(threadNo) {
             stats.checked++;
             return getTileAsync(loc, true)
                 .then(function (loc) {
-                    if (!loc.data) {
+                    if (!loc.data || !loc.data.length) {
                         stats.tilenodata++;
                         return false; // empty tile generated, no need to save
                     }
@@ -206,7 +214,8 @@ function renderTile(threadNo) {
                     return util.uncompressAsync(loc.data)
                         .bind(vt)
                         .then(function (uncompressed) {
-                            this.setData(uncompressed);
+                            return this.setDataAsync(uncompressed);
+                        }).then(function() {
                             return this.parseAsync();
                         }).then(function () {
                             return this.isSolidAsync();
@@ -228,11 +237,7 @@ function renderTile(threadNo) {
                         return storage.putTileAsync(loc.z, loc.x, loc.y, loc.data);
                     } else {
                         stats.nosave++;
-                        return fs
-                            .unlinkAsync(getStoragePath(loc))
-                            .catch(function () {
-                                // ignore
-                            });
+                        return deleteTileAsync(loc);
                     }
                 });
         }).then(function() {
