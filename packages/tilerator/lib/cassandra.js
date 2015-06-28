@@ -9,7 +9,7 @@ var promisify = require('./promisify');
 var BBPromise = require('bluebird');
 var util = require('./util');
 var cassandra = require('cassandra-driver');
-BBPromise.promisifyAll(cassandra.Client);
+BBPromise.promisifyAll(cassandra.Client.prototype);
 
 module.exports = CassandraStore;
 
@@ -20,45 +20,51 @@ CassandraStore.registerProtocols = function(tilelive) {
 function CassandraStore(uri, callback) {
     var self = this;
     return BBPromise.try(function () {
-        uri = util.normalizeUri(uri);
-        if (!uri.query.cp) {
+        var params = util.normalizeUri(uri).query;
+        if (!params.cp) {
             throw Error("Uri must include at least one 'cp' connect point query parameter: " + uri)
-        } else if (typeof uri.query.cp === 'string') {
-            uri.query.cp = [uri.query.cp];
-        }
-        if (!uri.query.keyspace) {
-            throw Error("Uri must have 'keyspace' query parameter: " + uri)
-        }
-        uri.query.repclass = uri.query.repclass || 'SimpleStrategy';
-        uri.query.repfactor = uri.query.repfactor || 3;
-        if (typeof uri.query.durablewrite === 'undefined') {
-            uri.query.durablewrite = true;
+        } else if (typeof params.cp === 'string') {
+            self.contactPoints = [params.cp];
         } else {
-            uri.query.durablewrite = uri.query.durablewrite ? true : false;
+            self.contactPoints = params.cp;
         }
-        uri.query.minzoom = typeof uri.query.minzoom === 'undefined' ? 0 : intParse(uri.query.minzoom);
-        uri.query.maxzoom = typeof uri.query.maxzoom === 'undefined' ? 15 : intParse(uri.query.maxzoom);
-        self.uri = uri;
-        self.client = new cassandra.Client({contactPoints: uri.query.cp});
+        if (!params.keyspace || !/^[a-zA-Z0-9]+$/.test(params.keyspace)) {
+            throw Error("Uri must have a valid 'keyspace' query parameter: " + uri)
+        }
+        if (params.repclass && !/^[a-zA-Z0-9]+$/.test(params.repclass)) {
+            throw Error("Uri 'repclass' must be a valid value: " + uri)
+        }
+        self.keyspace = params.keyspace;
+        self.repclass = params.repclass || 'SimpleStrategy';
+        self.repfactor = typeof params.repfactor === 'undefined' ? 3 : parseInt(params.repfactor);
+        var dw = params.durablewrite;
+        self.durablewrite = (typeof dw === 'undefined' || (dw && dw !== 'false' && dw !== '0')) ? 'true' : 'false';
+        self.minzoom = typeof params.minzoom === 'undefined' ? 0 : intParse(params.minzoom);
+        self.maxzoom = typeof params.maxzoom === 'undefined' ? 15 : intParse(params.maxzoom);
+        self.client = new cassandra.Client({contactPoints: self.contactPoints});
         return self.client.connectAsync();
     }).then(function () {
         return self.client.executeAsync(
-            "CREATE KEYSPACE IF NOT EXISTS ? " +
-            "WITH REPLICATION = {'class': '?','replication_factor': ?} " +
-            "AND DURABLE_WRITES = ?",
-            [self.uri.query.keyspace, self.uri.query.repclass, self.uri.query.repfactor, uri.query.durablewrite]);
+            "CREATE KEYSPACE IF NOT EXISTS " + self.keyspace +
+            " WITH REPLICATION = {'class': '" + self.repclass + "'," +
+            " 'replication_factor': " + self.repfactor + "}" +
+            " AND DURABLE_WRITES = " + self.durablewrite);
+    }).then(function () {
+        return self.client.executeAsync("USE " + self.keyspace);
     }).then(function () {
         return self.client.executeAsync(
-            "CREATE TABLE IF NOT EXISTS ?.tiles (" +
+            "CREATE TABLE IF NOT EXISTS tiles (" +
             " zoom int," +
             " idx int," +
             " tile blob," +
             " PRIMARY KEY (zoom, idx)" +
-            ") WITH COMPACT STORAGE", [self.uri.query.keyspace]);
+            ") WITH COMPACT STORAGE");
     }).catch(function (err) {
         return self.close().finally(function () {
             throw err;
         });
+    }).then(function () {
+        return self;
     }).nodeify(callback);
 }
 
@@ -69,7 +75,7 @@ CassandraStore.registerProtocols = function(tilelive) {
 CassandraStore.prototype.getTile = function(z, x, y, callback) {
     return this.client.executeAsync(
         "SELECT tile FROM ?.tiles WHERE zoom = ? AND idx = ?",
-        [this.uri.query.keyspace, z, util.xyToIndex(x, y)],
+        [z, util.xyToIndex(x, y)],
         {prepare: true}
     ).nodeify(callback);
 };
@@ -79,8 +85,8 @@ CassandraStore.prototype.getInfo = function(callback) {
         "bounds": "-180,-85.0511,180,85.0511",
         "center": "0,0,2",
         "description": "",
-        "maxzoom": this.uri.query.maxzoom,
-        "minzoom": this.uri.query.minzoom,
+        "maxzoom": this.maxzoom,
+        "minzoom": this.minzoom,
         "name": "cassandra",
         "template": "",
         "version": "1.0.0"
@@ -88,11 +94,19 @@ CassandraStore.prototype.getInfo = function(callback) {
 };
 
 CassandraStore.prototype.putTile = function(z, x, y, tile, callback) {
-    return this.client.executeAsync(
-        "UPDATE ?.tiles SET tile = ? WHERE zoom = ? AND idx = ?",
-        [this.uri.query.keyspace, tile, z, util.xyToIndex(x, y)],
-        {prepare: true}
-    ).nodeify(callback);
+    if (tile && tile.length > 0) {
+        return this.client.executeAsync(
+            "UPDATE tiles SET tile = ? WHERE zoom = ? AND idx = ?",
+            [tile, z, util.xyToIndex(x, y)],
+            {prepare: true}
+        ).nodeify(callback);
+    } else {
+        return this.client.executeAsync(
+            "DELETE FROM tiles WHERE zoom = ? AND idx = ?",
+            [z, util.xyToIndex(x, y)],
+            {prepare: true}
+        ).nodeify(callback);
+    }
 };
 
 CassandraStore.prototype.close = function(callback) {
