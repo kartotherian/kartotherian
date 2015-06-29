@@ -6,149 +6,59 @@ var promisify = require('../lib/promisify');
 var BBPromise = require('bluebird');
 var util = require('../lib/util');
 var _ = require('underscore');
-var argv = require('minimist')(process.argv.slice(2), {boolean: ['quiet','v','vv']});
-var conf = require('../lib/conf');
 var mapnik = require('mapnik');
-var yaml = require('js-yaml');
-var fs = require("fs");
+var sc = require("./scriptUtils");
 
-var generator, storage, config;
-var nextTile;
-var stats;
+var generator, storage, config, nextTile, stats;
 
 function init() {
-    if (argv._.length < 3) {
-        console.error('Usage: nodejs renderLayer2.js [-v|-vv] [--config=<configfile>] [--threads=num] [--maxsize=value] [--check=[all|[-]bytes]] [--quiet] [--xy=4,10] [--minzoom=6] storeid generatorid start_zoom [end_zoom]\n');
-        process.exit(1);
-    }
 
-    config = {
-        storeid: argv._[0],
-        generatorid: argv._[1],
-        startZoom: parseInt(argv._[2]),
-        endZoom: parseInt(argv._[3]) || parseInt(argv._[2]),
-        configPath: argv.config || 'config.yaml',
-        threads: argv.threads || 1,
-        // If tile is bigger than maxsize (compressed), it will always be saved. Set this value to 0 to save everything
-        maxsize: typeof argv.maxsize !== 'undefined' ? parseInt(argv.maxsize) : 5 * 1024,
-        // If given, positive number means only check existing tiles bigger than N, negative - smaller than N, 0 = missing
-        check: argv.check,
-        quiet: argv.quiet,
-        minzoom: argv.minzoom ? parseInt(argv.minzoom) : 6,
-        xy: argv.xy,
-        // verbosity
-        log: argv.vv ? 2 : (argv.v ? 1 : 0),
-        start: new Date(),
-        reportStats: function (done) {
-            var time = (new Date() - config.start) / 1000;
-            var min = Math.floor(time / 60);
-            var avg = (stats && stats.checked && time > 0) ? (stats.checked / time) : 0;
-            console.log('%s%dmin\tZ=%d\t%d/s\t%s', done ? 'DONE: ' : '', min, config.zoom, avg, JSON.stringify(stats));
-        }
-    };
-
-    if (typeof config.check === 'undefined') {
-        config.check = 'all';
-    } else if (config.check !== 'all') {
-        config.check = parseInt(config.check);
-        if (config.check.toString() !== argv.check.toString()) {
-            console.error('check parameter must be either all, or positive/negative integer\n');
+    return sc.parseCommonSettingsAsync(function () {
+        stats.avgsize = stats.save ? Math.round(stats.totalsize / stats.save * 100) / 100 : 0;
+        return stats;
+    }).then(function (c) {
+        var argv = c.argv;
+        if (argv._.length < 3) {
+            console.error('Usage: nodejs renderLayer2.js %s [--maxsize=value] [--check=[all|[-]bytes]] storeid generatorid start_zoom [end_zoom]\n',
+                sc.getCommonSettings());
             process.exit(1);
         }
-    }
 
-    config.zoom = config.startZoom;
-    if (config.xy) {
-        // Only yield one value given by x,y pair
-        config.xy = _.map(config.xy.split(','), function (v) {
-            return parseInt(v);
-        });
-    }
+        config = c.config;
+        config.storeid = argv._[0];
+        config.generatorid = argv._[1];
+        config.startZoom = parseInt(argv._[2]);
+        config.endZoom = parseInt(argv._[3]) || parseInt(argv._[2]);
+        // if tile is bigger than maxsize (compressed), it will always be saved. Set this value to 0 to save everythin;
+        config.maxsize = typeof argv.maxsize !== 'undefined' ? parseInt(argv.maxsize) : 2 * 1024;
+        //  if given, positive number means only check existing tiles bigger than N, negative - smaller than N, 0 = missin;
+        config.check = argv.check;
 
-    console.log(JSON.stringify(config));
+        var conf = c.conf;
+        if (!conf.hasOwnProperty(config.storeid)) {
+            console.error('Invalid storeid');
+            process.exit(1);
+        }
+        if (!conf.hasOwnProperty(config.generatorid)) {
+            console.error('Invalid generatorid');
+            process.exit(1);
+        }
+        storage = conf[config.storeid].handler;
+        generator = conf[config.generatorid].handler;
 
-    if (!config.quiet)
-        config.reporter = setInterval(config.reportStats, 60000);
-
-    return fs
-        .readFileAsync(conf.normalizePath(config.configPath))
-        .then(yaml.safeLoad)
-        .then(function (cfg) {
-            return conf.loadConfiguration(cfg.services[0].conf);
-        })
-        .then(function (cfg) {
-            if (!cfg.hasOwnProperty(config.storeid)) {
-                console.error('Invalid storeid');
+        if (typeof config.check === 'undefined') {
+            config.check = 'all';
+        } else if (config.check !== 'all') {
+            config.check = parseInt(config.check);
+            if (config.check.toString() !== argv.check.toString()) {
+                console.error('check parameter must be either all, or positive/negative integer\n');
                 process.exit(1);
             }
-            if (!cfg.hasOwnProperty(config.generatorid)) {
-                console.error('Invalid generatorid');
-                process.exit(1);
-            }
-            storage = cfg[config.storeid].handler;
-            generator = cfg[config.generatorid].handler;
-        });
-}
-
-function getOptimizedIteratorFunc(zoom, start, count) {
-    var index = start || 0,
-        maximum = count ? (start + count) : Math.pow(4, zoom);
-    console.log("Generating %d tiles", maximum - index);
-
-    return function (skipTile) {
-        // If parameter is given, ensure that subsequent calls do not get anything underneath that value
-        if (skipTile) {
-            var scale = Math.pow(2, zoom - skipTile.z);
-            index = Math.max(index, util.xyToIndex(skipTile.x * scale, skipTile.y * scale) + (scale * scale));
-            return;
         }
 
-        if (index >= maximum) {
-            return false;
-        }
-        var xy = util.indexToXY(index);
-        var loc = {z: zoom, x: xy[0], y: xy[1]};
-        index++;
-        return loc;
-    };
-}
-
-/**
- * Delete tile from storage
- */
-function deleteTileAsync(loc) {
-    if (storage.getPath) {
-        return fs
-            .unlinkAsync(storage.getPath(loc.z, loc.x, loc.y, storage.filetype))
-            .catch(function () {
-                // ignore
-            });
-    } else {
-        return storage.putTileAsync(loc.z, loc.x, loc.y, null);
-    }
-}
-
-/**
- * Check if tile exists
- */
-function getTileSizeAsync(loc) {
-    if (storage.getPath) {
-        // file storage
-        return fs
-            .statAsync(storage.getPath(loc.z, loc.x, loc.y, storage.filetype))
-            .get('size')
-            .catch(function (err) {
-                return -1;
-            });
-    } else {
-        // TODO: optimize
-        return storage
-            .getTileAsync(loc.z, loc.x, loc.y)
-            .get('length')
-            .catch(function (err) {
-                return -1;
-            });
-    }
+        config.zoom = config.startZoom;
+        return true;
+    });
 }
 
 function getTileAsync(loc, generate) {
@@ -175,7 +85,7 @@ function getTileAsync(loc, generate) {
     });
 }
 
-function renderTile(threadNo) {
+function renderTileAsync(threadNo) {
     var loc = nextTile();
 
     if (!loc) {
@@ -191,7 +101,7 @@ function renderTile(threadNo) {
         promise = BBPromise.resolve(true);
     } else {
         // results in true if this tile should be tested, or false otherwise
-        promise = getTileSizeAsync(loc).then(function (size) {
+        promise = sc.getTileSizeAsync(storage, loc).then(function (size) {
             return (config.check > 0 && size >= config.check) ||
                 (config.check < 0 && size >= 0 && size <= config.check) ||
                 (config.check === 0 && size < 0);
@@ -236,14 +146,15 @@ function renderTile(threadNo) {
                 }).then(function (save) {
                     if (save) {
                         stats.save++;
+                        stats.totalsize += loc.data.length;
                         return storage.putTileAsync(loc.z, loc.x, loc.y, loc.data);
                     } else {
                         stats.nosave++;
-                        return deleteTileAsync(loc);
+                        return sc.deleteTileAsync(storage, loc);
                     }
                 });
         }).then(function() {
-            return renderTile(threadNo);
+            return renderTileAsync(threadNo);
         });
 }
 
@@ -263,7 +174,8 @@ function runZoom() {
         tilegenok: 0,
         tilenodata: 0,
         tilenonsolid: 0,
-        tiletoobig: 0
+        tiletoobig: 0,
+        totalsize: 0
     };
 
     if (config.xy) {
@@ -271,13 +183,13 @@ function runZoom() {
         var mult = Math.pow(2, config.zoom - config.startZoom),
             x = config.xy[0] * mult,
             y = config.xy[1] * mult;
-        nextTile = getOptimizedIteratorFunc(config.zoom, util.xyToIndex(x, y), Math.pow(4, config.zoom - config.startZoom));
+        nextTile = sc.getOptimizedIteratorFunc(config.zoom, util.xyToIndex(x, y), Math.pow(4, config.zoom - config.startZoom));
     } else {
-        nextTile = getOptimizedIteratorFunc(config.zoom);
+        nextTile = sc.getOptimizedIteratorFunc(config.zoom);
     }
 
     return BBPromise
-        .all(_.map(_.range(config.threads), renderTile))
+        .all(_.map(_.range(config.threads), renderTileAsync))
         .then(function () {
             if (config.reporter)
                 clearInterval(config.reporter);
@@ -289,4 +201,8 @@ function runZoom() {
         });
 }
 
-init().then(function() { return runZoom(); }).then(function() { console.log('DONE!'); });
+init()
+    .then(function() { return storage.startWritingAsync ? storage.startWritingAsync() : true; })
+    .then(function() { return runZoom(); })
+    .then(function() { return storage.startWritingAsync ? storage.stopWritingAsync() : true; })
+    .then(function() { console.log('DONE!'); });
