@@ -12,7 +12,7 @@ var mapnik = require('mapnik');
 var yaml = require('js-yaml');
 var fs = require("fs");
 
-var generator, storage, config;
+var generator, storage, config, reporter;
 
 var exports = {};
 module.exports = exports;
@@ -55,7 +55,7 @@ exports.parseCommonSettingsAsync = function(statsAccessor) {
     console.log(JSON.stringify(config));
 
     if (!config.quiet)
-        config.reporter = setInterval(config.reportStats, 60000);
+        reporter = setInterval(config.reportStats, 60000);
 
     return fs
         .readFileAsync(conf.normalizePath(config.configPath))
@@ -129,4 +129,15 @@ exports.deleteTileAsync = function(storage, loc) {
     } else {
         return storage.putTileAsync(loc.z, loc.x, loc.y, null);
     }
+};
+
+/**
+ * cleanup
+ */
+exports.shutdown = function() {
+    if (reporter) {
+        clearInterval(reporter);
+        reporter = undefined;
+    }
+    console.log('DONE!');
 };

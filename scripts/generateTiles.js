@@ -190,8 +190,6 @@ function runZoom() {
     return BBPromise
         .all(_.map(_.range(config.threads), renderTileAsync))
         .then(function () {
-            if (config.reporter)
-                clearInterval(config.reporter);
             config.reportStats(true);
             config.zoom++;
             if (config.zoom <= config.endZoom) {
@@ -204,4 +202,4 @@ init()
     .then(function() { return storage.startWritingAsync ? storage.startWritingAsync() : true; })
     .then(function() { return runZoom(); })
     .then(function() { return storage.startWritingAsync ? storage.stopWritingAsync() : true; })
-    .then(function() { console.log('DONE!'); });
+    .then(sc.shutdown);
