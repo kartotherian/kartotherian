@@ -67,7 +67,7 @@ function CassandraStore(uri, callback) {
             " PRIMARY KEY (zoom, idx)" +
             ") WITH COMPACT STORAGE");
     }).catch(function (err) {
-        return self.close().finally(function () {
+        return self.closeAsync().finally(function () {
             throw err;
         });
     }).then(function () {
@@ -169,11 +169,11 @@ CassandraStore.prototype.stopWriting = function(callback) {
 };
 
 CassandraStore.prototype.eachTile = function(options, rowCallback, callback) {
-    if (typeof options.zoom !== 'number' || Math.floor(options.zoom) !== options.zoom)
+    if (!util.isInteger(options.zoom))
         throw new Error('Options must contain integer zoom parameter');
-    if (typeof options.indexStart !== 'number' || Math.floor(options.indexStart) !== options.indexStart)
+    if (typeof options.indexStart !== 'undefined' && !util.isInteger(options.indexStart))
         throw new Error('Options may contain an integer indexStart parameter');
-    if (typeof options.indexEnd !== 'number' || Math.floor(options.indexEnd) !== options.indexEnd)
+    if (typeof options.indexEnd !== 'undefined' && !util.isInteger(options.indexEnd))
         throw new Error('Options may contain an integer indexEnd parameter');
     var zoom = options.zoom;
     var maxEnd = Math.pow(4, zoom);
@@ -188,7 +188,7 @@ CassandraStore.prototype.eachTile = function(options, rowCallback, callback) {
         return;
     }
 
-    var query = "SELECT tile FROM tiles WHERE zoom = ?",
+    var query = "SELECT idx, tile FROM tiles WHERE zoom = ?",
         params = [zoom];
     if (start > 0) {
         query += ' AND idx >= ?';
@@ -199,7 +199,7 @@ CassandraStore.prototype.eachTile = function(options, rowCallback, callback) {
         params.push(end);
     }
 
-    client.eachRow(query, params, prepared,
+    this.client.eachRow(query, params, prepared,
         function(n, row) {
             //the callback will be invoked per each row as soon as they are received
             var xy = util.indexToXY(row.idx);
