@@ -19,8 +19,8 @@ function init() {
     }).then(function (c) {
         var argv = c.argv;
         if (argv._.length < 3) {
-            console.error('Usage: nodejs renderLayer2.js %s [--maxsize=value] [--check=[all|[-]bytes]] storeid generatorid start_zoom [end_zoom]\n',
-                sc.getCommonSettings());
+            console.error('Usage: nodejs %s %s [--maxsize=value] [--check=[all|[-]bytes]] storeid generatorid start_zoom [end_zoom]\n',
+                __filename, sc.getCommonSettings());
             process.exit(1);
         }
 
@@ -34,17 +34,16 @@ function init() {
         //  if given, positive number means only check existing tiles bigger than N, negative - smaller than N, 0 = missin;
         config.check = argv.check;
 
-        var conf = c.conf;
-        if (!conf.hasOwnProperty(config.storeid)) {
+        if (!c.conf.hasOwnProperty(config.storeid)) {
             console.error('Invalid storeid');
             process.exit(1);
         }
-        if (!conf.hasOwnProperty(config.generatorid)) {
+        if (!c.conf.hasOwnProperty(config.generatorid)) {
             console.error('Invalid generatorid');
             process.exit(1);
         }
-        storage = conf[config.storeid].handler;
-        generator = conf[config.generatorid].handler;
+        storage = c.conf[config.storeid].handler;
+        generator = c.conf[config.generatorid].handler;
 
         if (typeof config.check === 'undefined') {
             config.check = 'all';
