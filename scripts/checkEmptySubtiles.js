@@ -46,7 +46,7 @@ init().then(function() {
             indexStart: from,
             indexEnd: from + count
         }, function (z, x, y, tile) {
-            var scale = pow(2, config.testZoom - config.baseZoom);
+            var scale = Math.pow(2, config.testZoom - config.baseZoom);
             console.log('Tile size %d exists at (%d, %d, %d, %d) with missing (%d, %d, %d)',
                 tile.length, config.testZoom, x, y, util.xyToIndex(x, y), config.baseZoom,
                 Math.floor(x / scale), Math.floor(y / scale));
@@ -63,7 +63,7 @@ init().then(function() {
             var start = keys[0];
             var count = gaps[start];
             delete gaps[start];
-            return test(start, count);
+            return test(parseInt(start), parseInt(count));
         }
     };
 
