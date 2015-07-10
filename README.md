@@ -3,6 +3,7 @@ tilelive-vector
 Implements the tilelive API for rendering mapnik vector tiles to raster images.
 
 [![Build Status](https://secure.travis-ci.org/mapbox/tilelive-vector.png)](http://travis-ci.org/mapbox/tilelive-vector)
+[![Coverage Status](https://coveralls.io/repos/mapbox/tilelive-vector/badge.svg?branch=master&service=github)](https://coveralls.io/github/mapbox/tilelive-vector?branch=master)
 
 ### new Vector(options, callback)
 
