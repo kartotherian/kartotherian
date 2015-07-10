@@ -2,6 +2,14 @@ language: node_js
 
 node_js:
   - "0.10"
+  - "0.12"
+
+addons:
+  apt:
+    sources:
+     - ubuntu-toolchain-r-test
+    packages:
+     - libstdc++6 # upgrade libstdc++ on linux to support C++11
 
 env:
   global:
@@ -9,7 +17,5 @@ env:
 
 sudo: false
 
-before_install:
-# install c++11 capable libstdc++ without sudo
-- if [[ $(uname -s) == 'Linux' ]]; then wget https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test/+files/libstdc%2B%2B6_4.8.1-2ubuntu1~12.04_amd64.deb && dpkg -x libstdc++6_4.8.1-2ubuntu1~12.04_amd64.deb ./ && export LD_PRELOAD=$(pwd)/usr/lib/x86_64-linux-gnu/libstdc++.so.6; fi
-
+after_success:
+ - if [[ ${TRAVIS_NODE_VERSION} == "0.10" ]]; then npm run coverage; fi;
