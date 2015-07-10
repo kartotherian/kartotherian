@@ -30,11 +30,25 @@ function md5(str) {
 };
 
 function Vector(uri, callback) {
+    if (typeof uri === 'string' || (uri.protocol && !uri.xml)) {
+        uri = typeof uri === 'string' ? url.parse(uri) : uri;
+        var filepath = path.resolve(uri.pathname);
+        fs.readFile(filepath, 'utf8', function(err, xml) {
+            if (err) return callback(err);
+            new Vector({
+                xml:xml,
+                base:path.dirname(filepath)
+            }, callback);
+        });
+        return;
+    }
+
     if (!uri.xml) return callback && callback(new Error('No xml'));
 
     this._uri = uri;
     this._scale = uri.scale || undefined;
     this._format = uri.format || undefined;
+    this._renderer = uri.renderer || undefined;
     this._source = uri.source || undefined;
     this._backend = uri.backend || undefined;
     this._base = path.resolve(uri.base || __dirname);
@@ -164,16 +178,22 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             opts.fields = source._map.parameters.interactivity_fields.split(',');
         } else if (format === 'svg') {
             var surface = new mapnik.CairoSurface('svg',width,height);
+            if (callback.renderer || this._renderer) {
+                opts.renderer = callback.renderer || this._renderer;
+            }
         } else {
             var surface = new mapnik.Image(width,height);
         }
         vtile.render(source._map, surface, opts, function(err, image) {
-            if (err) return callback(err);
+            if (err) {
+                err.code = 'EMAPNIK';
+                return callback(err);
+            }
             if (format == 'svg') {
                 headers['Content-Type'] = 'image/svg+xml';
                 return callback(null, image.getData(), headers);
             } else if (format === 'utf') {
-                image.encode(format, {}, function(err, buffer) {
+                image.encode({}, function(err, buffer) {
                     if (err) return callback(err);
                     return callback(null, buffer, headers);
                 });
@@ -233,10 +253,6 @@ Vector.prototype.getInfo = function(callback) {
         case 'bounds':
         case 'center':
             memo[key] = params[key].split(',').map(function(v) { return parseFloat(v) });
-            break;
-        case 'minzoom':
-        case 'maxzoom':
-            memo[key] = parseInt(params[key], 10);
             break;
         case 'scale':
             memo[key] = params[key].toString();
@@ -565,3 +581,4 @@ xray.color = function(str) {
     b = (b * 16) + b;
     return [r,g,b];
 };
+

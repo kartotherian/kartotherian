@@ -7,8 +7,9 @@ env:
   global:
   - secure: "Ud6+6DgQtUHMf//2loICXJQzKD0cEX2cZGm2Ty9VOttEOaZXq8Z6Kw0QVOf4g5pglfS9E+IprHDGzzuwmhzz0HPafRb6/gFZU2Euj+3nsHZYhbPj5HZTRXjzZXhP6tPbQ1E7Wg6uPvKR9YbFTXC8njPqeEAo2dS6TTcIIB7zu/I="
 
+sudo: false
+
 before_install:
-- sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-- sudo apt-get update -q
-- sudo apt-get install -y libstdc++6
+# install c++11 capable libstdc++ without sudo
+- if [[ $(uname -s) == 'Linux' ]]; then wget https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test/+files/libstdc%2B%2B6_4.8.1-2ubuntu1~12.04_amd64.deb && dpkg -x libstdc++6_4.8.1-2ubuntu1~12.04_amd64.deb ./ && export LD_PRELOAD=$(pwd)/usr/lib/x86_64-linux-gnu/libstdc++.so.6; fi
 
