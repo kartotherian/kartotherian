@@ -125,8 +125,43 @@ function constructTests(paths, defParams) {
 
 function cmp(result, expected, errMsg) {
 
-    expected = expected || '';
-    result = result || '';
+    if(expected === null || expected === undefined) {
+        // nothing to expect, so we can return
+        return true;
+    }
+    if(result === null || result === undefined) {
+        result = '';
+    }
+
+    if(expected.constructor === Object) {
+        Object.keys(expected).forEach(function(key) {
+            var val = expected[key];
+            assert.deepEqual(result.hasOwnProperty(key), true, 'Body field ' + key + ' not found in response!');
+            cmp(result[key], val, key + ' body field mismatch!');
+        });
+        return true;
+    } else if(expected.constructor === Array) {
+        if(result.constructor !== Array) {
+            assert.deepEqual(result, expected, errMsg);
+            return true;
+        }
+        // only one item in expected - compare them all
+        if(expected.length === 1 && result.length > 1) {
+            result.forEach(function(item) {
+                cmp(item, expected[0], errMsg);
+            });
+            return true;
+        }
+        // more than one item expected, check them one by one
+        if(expected.length !== result.length) {
+            assert.deepEqual(result, expected, errMsg);
+            return true;
+        }
+        expected.forEach(function(item, idx) {
+            cmp(result[idx], item, errMsg);
+        });
+        return true;
+    }
 
     if(expected.length > 1 && expected[0] === '/' && expected[expected.length - 1] === '/') {
         if((new RegExp(expected.slice(1, -1))).test(result)) {
@@ -169,15 +204,13 @@ function validateTestResponse(testCase, res) {
             res.body = JSON.parse(res.body);
         }
     }
-    if(expRes.body.constructor === Object) {
-        Object.keys(expRes.body).forEach(function(key) {
-            var val = expRes.body[key];
-            assert.deepEqual(res.body.hasOwnProperty(key), true, 'Body field ' + key + ' not found in response!');
-            cmp(res.body[key], val, key + ' body field mismatch!');
-        });
-    } else {
-        cmp(res.body, expRes.body, 'Body mismatch!');
+    // check that the body type is the same
+    if(expRes.body.constructor !== res.body.constructor) {
+        throw new Error('Expected a body of type ' + expRes.body.constructor + ' but gotten ' + res.body.constructor);
     }
+
+    // compare the bodies
+    cmp(res.body, expRes.body, 'Body mismatch!');
 
     return true;
 
