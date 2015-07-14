@@ -67,7 +67,7 @@ describe('wiki site info', function() {
             throw new Error('Expected an error to be thrown, got status: ' + res.status);
         }, function(err) {
             // inspect the status
-            assert.deepEqual(err.status, 500);
+            assert.deepEqual(err.status, 504);
         });
     });
 
