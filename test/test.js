@@ -16,7 +16,8 @@ var xml = {
     a: fs.readFileSync(path.resolve(__dirname + '/fixtures/a.xml'), 'utf8'),
     b: fs.readFileSync(path.resolve(__dirname + '/fixtures/b.xml'), 'utf8'),
     c: fs.readFileSync(path.resolve(__dirname + '/fixtures/c.xml'), 'utf8'),
-    i: fs.readFileSync(path.resolve(__dirname + '/fixtures/i.xml'), 'utf8')
+    i: fs.readFileSync(path.resolve(__dirname + '/fixtures/i.xml'), 'utf8'),
+    space: fs.readFileSync(path.resolve(__dirname + '/fixtures/s p a c e/i.xml'), 'utf8')
 };
 
 test('should fail without backend', function(t) {
