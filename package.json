@@ -24,12 +24,15 @@
   },
   "devDependencies": {
     "mapbox-studio-default-style": "1.0.1",
+    "istanbul": "~0.3.17",
+    "coveralls": "~2.11.2",
     "tape": "2.13.x",
     "tilejson": "~0.6.0",
     "simple-statistics": "~0.8.0"
   },
   "scripts": {
-    "test": "tape test/*.js"
+    "test": "tape test/*.js",
+    "coverage": "istanbul cover tape test/*.js && coveralls < ./coverage/lcov.info"
   },
   "engines": {
     "node": "0.10.x"
