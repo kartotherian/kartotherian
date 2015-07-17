@@ -44,7 +44,11 @@ function CassandraStore(uri, callback) {
         self.minzoom = typeof params.minzoom === 'undefined' ? 0 : intParse(params.minzoom);
         self.maxzoom = typeof params.maxzoom === 'undefined' ? 15 : intParse(params.maxzoom);
         self.maxBatchSize = typeof params.maxBatchSize === 'undefined' ? undefined : intParse(params.maxBatchSize);
-        self.client = new cassandra.Client({contactPoints: self.contactPoints});
+        var clientOpts = {contactPoints: self.contactPoints};
+        if (params.username || params.password) {
+            clientOpts.authProvider = new cassandra.auth.PlainTextAuthProvider(params.username, params.password);
+        }
+        self.client = new cassandra.Client(clientOpts);
         self.headers = {
             'Content-Type': 'application/x-protobuf',
             'Content-Encoding': 'gzip'
@@ -139,8 +143,8 @@ CassandraStore.prototype.close = function(callback) {
             return (self.batchMode && self.maxBatchSize) ? self.flushAsync() : true;
         }).then(function () {
             delete self.client;
+            self.batchMode = 0;
             return cl.shutdownAsync();
-            this.batchMode = 0;
         }).nodeify(callback);
     }
 };
@@ -168,50 +172,109 @@ CassandraStore.prototype.stopWriting = function(callback) {
     this.flush(callback);
 };
 
-CassandraStore.prototype.eachTile = function(options, rowCallback, callback) {
-    if (!util.isInteger(options.zoom))
-        throw new Error('Options must contain integer zoom parameter');
-    if (typeof options.indexStart !== 'undefined' && !util.isInteger(options.indexStart))
-        throw new Error('Options may contain an integer indexStart parameter');
-    if (typeof options.indexEnd !== 'undefined' && !util.isInteger(options.indexEnd))
-        throw new Error('Options may contain an integer indexEnd parameter');
-    var zoom = options.zoom;
-    var maxEnd = Math.pow(4, zoom);
-    var start = options.indexStart || 0;
-    var end = options.indexEnd || maxEnd;
-    if (start > end || end > maxEnd)
-        throw new Error('Options must satisfy: indexStart <= indexEnd <= ' + maxEnd);
-    var gettile = typeof options.gettile === 'undefined' ? true : options.gettile;
+CassandraStore.prototype.query = function(options) {
+    var self = this,
+        readablePromise = BBPromise.pending(),
+        isDone = false,
+        error, stream, olderThan, getTiles;
 
-    if (start === end) {
-        // optimization
-        callback();
-        return;
-    }
+    BBPromise.try(function() {
+        if (!util.isInteger(options.zoom))
+            throw new Error('Options must contain integer zoom parameter');
+        if (typeof options.idxFrom !== 'undefined' && !util.isInteger(options.idxFrom))
+            throw new Error('Options may contain an integer idxFrom parameter');
+        if (typeof options.idxBefore !== 'undefined' && !util.isInteger(options.idxBefore))
+            throw new Error('Options may contain an integer idxBefore parameter');
+        if (typeof options.olderThan !== 'undefined' && Object.prototype.toString.call(options.olderThane) !== '[object Date]')
+            throw new Error('Options may contain a Date olderThan parameter');
+        var maxEnd = Math.pow(4, options.zoom);
+        var start = options.idxFrom || 0;
+        var end = options.idxBefore || maxEnd;
+        if (start > end || end > maxEnd)
+            throw new Error('Options must satisfy: idxFrom <= idxBefore <= ' + maxEnd);
+        getTiles = typeof options.getTiles === 'undefined' ? true : options.getTiles;
+        olderThan = options.olderThan ? options.olderThan.valueOf() * 1000 : false;
 
-    var query = gettile ? "SELECT idx, tile FROM tiles WHERE zoom = ?" : "SELECT idx FROM tiles WHERE zoom = ?",
-        params = [zoom];
-    if (start > 0) {
-        query += ' AND idx >= ?';
-        params.push(start);
-    }
-    if (end < maxEnd) {
-        query += ' AND idx < ?';
-        params.push(end);
-    }
-
-    this.client.eachRow(query, params, prepared,
-        function(n, row) {
-            //the callback will be invoked per each row as soon as they are received
-            var xy = util.indexToXY(row.idx);
-            rowCallback(zoom, xy[0], xy[1], row.tile);
-        },
-        function (err) {
-            callback(err);
+        if (start === end) {
+            resolve(false);
+            return;
         }
-    );
-};
 
+        var fields = 'idx';
+        if (getTiles) {
+            fields += ', tile';
+        }
+        if (olderThan) {
+            fields += ', WRITETIME(tile) AS wt';
+        }
+        var conds = 'zoom = ?',
+            params = [options.zoom];
+        if (start > 0) {
+            conds += ' AND idx >= ?';
+            params.push(start);
+        }
+        if (end < maxEnd) {
+            conds += ' AND idx < ?';
+            params.push(end);
+        }
+        var query = 'SELECT ' + fields + ' FROM tiles WHERE ' + conds;
+        stream = self.client.stream(query, params, {prepare: true, autoPage: true})
+            .on('readable', function () {
+                // Notify waiting promises that data is available,
+                // and create a new one to wait for the next chunk of data
+                readablePromise.resolve(true);
+                readablePromise = BBPromise.pending();
+            })
+            .on('end', function () {
+                isDone = true;
+                readablePromise.resolve(true);
+            })
+            .on('error', function (err) {
+                error = err;
+                readablePromise.reject(err);
+            });
+    });
+
+    var readStream = function () {
+        if (error) {
+            // TODO: decide if we should exhaust the stream before reporting the error or error out right away
+            throw error;
+        }
+        var value;
+        while ((value = stream.read())) {
+            if (!olderThan || value.wt < olderThan) {
+                var res = {
+                    zoom: options.zoom,
+                    idx: value.idx
+                };
+                if (getTiles) {
+                    res.tile = value.tile;
+                }
+                return res;
+            }
+        }
+        return undefined;
+    };
+
+    var iterator = function () {
+        return BBPromise
+            .try(readStream)
+            .then(function(value) {
+                return value === undefined ? readablePromise.promise.then(readStream) : value;
+            })
+            .then(function(value) {
+                if (value !== undefined || isDone) {
+                    return value;
+                }
+                // If we are here, the current promise has been triggered,
+                // but by now other "threads" have consumed all buffered rows,
+                // so start waiting for the next one
+                // Note: there is a minor inefficiency here - readStream is called twice in a value, but its a rare case
+                return iterator();
+            });
+    };
+    return iterator;
+};
 
 BBPromise.promisifyAll(CassandraStore.prototype);
 module.exports = CassandraStore;
