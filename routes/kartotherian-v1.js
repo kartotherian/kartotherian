@@ -56,9 +56,14 @@ function init(app) {
 
     // todo: need to crash if this fails to load
     // todo: implement dynamic configuration reloading
-    require('../lib/conf').loadConfiguration(app.conf, tmsource)
+    require('../lib/conf')
+        .loadConfiguration(app.conf)
         .then(function (c) {
             conf = c;
+        })
+        .catch(function(err){
+            console.error((err.body && (err.body.stack || err.body.detail)) || err.stack || err);
+            process.exit(1);
         });
 }
 
@@ -178,6 +183,9 @@ function getTile(req, res, next) {
         throw new Error('Unknown source');
     }
     var source = conf[req.params.src];
+    if (!source.public) {
+        throw new Error('Source not public');
+    }
 
     var state = {
         source: source,
@@ -191,43 +199,6 @@ function getTile(req, res, next) {
 
     return !source.style ? getTileFromStore(state) : getTileFromStyle(state);
 }
-
-function tmsource(options, callback) {
-    if (options.path[0] !== '/')
-        throw new Error('Unexpected path ' + options.path);
-    this.sourceId = options.path.substr(1);
-    callback(null, this);
-}
-
-tmsource.prototype.getTile = function(z, x, y, callback) {
-    if (!conf.hasOwnProperty(this.sourceId)) {
-        return callback(new Error('Unknown source'));
-    }
-
-    var state = {source: conf[this.sourceId], z: z, x: x, y: y};
-    stateToPromise(state)
-        .then(storage.getDataFromStateAsync)
-        .catch(function (err) {
-            // Tile file does not exist, generate it
-            if (!state.source.generate) throw err;
-            return storage.generateVector(state)
-                .then(storage.getDataFromStateAsync);
-        })
-        .then(function (data) {
-            callback(null, data, state.isRaster ? rasterHeaders : vectorHeaders);
-        }, function (err) {
-            callback(err);
-        });
-};
-
-tmsource.prototype.getGrid = function(z, x, y, callback) {
-    callback(null);
-};
-
-tmsource.prototype.getInfo = function(callback) {
-    callback(null, {});
-};
-
 
 router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w\\.]+)', getTile);
 router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+):scale(@\\d+x).:format([\\w\\.]+)', getTile);
