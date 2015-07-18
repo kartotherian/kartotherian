@@ -5,7 +5,7 @@ num_workers: ncpu
 
 # Log error messages and gracefully restart a worker if v8 reports that it
 # uses more heap (note: not RSS) than this many mb.
-worker_heap_limit_mb: 500
+worker_heap_limit_mb: 250
 
 # Logger info
 logging:
@@ -18,33 +18,55 @@ logging:
 
 # Statsd metrics reporter
 metrics:
-  type: log
+  type: info
   #host: localhost
   #port: 8125
 
 services:
-  - name: service-template-node
+  - name: kartotherian
     # a relative path or the name of an npm package, if different from name
-    module: ./app.js
+    module: ./src/app.js
     # optionally, a version constraint of the npm package
     # version: ^0.4.0
     # per-service config
     conf:
       port: 4000
+#      Without this, allows for connections from everyone!
+#      interface: localhost
 
       # TODO: This does not work, not sure of the exact reqs here, manually disabling for now
       csp: default-src 'self'; script-src 'self' 'unsafe-inline';
 
-      cache: public, s-maxage=36000, max-age=30
-
       sources:
+        # Source ordering is important for ref value resolution - if uri is not fully resolved before it is referenced,
+        # it might be included in incomplete form.  TODO: detect dependencies/throw on circular
+        v1store:
+          uri: file://./vectors?filetype=pbf
+        v1gen:
+          uri: bridge://./map/osm-bright.tm2source/data.xml
+          public: true
+        v1c:
+          uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0
+        v2c:
+          uri: cassandra://?cp=127.0.0.1&keyspace=v2&repfactor=1&durablewrite=0
+        v1a:
+          # Uses other sources, must be last in the list
+          uri: autogen://?saveafter=0&minzoom=0&maxzoom=25
+          ref: {store: v1store, generator: v1gen}
         v1:
-          tm2source: ./map/osm-bright.tm2source/data.xml
-          generate: true
-          saveGenerated: true
-          cacheBaseDir: ./vectors
-
+          uri: overzoom://
+          ref: {source: v1c}
+          public: true
       styles:
         s1:
           tm2: ./map/osm-bright.tm2/project.xml
-          sourceId: v1
+          source: v1
+          public: true
+        g:
+          tm2: ./map/osm-bright.tm2/project.xml
+          source: v1gen
+          public: true
+        a:
+          tm2: ./map/osm-bright.tm2/project.xml
+          source: v1a
+          public: true

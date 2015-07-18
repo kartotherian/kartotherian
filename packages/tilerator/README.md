@@ -19,7 +19,7 @@ apt-get install sudo git unzip curl build-essential postgresql-9.4-postgis-2.1 p
 useradd -m -G adm,sudo yurik
 vi /etc/sudoers  # Allow nopassword sudoing by changing this line:
                  %sudo   ALL=(ALL:ALL) NOPASSWD: ALL
-                 
+
 # As user, add some git helpers and vim syntax colors:
 git config --global alias.co checkout
 git config --global alias.st status
@@ -37,7 +37,7 @@ usermod -a -G osm yurik
 chgrp osm planet
 chgrp osm .
 chmod g+w . planet
-chmod g+w . osm 
+chmod g+w . osm
 
 # Download the latest OSM dump from http://planet.osm.org/pbf/ - both md5 and the actual data
 curl -O http://planet.osm.org/pbf/planet-150601.osm.pbf.md5
@@ -126,6 +126,9 @@ $ psql -d gis -f map/osm-bright.tm2source/sql/water-indexes.sql
 ```
 psql -d gis -f scripts/mbutils/lib.sql
 ```
+
+### Configure Kartotherian
+Use one of the config files, or update them, and make a link config.yaml to it.
 
 ### Add Varnish caching layer (optional)
 ```
