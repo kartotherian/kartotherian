@@ -23,7 +23,7 @@ metrics:
   #port: 8125
 
 services:
-  - name: service-template-node
+  - name: kartotherian
     # a relative path or the name of an npm package, if different from name
     module: ./app.js
     # optionally, a version constraint of the npm package
@@ -41,12 +41,12 @@ services:
         # Source ordering is important for ref value resolution - if uri is not fully resolved before it is referenced,
         # it might be included in incomplete form.  TODO: detect dependencies/throw on circular
         v1store:
-          uri: file://./vectors?safe=true&filetype=pbf
+          uri: file://./vectors?filetype=pbf
         v1gen:
           uri: bridge://./map/osm-bright.tm2source/data.xml
           public: true
-        v1c:
-          uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0
+        # v1c:
+        #   uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0
         v1a:
           # Uses other sources, must be last in the list
           uri: autogen://?saveafter=8&minzoom=0&maxzoom=16
@@ -58,5 +58,5 @@ services:
       styles:
         s1:
           tm2: ./map/osm-bright.tm2/project.xml
-          source: v1
+          source: v1a
           public: true
