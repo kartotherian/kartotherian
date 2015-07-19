@@ -1,0 +1,12 @@
+sources:
+  v1c:
+    uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0&username=cassandra&password=cassandra
+  v1:
+    uri: overzoom://
+    ref: {source: v1c}
+    public: true
+
+styles:
+  s1:
+    tm2: ./map/osm-bright.tm2/project.xml
+    sourceId: v1
