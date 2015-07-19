@@ -16,3 +16,18 @@
 [submodule "scripts/mbutils"]
 	path = scripts/mbutils
 	url = https://github.com/nyurik/postgis-vt-util.git
+
+
+
+[submodule "map/osm-bright.tm2"]
+	url = https://github.com/nyurik/mapbox-studio-osm-bright.tm2.git
+[submodule "map/osm-bright.tm2source"]
+	url = https://github.com/nyurik/osm2pgsql-osm-bright.tm2source.git
+[submodule "scripts/mbutils"]
+	url = https://github.com/nyurik/postgis-vt-util.git
+[submodule "static/mapbox-gl-js"]
+	url = https://github.com/nyurik/mapbox-gl-js.git
+[submodule "static/mapbox-gl-leaflet"]
+	url = https://github.com/mapbox/mapbox-gl-leaflet.git
+[submodule "static/mapbox-gl-styles"]
+	url = https://github.com/nyurik/mapbox-gl-styles.git
