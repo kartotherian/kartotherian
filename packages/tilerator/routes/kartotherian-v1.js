@@ -57,7 +57,7 @@ function init(app) {
     // todo: need to crash if this fails to load
     // todo: implement dynamic configuration reloading
     require('../lib/conf')
-        .loadConfiguration(app.conf)
+        .loadConfigurationAsync(app)
         .then(function (c) {
             conf = c;
         })
