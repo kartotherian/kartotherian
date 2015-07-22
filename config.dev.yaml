@@ -43,7 +43,8 @@ services:
         v1store:
           uri: file://./vectors?filetype=pbf
         v1gen:
-          uri: bridge://./map/osm-bright.tm2source/data.xml
+          uri: bridge://
+          npm: {"": ["osm-bright-source", "data.xml"]}
           public: true
         # v1c:
         #   uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0
@@ -57,6 +58,6 @@ services:
           public: true
       styles:
         s1:
-          tm2: ./map/osm-bright.tm2/project.xml
+          tm2: ["osm-bright-style", "project.xml"]
           source: v1a
           public: true

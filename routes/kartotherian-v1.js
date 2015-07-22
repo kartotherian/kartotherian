@@ -2,6 +2,7 @@
 
 var BBPromise = require('bluebird');
 var _ = require('underscore');
+var express = require('express');
 
 var sUtil = require('../lib/util');
 var storage = require('../lib/storage');
@@ -53,6 +54,8 @@ function stateToPromise(state) {
 function init(app) {
     //app.set('json spaces', 4);
     var log = app.logger.log.bind(app.logger);
+
+    app.use('/static/leaflet', express.static(sUtil.getModulePath('leaflet'), sUtil.getStaticOpts(app.conf)));
 
     // todo: need to crash if this fails to load
     // todo: implement dynamic configuration reloading

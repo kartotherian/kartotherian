@@ -58,7 +58,7 @@ exports.parseCommonSettingsAsync = function(statsAccessor) {
         reporter = setInterval(config.reportStats, 60000);
 
     return fs
-        .readFileAsync(conf.normalizePath(config.configPath))
+        .readFileAsync(util.normalizePath(config.configPath))
         .then(yaml.safeLoad)
         .then(function (cfg) {
             return conf

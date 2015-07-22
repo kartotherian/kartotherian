@@ -8,5 +8,6 @@ sources:
 
 styles:
   s1:
-    tm2: ./map/osm-bright.tm2/project.xml
-    sourceId: v1
+    tm2: ["osm-bright-style", "project.xml"]
+    source: v1
+    public: true

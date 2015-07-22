@@ -81,16 +81,7 @@ function initApp(options) {
             return lastIndex !== -1 && lastIndex === position;
         };
     }
-    var staticOpts = {};
-    staticOpts.setHeaders = function(res) {
-        if (app.conf.cache) {
-            res.header('Cache-Control', app.conf.cache);
-        }
-        if (res.req.originalUrl.endsWith('.pbf')) {
-            res.header('Content-Encoding', 'gzip');
-        }
-    };
-    app.use('/static', express.static(__dirname + '/static', staticOpts));
+    app.use('/static', express.static(__dirname + '/static', sUtil.getStaticOpts(app.conf)));
 
     return BBPromise.resolve(app);
 }
