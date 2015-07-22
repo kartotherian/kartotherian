@@ -23,7 +23,7 @@ metrics:
   #port: 8125
 
 services:
-  - name: service-template-node
+  - name: kartotherian
     # a relative path or the name of an npm package, if different from name
     module: ./app.js
     # optionally, a version constraint of the npm package
@@ -46,5 +46,6 @@ services:
 
       styles:
         s1:
-          tm2: ./map/osm-bright.tm2/project.xml
-          sourceId: v1
+          tm2: ["osm-bright-style", "project.xml"]
+          source: v1
+          public: true
