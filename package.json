@@ -41,7 +41,7 @@
     "fs-promise": "~0.3.1",
     "js-yaml": "^3.2.7",
     "leaflet": "~0.7.3",
-    "mapnik": "~3.2.0",
+    "mapnik": "~3.4.0",
     "mbtiles": "^0.8.0",
     "minimist": "0.2.*",
     "mkdirp-then": "~1.0.1",
@@ -50,10 +50,10 @@
     "osm-bright-source": "git+https://github.com/nyurik/osm-bright.tm2source.git",
     "preq": "^0.4.1",
     "service-runner": "^0.1.8",
-    "tilelive": "~5.6.1",
-    "tilelive-bridge": "~1.2.7",
+    "tilelive": "~5.8.2",
+    "tilelive-bridge": "~1.4.0",
     "tilelive-file": "^0.0.3",
-    "tilelive-vector": "~3.2.4",
+    "tilelive-vector": "~3.3.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
