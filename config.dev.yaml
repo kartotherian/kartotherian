@@ -46,8 +46,8 @@ services:
           uri: bridge://
           npm: {"": ["osm-bright-source", "data.xml"]}
           public: true
-        # v1c:
-        #   uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0
+        v1c:
+          uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0
         v1a:
           # Uses other sources, must be last in the list
           uri: autogen://?saveafter=8&minzoom=0&maxzoom=16
@@ -56,8 +56,9 @@ services:
           uri: overzoom://
           ref: {source: v1store}
           public: true
+
       styles:
         s1:
           tm2: ["osm-bright-style", "project.xml"]
-          source: v1a
+          source: v1c
           public: true
