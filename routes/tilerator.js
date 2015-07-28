@@ -207,7 +207,7 @@ TaskProcessor.prototype.getInvertingIterator = function(task, iterator) {
  * @param task
  */
 TaskProcessor.prototype.getZoomCheckIterator = function(task) {
-    if (task.checkZoom === false)
+    if (!task.checkZoom)
         return false;
     var scale = Math.pow(4, task.zoom - task.checkZoom);
     var opts = {
@@ -215,14 +215,15 @@ TaskProcessor.prototype.getZoomCheckIterator = function(task) {
         idxFrom: task.idxFrom / scale,
         idxBefore: task.idxBefore / scale
     };
+    var self = this;
     var ozIter = this.tileStore.query(opts);
-    var iter = false;
+    var subIterP = false;
     var isDone = false;
     var getNextValAsync = function() {
         if (isDone)
             return BBPromise.resolve(undefined);
-        if (!iter) {
-            iter = ozIter().then(function (res) {
+        if (!subIterP) {
+            subIterP = ozIter().then(function (res) {
                 if (res === undefined) {
                     isDone = true;
                     return res; // done iterating
@@ -235,12 +236,15 @@ TaskProcessor.prototype.getZoomCheckIterator = function(task) {
                 return self.getIterator(t);
             });
         }
-        return iter.then(function(val) {
-            if (val === undefined) {
-                iter = false;
-                return getNextValAsync();
-            }
-            return val;
+        return subIterP.then(function(iter) {
+            if (!iter) return undefined;
+            return iter().then(function(val) {
+                if (val === undefined) {
+                    subIterP = false;
+                    return getNextValAsync();
+                }
+                return val;
+            });
         });
     };
     return getNextValAsync;
