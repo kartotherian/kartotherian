@@ -30,13 +30,17 @@ function CassandraStore(uri, callback) {
         } else {
             self.contactPoints = params.cp;
         }
-        if (!params.keyspace || !/^[a-zA-Z0-9]+$/.test(params.keyspace)) {
+        if (!params.keyspace || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.keyspace)) {
             throw new Error("Uri must have a valid 'keyspace' query parameter: " + uri)
         }
-        if (params.repclass && !/^[a-zA-Z0-9]+$/.test(params.repclass)) {
+        if (params.table && !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.table)) {
+            throw new Error("Optional uri 'table' param must be a valid value: " + uri)
+        }
+        if (params.repclass && !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.repclass)) {
             throw new Error("Uri 'repclass' must be a valid value: " + uri)
         }
         self.keyspace = params.keyspace;
+        self.table = params.table || 'tiles';
         self.repclass = params.repclass || 'SimpleStrategy';
         self.repfactor = typeof params.repfactor === 'undefined' ? 3 : parseInt(params.repfactor);
         var dw = params.durablewrite;
@@ -64,12 +68,12 @@ function CassandraStore(uri, callback) {
         return self.client.executeAsync("USE " + self.keyspace);
     }).then(function () {
         return self.client.executeAsync(
-            "CREATE TABLE IF NOT EXISTS tiles (" +
+            "CREATE TABLE IF NOT EXISTS " + self.table + " (" +
             " zoom int," +
             " idx int," +
             " tile blob," +
             " PRIMARY KEY (zoom, idx)" +
-            ") WITH COMPACT STORAGE");
+            ")");
     }).catch(function (err) {
         return self.closeAsync().finally(function () {
             throw err;
@@ -85,13 +89,9 @@ CassandraStore.registerProtocols = function(tilelive) {
 
 CassandraStore.prototype.getTile = function(z, x, y, callback) {
     var self = this;
-    return this.client.executeAsync(
-        "SELECT tile FROM tiles WHERE zoom = ? AND idx = ?",
-        [z, util.xyToIndex(x, y)],
-        prepared
-    ).then(function(res) {
-        if ('rows' in res && res.rows.length === 1) {
-            return [res.rows[0].tile, self.headers];
+    return this.queryTileAsync({zoom: z, idx: util.xyToIndex(x, y)}).then(function(row) {
+        if (row) {
+            return [row.tile, self.headers];
         } else {
             throw new Error('Tile does not exist');
         }
@@ -114,10 +114,10 @@ CassandraStore.prototype.getInfo = function(callback) {
 CassandraStore.prototype.putTile = function(z, x, y, tile, callback) {
     var query, params;
     if (tile && tile.length > 0) {
-        query = "UPDATE tiles SET tile = ? WHERE zoom = ? AND idx = ?";
+        query = "UPDATE " + this.table + " SET tile = ? WHERE zoom = ? AND idx = ?";
         params = [tile, z, util.xyToIndex(x, y)];
     } else {
-        query = "DELETE FROM tiles WHERE zoom = ? AND idx = ?";
+        query = "DELETE FROM " + this.table + " WHERE zoom = ? AND idx = ?";
         params = [z, util.xyToIndex(x, y)];
     }
 
@@ -172,11 +172,59 @@ CassandraStore.prototype.stopWriting = function(callback) {
     this.flush(callback);
 };
 
+CassandraStore.prototype.queryTileAsync = function(options) {
+    var self = this, getTile, getWriteTime, getSize;
+
+    return BBPromise.try(function() {
+        if (!util.isInteger(options.zoom))
+            throw new Error('Options must contain integer zoom parameter');
+        if (!util.isInteger(options.idx))
+            throw new Error('Options must contain an integer idx parameter');
+        var maxEnd = Math.pow(4, options.zoom);
+        if (options.idx < 0 || options.idx >= maxEnd)
+            throw new Error('Options must satisfy: 0 <= idx < ' + maxEnd);
+        getTile = typeof options.getTile === 'undefined' ? true : options.getTile;
+        getWriteTime = typeof options.getWriteTime === 'undefined' ? false : options.getWriteTime;
+        getSize = typeof options.getSize === 'undefined' ? false : options.getSize;
+        if (!getTile && !getWriteTime && !getSize)
+            throw new Error('Either getTile or getWriteTime or both must be requested');
+        var fields = (getTile || getSize) ? 'tile' : '';
+        if (fields && getWriteTime) fields += ', ';
+        if (getWriteTime) fields += 'WRITETIME(tile) AS wt';
+        var query = "SELECT " + fields + " FROM " + self.table + " WHERE zoom = ? AND idx = ?";
+        return self.client.executeAsync(query, [z, util.xyToIndex(x, y)], prepared);
+    }).then(function(res) {
+        if ('rows' in res && res.rows.length === 1) {
+            var row = res.rows[0];
+            var resp = {};
+            if (getTile) resp.tile = row.tile;
+            if (getSize) resp.size = row.tile.length; // TODO: Use UDF in the next Cassandra ver
+            if (getWriteTime) resp.writeTime = new Date(row.wt / 1000);
+            return resp;
+        } else {
+            return false;
+        }
+    });
+};
+
+/**
+ * Query database for all tiles that match conditions
+ * @param options - an object that must have an integer 'zoom' value.
+ * Optional values:
+ *  idxFrom - int index to start iteration from (inclusive)
+ *  idxBefore - int index to stop iteration at (exclusive)
+ *  dateFrom - Date value - return only tiles whose write time is on or after this date (inclusive)
+ *  dateBefore - Date value - return only tiles whose write time is before this date (exclusive)
+ *  biggerThan - number - return only tiles whose compressed size is bigger than this value (inclusive)
+ *  smallerThan - number - return only tiles whose compressed size is smaller than this value (exclusive)
+ * @returns {Function} - a function that returns a promise. If promise resolves to undefined, there are no more values
+ * in the stream.
+ */
 CassandraStore.prototype.query = function(options) {
     var self = this,
         readablePromise = BBPromise.pending(),
         isDone = false,
-        error, stream, olderThan, getTiles;
+        error, stream, dateBefore, dateFrom;
 
     BBPromise.try(function() {
         if (!util.isInteger(options.zoom))
@@ -185,26 +233,32 @@ CassandraStore.prototype.query = function(options) {
             throw new Error('Options may contain an integer idxFrom parameter');
         if (typeof options.idxBefore !== 'undefined' && !util.isInteger(options.idxBefore))
             throw new Error('Options may contain an integer idxBefore parameter');
-        if (typeof options.olderThan !== 'undefined' && Object.prototype.toString.call(options.olderThane) !== '[object Date]')
-            throw new Error('Options may contain a Date olderThan parameter');
+        if (typeof options.dateBefore !== 'undefined' && Object.prototype.toString.call(options.dateBefore) !== '[object Date]')
+            throw new Error('Options may contain a Date dateBefore parameter');
+        if (typeof options.dateFrom !== 'undefined' && Object.prototype.toString.call(options.dateFrom) !== '[object Date]')
+            throw new Error('Options may contain a Date dateFrom parameter');
+        if (typeof options.biggerThan !== 'undefined' && typeof options.biggerThan !== 'number')
+            throw new Error('Options may contain a biggerThan numeric parameter');
+        if ((typeof options.smallerThan !== 'undefined' && typeof options.smallerThan !== 'number') || options.smallerThan <= 0)
+            throw new Error('Options may contain a smallerThan numeric parameter that is bigger than 0');
         var maxEnd = Math.pow(4, options.zoom);
         var start = options.idxFrom || 0;
         var end = options.idxBefore || maxEnd;
         if (start > end || end > maxEnd)
             throw new Error('Options must satisfy: idxFrom <= idxBefore <= ' + maxEnd);
-        getTiles = typeof options.getTiles === 'undefined' ? true : options.getTiles;
-        olderThan = options.olderThan ? options.olderThan.valueOf() * 1000 : false;
-
-        if (start === end) {
-            resolve(false);
-            return;
-        }
+        if (options.dateFrom >= options.dateBefore)
+            throw new Error('Options must satisfy: dateFrom < dateBefore');
+        dateFrom = options.dateFrom ? options.dateFrom.valueOf() * 1000 : false;
+        dateBefore = options.dateBefore ? options.dateBefore.valueOf() * 1000 : false;
 
         var fields = 'idx';
-        if (getTiles) {
+        if (options.getTiles || options.smallerThan || options.biggerThan) {
+            // If tile size check is requested, we have to get the whole tile at this point...
+            // TODO: in the next Cassandra, UDFs should help with this
+            // Optimization - if biggerThan is 0, it will not be used
             fields += ', tile';
         }
-        if (olderThan) {
+        if (dateBefore !== false || dateFrom !== false) {
             fields += ', WRITETIME(tile) AS wt';
         }
         var conds = 'zoom = ?',
@@ -217,7 +271,7 @@ CassandraStore.prototype.query = function(options) {
             conds += ' AND idx < ?';
             params.push(end);
         }
-        var query = 'SELECT ' + fields + ' FROM tiles WHERE ' + conds;
+        var query = 'SELECT ' + fields + ' FROM ' + self.table + ' WHERE ' + conds;
         stream = self.client.stream(query, params, {prepare: true, autoPage: true})
             .on('readable', function () {
                 // Notify waiting promises that data is available,
@@ -233,25 +287,36 @@ CassandraStore.prototype.query = function(options) {
                 error = err;
                 readablePromise.reject(err);
             });
+    }).catch(function(err){
+        error = err;
+        readablePromise.reject(err);
     });
 
     var readStream = function () {
         if (error) {
             // TODO: decide if we should exhaust the stream before reporting the error or error out right away
             throw error;
+        } else if (!stream) {
+            return undefined;
         }
         var value;
         while ((value = stream.read())) {
-            if (!olderThan || value.wt < olderThan) {
-                var res = {
-                    zoom: options.zoom,
-                    idx: value.idx
-                };
-                if (getTiles) {
-                    res.tile = value.tile;
-                }
-                return res;
+            if (dateBefore !== false && value.wt >= dateBefore)
+                continue;
+            if (dateFrom !== false && value.wt < dateFrom)
+                continue;
+            if (options.smallerThan && value.tile.length >= options.smallerThan)
+                continue;
+            if (options.biggerThan && value.tile.length < options.biggerThan)
+                continue;
+            var res = {
+                zoom: options.zoom,
+                idx: value.idx
+            };
+            if (options.getTiles) {
+                res.tile = value.tile;
             }
+            return res;
         }
         return undefined;
     };
@@ -272,6 +337,11 @@ CassandraStore.prototype.query = function(options) {
                 // Note: there is a minor inefficiency here - readStream is called twice in a value, but its a rare case
                 return iterator();
             });
+    };
+    iterator.cancel = function() {
+        stream.pause();
+        error = new BBPromise.CancellationError();
+        readablePromise.cancel();
     };
     return iterator;
 };
