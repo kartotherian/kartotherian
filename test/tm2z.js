@@ -180,7 +180,7 @@ test('errors out if style causes parse error', function(t) {
     tilelive.load('tm2z://' + path.join(fixtureDir, 'invalid_parsecolor.tm2z'), function(err, source) {
         source.getTile(3, 4, 3, function(err, run1, headers) {
             t.equal('EMAPNIK', err.code);
-            t.equal(err.message.split(':')[0], 'Failed to a parse color');
+            t.equal(err.message.split(':')[0], 'Failed to parse color');
             t.end();
         });
     });
