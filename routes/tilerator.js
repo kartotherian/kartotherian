@@ -103,7 +103,10 @@ TaskProcessor.prototype.runAsync = function() {
             return self.taskProcessorThreadAsync(threadId);
         });
         return BBPromise.all(threads).then(function () {
-            task.stats.finish = new Date();
+            var stats = task.stats;
+            stats.finish = new Date();
+            stats.time = (stats.finish - stats.start) / 1000;
+            stats.itemAvg = time > 0 ? Math.round(stats.processed / time * 10) / 10 : 0;
         });
     });
 };
