@@ -2,6 +2,7 @@
 
 var BBPromise = require('bluebird');
 var util = require('./util');
+var _ = require('underscore');
 
 module.exports = {};
 
