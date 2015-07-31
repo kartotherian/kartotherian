@@ -46,7 +46,12 @@ function taskProcessorAsync(conf) {
         return (new TaskProcessor(conf, task)).runAsync();
     }).catch(function (err) {
         currentTask.error = err;
-        currentTask.errorMsg = err.toString();
+        if (err) {
+            currentTask.errorMsg = err.toString();
+            if (err.stack) {
+                currentTask.errorStack = err.stack.toString();
+            }
+        }
         console.log(err);
     }).then(function () {
         currentTask = undefined;
@@ -91,14 +96,7 @@ TaskProcessor.prototype.runAsync = function() {
             totalsize: 0,
             log: []
         };
-        var iterator = self.getIterator(task);
-        self.iterator = function() {
-            return iterator().then(function(val) {
-                if (val)
-                    task.index = val.idx;
-                return val;
-            });
-        };
+        self.iterator = self.getIterator(task);
         var threads = _.map(_.range(task.threads), function (threadId) {
             return self.taskProcessorThreadAsync(threadId);
         });
@@ -106,7 +104,8 @@ TaskProcessor.prototype.runAsync = function() {
             var stats = task.stats;
             stats.finish = new Date();
             stats.time = (stats.finish - stats.start) / 1000;
-            stats.itemAvg = time > 0 ? Math.round(stats.processed / time * 10) / 10 : 0;
+            stats.itemAvg = stats.time > 0 ? Math.round(stats.processed / stats.time * 10) / 10 : 0;
+            stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
         });
     });
 };
@@ -271,38 +270,36 @@ TaskProcessor.prototype.taskProcessorThreadAsync = function(threadId) {
 
 TaskProcessor.prototype.generateTileAsync = function(tile) {
     var self = this,
-        task = self.task,
+        stats = self.task.stats,
         xy = sUtil.indexToXY(tile.idx),
-        loc = {z: tile.zoom, x: xy[0], y: xy[1]};
+        x = xy[0],
+        y = xy[1];
 
     return BBPromise.try(function () {
-        task.stats.tilegen++;
-        return self.tileGenerator.getTileAsync(loc.z, loc.x, loc.y);
-    }).then(function (tile) {
-        task.stats.tilegenok++;
-        loc.data = tile[0];
-        loc.headers = tile[1];
-        return loc;
+        stats.tilegen++;
+        return self.tileGenerator.getTileAsync(tile.zoom, x, y);
+    }).then(function (dataAndHeader) {
+        stats.tilegenok++;
+        return dataAndHeader[0];
     }, function (err) {
         if (err.message === 'Tile does not exist') {
-            task.stats.tilegenempty++;
-            loc.data = null;
-            return loc;
+            stats.tilegenempty++;
+            return null;
         } else {
-            task.stats.tilegenerr++;
+            stats.tilegenerr++;
             throw err;
         }
-    }).then(function (loc) {
-        if (!loc.data || !loc.data.length) {
-            task.stats.tilenodata++;
+    }).then(function (data) {
+        if (!data || !data.length) {
+            stats.tilenodata++;
             return false; // empty tile generated, no need to save
         }
-        if (loc.data.length >= config.maxsize) {
-            task.stats.tiletoobig++;
+        if (data.length >= config.maxsize) {
+            stats.tiletoobig++;
             return true; // generated tile is too big, save
         }
-        var vt = new mapnik.VectorTile(loc.z, loc.x, loc.y);
-        return sUtil.uncompressAsync(loc.data)
+        var vt = new mapnik.VectorTile(tile.zoom, x, y);
+        return sUtil.uncompressAsync(data)
             .bind(vt)
             .then(function (uncompressed) {
                 return this.setDataAsync(uncompressed);
@@ -312,25 +309,31 @@ TaskProcessor.prototype.generateTileAsync = function(tile) {
                 return this.isSolidAsync();
             }).spread(function (solid, key) {
                 if (solid) {
+                    // Count different types of solid tiles
                     var stat = 'solid_' + key;
-                    task.stats[stat] = (stat in task.stats) ? task.stats[stat] + 1 : 1;
-                    if (config.log > 0 && key !== 'water' && key !== 'landuse')
-                        console.log('%d,%d,%d is solid %s', loc.z, loc.x, loc.y, key);
-                    return false;
+                    if (stat in stats) {
+                        stats[stat][0]++;
+                    } else {
+                        stats[stat] = [1];
+                    }
+                    if (stats[stat].length < 3) {
+                        // Record the first few tiles of this type
+                        stats[stat].push(tile.idx)
+                    }
+                    return null;
                 } else {
-                    task.stats.tilenonsolid++;
-                    return true;
+                    stats.tilenonsolid++;
+                    return data;
                 }
             });
-    }).then(function (save) {
-        if (save) {
-            task.stats.save++;
-            task.stats.totalsize += loc.data.length;
-            return self.tileStore.putTileAsync(loc.z, loc.x, loc.y, loc.data);
+    }).then(function (data) {
+        if (data) {
+            stats.save++;
+            stats.totalsize += data.length;
         } else {
-            task.stats.nosave++;
-            return self.tileStore.putTileAsync(loc.z, loc.x, loc.y, null);
+            stats.nosave++;
         }
+        return self.tileStore.putTileAsync(tile.zoom, x, y, data);
     });
 };
 
