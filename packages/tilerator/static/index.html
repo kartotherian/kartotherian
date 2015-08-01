@@ -22,14 +22,23 @@
 	</style>
 
 	<div id="map" style="width: 100%; height: 900px"></div>
-	<div id='zoom-level'>Zoom Level: 15</div>
+	<div id='zoom-level'>Zoom Level: 7</div>
 
 	<script src="leaflet/leaflet.js"></script>
 	<script src="lib/leaflet-hash.js"></script>
 	<script>
 
-		var map = L.map('map').setView([45.777179, 4.790948], 15);
-		L.tileLayer('/s1/{z}/{x}/{y}.png', {
+		var match = location.search.match(/s=([^&\/]*)/);
+		var style = (match && match[1]) || 's1';
+
+
+		var map = L.map('map').setView([19.4350438,-99.146433], 7);
+//		L.tileLayer('/r/{z}/{x}/{y}.png', {
+//			maxZoom: 9,
+//			attribution: 'Made with <a href="http://www.naturalearthdata.com">Natural Earth</a>',
+//			id: 'raster'
+//		}).addTo(map);
+		L.tileLayer('/' + style + '/{z}/{x}/{y}.png', {
 			maxZoom: 18,
 			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
 				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
