@@ -7,17 +7,13 @@ var mapnik = require('mapnik');
 var sUtil = require('../lib/util');
 var util = require('util');
 var queue = require('../lib/queue');
-var que = new queue.Queue();
 
 var router = sUtil.router();
 
 var config = {
     // Assume the tile needs to be saved if its compressed size is above this value
     // Skips the Mapnik's isSolid() call
-    maxsize: 5 * 1024,
-
-    // Logging levels. TODO: remove
-    log: 1
+    maxsize: 5 * 1024
 };
 
 /**
@@ -26,63 +22,47 @@ var config = {
  * @returns {*}
  */
 function init(app) {
-    var log = app.logger.log.bind(app.logger);
-
     // todo: need to crash if this fails to load
     // todo: implement dynamic configuration reloading
     require('../lib/conf')
         .loadConfigurationAsync(app)
-        .then(taskProcessorAsync)
+        .then(function(conf) {
+            queue.init(app, function (job, done) {
+                BBPromise.try(function () {
+                    var handler = new JobProcessor(conf, job);
+                    return handler.runAsync();
+                }).nodeify(done);
+            });
+        })
         .catch(function (err) {
             console.error((err.body && (err.body.stack || err.body.detail)) || err.stack || err);
             process.exit(1);
         });
 }
 
-function taskProcessorAsync(conf) {
-    var currentTask;
-    return que.getTaskAsync().then(function (task) {
-        currentTask = task;
-        return (new TaskProcessor(conf, task)).runAsync();
-    }).catch(function (err) {
-        currentTask.error = err;
-        if (err) {
-            currentTask.errorMsg = err.toString();
-            if (err.stack) {
-                currentTask.errorStack = err.stack.toString();
-            }
-        }
-        console.log(err);
-    }).then(function () {
-        currentTask = undefined;
-        // loop tasks until interrupted
-        return taskProcessorAsync(conf);
-    });
-}
-
-function TaskProcessor(conf, task) {
-    if (!(task.generatorId in conf)) {
-        throw new Error(task.generatorId + ' generatorId is not defined');
+function JobProcessor(conf, job) {
+    if (!(job.data.generatorId in conf)) {
+        throw new Error('Uknown generatorId ' + job.data.generatorId);
     }
-    if (!(task.storageId in conf)) {
-        throw new Error(task.storageId + ' storageId is not defined');
+    if (!(job.data.storageId in conf)) {
+        throw new Error('Uknown storageId ' + job.data.storageId);
     }
     this.conf = conf;
-    this.task = task;
-    this.tileGenerator = conf[task.generatorId].handler;
-    this.tileStore = conf[task.storageId].handler;
+    this.job = job;
+    this.tileGenerator = conf[job.data.generatorId].handler;
+    this.tileStore = conf[job.data.storageId].handler;
 }
 
 /**
- * Do the task, resolves promise when the task is complete
+ * Do the job, resolves promise when the job is complete
  * @returns {*}
  */
-TaskProcessor.prototype.runAsync = function() {
+JobProcessor.prototype.runAsync = function() {
     var self = this;
-    var task = self.task;
+    var job = self.job.data;
     return BBPromise.try(function () {
-        task.stats = {
-            start: new Date(),
+        self.started = new Date();
+        self.stats = {
             processed: 0,
             nosave: 0,
             save: 0,
@@ -93,91 +73,90 @@ TaskProcessor.prototype.runAsync = function() {
             tilenodata: 0,
             tilenonsolid: 0,
             tiletoobig: 0,
-            totalsize: 0,
-            log: []
+            totalsize: 0
         };
-        self.iterator = self.getIterator(task);
-        var threads = _.map(_.range(task.threads), function (threadId) {
-            return self.taskProcessorThreadAsync(threadId);
+        self.iterator = self.getIterator(job);
+        var threads = _.map(_.range(job.threads || 1), function (threadId) {
+            return self.jobProcessorThreadAsync(threadId);
         });
         return BBPromise.all(threads).then(function () {
-            var stats = task.stats;
-            stats.finish = new Date();
-            stats.time = (stats.finish - stats.start) / 1000;
-            stats.itemAvg = stats.time > 0 ? Math.round(stats.processed / stats.time * 10) / 10 : 0;
+            var time = (new Date() - self.start) / 1000;
+            var stats = self.stats;
+            stats.itemAvg = time > 0 ? Math.round(stats.processed / time * 10) / 10 : 0;
             stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
+            self.job.progress(job.count, job.count, stats);
         });
     });
 };
 
-TaskProcessor.prototype.getIterator = function(task) {
-    var iter = this.getZoomCheckIterator(task);
+JobProcessor.prototype.getIterator = function(job) {
+    var iter = this.getZoomCheckIterator(job);
     if (!iter)
-        iter = this.getExistingTilesIterator(task);
+        iter = this.getExistingTilesIterator(job);
     if (!iter)
-        iter = this.getSimpleIterator(task);
+        iter = this.getSimpleIterator(job);
     return iter;
 };
 
-TaskProcessor.prototype.getSimpleIterator = function(task) {
-    var idx = task.idxFrom;
+JobProcessor.prototype.getSimpleIterator = function(job) {
+    var idx = job.idxFrom;
     return function() {
         var result = undefined;
-        if (idx < task.idxBefore) {
-            result = {zoom: task.zoom, idx: idx++};
+        if (idx < job.idxBefore) {
+            result = {zoom: job.zoom, idx: idx++};
         }
         return BBPromise.resolve(result);
     }
 };
 
-TaskProcessor.prototype.getExistingTilesIterator = function(task) {
-    if (task.dateBefore === false && task.dateFrom === false &&
-        task.biggerThan === false && task.smallerThan === false
+JobProcessor.prototype.getExistingTilesIterator = function(job) {
+    if (job.dateBefore === undefined && job.dateFrom === undefined &&
+        job.biggerThan === undefined && job.smallerThan === undefined
     ) {
         return false;
     }
 
-    var invert = task.invert;
+    var invert = job.invert;
     var opts = {
-        zoom: task.zoom,
-        idxFrom: task.idxFrom,
-        idxBefore: task.idxBefore
+        zoom: job.zoom,
+        idxFrom: job.idxFrom,
+        idxBefore: job.idxBefore
     };
-    if (task.dateBefore !== false) {
+    if (job.dateBefore !== undefined) {
         if (!invert)
-            opts.dateBefore = task.dateBefore;
+            opts.dateBefore = job.dateBefore;
         else
-            opts.dateFrom = task.dateBefore;
+            opts.dateFrom = job.dateBefore;
     }
-    if (task.dateFrom !== false) {
+    if (job.dateFrom !== undefined) {
         if (!invert)
-            opts.dateFrom = task.dateFrom;
+            opts.dateFrom = job.dateFrom;
         else
-            opts.dateBefore = task.dateFrom;
+            opts.dateBefore = job.dateFrom;
     }
-    if (task.biggerThan !== false) {
+    if (job.biggerThan !== undefined) {
         if (!invert)
-            opts.biggerThan = task.biggerThan;
+            opts.biggerThan = job.biggerThan;
         else
-            opts.smallerThan = task.biggerThan;
+            opts.smallerThan = job.biggerThan;
     }
-    if (task.smallerThan !== false) {
+    if (job.smallerThan !== undefined) {
         if (!invert)
-            opts.smallerThan = task.smallerThan;
+            opts.smallerThan = job.smallerThan;
         else
-            opts.biggerThan = task.smallerThan;
+            opts.biggerThan = job.smallerThan;
     }
     var iterator = this.tileStore.query(opts);
     if (invert)
-        iterator = this.getInvertingIterator(task, iterator);
+        iterator = this.getInvertingIterator(job, iterator);
     return iterator;
 };
 
 /**
- * Given an iterator, yield only those tiles that the iterator does NOT yield within the given task
+ * Given an iterator, yield only those tiles that the iterator does NOT yield within the given job
  */
-TaskProcessor.prototype.getInvertingIterator = function(task, iterator) {
-    var idxNext = task.idxFrom,
+JobProcessor.prototype.getInvertingIterator = function(job, iterator) {
+    var idxNext = job.idxFrom,
         nextValP, isDone;
     var getNextValAsync = function () {
         if (isDone) {
@@ -186,9 +165,9 @@ TaskProcessor.prototype.getInvertingIterator = function(task, iterator) {
             nextValP = iterator();
         }
         return nextValP.then(function (val) {
-            var untilIdx = val === undefined ? task.idxBefore : val.idx;
+            var untilIdx = val === undefined ? job.idxBefore : val.idx;
             if (idxNext < untilIdx) {
-                return {zoom: task.zoom, idx: idxNext++};
+                return {zoom: job.zoom, idx: idxNext++};
             } else if (val === undefined) {
                 isDone = true;
                 return val;
@@ -205,17 +184,17 @@ TaskProcessor.prototype.getInvertingIterator = function(task, iterator) {
 };
 
 /**
- * Iterate over all existing tiles in the task.checkZoom level, and for each found tile, perform regular sub-iteration
- * @param task
+ * Iterate over all existing tiles in the job.checkZoom level, and for each found tile, perform regular sub-iteration
+ * @param job
  */
-TaskProcessor.prototype.getZoomCheckIterator = function(task) {
-    if (!task.checkZoom)
+JobProcessor.prototype.getZoomCheckIterator = function(job) {
+    if (!job.checkZoom)
         return false;
-    var scale = Math.pow(4, task.zoom - task.checkZoom);
+    var scale = Math.pow(4, job.zoom - job.checkZoom);
     var opts = {
-        zoom: task.checkZoom,
-        idxFrom: task.idxFrom / scale,
-        idxBefore: task.idxBefore / scale
+        zoom: job.checkZoom,
+        idxFrom: job.idxFrom / scale,
+        idxBefore: job.idxBefore / scale
     };
     var self = this;
     var ozIter = this.tileStore.query(opts);
@@ -230,10 +209,10 @@ TaskProcessor.prototype.getZoomCheckIterator = function(task) {
                     isDone = true;
                     return res; // done iterating
                 }
-                var t = _.clone(task);
+                var t = _.clone(job);
                 delete t.checkZoom;
-                t.idxFrom = Math.max(task.idxFrom, res.idx * scale);
-                t.idxBefore = Math.min(task.idxBefore, (res.idx + 1) * scale);
+                t.idxFrom = Math.max(job.idxFrom, res.idx * scale);
+                t.idxBefore = Math.min(job.idxBefore, (res.idx + 1) * scale);
                 t.count = t.idxBefore - t.idxFrom;
                 return self.getIterator(t);
             });
@@ -252,25 +231,24 @@ TaskProcessor.prototype.getZoomCheckIterator = function(task) {
     return getNextValAsync;
 };
 
-TaskProcessor.prototype.taskProcessorThreadAsync = function(threadId) {
+JobProcessor.prototype.jobProcessorThreadAsync = function(threadId) {
     var self = this;
-    return this.iterator().then(function (loc) {
-        if (loc) {
+    return this.iterator().then(function (tile) {
+        if (tile) {
             // generate tile and repeat
-            //self.task.stats.log.push(util.format('%d: Thread #%d: %d %d',
-            //    self.task.stats.log.length, threadId, loc.zoom, loc.idx));
-            return self.generateTileAsync(loc).then(function () {
-                self.task.stats.processed++;
-                return self.taskProcessorThreadAsync(threadId);
+            return self.generateTileAsync(tile).then(function () {
+                self.stats.processed++;
+                self.job.progress(tile.idx - self.job.data.idxFrom, self.job.data.count, self.stats);
+                return self.jobProcessorThreadAsync(threadId);
             });
         }
-        console.log('Task %s: thread %d finished', self.task.id, threadId);
+        self.job.log('Thread %d finished', threadId);
     });
 };
 
-TaskProcessor.prototype.generateTileAsync = function(tile) {
+JobProcessor.prototype.generateTileAsync = function(tile) {
     var self = this,
-        stats = self.task.stats,
+        stats = self.stats,
         xy = sUtil.indexToXY(tile.idx),
         x = xy[0],
         y = xy[1];
@@ -338,24 +316,13 @@ TaskProcessor.prototype.generateTileAsync = function(tile) {
 };
 
 /**
- * Web server (express) route handler to show current que
- * @param req request object
- * @param res response object
- * @param next callback to call if this function cannot handle the request
- */
-function status(req, res, next) {
-    res.type('application/json').send('Done:\n' + JSON.stringify(que.done, null, '  ') +
-        '\n\nPending:\n' + JSON.stringify(que.que, null, '  '));
-}
-
-/**
- * Web server (express) route handler to show current que
+ * Web server (express) route handler to show current queue
  * @param req request object
  * @param res response object
  * @param next callback to call if this function cannot handle the request
  */
 function enque(req, res, next) {
-    que.addTask({
+    queue.addJobAsync({
         threads: req.query.threads,
         storageId: req.query.storageId,
         generatorId: req.query.generatorId,
@@ -369,38 +336,16 @@ function enque(req, res, next) {
         biggerThan: req.query.biggerThan,
         smallerThan: req.query.smallerThan,
         invert: req.query.invert ? true : false,
-        checkZoom: req.query.checkZoom
-    });
-    next();
-}
-
-/**
- * Web server (express) route handler to show current que
- * @param req request object
- * @param res response object
- * @param next callback to call if this function cannot handle the request
- */
-function deque(req, res, next) {
-    que.getTaskAsync().then(function(loc) {
-        next();
+        checkZoom: req.query.checkZoom,
+        parts: req.query.parts
+    }).then(function(job) {
+        res.type('application/json').send(JSON.stringify(job, null, '  '));
+    }, function(err) {
+        res.type('application/json').send(JSON.stringify(err, null, '  '));
     });
 }
 
-/**
- * Web server (express) route handler to delete que item
- * @param req request object
- * @param res response object
- * @param next callback to call if this function cannot handle the request
- */
-function delQueItem(req, res, next) {
-    que.removeTask(req.params.id);
-    next();
-}
-
-router.get('/que', status);
-router.get('/add', enque, status);
-router.get('/deq', deque, status);
-router.get('/del/:id(\\d+)', delQueItem, status);
+router.get('/add', enque);
 
 module.exports = function(app) {
 
