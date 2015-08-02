@@ -61,22 +61,33 @@ JobProcessor.prototype.runAsync = function() {
     var self = this;
     var job = self.job.data;
     return BBPromise.try(function () {
-        self.started = new Date();
-        self.stats = {
-            processed: 0,
-            nosave: 0,
-            save: 0,
-            tilegen: 0,
-            tilegenempty: 0,
-            tilegenerr: 0,
-            tilegenok: 0,
-            tilenodata: 0,
-            tilenonsolid: 0,
-            tiletoobig: 0,
-            totalsize: 0
-        };
+        self.idxFromOriginal = job.idxFrom;
+        self.count = job.idxBefore - self.idxFromOriginal;
+        if (!self.job.progress_data || !self.job.progress_data.index) {
+            self.stats = {
+                index: job.idxFrom,
+                processed: 0,
+                nosave: 0,
+                save: 0,
+                tilegen: 0,
+                tilegenempty: 0,
+                tilegenerr: 0,
+                tilegenok: 0,
+                tilenodata: 0,
+                tilenonsolid: 0,
+                tiletoobig: 0,
+                totalsize: 0
+            };
+        } else {
+            self.stats = self.job.progress_data;
+            job.idxFrom = self.stats.index;
+        }
         self.iterator = self.getIterator(job);
-        var threads = _.map(_.range(job.threads || 1), function (threadId) {
+        var threadList = _.range(job.threads || 1);
+        self.threadIdxState = _.map(threadList, function () {
+            return job.start;
+        });
+        var threads = _.map(threadList, function (threadId) {
             return self.jobProcessorThreadAsync(threadId);
         });
         return BBPromise.all(threads).then(function () {
@@ -84,7 +95,10 @@ JobProcessor.prototype.runAsync = function() {
             var stats = self.stats;
             stats.itemAvg = time > 0 ? Math.round(stats.processed / time * 10) / 10 : 0;
             stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
-            self.job.progress(job.count, job.count, stats);
+            self.job.progress(self.count, self.count, stats);
+
+            // Until progress info is exposed in the UI, do it here too
+            self.job.log(JSON.stringify(stats, null, '  '));
         });
     });
 };
@@ -213,7 +227,6 @@ JobProcessor.prototype.getZoomCheckIterator = function(job) {
                 delete t.checkZoom;
                 t.idxFrom = Math.max(job.idxFrom, res.idx * scale);
                 t.idxBefore = Math.min(job.idxBefore, (res.idx + 1) * scale);
-                t.count = t.idxBefore - t.idxFrom;
                 return self.getIterator(t);
             });
         }
@@ -238,11 +251,19 @@ JobProcessor.prototype.jobProcessorThreadAsync = function(threadId) {
             // generate tile and repeat
             return self.generateTileAsync(tile).then(function () {
                 self.stats.processed++;
-                self.job.progress(tile.idx - self.job.data.idxFrom, self.job.data.count, self.stats);
+                self.threadIdxState[threadId] = tile.idx;
+
+                // decide if we want to update the progress status
+                self.stats.index = _.min(self.threadIdxState);
+                var doneCount = self.stats.index - self.idxFromOriginal;
+                var progress = doneCount / self.count;
+                if (!self.progress || (progress - self.progress) > 0.001) {
+                    self.job.progress(doneCount, self.count, self.stats);
+                    self.progress = progress;
+                }
                 return self.jobProcessorThreadAsync(threadId);
             });
         }
-        self.job.log('Thread %d finished', threadId);
     });
 };
 
@@ -270,11 +291,11 @@ JobProcessor.prototype.generateTileAsync = function(tile) {
     }).then(function (data) {
         if (!data || !data.length) {
             stats.tilenodata++;
-            return false; // empty tile generated, no need to save
+            return null; // empty tile generated, no need to save
         }
         if (data.length >= config.maxsize) {
             stats.tiletoobig++;
-            return true; // generated tile is too big, save
+            return data; // generated tile is too big, save
         }
         var vt = new mapnik.VectorTile(tile.zoom, x, y);
         return sUtil.uncompressAsync(data)
@@ -330,7 +351,6 @@ function enque(req, res, next) {
         priority: req.query.priority,
         idxFrom: req.query.idxFrom,
         idxBefore: req.query.idxBefore,
-        count: req.query.count,
         dateBefore: req.query.dateBefore,
         dateFrom: req.query.dateFrom,
         biggerThan: req.query.biggerThan,

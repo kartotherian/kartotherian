@@ -19,6 +19,9 @@ module.exports = {};
  * @param jobHandler if given - function(job, done), will use to run jobs
  */
 module.exports.init = function(app, jobHandler) {
+    if (!queue)
+        queue = kue.createQueue();
+
     if (app) {
         var uiConf = {
             apiURL: '/kue/',
@@ -30,9 +33,6 @@ module.exports.init = function(app, jobHandler) {
         app.use(uiConf.apiURL, kue.app);
         app.use(uiConf.baseURL, kueui.app);
     }
-
-    if (!queue)
-        queue = kue.createQueue();
 
     if (jobHandler) {
         queue.process(jobName, jobHandler);
@@ -49,8 +49,7 @@ module.exports.init = function(app, jobHandler) {
  *  Optional:
  *  - priority - integer, default 0
  *  - idxFrom - integer index, default 0
- *  - idxBefore - integer index, default 4^zoom, cannot be used with 'count'
- *  - count - integer, defaults to (4^zoom-idxFrom), cannot be used with 'idxBefore'
+ *  - idxBefore - integer index, default 4^zoom
  *  - dateBefore - Date object to process tiles only older than this timestamp, or false to disable. false by default.
  *  - dateFrom - Date object to process tiles only newer than this timestamp, or false to disable. false by default.
  *  - biggerThan - number - only process tiles whose compressed size is bigger than this value (inclusive)
@@ -71,22 +70,7 @@ module.exports.addJobAsync = function(job) {
     var maxCount = Math.pow(4, job.zoom);
 
     checkType(job, 'idxFrom', 'number', 0, 0, maxCount);
-    checkType(job, 'count', 'number', false, 0, maxCount);
-    checkType(job, 'idxBefore', 'number', false, 0, maxCount);
-    if (job.count !== undefined) {
-        if (job.idxBefore !== undefined) {
-            throw new Error('Both idxBefore and count cannot be set at the same time');
-        }
-        if (job.idxFrom + job.count > maxCount) {
-            throw new Error('Invalid params: zoom=%d, idxFrom=%d, count=%d', job.zoom, job.idxFrom, job.count);
-        }
-        job.idxBefore = job.idxFrom + job.count;
-    } else {
-        if (job.idxBefore === undefined) {
-            job.idxBefore = maxCount;
-        }
-        job.count = job.idxBefore - job.idxFrom;
-    }
+    checkType(job, 'idxBefore', 'number', maxCount, job.idxFrom, maxCount);
     checkType(job, 'dateFrom', '[object Date]');
     checkType(job, 'dateBefore', '[object Date]');
     if (job.dateFrom && job.dateBefore && job.dateFrom >= job.dateBefore) {
@@ -101,7 +85,9 @@ module.exports.addJobAsync = function(job) {
     checkType(job, 'checkZoom', 'number', false, 0, job.zoom - 1);
     checkType(job, 'threads', 'number', false, 1, 100);
     checkType(job, 'parts', 'number', false, 1, 1000);
-    var parts = Math.min(job.count, job.parts || 1);
+
+    var count = job.idxBefore - job.idxFrom;
+    var parts = Math.min(count, job.parts || 1);
     delete job.parts;
     if (job.layers !== undefined) {
         if (typeof job.layers === 'string') {
@@ -114,7 +100,7 @@ module.exports.addJobAsync = function(job) {
         }
     }
 
-    if (job.count === 0) {
+    if (count === 0) {
         return BBPromise.resolve(true);
     }
 
@@ -128,18 +114,18 @@ module.exports.addJobAsync = function(job) {
             j = job;
         } else {
             j = _.clone(job);
-            j.count = Math.floor(j.count / parts);
-            j.idxBefore = j.idxFrom + j.count;
-            job.count -= j.count;
-            job.idxFrom += j.count;
+            var partCount = Math.floor(count / parts);
+            j.idxBefore = j.idxFrom + partCount;
+            count -= partCount;
+            job.idxFrom += partCount;
         }
         parts--;
         // Create Title
         j.title = 'Z=' + j.zoom;
-        if (j.count === Math.pow(4, j.zoom)) {
+        if (partCount === Math.pow(4, j.zoom)) {
             j.title = 'All ' + j.title;
         } else {
-            j.title += ' ' + j.idxFrom + '-' + j.idxBefore + ' (' + j.count + ')';
+            j.title += ' ' + j.idxFrom + '-' + j.idxBefore + ' (' + (j.idxBefore - j.idxFrom) + ')';
         }
         if (j.checkZoom) {
             j.title += ' CZ=' + j.checkZoom;
@@ -155,14 +141,13 @@ module.exports.addJobAsync = function(job) {
 };
 
 /**
- * Given an x,y (startIdx) of the baseZoom, enqueue all tiles below them, with zooms >= zoomFrom and < zoomBefore
+ * Given an x,y (idxFrom) of the baseZoom, enqueue all tiles below them, with zooms >= zoomFrom and < zoomBefore
  */
-module.exports.addPyramidJobsAsync = function(baseZoom, idxFrom, count, zoomFrom, zoomBefore, options) {
+module.exports.addPyramidJobsAsync = function(baseZoom, idxFrom, idxBefore, zoomFrom, zoomBefore, options) {
     var opts = _.clone(options);
     delete opts.zoom;
     delete opts.idxFrom;
     delete opts.idxBefore;
-    delete opts.count;
     if (opts.dateBefore === undefined) {
         opts.dateBefore = new Date();
     }
@@ -172,7 +157,7 @@ module.exports.addPyramidJobsAsync = function(baseZoom, idxFrom, count, zoomFrom
         return module.exports.addJob(_.extend({
             zoom: z,
             idxFrom: idxFrom * mult,
-            count: count * mult
+            idxBefore: idxBefore * mult
         }, opts));
     }));
 };
