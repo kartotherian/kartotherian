@@ -22,7 +22,7 @@
   ],
   "author": "Wikimedia Service Team <services@wikimedia.org>",
   "contributors": [],
-  "license": "Apache2",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://phabricator.wikimedia.org/tag/service-template-node/"
   },
