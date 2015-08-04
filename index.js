@@ -187,8 +187,8 @@ module.exports.loadConfigurationAsync = function(app, tilelive, moduleResolver) 
     if (typeof app.conf.sources === 'string') {
         var sourcesPath = pathLib.resolve(__dirname, '..', app.conf.sources);
         log('info', 'Loading sources configuration from ' + sourcesPath);
-        confSource = fsp
-            .readFile(sourcesPath)
+        confSource = fs
+            .readFileAsync(sourcesPath)
             .then(yaml.safeLoad);
     } else {
         log('info', 'Loading sources configuration from the config file');
