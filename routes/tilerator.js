@@ -301,14 +301,6 @@ JobProcessor.prototype.generateSubIterators = function(iterator, idxFrom, idxBef
 JobProcessor.prototype.jobProcessorThreadAsync = function(threadId) {
     var self = this;
     return this.iterator().then(function (idx) {
-
-
-
-        //console.log(idx);
-        //return idx === undefined ? idx : self.jobProcessorThreadAsync(threadId);
-
-
-
         if (idx === undefined) {
             return idx;
         }
@@ -403,11 +395,6 @@ JobProcessor.prototype.generateTileAsync = function(idx) {
     });
 };
 
-/**
- * Web server (express) route handler to show current queue
- * @param req request object
- * @param res response object
- */
 function enque(req, res) {
     var job = {
         threads: req.query.threads,
@@ -418,7 +405,10 @@ function enque(req, res) {
         idxFrom: req.query.idxFrom,
         idxBefore: req.query.idxBefore,
         parts: req.query.parts,
-        deleteEmpty: req.query.deleteEmpty
+        deleteEmpty: req.query.deleteEmpty,
+        baseZoom: req.query.baseZoom,
+        zoomFrom: req.query.zoomFrom,
+        zoomBefore: req.query.zoomBefore
     };
 
     var filter = {
@@ -434,14 +424,18 @@ function enque(req, res) {
         job.filters = filter;
     }
 
-    queue.addJobAsync(job).then(function(job) {
-        res.type('application/json').send(JSON.stringify(job, null, '  '));
-    }, function(err) {
-        res.type('application/json').send(JSON.stringify(err, null, '  '));
+    queue.addJobAsync(job).then(toJson, function (err) {
+        return toJson({error: err.message, stack: err.stack})
+    }).then(function (str) {
+        res.type('application/json').send(str);
     });
 }
 
-router.get('/add', enque);
+function toJson(value) {
+    return JSON.stringify(value, null, '  ');
+}
+
+router.post('/add', enque);
 
 module.exports = function(app) {
 
