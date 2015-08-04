@@ -4,16 +4,23 @@ var BBPromise = require('bluebird');
 var _ = require('underscore');
 var express = require('express');
 
-var sUtil = require('../lib/util');
+var core = require('kartotherian-core');
 var storage = require('../lib/storage');
 
-// shortcut
-var HTTPError = sUtil.HTTPError;
+var router = require('../lib/util').router();
+var Vector = require('tilelive-vector');
+var pathLib = require('path');
+
+var tilelive = require('tilelive');
+BBPromise.promisifyAll(tilelive);
+
+var fs = require("fs");
+BBPromise.promisifyAll(fs);
 
 var conf;
 var vectorHeaders = {'Content-Encoding': 'gzip'};
 var rasterHeaders = {}; // {'Content-Type': 'image/png'};
-var router = sUtil.router();
+
 
 function sendReplyAsync(state) {
     return new BBPromise(function(resolve, reject) {
@@ -46,6 +53,15 @@ function stateToPromise(state) {
     });
 }
 
+function forwardingSource(options, callback) {
+    var err, handler;
+    if (options.path[0] !== '/')
+        err = Error('Unexpected path ' + options.path);
+    else
+        handler = forwardingSource.conf.sources[options.path.substr(1)].handler;
+    callback(err, handler);
+}
+
 /**
  * Initialize module
  * @param app
@@ -55,16 +71,64 @@ function init(app) {
     //app.set('json spaces', 4);
     var log = app.logger.log.bind(app.logger);
 
-    app.use('/static/leaflet', express.static(sUtil.getModulePath('leaflet'), sUtil.getStaticOpts(app.conf)));
+    core.registerProtocols(require('tilelive-bridge'), tilelive);
+    core.registerProtocols(require('tilelive-file'), tilelive);
+    //core.registerProtocols(require('./dynogen'), tilelive);
+    core.registerProtocols(require('kartotherian-overzoom'), tilelive);
+    core.registerProtocols(require('kartotherian-cassandra'), tilelive);
+
+    var resolver = function (module) {
+        return require.resolve(module);
+    };
+
+    app.use('/static/leaflet', express.static(core.getModulePath('leaflet', resolver), core.getStaticOpts(app.conf)));
 
     // todo: need to crash if this fails to load
     // todo: implement dynamic configuration reloading
-    require('../lib/conf')
-        .loadConfigurationAsync(app)
-        .then(function (c) {
-            conf = c;
+    core.loadConfigurationAsync(app, tilelive, resolver)
+        .then(function(conf) {
+            // Hack: wrapping source to use the configuration ID instead of the real source URI
+            forwardingSource.conf = conf;
+            tilelive.protocols['fwdsource:'] = forwardingSource;
+
+            return BBPromise.all(_.map(conf.styles, function (cfg) {
+                return fs
+                    .readFileAsync(cfg.tm2, 'utf8')
+                    .then(function (xml) {
+                        return new BBPromise(function (resolve, reject) {
+                            // HACK: replace 'source' parameter with something we can recognize later
+                            // Expected format:
+                            // <Parameter name="source"><![CDATA[tmsource:///.../osm-bright.tm2source]]></Parameter>
+                            var replCount = 0;
+                            xml = xml.replace(
+                                /(<Parameter name="source">)(<!\[CDATA\[)?(tmsource:\/\/\/)([^\n\]]*)(]]>)?(<\/Parameter>)/g,
+                                function (whole, tag, cdata, prot, src, cdata2, tag2) {
+                                    replCount++;
+                                    return tag + cdata + 'fwdsource://./' + cfg.source + cdata2 + tag2;
+                                }
+                            );
+                            if (replCount !== 1) {
+                                throw new Error('Unable to find "source" parameter in style ' + cfg.tm2);
+                            }
+                            new Vector({
+                                xml: xml,
+                                base: pathLib.dirname(cfg.tm2)
+                                //source: conf.sources[cfg.source].handler
+                            }, function (err, style) {
+                                if (err) {
+                                    return reject(err);
+                                } else {
+                                    cfg.style = style;
+                                    return resolve(true);
+                                }
+                            });
+                        });
+                    });
+            })).return(conf);
+        }).then(function (c) {
+            conf = _.extend({cache: c.cache}, c.sources, c.styles);
         })
-        .catch(function(err){
+        .catch(function (err) {
             console.error((err.body && (err.body.stack || err.body.detail)) || err.stack || err);
             process.exit(1);
         });

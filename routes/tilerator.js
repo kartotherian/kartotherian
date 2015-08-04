@@ -7,6 +7,10 @@ var mapnik = require('mapnik');
 var sUtil = require('../lib/util');
 var util = require('util');
 var queue = require('../lib/queue');
+var core = require('kartotherian-core');
+
+var tilelive = require('tilelive');
+BBPromise.promisifyAll(tilelive);
 
 var router = sUtil.router();
 
@@ -22,10 +26,18 @@ var config = {
  * @returns {*}
  */
 function init(app) {
-    // todo: need to crash if this fails to load
-    // todo: implement dynamic configuration reloading
-    require('../lib/conf')
-        .loadConfigurationAsync(app)
+    core.registerProtocols(require('tilelive-bridge'), tilelive);
+    core.registerProtocols(require('tilelive-file'), tilelive);
+    //core.registerProtocols(require('./dynogen'), tilelive);
+    core.registerProtocols(require('kartotherian-overzoom'), tilelive);
+    core.registerProtocols(require('kartotherian-cassandra'), tilelive);
+
+    var resolver = function (module) {
+        return require.resolve(module);
+    };
+
+    core
+        .loadConfigurationAsync(app, tilelive, resolver)
         .then(function(conf) {
             queue.init(app, function (job, done) {
                 BBPromise.try(function () {
