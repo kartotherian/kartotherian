@@ -7,6 +7,7 @@ var mapnik = require('mapnik');
 var pathLib = require('path');
 var qs = require('querystring');
 var urllib = require('url');
+var yaml = require('js-yaml');
 var zlib = require('zlib');
 
 module.exports = {};
