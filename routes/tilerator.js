@@ -82,18 +82,21 @@ JobProcessor.prototype.runAsync = function() {
             self.stats = self.job.progress_data;
             job.idxFrom = self.stats.index;
         }
-        self.iterator = self.getIterator(job);
+        // Thread list is used in the generators
         var threadList = _.range(job.threads || 1);
         self.threadIdxState = _.map(threadList, function () {
             return job.start;
         });
+
+        self.iterator = self.getIterator(job.idxFrom, job.idxBefore, 0);
+
         var threads = _.map(threadList, function (threadId) {
             return self.jobProcessorThreadAsync(threadId);
         });
         return BBPromise.all(threads).then(function () {
-            var time = (new Date() - self.start) / 1000;
             var stats = self.stats;
-            stats.itemAvg = time > 0 ? Math.round(stats.processed / time * 10) / 10 : 0;
+            //var time = (new Date() - self.start) / 1000;
+            //stats.itemAvg = time > 0 ? Math.round(stats.processed / time * 10) / 10 : 0;
             stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
             self.job.progress(self.count, self.count, stats);
 
@@ -103,74 +106,132 @@ JobProcessor.prototype.runAsync = function() {
     });
 };
 
-JobProcessor.prototype.getIterator = function(job) {
-    var iter = this.getZoomCheckIterator(job);
-    if (!iter)
-        iter = this.getExistingTilesIterator(job);
-    if (!iter)
-        iter = this.getSimpleIterator(job);
-    return iter;
+JobProcessor.prototype.getIterator = function(idxFrom, idxBefore, filterIndex) {
+    var job = this.job.data;
+    if (job.filters && filterIndex < job.filters.length)
+        return this.getExistingTilesIterator(idxFrom, idxBefore, filterIndex);
+    else
+        return this.getSimpleIterator(idxFrom, idxBefore);
 };
 
-JobProcessor.prototype.getSimpleIterator = function(job) {
-    var idx = job.idxFrom;
+JobProcessor.prototype.getSimpleIterator = function(idxFrom, idxBefore) {
+    var idx = idxFrom;
     return function() {
         var result = undefined;
-        if (idx < job.idxBefore) {
-            result = {zoom: job.zoom, idx: idx++};
+        if (idx < idxBefore) {
+            result = idx++;
         }
         return BBPromise.resolve(result);
     }
 };
 
-JobProcessor.prototype.getExistingTilesIterator = function(job) {
-    if (job.dateBefore === undefined && job.dateFrom === undefined &&
-        job.biggerThan === undefined && job.smallerThan === undefined
-    ) {
-        return false;
+/**
+ * Iterate over existing tiles in a storage
+ * @param idxFrom from which index (in the zoom of the main job)
+ * @param idxBefore before which index (in the zoom of the main job)
+ * @param filterIndex which filter to apply
+ * @returns {*}
+ */
+JobProcessor.prototype.getExistingTilesIterator = function(idxFrom, idxBefore, filterIndex) {
+
+    var job = this.job.data;
+    var filter = job.filters[filterIndex];
+    var scale = filter.zoom !== undefined ? Math.pow(4, job.zoom - filter.zoom) : false;
+    var opts = {
+        zoom: scale ? filter.zoom : job.zoom,
+        idxFrom: scale ? Math.floor(idxFrom / scale) : idxFrom,
+        idxBefore: scale ? Math.ceil(idxBefore / scale) : idxBefore
+    };
+
+    if (filter.dateBefore !== undefined) {
+        if (!filter.invert)
+            opts.dateBefore = filter.dateBefore;
+        else
+            opts.dateFrom = filter.dateBefore;
+    }
+    if (filter.dateFrom !== undefined) {
+        if (!filter.invert)
+            opts.dateFrom = filter.dateFrom;
+        else
+            opts.dateBefore = filter.dateFrom;
+    }
+    if (filter.biggerThan !== undefined) {
+        if (!filter.invert)
+            opts.biggerThan = filter.biggerThan;
+        else
+            opts.smallerThan = filter.biggerThan;
+    }
+    if (filter.smallerThan !== undefined) {
+        if (!filter.invert)
+            opts.smallerThan = filter.smallerThan;
+        else
+            opts.biggerThan = filter.smallerThan;
+    }
+    var iterator = this.queryStorage(opts);
+
+    if (filter.invert) {
+        iterator = this.invertIterator(iterator, opts.idxFrom, opts.idxBefore);
     }
 
-    var invert = job.invert;
-    var opts = {
-        zoom: job.zoom,
-        idxFrom: job.idxFrom,
-        idxBefore: job.idxBefore
+    if (filterIndex === job.filters.length - 1 && !scale) {
+        // last filter and no need for scaling - return as is
+        return iterator;
+    }
+
+    iterator = this.generateSubIterators(iterator, idxFrom, idxBefore, scale, filterIndex);
+
+    return this.glueIterators(iterator);
+};
+
+JobProcessor.prototype.queryStorage = function(opts) {
+    var iter = this.tileStore.query(opts);
+    return function () {
+        return iter().then(function (val) {
+            return val === undefined ? undefined : val.idx;
+        });
     };
-    if (job.dateBefore !== undefined) {
-        if (!invert)
-            opts.dateBefore = job.dateBefore;
-        else
-            opts.dateFrom = job.dateBefore;
-    }
-    if (job.dateFrom !== undefined) {
-        if (!invert)
-            opts.dateFrom = job.dateFrom;
-        else
-            opts.dateBefore = job.dateFrom;
-    }
-    if (job.biggerThan !== undefined) {
-        if (!invert)
-            opts.biggerThan = job.biggerThan;
-        else
-            opts.smallerThan = job.biggerThan;
-    }
-    if (job.smallerThan !== undefined) {
-        if (!invert)
-            opts.smallerThan = job.smallerThan;
-        else
-            opts.biggerThan = job.smallerThan;
-    }
-    var iterator = this.tileStore.query(opts);
-    if (invert)
-        iterator = this.getInvertingIterator(job, iterator);
-    return iterator;
 };
 
 /**
- * Given an iterator, yield only those tiles that the iterator does NOT yield within the given job
+ * Given an iterator of iterators, glue them together into one iterator
  */
-JobProcessor.prototype.getInvertingIterator = function(job, iterator) {
-    var idxNext = job.idxFrom,
+JobProcessor.prototype.glueIterators = function(iterator) {
+    var subIterator = false;
+    var isDone = false;
+    var getNextValAsync = function() {
+        if (isDone)
+            return BBPromise.resolve(undefined);
+        if (!subIterator) {
+            subIterator = iterator()
+        }
+        var currentSubIterator = subIterator;
+        return currentSubIterator.then(function(iter) {
+            if (!iter) {
+                isDone = true;
+                return undefined;
+            }
+            return iter().then(function(val) {
+                if (val !== undefined) {
+                    return val;
+                }
+                if (currentSubIterator === subIterator) {
+                    subIterator = iterator();
+                }
+                return getNextValAsync();
+            });
+        });
+    };
+    return getNextValAsync;
+};
+
+/**
+ * Given an iterator, yield only those tiles that the iterator does NOT yield for the given zoom
+ */
+JobProcessor.prototype.invertIterator = function(iterator, idxFrom, idxBefore) {
+    if (this.threadIdxState.length > 1) {
+        throw new Error('multiple threads are not supported for this job');
+    }
+    var idxNext = idxFrom,
         nextValP, isDone;
     var getNextValAsync = function () {
         if (isDone) {
@@ -178,15 +239,15 @@ JobProcessor.prototype.getInvertingIterator = function(job, iterator) {
         } else if (!nextValP) {
             nextValP = iterator();
         }
-        return nextValP.then(function (val) {
-            var untilIdx = val === undefined ? job.idxBefore : val.idx;
+        return nextValP.then(function (idx) {
+            var untilIdx = idx === undefined ? idxBefore : idx;
             if (idxNext < untilIdx) {
-                return {zoom: job.zoom, idx: idxNext++};
-            } else if (val === undefined) {
+                return idxNext++;
+            } else if (idx === undefined) {
                 isDone = true;
-                return val;
+                return idx;
             } else {
-                if (idxNext === val.idx) {
+                if (idxNext === idx) {
                     idxNext++;
                     nextValP = iterator();
                 }
@@ -198,47 +259,40 @@ JobProcessor.prototype.getInvertingIterator = function(job, iterator) {
 };
 
 /**
- * Iterate over all existing tiles in the job.checkZoom level, and for each found tile, perform regular sub-iteration
- * @param job
+ * Given an iterator, find sequential ranges of indexes, and create iterator for each
  */
-JobProcessor.prototype.getZoomCheckIterator = function(job) {
-    if (!job.checkZoom)
-        return false;
-    var scale = Math.pow(4, job.zoom - job.checkZoom);
-    var opts = {
-        zoom: job.checkZoom,
-        idxFrom: job.idxFrom / scale,
-        idxBefore: job.idxBefore / scale
-    };
+JobProcessor.prototype.generateSubIterators = function(iterator, idxFrom, idxBefore, scale, filterIndex) {
+    if (this.threadIdxState.length > 1) {
+        throw new Error('multiple threads are not supported for this job');
+    }
     var self = this;
-    var ozIter = this.tileStore.query(opts);
-    var subIterP = false;
-    var isDone = false;
-    var getNextValAsync = function() {
-        if (isDone)
+    var job = self.job.data;
+    var firstIdx, lastIdx, isDone;
+    scale = scale || 1;
+    var getNextValAsync = function () {
+        if (isDone) {
             return BBPromise.resolve(undefined);
-        if (!subIterP) {
-            subIterP = ozIter().then(function (res) {
-                if (res === undefined) {
-                    isDone = true;
-                    return res; // done iterating
-                }
-                var t = _.clone(job);
-                delete t.checkZoom;
-                t.idxFrom = Math.max(job.idxFrom, res.idx * scale);
-                t.idxBefore = Math.min(job.idxBefore, (res.idx + 1) * scale);
-                return self.getIterator(t);
-            });
         }
-        return subIterP.then(function(iter) {
-            if (!iter) return undefined;
-            return iter().then(function(val) {
-                if (val === undefined) {
-                    subIterP = false;
-                    return getNextValAsync();
-                }
-                return val;
-            });
+        return iterator().then(function (idx) {
+            if (firstIdx === undefined) {
+                firstIdx = lastIdx = idx;
+                return getNextValAsync();
+            }
+            if (idx === lastIdx + 1) {
+                lastIdx = idx;
+                return getNextValAsync();
+            }
+
+            var res = self.getIterator(
+                Math.max(job.idxFrom, firstIdx * scale),
+                Math.min(job.idxBefore, (lastIdx + 1) * scale),
+                filterIndex + 1);
+
+            firstIdx = lastIdx = idx;
+            if (idx === undefined) {
+                isDone = true;
+            }
+            return res;
         });
     };
     return getNextValAsync;
@@ -246,37 +300,47 @@ JobProcessor.prototype.getZoomCheckIterator = function(job) {
 
 JobProcessor.prototype.jobProcessorThreadAsync = function(threadId) {
     var self = this;
-    return this.iterator().then(function (tile) {
-        if (tile) {
-            // generate tile and repeat
-            return self.generateTileAsync(tile).then(function () {
-                self.stats.processed++;
-                self.threadIdxState[threadId] = tile.idx;
+    return this.iterator().then(function (idx) {
 
-                // decide if we want to update the progress status
-                self.stats.index = _.min(self.threadIdxState);
-                var doneCount = self.stats.index - self.idxFromOriginal;
-                var progress = doneCount / self.count;
-                if (!self.progress || (progress - self.progress) > 0.001) {
-                    self.job.progress(doneCount, self.count, self.stats);
-                    self.progress = progress;
-                }
-                return self.jobProcessorThreadAsync(threadId);
-            });
+
+
+        //console.log(idx);
+        //return idx === undefined ? idx : self.jobProcessorThreadAsync(threadId);
+
+
+
+        if (idx === undefined) {
+            return idx;
         }
+        // generate tile and repeat
+        return self.generateTileAsync(idx).then(function () {
+            self.stats.processed++;
+            self.threadIdxState[threadId] = idx;
+
+            // decide if we want to update the progress status
+            self.stats.index = _.min(self.threadIdxState);
+            var doneCount = self.stats.index - self.idxFromOriginal;
+            var progress = doneCount / self.count;
+            if (!self.progress || (progress - self.progress) > 0.001) {
+                self.job.progress(doneCount, self.count, self.stats);
+                self.progress = progress;
+            }
+            return self.jobProcessorThreadAsync(threadId);
+        });
     });
 };
 
-JobProcessor.prototype.generateTileAsync = function(tile) {
+JobProcessor.prototype.generateTileAsync = function(idx) {
     var self = this,
-        stats = self.stats,
-        xy = sUtil.indexToXY(tile.idx),
+        stats = this.stats,
+        job = this.job.data,
+        xy = sUtil.indexToXY(idx),
         x = xy[0],
         y = xy[1];
 
     return BBPromise.try(function () {
         stats.tilegen++;
-        return self.tileGenerator.getTileAsync(tile.zoom, x, y);
+        return self.tileGenerator.getTileAsync(job.zoom, x, y);
     }).then(function (dataAndHeader) {
         stats.tilegenok++;
         return dataAndHeader[0];
@@ -297,7 +361,7 @@ JobProcessor.prototype.generateTileAsync = function(tile) {
             stats.tiletoobig++;
             return data; // generated tile is too big, save
         }
-        var vt = new mapnik.VectorTile(tile.zoom, x, y);
+        var vt = new mapnik.VectorTile(job.zoom, x, y);
         return sUtil.uncompressAsync(data)
             .bind(vt)
             .then(function (uncompressed) {
@@ -317,7 +381,7 @@ JobProcessor.prototype.generateTileAsync = function(tile) {
                     }
                     if (stats[stat].length < 3) {
                         // Record the first few tiles of this type
-                        stats[stat].push(tile.idx)
+                        stats[stat].push(idx)
                     }
                     return null;
                 } else {
@@ -331,8 +395,11 @@ JobProcessor.prototype.generateTileAsync = function(tile) {
             stats.totalsize += data.length;
         } else {
             stats.nosave++;
+            if (!job.deleteEmpty) {
+                return;
+            }
         }
-        return self.tileStore.putTileAsync(tile.zoom, x, y, data);
+        return self.tileStore.putTileAsync(job.zoom, x, y, data);
     });
 };
 
@@ -340,10 +407,9 @@ JobProcessor.prototype.generateTileAsync = function(tile) {
  * Web server (express) route handler to show current queue
  * @param req request object
  * @param res response object
- * @param next callback to call if this function cannot handle the request
  */
-function enque(req, res, next) {
-    queue.addJobAsync({
+function enque(req, res) {
+    var job = {
         threads: req.query.threads,
         storageId: req.query.storageId,
         generatorId: req.query.generatorId,
@@ -351,14 +417,24 @@ function enque(req, res, next) {
         priority: req.query.priority,
         idxFrom: req.query.idxFrom,
         idxBefore: req.query.idxBefore,
+        parts: req.query.parts,
+        deleteEmpty: req.query.deleteEmpty
+    };
+
+    var filter = {
         dateBefore: req.query.dateBefore,
         dateFrom: req.query.dateFrom,
         biggerThan: req.query.biggerThan,
         smallerThan: req.query.smallerThan,
-        invert: req.query.invert ? true : false,
-        checkZoom: req.query.checkZoom,
-        parts: req.query.parts
-    }).then(function(job) {
+        invert: req.query.invert ? true : undefined,
+        zoom: req.query.checkZoom
+    };
+
+    if (_.any(filter)) {
+        job.filters = filter;
+    }
+
+    queue.addJobAsync(job).then(function(job) {
         res.type('application/json').send(JSON.stringify(job, null, '  '));
     }, function(err) {
         res.type('application/json').send(JSON.stringify(err, null, '  '));
