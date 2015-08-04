@@ -56,11 +56,13 @@ function initApp(options) {
     if(!app.conf.spec) {
         app.conf.spec = __dirname + '/spec.yaml';
     }
-    try {
-        app.conf.spec = yaml.safeLoad(fs.readFileSync(app.conf.spec));
-    } catch(e) {
-        app.logger.log('warn/spec', 'Could not load the spec: ' + e);
-        app.conf.spec = {};
+    if(app.conf.spec.constructor !== Object) {
+        try {
+            app.conf.spec = yaml.safeLoad(fs.readFileSync(app.conf.spec));
+        } catch(e) {
+            app.logger.log('warn/spec', 'Could not load the spec: ' + e);
+            app.conf.spec = {};
+        }
     }
     if(!app.conf.spec.swagger) {
         app.conf.spec.swagger = '2.0';
@@ -160,8 +162,9 @@ function createServer(app) {
     // return a promise which creates an HTTP server,
     // attaches the app to it, and starts accepting
     // incoming client requests
+    var server;
     return new BBPromise(function (resolve) {
-        http.createServer(app).listen(
+        server = http.createServer(app).listen(
             app.conf.port,
             app.conf.interface,
             resolve
@@ -169,6 +172,7 @@ function createServer(app) {
     }).then(function () {
         app.logger.log('info',
             'Worker ' + process.pid + ' listening on ' + app.conf.interface + ':' + app.conf.port);
+        return server;
     });
 
 }
