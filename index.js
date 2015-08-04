@@ -12,6 +12,9 @@ var zlib = require('zlib');
 module.exports = {};
 var core = module.exports;
 
+var fs = require("fs");
+BBPromise.promisifyAll(fs);
+
 /**
  * Parse and normalize URI, ensuring it returns an object with query object field
  */
