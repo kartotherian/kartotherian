@@ -1,0 +1,22 @@
+{
+  "name": "kartotherian-core",
+  "version": "0.0.0",
+  "description": "The core components of the Kartotherian maps tile service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kartotherian/kartotherian-core.git"
+  },
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/kartotherian/kartotherian-core/issues"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.24",
+    "mapnik": "~3.4.0"
+  }
+}
