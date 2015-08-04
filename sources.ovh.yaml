@@ -20,17 +20,19 @@ sources:
   v1:
     uri: overzoom://
     ref: {source: v1c}
-    public: true
+  v3:
+    uri: overzoom://
+    ref: {source: v3c}
 styles:
   s1:
     tm2: ["osm-bright-style", "project.xml"]
     source: v1
     public: true
+  s3:
+    tm2: ["osm-bright-style", "project.xml"]
+    source: v3
+    public: true
   g:
     tm2: ["osm-bright-style", "project.xml"]
     source: v1gen
-    public: true
-  a:
-    tm2: ["osm-bright-style", "project.xml"]
-    source: v1a
     public: true
