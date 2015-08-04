@@ -1,0 +1,30 @@
+{
+  "name": "kartotherian-cassandra",
+  "version": "0.0.0",
+  "description": " Cassandra tile storage for Kartotherian map tile server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kartotherian/kartotherian-cassandra.git"
+  },
+  "keywords": [
+    "kartotherian",
+    "cassandra",
+    "tilelive"
+  ],
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/kartotherian/kartotherian-cassandra/issues"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.24",
+    "cassandra-driver": "^2.1.1",
+    "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
+    "multistream": "^1.6.1",
+    "promistreamus": "^0.0.1"
+  }
+}
