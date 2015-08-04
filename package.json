@@ -37,7 +37,6 @@
     "compression": "^1.4.3",
     "domino": "^1.0.18",
     "express": "^4.12.3",
-    "js-yaml": "^3.2.7",
     "kue": "^0.9.4",
     "kue-ui": "^0.1.0",
     "leaflet": "~0.7.3",
