@@ -216,7 +216,7 @@ function setErrorHandler(app) {
 /**
  * Creates a new router with some default options.
  *
- * @param {Object} opts additional options to pass to express.Router()
+ * @param {Object=} opts additional options to pass to express.Router()
  * @return {Router} a new router object
  */
 function createRouter(opts) {
