@@ -40,6 +40,7 @@
     "service-runner": "^0.2.1"
   },
   "devDependencies": {
+    "extend": "^3.0.0",
     "istanbul": "^0.3.17",
     "mocha": "^2.2.5",
     "mocha-jshint": "^2.2.3",
