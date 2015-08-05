@@ -42,6 +42,7 @@
     "leaflet": "~0.7.3",
     "mapnik": "~3.4.0",
     "mbtiles": "^0.8.0",
+    "minimist": "0.2.*",
     "mkdirp-then": "~1.0.1",
     "node-uuid": "^1.4.3",
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
