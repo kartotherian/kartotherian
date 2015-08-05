@@ -52,6 +52,7 @@
     "osm-bright-source": "git+https://github.com/kartotherian/osm-bright.tm2source.git",
     "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git",
     "preq": "^0.4.1",
+    "promistreamus": "^0.1.0",
     "service-runner": "^0.1.8",
     "tilelive": "~5.8.2",
     "tilelive-bridge": "~1.4.0",

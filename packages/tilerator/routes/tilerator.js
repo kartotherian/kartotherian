@@ -11,6 +11,8 @@ var pathLib = require('path');
 var tilelive = require('tilelive');
 BBPromise.promisifyAll(tilelive);
 
+var promistreamus = require('promistreamus');
+
 var router = require('../lib/util').router();
 
 var config = {
@@ -178,7 +180,10 @@ JobProcessor.prototype.getExistingTilesIterator = function(idxFrom, idxBefore, f
         else
             opts.biggerThan = filter.smallerThan;
     }
-    var iterator = this.queryStorage(opts);
+
+    var iterator = promistreamus.select(this.tileStore.query(opts), function (v) {
+        return v.idx;
+    });
 
     if (filter.invert) {
         iterator = this.invertIterator(iterator, opts.idxFrom, opts.idxBefore);
@@ -191,48 +196,7 @@ JobProcessor.prototype.getExistingTilesIterator = function(idxFrom, idxBefore, f
 
     iterator = this.generateSubIterators(iterator, idxFrom, idxBefore, scale, filterIndex);
 
-    return this.glueIterators(iterator);
-};
-
-JobProcessor.prototype.queryStorage = function(opts) {
-    var iter = this.tileStore.query(opts);
-    return function () {
-        return iter().then(function (val) {
-            return val === undefined ? undefined : val.idx;
-        });
-    };
-};
-
-/**
- * Given an iterator of iterators, glue them together into one iterator
- */
-JobProcessor.prototype.glueIterators = function(iterator) {
-    var subIterator = false;
-    var isDone = false;
-    var getNextValAsync = function() {
-        if (isDone)
-            return BBPromise.resolve(undefined);
-        if (!subIterator) {
-            subIterator = iterator()
-        }
-        var currentSubIterator = subIterator;
-        return currentSubIterator.then(function(iter) {
-            if (!iter) {
-                isDone = true;
-                return undefined;
-            }
-            return iter().then(function(val) {
-                if (val !== undefined) {
-                    return val;
-                }
-                if (currentSubIterator === subIterator) {
-                    subIterator = iterator();
-                }
-                return getNextValAsync();
-            });
-        });
-    };
-    return getNextValAsync;
+    return promistreamus.flatten(iterator);
 };
 
 /**
