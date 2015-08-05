@@ -9,7 +9,7 @@ var BBPromise = require('bluebird');
 var core = require('kartotherian-core');
 var cassandra = require('cassandra-driver');
 var multistream = require('multistream');
-var promistreamus = require("promistreamus");
+var promistreamus = require('promistreamus');
 
 var prepared = {prepare: true};
 
