@@ -185,11 +185,11 @@ function resolveMap(map, mapname, uri, resolverFunc, resolverArg) {
     }
 }
 
-module.exports.loadConfigurationAsync = function(app, tilelive, moduleResolver) {
+module.exports.loadConfigurationAsync = function(app, tilelive, moduleResolver, serviceRootDir) {
     var log = app.logger.log.bind(app.logger);
     var confSource;
     if (typeof app.conf.sources === 'string') {
-        var sourcesPath = pathLib.resolve(__dirname, '..', app.conf.sources);
+        var sourcesPath = pathLib.resolve(serviceRootDir, app.conf.sources);
         log('info', 'Loading sources configuration from ' + sourcesPath);
         confSource = fs
             .readFileAsync(sourcesPath)
