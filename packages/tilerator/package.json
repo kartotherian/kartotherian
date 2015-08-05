@@ -1,7 +1,7 @@
 {
-  "name": "kartotherian",
+  "name": "tilerator",
   "version": "0.0.1",
-  "description": "Renders map tiles",
+  "description": "Map tiles pre-generation service",
   "main": "./app.js",
   "scripts": {
     "start": "service-runner",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/kartotherian/kartotherian.git"
+    "url": "git://github.com/kartotherian/tilerator.git"
   },
   "keywords": [
     "REST",
@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://phabricator.wikimedia.org/tag/maps/"
   },
-  "homepage": "https://github.com/kartotherian/kartotherian",
+  "homepage": "https://github.com/kartotherian/tilerator",
   "dependencies": {
     "bluebird": "^2.9.24",
     "body-parser": "^1.12.3",
@@ -49,7 +49,6 @@
     "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
     "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",
     "osm-bright-source": "git+https://github.com/kartotherian/osm-bright.tm2source.git",
-    "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git",
     "preq": "^0.4.1",
     "service-runner": "^0.1.8",
     "tilelive": "~5.8.2",
