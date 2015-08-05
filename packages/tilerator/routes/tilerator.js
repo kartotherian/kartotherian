@@ -4,15 +4,14 @@ var BBPromise = require('bluebird');
 var _ = require('underscore');
 
 var mapnik = require('mapnik');
-var sUtil = require('../lib/util');
-var util = require('util');
 var queue = require('../lib/queue');
 var core = require('kartotherian-core');
+var pathLib = require('path');
 
 var tilelive = require('tilelive');
 BBPromise.promisifyAll(tilelive);
 
-var router = sUtil.router();
+var router = require('../lib/util').router();
 
 var config = {
     // Assume the tile needs to be saved if its compressed size is above this value
@@ -37,7 +36,7 @@ function init(app) {
     };
 
     core
-        .loadConfigurationAsync(app, tilelive, resolver)
+        .loadConfigurationAsync(app, tilelive, resolver, pathLib.resolve(__dirname, '..'))
         .then(function(conf) {
             queue.init(app, function (job, done) {
                 BBPromise.try(function () {
@@ -338,7 +337,7 @@ JobProcessor.prototype.generateTileAsync = function(idx) {
     var self = this,
         stats = this.stats,
         job = this.job.data,
-        xy = sUtil.indexToXY(idx),
+        xy = core.indexToXY(idx),
         x = xy[0],
         y = xy[1];
 
@@ -366,7 +365,7 @@ JobProcessor.prototype.generateTileAsync = function(idx) {
             return data; // generated tile is too big, save
         }
         var vt = new mapnik.VectorTile(job.zoom, x, y);
-        return sUtil.uncompressAsync(data)
+        return core.uncompressAsync(data)
             .bind(vt)
             .then(function (uncompressed) {
                 return this.setDataAsync(uncompressed);
