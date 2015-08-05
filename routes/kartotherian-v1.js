@@ -85,7 +85,7 @@ function init(app) {
 
     // todo: need to crash if this fails to load
     // todo: implement dynamic configuration reloading
-    core.loadConfigurationAsync(app, tilelive, resolver)
+    core.loadConfigurationAsync(app, tilelive, resolver, pathLib.resolve(__dirname, '..'))
         .then(function(conf) {
             // Hack: wrapping source to use the configuration ID instead of the real source URI
             forwardingSource.conf = conf;
