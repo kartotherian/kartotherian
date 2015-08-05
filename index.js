@@ -3,18 +3,23 @@
 var _ = require('underscore');
 var BBPromise = require('bluebird');
 var callsite = require('callsite');
-var mapnik = require('mapnik');
 var pathLib = require('path');
 var qs = require('querystring');
 var urllib = require('url');
 var yaml = require('js-yaml');
-var zlib = require('zlib');
 
-module.exports = {};
-var core = module.exports;
+var mapnik = require('mapnik');
+BBPromise.promisifyAll(mapnik.Map.prototype);
+BBPromise.promisifyAll(mapnik.VectorTile.prototype);
 
 var fs = require("fs");
 BBPromise.promisifyAll(fs);
+
+var zlib = require('zlib');
+BBPromise.promisifyAll(zlib);
+
+module.exports = {};
+var core = module.exports;
 
 /**
  * Parse and normalize URI, ensuring it returns an object with query object field
