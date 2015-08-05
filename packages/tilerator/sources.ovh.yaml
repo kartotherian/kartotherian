@@ -13,10 +13,10 @@ sources:
     uri: cassandra://?cp=127.0.0.1&keyspace=v2&repfactor=1&durablewrite=0
   v3c:
     uri: cassandra://?cp=127.0.0.1&keyspace=v3&repfactor=1&durablewrite=0&blocksize=131072
-  v1a:
-    # Uses other sources, must be last in the list
-    uri: autogen://?saveafter=0&minzoom=0&maxzoom=25
-    ref: {store: v1store, generator: v1gen}
+  # v1a:
+  #   # Uses other sources, must be last in the list
+  #   uri: autogen://?saveafter=0&minzoom=0&maxzoom=25
+  #   ref: {store: v1store, generator: v1gen}
   v1:
     uri: overzoom://
     ref: {source: v1c}
