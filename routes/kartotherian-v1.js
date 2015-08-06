@@ -76,6 +76,7 @@ function init(app) {
     //core.registerProtocols(require('./dynogen'), tilelive);
     core.registerProtocols(require('kartotherian-overzoom'), tilelive);
     core.registerProtocols(require('kartotherian-cassandra'), tilelive);
+    core.registerProtocols(require('kartographene'), tilelive);
 
     var resolver = function (module) {
         return require.resolve(module);
