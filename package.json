@@ -40,14 +40,12 @@
     "leaflet": "~0.7.3",
     "mapnik": "~3.4.0",
     "minimist": "0.2.*",
-    "mkdirp-then": "~1.0.1",
     "node-uuid": "^1.4.3",
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
     "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",
     "osm-bright-source": "git+https://github.com/kartotherian/osm-bright.tm2source.git",
     "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git",
-    "preq": "^0.4.1",
     "service-runner": "^0.1.8",
     "tilelive": "~5.8.2",
     "tilelive-bridge": "~1.4.0",
@@ -60,7 +58,8 @@
     "istanbul": "^0.3.13",
     "mocha": "^2.2.4",
     "mocha-jshint": "0.0.9",
-    "mocha-lcov-reporter": "0.0.1"
+    "mocha-lcov-reporter": "0.0.1",
+    "preq": "^0.4.1"
   },
   "deploy": {
     "target": "debian",

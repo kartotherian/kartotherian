@@ -11,8 +11,8 @@ var tilelive = require('tilelive');
 BBPromise.promisifyAll(tilelive);
 
 var conf;
-var vectorHeaders = {'Content-Encoding': 'gzip'};
-var rasterHeaders = {}; // {'Content-Type': 'image/png'};
+//var vectorHeaders = {'Content-Encoding': 'gzip'};
+//var rasterHeaders = {}; // {'Content-Type': 'image/png'};
 
 /**
  * Initialize module
@@ -20,14 +20,14 @@ var rasterHeaders = {}; // {'Content-Type': 'image/png'};
  * @returns {*}
  */
 function init(app) {
-    var log = app.logger.log.bind(app.logger);
+    //var log = app.logger.log.bind(app.logger);
 
     core.registerProtocols(require('tilelive-bridge'), tilelive);
     core.registerProtocols(require('tilelive-file'), tilelive);
     //core.registerProtocols(require('./dynogen'), tilelive);
     core.registerProtocols(require('kartotherian-overzoom'), tilelive);
     core.registerProtocols(require('kartotherian-cassandra'), tilelive);
-    core.registerProtocols(require('tilelive-vector'), tilelive)
+    core.registerProtocols(require('tilelive-vector'), tilelive);
 
     var resolver = function (module) {
         return require.resolve(module);
@@ -52,9 +52,8 @@ function init(app) {
  * Web server (express) route handler to get requested tile
  * @param req request object
  * @param res response object
- * @param next callback to call if this function cannot handle the request
  */
-function getTile(req, res, next) {
+function getTile(req, res) {
 
     if (conf.cache) {
         res.header('Cache-Control', conf.cache);
@@ -69,7 +68,7 @@ function getTile(req, res, next) {
         throw new Error('Source ' + srcId + ' not public');
     }
 
-    var opts, format;
+    var opts;
     if (source.uri.protocol === 'style:') {
         switch(req.params.format) {
             case 'json':
