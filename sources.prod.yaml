@@ -1,13 +1,27 @@
-sources:
-  v1c:
-    uri: cassandra://?cp=maps-test2001.codfw.wmnet&cp=maps-test2002.codfw.wmnet&cp=maps-test2003.codfw.wmnet&cp=maps-test2004.codfw.wmnet&keyspace=v1&repfactor=1&durablewrite=0&username=cassandra&password=cassandra
-  v1:
-    uri: overzoom://
-    ref: {source: v1c}
-    public: true
+v1:
+  uri: cassandra://?keyspace=v1&blocksize=0&repfactor=1&durablewrite=0&cp=maps-test2001.codfw.wmnet&cp=maps-test2002.codfw.wmnet&cp=maps-test2003.codfw.wmnet&cp=maps-test2004.codfw.wmnet&username=cassandra&password=cassandra
 
-styles:
-  s1:
-    tm2: ["osm-bright-style", "project.xml"]
-    source: v1
-    public: true
+oz_v1:
+  uri: overzoom://
+  ref: {source: v1}
+
+s1:
+  uri: style://
+  npm: {xml: ["osm-bright-style", "project.xml"]}
+  ref: {source: oz_v1}
+  public: true
+
+
+
+v2:
+  uri: cassandra://?keyspace=v2&repfactor=1&durablewrite=0&cp=maps-test2001.codfw.wmnet&cp=maps-test2002.codfw.wmnet&cp=maps-test2003.codfw.wmnet&cp=maps-test2004.codfw.wmnet&username=cassandra&password=cassandra
+
+oz_v2:
+  uri: overzoom://
+  ref: {source: v2}
+
+s2:
+  uri: style://
+  npm: {xml: ["osm-bright-style", "project.xml"]}
+  ref: {source: oz_v2}
+  public: true
