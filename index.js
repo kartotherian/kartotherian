@@ -50,7 +50,7 @@ module.exports.normalizeUri = function(uri) {
  * @returns string
  */
 module.exports.formatUri = function(uri, nested) {
-    if (typeof uri === 'string') {
+    if (typeof uri === 'string' || Array.isArray(uri)) {
         return uri;
     }
     uri = _.clone(uri);
@@ -62,7 +62,7 @@ module.exports.formatUri = function(uri, nested) {
     }
     // Fix nested query values being URI's themselves
     nested = nested || 0;
-    if (uri.query && (typeof uri.query === 'object') && nested < 2) {
+    if (uri.query && (typeof uri.query === 'object') && nested < 4) {
         uri.query = _.mapObject(uri.query, function (val) {
             return module.exports.formatUri(val, nested + 1)
         });
@@ -325,6 +325,7 @@ module.exports.loadConfigurationAsync = function(app, tilelive, moduleResolver, 
                 throw new Error('sources.' + key + '.public must be boolean');
             }
         });
+
         // Resolve the .ref values into uri parameters. Ordering of sources is important
         _.each(sources, function (src) {
             // second pass, skip validation
@@ -335,14 +336,18 @@ module.exports.loadConfigurationAsync = function(app, tilelive, moduleResolver, 
             });
         });
 
-        return BBPromise.all(_.map(sources, function (src) {
-            return tilelive
-                .loadAsync(src.uri)
-                .then(function (handler) {
-                    src.handler = handler;
-                    return true;
-                });
-        })).return(sources);
+        // Loaded sources in order
+        return _.reduce(sources, function (promise, src) {
+            return promise.then(function () {
+                return tilelive
+                    .loadAsync(src.uri)
+                    .then(function (handler) {
+                        src.handler = handler;
+                        return true;
+                    });
+            });
+        }, BBPromise.resolve())
+            .return(sources);
     });
 };
 
