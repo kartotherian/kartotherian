@@ -22,7 +22,7 @@ module.exports = {};
 var core = module.exports;
 
 /**
- * Parse and normalize URI, ensuring it returns an object with query object field
+ * Register module's protocols in tilerator, and promisify the module
  */
 module.exports.registerProtocols = function(module, tilelive) {
     module.registerProtocols(tilelive);
@@ -41,6 +41,7 @@ module.exports.normalizeUri = function(uri) {
         uri.query = qs.parse(uri.query);
     }
     uri.query = uri.query || {};
+    delete uri.search;
     return uri;
 };
 
@@ -190,80 +191,152 @@ function resolveMap(map, mapname, uri, resolverFunc, resolverArg) {
     }
 }
 
+module.exports.initLayerBridgeProtocol = function(tilelive) {
+    module.exports.setXmlSourceLoader('bridgelayer:', 'bridge:', tilelive, function (xml, uriParams) {
+        var layers = uriParams.layer;
+        if (!layers) {
+            return xml;
+        }
+        var result = [];
+        xml.eachChild(function (child) {
+            var single = typeof layers === 'string';
+            if (child.name === 'Layer') {
+                if (single ? child.attr.name !== layers : !_.contains(layers, child.attr.name)) {
+                    // Remove layers that were not listed in the layer parameter. Keep all non-layer elements
+                    return;
+                }
+            }
+            result.push(child);
+        });
+        xml.children = result;
+        return xml;
+    });
+};
+
+module.exports.initStyleProtocol = function(tilelive) {
+    return module.exports.setXmlSourceLoader('style:', 'vector:', tilelive, function (xml, uriParams) {
+
+        if (!uriParams.source) {
+            throw new Error('Source is not defined for this style');
+        }
+        var params = xml.childNamed('Parameters');
+        if (!params) {
+            throw new Error('<Parameters> xml element was not found in ' + uriParams.xml);
+        }
+        var sourceParam = params.childWithAttribute('name', 'source');
+        if (!params) {
+            throw new Error('<Parameter name="source"> xml element was not found in ' + uriParams.xml);
+        }
+        sourceParam.val = urllib.format(uriParams.source);
+
+        return xml;
+    });
+};
+
+module.exports.setXmlSourceLoader = function(protocol, targetProtocol, tilelive, updateXmlFunc) {
+    function sourceLoader(uri, callback) {
+        var params;
+        return BBPromise
+            .try(function () {
+                uri = core.normalizeUri(uri);
+                params = uri.query;
+                if (!params.xml) {
+                    throw Error("Uri must include 'xml' query parameter: " + JSON.stringify(uri))
+                }
+                return fs.readFileAsync(params.xml, 'utf8');
+            }).then(function (xml) {
+                var xmldoc = require('xmldoc');
+                return new xmldoc.XmlDocument(xml);
+            }).then(function (xml) {
+                return updateXmlFunc(xml, params);
+            }).then(function (xml) {
+                var opts = {
+                    protocol: targetProtocol,
+                    xml: xml.toString({cdata: true}),
+                    base: pathLib.dirname(params.xml)
+                };
+                return tilelive.loadAsync(opts);
+            }).nodeify(callback);
+    }
+    tilelive.protocols[protocol] = sourceLoader;
+};
+
 module.exports.loadConfigurationAsync = function(app, tilelive, moduleResolver, serviceRootDir) {
+    core.initLayerBridgeProtocol(tilelive);
+    core.initStyleProtocol(tilelive);
+
     var log = app.logger.log.bind(app.logger);
-    var confSource;
+    var sourcesP;
     if (typeof app.conf.sources === 'string') {
         var sourcesPath = pathLib.resolve(serviceRootDir, app.conf.sources);
         log('info', 'Loading sources configuration from ' + sourcesPath);
-        confSource = fs
+        sourcesP = fs
             .readFileAsync(sourcesPath)
             .then(yaml.safeLoad);
     } else {
         log('info', 'Loading sources configuration from the config file');
-        confSource = BBPromise.resolve(app.conf);
+        sourcesP = BBPromise.resolve(app.conf.sources);
     }
-    return confSource.then(function(conf) {
-        if (typeof conf.sources !== 'object')
-            throw new Error('conf.sources must be an object');
-        if (typeof conf.styles !== 'object')
-            throw new Error('conf.styles must be an object');
-        _.each(conf.sources, function (cfg, key) {
+    return sourcesP.then(function(sources) {
+        if (typeof sources !== 'object')
+            throw new Error('sources must be an object');
+        _.each(sources, function (src, key) {
             if (!/^\w+$/.test(key.toString()))
-                throw new Error('conf.sources.' + key + ' key must contain chars and digits only');
-            if (typeof cfg !== 'object')
-                throw new Error('conf.sources.' + key + ' must be an object');
-            if (!cfg.hasOwnProperty('uri'))
-                throw new Error('conf.sources.' + key + '.uri must be given');
-            cfg.uri = core.normalizeUri(cfg.uri);
+                throw new Error('sources.' + key + ' key must contain chars and digits only');
+            if (typeof src !== 'object')
+                throw new Error('sources.' + key + ' must be an object');
+            if (!src.hasOwnProperty('uri'))
+                throw new Error('sources.' + key + '.uri must be given');
+            src.uri = core.normalizeUri(src.uri);
             // npm tag takes the dir path of the npm and uses it as a named url parameter, or the pathname if id is ""
-            resolveMap(cfg.npm, 'conf.sources.' + key + '.npm', cfg.uri, core.getModulePath, moduleResolver);
+            resolveMap(src.npm, 'sources.' + key + '.npm', src.uri, core.getModulePath, moduleResolver);
             // path tag uses the dir path as a named url parameter, or the pathname if id is ""
-            resolveMap(cfg.path, 'conf.sources.' + key + '.path', cfg.uri);
+            resolveMap(src.path, 'sources.' + key + '.path', src.uri);
             // Don't update yet, just validate
-            resolveMap(cfg.ref, 'conf.sources.' + key + '.ref');
-            if (typeof cfg.public === 'undefined') {
-                cfg.public = false;
-            } else if (typeof cfg.public !== 'boolean') {
-                throw new Error('conf.sources.' + key + '.public must be boolean');
-            }
-        });
-        _.each(conf.styles, function (cfg, key) {
-            if (!/^\w+$/.test(key.toString()))
-                throw new Error('conf.styles.' + key + ' key must contain chars and digits only');
-            if (conf.sources.hasOwnProperty(key))
-                throw new Error('conf.styles.' + key + ' key already exists in conf.sources');
-            if (typeof cfg !== 'object')
-                throw new Error('conf.styles.' + key + ' must be an object');
-            // TODO: should provide the same capability as the source tag
-            cfg.tm2 = core.getModulePath(cfg.tm2, moduleResolver);
-            if (typeof cfg.source !== 'string' && typeof cfg.source !== 'number')
-                throw new Error('conf.styles.' + key + '.source must be a string or a number');
-            if (!conf.sources.hasOwnProperty(cfg.source))
-                throw new Error('conf.styles.' + key + '.source "' + cfg.source + '" does not exist in conf.sources');
-            if (typeof cfg.public === 'undefined') {
-                cfg.public = false;
-            } else if (typeof cfg.public !== 'boolean') {
-                throw new Error('conf.sources.' + key + '.public must be boolean');
+            resolveMap(src.ref, 'sources.' + key + '.ref');
+            if (typeof src.public === 'undefined') {
+                src.public = false;
+            } else if (typeof src.public !== 'boolean') {
+                throw new Error('sources.' + key + '.public must be boolean');
             }
         });
         // Resolve the .ref values into uri parameters. Ordering of sources is important
-        _.each(conf.sources, function (cfg) {
+        _.each(sources, function (src) {
             // second pass, skip validation
-            resolveMap(cfg.ref, '', cfg.uri, function (refId) {
-                if (!conf.sources.hasOwnProperty(refId))
+            resolveMap(src.ref, '', src.uri, function (refId) {
+                if (!sources.hasOwnProperty(refId))
                     throw new Error('Unknown source ' + refId);
-                return conf.sources[refId].uri;
+                return sources[refId].uri;
             });
         });
 
-        return BBPromise.all(_.map(conf.sources, function (cfg) {
+        return BBPromise.all(_.map(sources, function (src) {
             return tilelive
-                .loadAsync(cfg.uri)
+                .loadAsync(src.uri)
                 .then(function (handler) {
-                    cfg.handler = handler;
+                    src.handler = handler;
                     return true;
                 });
-        })).return(conf);
+        })).return(sources);
+    });
+};
+
+/**
+ * Wrapper around the backwards-style getTile() call, where extra args are passed by attaching them to the callback
+ */
+module.exports.getTitleWithParamsAsync = function(source, z, x, y, opts) {
+    return new BBPromise(function (resolve, reject) {
+        try {
+            var callback = function (err, data, headers) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve([data, headers]);
+                }
+            };
+            source.getTile(z, x, y, _.extend(callback, opts));
+        } catch (err) {
+            reject(err);
+        }
     });
 };

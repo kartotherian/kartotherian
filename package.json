@@ -19,6 +19,8 @@
     "bluebird": "^2.9.24",
     "callsite": "^1.0.0",
     "js-yaml": "^3.2.7",
-    "mapnik": "~3.4.0"
+    "mapnik": "~3.4.0",
+    "underscore": "^1.8.3",
+    "xmldoc": "git+https://github.com/nyurik/xmldoc.git"
   }
 }
