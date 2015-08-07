@@ -10,20 +10,6 @@ var BBPromise = require('bluebird');
 var core = require('kartotherian-core');
 var zlib = require('zlib');
 
-module.exports = OverZoomer;
-
-OverZoomer.registerProtocols = function(tilelive) {
-    OverZoomer._tilelive = tilelive;
-    tilelive.protocols['overzoom:'] = OverZoomer;
-};
-
-OverZoomer.resolveUri = function(uri, uriAccessor) {
-    if (uri.query.hasOwnProperty('source')) {
-        uri.query.source = uriAccessor(uri.query.source);
-    }
-    return uri;
-};
-
 function OverZoomer(uri, callback) {
     var self = this;
     return BBPromise.try(function () {
@@ -70,4 +56,19 @@ OverZoomer.prototype.getInfo = function(callback) {
     return this.source.getInfo(callback);
 };
 
+
+OverZoomer.registerProtocols = function(tilelive) {
+    OverZoomer._tilelive = tilelive;
+    tilelive.protocols['overzoom:'] = OverZoomer;
+};
+
+OverZoomer.resolveUri = function(uri, uriAccessor) {
+    if (uri.query.hasOwnProperty('source')) {
+        uri.query.source = uriAccessor(uri.query.source);
+    }
+    return uri;
+};
+
 BBPromise.promisifyAll(OverZoomer.prototype);
+
+module.exports = OverZoomer;
