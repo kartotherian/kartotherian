@@ -19,8 +19,12 @@ module.exports = {};
  * @param jobHandler if given - function(job, done), will use to run jobs
  */
 module.exports.init = function(app, jobHandler) {
-    if (!queue)
-        queue = kue.createQueue();
+    if (!queue) {
+        var opts = {};
+        if (app.conf.redisPrefix) opts.prefix = app.conf.redisPrefix;
+        if (app.conf.redis) opts.redis = app.conf.redis;
+        queue = kue.createQueue(opts);
+    }
 
     if (app) {
         var uiConf = {
