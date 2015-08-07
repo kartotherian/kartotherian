@@ -41,8 +41,33 @@ module.exports.normalizeUri = function(uri) {
         uri.query = qs.parse(uri.query);
     }
     uri.query = uri.query || {};
-    delete uri.search;
     return uri;
+};
+
+/**
+ * Convert the result of normalizeUri() back into a string
+ * @param uri
+ * @returns string
+ */
+module.exports.formatUri = function(uri, nested) {
+    if (typeof uri === 'string') {
+        return uri;
+    }
+    uri = _.clone(uri);
+    // without search value, formatter will use query args
+    delete uri.search;
+    // tilelive always checks for pathname, even though it could be null, so fake it as '/'
+    if (uri.pathname === null) {
+        uri.pathname = '/';
+    }
+    // Fix nested query values being URI's themselves
+    nested = nested || 0;
+    if (uri.query && (typeof uri.query === 'object') && nested < 2) {
+        uri.query = _.mapObject(uri.query, function (val) {
+            return module.exports.formatUri(val, nested + 1)
+        });
+    }
+    return urllib.format(uri);
 };
 
 /**
@@ -191,8 +216,8 @@ function resolveMap(map, mapname, uri, resolverFunc, resolverArg) {
     }
 }
 
-module.exports.initLayerBridgeProtocol = function(tilelive) {
-    module.exports.setXmlSourceLoader('bridgelayer:', 'bridge:', tilelive, function (xml, uriParams) {
+function initLayerBridgeProtocol(tilelive) {
+    setXmlSourceLoader('bridgelayer:', 'bridge:', tilelive, function (xml, uriParams) {
         var layers = uriParams.layer;
         if (!layers) {
             return xml;
@@ -211,10 +236,10 @@ module.exports.initLayerBridgeProtocol = function(tilelive) {
         xml.children = result;
         return xml;
     });
-};
+}
 
-module.exports.initStyleProtocol = function(tilelive) {
-    return module.exports.setXmlSourceLoader('style:', 'vector:', tilelive, function (xml, uriParams) {
+function initStyleProtocol(tilelive) {
+    setXmlSourceLoader('style:', 'vector:', tilelive, function (xml, uriParams) {
 
         if (!uriParams.source) {
             throw new Error('Source is not defined for this style');
@@ -227,13 +252,13 @@ module.exports.initStyleProtocol = function(tilelive) {
         if (!params) {
             throw new Error('<Parameter name="source"> xml element was not found in ' + uriParams.xml);
         }
-        sourceParam.val = urllib.format(uriParams.source);
+        sourceParam.val = module.exports.formatUri(uriParams.source);
 
         return xml;
     });
-};
+}
 
-module.exports.setXmlSourceLoader = function(protocol, targetProtocol, tilelive, updateXmlFunc) {
+function setXmlSourceLoader(protocol, targetProtocol, tilelive, updateXmlFunc) {
     function sourceLoader(uri, callback) {
         var params;
         return BBPromise
@@ -259,11 +284,11 @@ module.exports.setXmlSourceLoader = function(protocol, targetProtocol, tilelive,
             }).nodeify(callback);
     }
     tilelive.protocols[protocol] = sourceLoader;
-};
+}
 
 module.exports.loadConfigurationAsync = function(app, tilelive, moduleResolver, serviceRootDir) {
-    core.initLayerBridgeProtocol(tilelive);
-    core.initStyleProtocol(tilelive);
+    initLayerBridgeProtocol(tilelive);
+    initStyleProtocol(tilelive);
 
     var log = app.logger.log.bind(app.logger);
     var sourcesP;
