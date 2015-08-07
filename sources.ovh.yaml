@@ -37,17 +37,17 @@ v3:
 #
 s1:
   uri: style://
-  npm: {"xml": ["osm-bright-style", "project.xml"]}
+  npm: {xml: ["osm-bright-style", "project.xml"]}
   ref: {source: v1}
   public: true
 s3:
   uri: style://
-  npm: {"xml": ["osm-bright-style", "project.xml"]}
+  npm: {xml: ["osm-bright-style", "project.xml"]}
   ref: {source: v3}
   public: true
 
 g:
   uri: style://
-  npm: {"xml": ["osm-bright-style", "project.xml"]}
+  npm: {xml: ["osm-bright-style", "project.xml"]}
   ref: {source: v1gen}
   public: true
