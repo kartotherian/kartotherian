@@ -49,7 +49,7 @@ function CassandraStore(uri, callback) {
         self.durablewrite = (typeof dw === 'undefined' || (dw && dw !== 'false' && dw !== '0')) ? 'true' : 'false';
         self.minzoom = typeof params.minzoom === 'undefined' ? 0 : parseInt(params.minzoom);
         self.maxzoom = typeof params.maxzoom === 'undefined' ? 15 : parseInt(params.maxzoom);
-        self.blocksize = typeof params.blocksize === 'undefined' ? false : parseInt(params.blocksize);
+        self.blocksize = typeof params.blocksize === 'undefined' ? 32768 : parseInt(params.blocksize);
         self.maxBatchSize = typeof params.maxBatchSize === 'undefined' ? undefined : parseInt(params.maxBatchSize);
         var clientOpts = {contactPoints: self.contactPoints};
         if (params.username || params.password) {
