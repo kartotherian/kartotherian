@@ -201,7 +201,7 @@ CassandraStore.prototype.queryTileAsync = function(options) {
             throw new Error('Options must contain an integer idx parameter');
         var maxEnd = Math.pow(4, options.zoom);
         if (options.idx < 0 || options.idx >= maxEnd)
-            throw new Error('Options must satisfy: 0 <= idx < ' + maxEnd);
+            throw new Error('Options must satisfy: 0 <= idx < ' + maxEnd + ', requestd idx=' + options.idx);
         getTile = typeof options.getTile === 'undefined' ? true : options.getTile;
         getWriteTime = typeof options.getWriteTime === 'undefined' ? false : options.getWriteTime;
         getSize = typeof options.getSize === 'undefined' ? false : options.getSize;
