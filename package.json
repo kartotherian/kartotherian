@@ -42,7 +42,6 @@
     "minimist": "0.2.*",
     "mkdirp-then": "~1.0.1",
     "node-uuid": "^1.4.3",
-    "kartographene": "git+https://github.com/kartotherian/kartographene.git",
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
     "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",

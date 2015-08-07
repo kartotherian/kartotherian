@@ -1,6 +1,0 @@
-[submodule "map/osm-bright.tm2"]
-	path = map/osm-bright.tm2
-	url = https://github.com/nyurik/mapbox-studio-osm-bright.tm2.git
-[submodule "map/osm-bright.tm2source"]
-	path = map/osm-bright.tm2source
-	url = https://github.com/nyurik/osm2pgsql-osm-bright.tm2source.git
