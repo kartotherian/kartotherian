@@ -5,6 +5,7 @@
 CassandraStore is a Cassandra tile storage.
  */
 
+var util = require('util');
 var BBPromise = require('bluebird');
 var core = require('kartotherian-core');
 var cassandra = require('cassandra-driver');
@@ -21,25 +22,36 @@ CassandraStore.registerProtocols = function(tilelive) {
 
 function CassandraStore(uri, callback) {
     var self = this;
+    var params;
     this.batchMode = 0;
     this.batch = [];
+
+    this.throwError = function (msg) {
+        throw new Error(util.format.apply(null, arguments) + JSON.stringify(uri));
+    };
+
+    this.attachUri = function (err) {
+        err.moduleUri = JSON.stringify(uri);
+        throw err;
+    };
+
     return BBPromise.try(function () {
-        var params = core.normalizeUri(uri).query;
+        params = core.normalizeUri(uri).query;
         if (!params.cp) {
-            throw new Error("Uri must include at least one 'cp' connect point query parameter: " + uri)
+            self.throwError("Uri must include at least one 'cp' connect point query parameter");
         } else if (typeof params.cp === 'string') {
             self.contactPoints = [params.cp];
         } else {
             self.contactPoints = params.cp;
         }
         if (!params.keyspace || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.keyspace)) {
-            throw new Error("Uri must have a valid 'keyspace' query parameter: " + uri)
+            self.throwError("Uri must have a valid 'keyspace' query parameter");
         }
         if (params.table && !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.table)) {
-            throw new Error("Optional uri 'table' param must be a valid value: " + uri)
+            self.throwError("Optional uri 'table' param must be a valid value");
         }
         if (params.repclass && !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.repclass)) {
-            throw new Error("Uri 'repclass' must be a valid value: " + uri)
+            self.throwError("Uri 'repclass' must be a valid value");
         }
         self.keyspace = params.keyspace;
         self.table = params.table || 'tiles';
@@ -97,7 +109,7 @@ function CassandraStore(uri, callback) {
         };
 
         return self;
-    }).nodeify(callback);
+    }).catch(this.attachUri).nodeify(callback);
 }
 
 CassandraStore.registerProtocols = function(tilelive) {
@@ -110,9 +122,9 @@ CassandraStore.prototype.getTile = function(z, x, y, callback) {
         if (row) {
             return [row.tile, self.headers];
         } else {
-            throw new Error('Tile does not exist');
+            self.throwError('Tile (%j, %j, %j) does not exist', z, x, y);
         }
-    }).nodeify(callback, {spread: true});
+    }).catch(this.attachUri).nodeify(callback, {spread: true});
 };
 
 CassandraStore.prototype.getInfo = function(callback) {
@@ -129,27 +141,28 @@ CassandraStore.prototype.getInfo = function(callback) {
 };
 
 CassandraStore.prototype.putTile = function(z, x, y, tile, callback) {
-    var query, params;
-    var idx = core.xyToIndex(x, y);
-    if (tile && tile.length > 0) {
-        query = this.queries.set;
-        params = [tile, z, idx];
-    } else {
-        query = this.queries.delete;
-        params = [z, idx];
-    }
-    if (this.blocksize)
-        params.push(Math.floor(idx / this.blocksize));
-    if (!this.batchMode || !this.maxBatchSize) {
-        this.client.executeAsync(query, params, prepared).nodeify(callback);
-    } else {
-        this.batch.push({query: query, params: params});
-        if (Object.keys(this.batch).length > this.maxBatchSize) {
-            this.flush(callback);
+    var self = this;
+    BBPromise.try(function() {
+        var query, params;
+        var idx = core.xyToIndex(x, y);
+        if (tile && tile.length > 0) {
+            query = self.queries.set;
+            params = [tile, z, idx];
         } else {
-            callback();
+            query = self.queries.delete;
+            params = [z, idx];
         }
-    }
+        if (self.blocksize)
+            params.push(Math.floor(idx / self.blocksize));
+        if (!self.batchMode || !self.maxBatchSize) {
+            return self.client.executeAsync(query, params, prepared);
+        } else {
+            self.batch.push({query: query, params: params});
+            if (Object.keys(self.batch).length > self.maxBatchSize) {
+                return self.flushAsync();
+            }
+        }
+    }).catch(this.attachUri).nodeify(callback);
 };
 
 CassandraStore.prototype.close = function(callback) {
@@ -164,7 +177,7 @@ CassandraStore.prototype.close = function(callback) {
             delete self.client;
             self.batchMode = 0;
             return cl.shutdownAsync();
-        }).nodeify(callback);
+        }).catch(this.attachUri).nodeify(callback);
     }
 };
 
@@ -177,18 +190,26 @@ CassandraStore.prototype.flush = function(callback) {
     var batch = this.batch;
     if (Object.keys(batch).length > 0) {
         this.batch = [];
-        this.client.batchAsync(batch, prepared).nodeify(callback);
+        this.client
+            .batchAsync(batch, prepared)
+            .catch(this.attachUri)
+            .nodeify(callback);
     } else {
         callback();
     }
 };
 
 CassandraStore.prototype.stopWriting = function(callback) {
-    if (this.batchMode === 0) {
-        throw new Error('stopWriting() called more times than startWriting()')
-    }
-    this.batchMode--;
-    this.flush(callback);
+    var self = this;
+    BBPromise.try(function () {
+        if (self.batchMode === 0) {
+            self.throwError('stopWriting() called more times than startWriting()')
+        }
+        self.batchMode--;
+        return self.flushAsync();
+    })
+        .catch(this.attachUri)
+        .nodeify(callback);
 };
 
 CassandraStore.prototype.queryTileAsync = function(options) {
@@ -196,12 +217,12 @@ CassandraStore.prototype.queryTileAsync = function(options) {
 
     return BBPromise.try(function() {
         if (!core.isInteger(options.zoom))
-            throw new Error('Options must contain integer zoom parameter');
+            self.throwError('Options must contain integer zoom parameter. Opts=%j', options);
         if (!core.isInteger(options.idx))
-            throw new Error('Options must contain an integer idx parameter');
+            self.throwError('Options must contain an integer idx parameter. Opts=%j', options);
         var maxEnd = Math.pow(4, options.zoom);
         if (options.idx < 0 || options.idx >= maxEnd)
-            throw new Error('Options must satisfy: 0 <= idx < ' + maxEnd + ', requestd idx=' + options.idx);
+            self.throwError('Options must satisfy: 0 <= idx < %d. Opts=%j', maxEnd, options);
         getTile = typeof options.getTile === 'undefined' ? true : options.getTile;
         getWriteTime = typeof options.getWriteTime === 'undefined' ? false : options.getWriteTime;
         getSize = typeof options.getSize === 'undefined' ? false : options.getSize;
@@ -213,7 +234,7 @@ CassandraStore.prototype.queryTileAsync = function(options) {
         else if (getWriteTime)
             query = self.queries.getWriteTime;
         else
-            throw new Error('Either getTile or getWriteTime or both must be requested');
+            self.throwError('Either getTile or getWriteTime or both must be requested. Opts=%j', options);
         var params = [options.zoom, options.idx];
         if (self.blocksize)
             params.push(Math.floor(options.idx / self.blocksize));
@@ -229,7 +250,7 @@ CassandraStore.prototype.queryTileAsync = function(options) {
         } else {
             return false;
         }
-    });
+    }).catch(this.attachUri);
 };
 
 /**
@@ -250,26 +271,26 @@ CassandraStore.prototype.query = function(options) {
         dateBefore, dateFrom;
 
     if (!core.isInteger(options.zoom))
-        throw new Error('Options must contain integer zoom parameter');
+        self.throwError('Options must contain integer zoom parameter. Opts=%j', options);
     if (typeof options.idxFrom !== 'undefined' && !core.isInteger(options.idxFrom))
-        throw new Error('Options may contain an integer idxFrom parameter');
+        self.throwError('Options may contain an integer idxFrom parameter. Opts=%j', options);
     if (typeof options.idxBefore !== 'undefined' && !core.isInteger(options.idxBefore))
-        throw new Error('Options may contain an integer idxBefore parameter');
+        self.throwError('Options may contain an integer idxBefore parameter. Opts=%j', options);
     if (typeof options.dateBefore !== 'undefined' && Object.prototype.toString.call(options.dateBefore) !== '[object Date]')
-        throw new Error('Options may contain a Date dateBefore parameter');
+        self.throwError('Options may contain a Date dateBefore parameter. Opts=%j', options);
     if (typeof options.dateFrom !== 'undefined' && Object.prototype.toString.call(options.dateFrom) !== '[object Date]')
-        throw new Error('Options may contain a Date dateFrom parameter');
+        self.throwError('Options may contain a Date dateFrom parameter. Opts=%j', options);
     if (typeof options.biggerThan !== 'undefined' && typeof options.biggerThan !== 'number')
-        throw new Error('Options may contain a biggerThan numeric parameter');
+        self.throwError('Options may contain a biggerThan numeric parameter. Opts=%j', options);
     if ((typeof options.smallerThan !== 'undefined' && typeof options.smallerThan !== 'number') || options.smallerThan <= 0)
-        throw new Error('Options may contain a smallerThan numeric parameter that is bigger than 0');
+        self.throwError('Options may contain a smallerThan numeric parameter that is bigger than 0. Opts=%j', options);
     var maxEnd = Math.pow(4, options.zoom);
     var start = options.idxFrom || 0;
     var end = options.idxBefore || maxEnd;
     if (start > end || end > maxEnd)
-        throw new Error('Options must satisfy: idxFrom <= idxBefore <= ' + maxEnd);
+        self.throwError('Options must satisfy: idxFrom <= idxBefore <= %d. Opts=%j', maxEnd, options);
     if (options.dateFrom >= options.dateBefore)
-        throw new Error('Options must satisfy: dateFrom < dateBefore');
+        self.throwError('Options must satisfy: dateFrom < dateBefore. Opts=%j', options);
     dateFrom = options.dateFrom ? options.dateFrom.valueOf() * 1000 : false;
     dateBefore = options.dateBefore ? options.dateBefore.valueOf() * 1000 : false;
 
