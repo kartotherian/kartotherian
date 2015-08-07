@@ -15,7 +15,7 @@ function OverZoomer(uri, callback) {
     return BBPromise.try(function () {
         uri = core.normalizeUri(uri);
         if (!uri.query.source) {
-            throw Error("Uri must include 'source' query parameter: " + uri)
+            throw Error("Uri must include 'source' query parameter: " + core.formatUri(uri));
         }
         return OverZoomer._tilelive.loadAsync(uri.query.source);
     }).then(function (handler) {
