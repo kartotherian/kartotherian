@@ -11,9 +11,9 @@ v1gen:
   npm: {"": ["osm-bright-source", "data.xml"]}
   public: true
 v1c:
-  uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0&blocksize=10
+  uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0&blocksize=0
 v2c:
-  uri: cassandra://?cp=127.0.0.1&keyspace=v2&repfactor=1&durablewrite=0&blocksize=10
+  uri: cassandra://?cp=127.0.0.1&keyspace=v2&repfactor=1&durablewrite=0&blocksize=0
 v3c:
   uri: cassandra://?cp=127.0.0.1&keyspace=v3&repfactor=1&durablewrite=0&blocksize=131072
 v4c:
