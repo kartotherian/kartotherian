@@ -122,7 +122,7 @@ CassandraStore.prototype.getTile = function(z, x, y, callback) {
         if (row) {
             return [row.tile, self.headers];
         } else {
-            self.throwError('Tile (%j, %j, %j) does not exist', z, x, y);
+            core.throwNoTile();
         }
     }).catch(this.attachUri).nodeify(callback, {spread: true});
 };
