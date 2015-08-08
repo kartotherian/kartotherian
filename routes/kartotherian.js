@@ -33,7 +33,7 @@ function init(app) {
         return require.resolve(module);
     };
 
-    app.use('/static/leaflet', express.static(core.getModulePath('leaflet', resolver), core.getStaticOpts(app.conf)));
+    app.use('/static/leaflet', express.static(core.sources.getModulePath('leaflet', resolver), core.getStaticOpts(app.conf)));
 
     core.sources
         .initAsync(app, tilelive, resolver, pathLib.resolve(__dirname, '..'))

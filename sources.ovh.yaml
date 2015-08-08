@@ -17,7 +17,7 @@ v2c:
 v3c:
   uri: cassandra://?cp=127.0.0.1&keyspace=v3&repfactor=1&durablewrite=0&blocksize=131072
 v4c:
-  uri: cassandra://?cp=127.0.0.1&keyspace=v3&repfactor=1&durablewrite=0
+  uri: cassandra://?cp=127.0.0.1&keyspace=v4&repfactor=1&durablewrite=0
 
 #
 # Filters/converters
