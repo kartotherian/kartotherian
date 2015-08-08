@@ -15,7 +15,7 @@ function OverZoomer(uri, callback) {
     return BBPromise.try(function () {
         uri = core.normalizeUri(uri);
         if (!uri.query.source) {
-            throw Error("Uri must include 'source' query parameter: " + core.formatUri(uri));
+            throw Error("Uri must include 'source' query parameter: " + JSON.stringify(uri));
         }
         return OverZoomer._tilelive.loadAsync(uri.query.source);
     }).then(function (handler) {
@@ -32,7 +32,7 @@ OverZoomer.prototype.getTile = function(z, x, y, callback) {
 
     function getSubTile(bz, bx, by) {
         return self.source.getTile(bz, bx, by, function (err, pbfz, headers) {
-            if (bz > 0 && err && err.message === 'Tile does not exist') {
+            if (bz > 0 && err && core.isNoTileError(err)) {
                 // Tile is missing, zoom out and repeat
                 getSubTile(bz - 1, Math.floor(bx / 2), Math.floor(by / 2));
             } else if (err || bz === z || !pbfz || pbfz.length === 0) {
