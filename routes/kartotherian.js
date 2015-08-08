@@ -35,10 +35,8 @@ function init(app) {
 
     app.use('/static/leaflet', express.static(core.getModulePath('leaflet', resolver), core.getStaticOpts(app.conf)));
 
-    // todo: need to crash if this fails to load
-    // todo: implement dynamic configuration reloading
-    core
-        .loadConfigurationAsync(app, tilelive, resolver, pathLib.resolve(__dirname, '..'))
+    core.sources
+        .initAsync(app, tilelive, resolver, pathLib.resolve(__dirname, '..'))
         .then(function (c) {
             conf = c;
         })
