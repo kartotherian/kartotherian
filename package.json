@@ -1,0 +1,26 @@
+{
+  "name": "tile-layermixer",
+  "version": "0.0.0",
+  "description": "Vector tile mixing source, allowing layers from multiple vector tile to be merged into one tile ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kartotherian/tile-layermixer.git"
+  },
+  "keywords": [
+    "kartotherian",
+    "tilelive"
+  ],
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/kartotherian/tile-layermixer/issues"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.24",
+    "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git"
+  }
+}
