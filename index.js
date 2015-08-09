@@ -20,10 +20,8 @@ function OverZoomer(uri, callback) {
         return OverZoomer._tilelive.loadAsync(uri.query.source);
     }).then(function (handler) {
         self.source = handler;
-        callback(undefined, self);
-    }).catch(function (err) {
-        callback(err);
-    });
+        return self;
+    }).nodeify(callback);
 }
 
 OverZoomer.prototype.getTile = function(z, x, y, callback) {
@@ -61,14 +59,5 @@ OverZoomer.registerProtocols = function(tilelive) {
     OverZoomer._tilelive = tilelive;
     tilelive.protocols['overzoom:'] = OverZoomer;
 };
-
-OverZoomer.resolveUri = function(uri, uriAccessor) {
-    if (uri.query.hasOwnProperty('source')) {
-        uri.query.source = uriAccessor(uri.query.source);
-    }
-    return uri;
-};
-
-BBPromise.promisifyAll(OverZoomer.prototype);
 
 module.exports = OverZoomer;
