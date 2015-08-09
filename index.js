@@ -16,10 +16,6 @@ var prepared = {prepare: true};
 
 BBPromise.promisifyAll(cassandra.Client.prototype);
 
-CassandraStore.registerProtocols = function(tilelive) {
-    tilelive.protocols['cassandra:'] = CassandraStore;
-};
-
 function CassandraStore(uri, callback) {
     var self = this;
     var params;
@@ -358,5 +354,4 @@ CassandraStore.prototype.query = function(options) {
     });
 };
 
-BBPromise.promisifyAll(CassandraStore.prototype);
 module.exports = CassandraStore;
