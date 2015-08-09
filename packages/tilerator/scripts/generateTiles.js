@@ -8,6 +8,7 @@ var util = require('../lib/util');
 var _ = require('underscore');
 var mapnik = require('mapnik');
 var sc = require("./scriptUtils");
+var core = require('kartotherian-core');
 
 var generator, storage, config, nextTile, stats;
 
@@ -73,7 +74,7 @@ function getTileAsync(loc, generate) {
         loc.headers = tile[1];
         return loc;
     }).catch(function (err) {
-        if (err.message === 'Tile does not exist') {
+        if (core.isNoTileError(err)) {
             if (generate) stats.tilegenempty++; else stats.ozloadempty++;
             loc.data = null;
             return loc;

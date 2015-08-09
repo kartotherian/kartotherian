@@ -38,8 +38,8 @@ function init(app) {
         return require.resolve(module);
     };
 
-    core
-        .loadConfigurationAsync(app, tilelive, resolver, pathLib.resolve(__dirname, '..'))
+    core.sources
+        .initAsync(app, tilelive, resolver, pathLib.resolve(__dirname, '..'))
         .then(function(conf) {
             queue.init(app, function (job, done) {
                 BBPromise.try(function () {
@@ -313,7 +313,7 @@ JobProcessor.prototype.generateTileAsync = function(idx) {
         stats.tilegenok++;
         return dataAndHeader[0];
     }, function (err) {
-        if (err.message === 'Tile does not exist') {
+        if (core.isNoTileError(err)) {
             stats.tilegenempty++;
             return null;
         } else {

@@ -58,7 +58,7 @@ exports.parseCommonSettingsAsync = function(statsAccessor) {
         reporter = setInterval(config.reportStats, 60000);
 
     return fs
-        .readFileAsync(util.normalizePath(config.configPath))
+        .readFileAsync(exports.normalizePath(config.configPath))
         .then(yaml.safeLoad)
         .then(function (cfg) {
             return conf
@@ -68,6 +68,18 @@ exports.parseCommonSettingsAsync = function(statsAccessor) {
                     return result;
                 });
         });
+};
+
+/**
+ * Convert relative path to absolute, assuming current file is one
+ * level below the project root
+ * @param path
+ * @returns {*}
+ */
+exports.normalizePath = function(path) {
+    var stack = callsite(),
+        requester = stack[1].getFileName();
+    return pathLib.resolve(path.dirname(requester), '..', path);
 };
 
 exports.getOptimizedIteratorFunc = function(zoom, start, count) {
