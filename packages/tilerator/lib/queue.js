@@ -4,6 +4,8 @@ var BBPromise = require('bluebird');
 var util = require('util');
 var _ = require('underscore');
 var core = require('kartotherian-core');
+var Err = core.Err;
+
 var kue = require('kue');
 BBPromise.promisifyAll(kue.Job.prototype);
 
@@ -71,7 +73,7 @@ module.exports.validateJob = function(job) {
                 core.checkType(filter, 'dateBefore', '[object Date]') &&
                 filter.dateFrom >= filter.dateBefore
             ) {
-                throw new Error('Invalid dates: dateFrom must be less than dateBefore');
+                throw new Err('Invalid dates: dateFrom must be less than dateBefore');
             }
             core.checkType(filter, 'biggerThan', 'integer');
             core.checkType(filter, 'smallerThan', 'integer');
@@ -125,7 +127,7 @@ module.exports.addJobAsync = function(job) {
                     return typeof v === 'string' && v.length > 0;
                 })
             ) {
-                throw new Error('Invalid layers value %s, must be a list of nonempty strings', job.layers);
+                throw new Err('Invalid layers value %s, must be a list of nonempty strings', job.layers);
             }
         }
 
@@ -174,7 +176,7 @@ module.exports.addJobAsync = function(job) {
  */
 module.exports.addPyramidJobsAsync = function(options) {
     if (options.baseZoom === undefined || options.zoomFrom === undefined || options.zoomBefore === undefined) {
-        throw new Error('Pyramid-add requires baseZoom, zoomFrom, and zoomBefore');
+        throw new Err('Pyramid-add requires baseZoom, zoomFrom, and zoomBefore');
     }
 
     var opts = _.clone(options);

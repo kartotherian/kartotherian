@@ -2,11 +2,12 @@
 
 var BBPromise = require('bluebird');
 var _ = require('underscore');
+var pathLib = require('path');
 
 var mapnik = require('mapnik');
 var queue = require('../lib/queue');
 var core = require('kartotherian-core');
-var pathLib = require('path');
+var Err = core.Err;
 
 var tilelive = require('tilelive');
 BBPromise.promisifyAll(tilelive);
@@ -56,10 +57,10 @@ function init(app) {
 
 function JobProcessor(conf, job) {
     if (!(job.data.generatorId in conf)) {
-        throw new Error('Uknown generatorId ' + job.data.generatorId);
+        throw new Err('Unknown generatorId %s', job.data.generatorId);
     }
     if (!(job.data.storageId in conf)) {
-        throw new Error('Uknown storageId ' + job.data.storageId);
+        throw new Err('Unknown storageId %s', job.data.storageId);
     }
     this.conf = conf;
     this.job = job;
@@ -205,7 +206,7 @@ JobProcessor.prototype.getExistingTilesIterator = function(idxFrom, idxBefore, f
  */
 JobProcessor.prototype.invertIterator = function(iterator, idxFrom, idxBefore) {
     if (this.threadIdxState.length > 1) {
-        throw new Error('multiple threads are not supported for this job');
+        throw new Err('multiple threads are not supported for this job');
     }
     var idxNext = idxFrom,
         nextValP, isDone;
@@ -239,7 +240,7 @@ JobProcessor.prototype.invertIterator = function(iterator, idxFrom, idxBefore) {
  */
 JobProcessor.prototype.generateSubIterators = function(iterator, idxFrom, idxBefore, scale, filterIndex) {
     if (this.threadIdxState.length > 1) {
-        throw new Error('multiple threads are not supported for this job');
+        throw new Err('multiple threads are not supported for this job');
     }
     var self = this;
     var job = self.job.data;
