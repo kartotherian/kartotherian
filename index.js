@@ -3,6 +3,8 @@
 var BBPromise = require('bluebird');
 var core = require('kartotherian-core');
 var zlib = require('zlib');
+var Err = core.Err;
+
 
 function LayerMixer(uri, callback) {
     var self = this;
@@ -10,7 +12,7 @@ function LayerMixer(uri, callback) {
         uri = core.normalizeUri(uri);
         var sources = uri.query.source;
         if (!sources || !Array.isArray(sources)) {
-            throw Error("Uri must include two or more 'source' query parameters: " + JSON.stringify(uri));
+            throw new Err("Uri must include 'source' query parameter: %j", uri);
         }
         self.sources = [];
         return core.mapSequentialAsync(sources, function (src) {
