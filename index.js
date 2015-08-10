@@ -9,13 +9,15 @@ or if missing, will zoom out until it finds a tile, and extract needed portion o
 var BBPromise = require('bluebird');
 var core = require('kartotherian-core');
 var zlib = require('zlib');
+var Err = core.Err;
+
 
 function OverZoomer(uri, callback) {
     var self = this;
     return BBPromise.try(function () {
         uri = core.normalizeUri(uri);
         if (!uri.query.source) {
-            throw Error("Uri must include 'source' query parameter: " + JSON.stringify(uri));
+            throw new Err("Uri must include 'source' query parameter: %j", uri);
         }
         return OverZoomer._tilelive.loadAsync(uri.query.source);
     }).then(function (handler) {
