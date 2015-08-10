@@ -11,6 +11,7 @@ var tilelive = require('tilelive');
 BBPromise.promisifyAll(tilelive);
 
 var conf;
+var sources;
 //var vectorHeaders = {'Content-Encoding': 'gzip'};
 //var rasterHeaders = {}; // {'Content-Type': 'image/png'};
 
@@ -37,8 +38,9 @@ function init(app) {
 
     core.sources
         .initAsync(app, tilelive, resolver, pathLib.resolve(__dirname, '..'))
-        .then(function (c) {
-            conf = c;
+        .then(function (srcs) {
+            sources = srcs;
+            conf = app.conf;
         })
         .catch(function (err) {
             console.error((err.body && (err.body.stack || err.body.detail)) || err.stack || err);
@@ -58,10 +60,10 @@ function getTile(req, res) {
     }
 
     var srcId = req.params.src;
-    if (!conf.hasOwnProperty(srcId)) {
+    if (!sources.hasOwnProperty(srcId)) {
         throw new Error('Unknown source ' + srcId);
     }
-    var source = conf[srcId];
+    var source = sources[srcId];
     if (!source.public) {
         throw new Error('Source ' + srcId + ' not public');
     }
