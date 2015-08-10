@@ -1,5 +1,6 @@
 'use strict';
 
+var util = require('util');
 var BBPromise = require('bluebird');
 var _ = require('underscore');
 var express = require('express');
@@ -18,6 +19,17 @@ var metrics;
 var maxZoom = 20;
 //var vectorHeaders = {'Content-Encoding': 'gzip'};
 //var rasterHeaders = {}; // {'Content-Type': 'image/png'};
+
+function reportError(errReporterFunc, err) {
+    try {
+        errReporterFunc(err);
+    } catch (e2) {
+        console.error('Unable to report: ' +
+            ((err.body && (err.body.stack || err.body.detail)) || err.stack || err) +
+            '\n\nDue to: ' +
+            ((e2.body && (e2.body.stack || e2.body.detail)) || e2.stack || e2));
+    }
+}
 
 /**
  * Initialize module
@@ -50,7 +62,9 @@ function init(app) {
             conf = app.conf;
         })
         .catch(function (err) {
-            console.error((err.body && (err.body.stack || err.body.detail)) || err.stack || err);
+            reportError(function (err) {
+                app.logger.log('fatal', err);
+            }, err);
             process.exit(1);
         });
 }
@@ -63,10 +77,15 @@ function init(app) {
 function getTile(req, res) {
 
     var start = Date.now();
-    var opts;
+    // These vars might get set before finishing validation.
+    // Do not use them unless successful
+    var opts, srcId, z, x, y;
 
     return BBPromise.try(function () {
-        var srcId = req.params.src;
+        srcId = req.params.src;
+        if (!sources) {
+            throw new Err('The service has not started yet');
+        }
         if (!sources.hasOwnProperty(srcId)) {
             throw new Err('Unknown source %s', srcId).metrics('err.req.source');
         }
@@ -74,9 +93,9 @@ function getTile(req, res) {
         if (!source.public) {
             throw new Err('Source %s not public', srcId).metrics('err.req.source');
         }
-        var z = req.params.z | 0;
-        var x = req.params.x | 0;
-        var y = req.params.y | 0;
+        z = req.params.z | 0;
+        x = req.params.x | 0;
+        y = req.params.y | 0;
 
         if (!core.isInteger(z) || !core.isInteger(x) || !core.isInteger(y) || z < 0 || z > maxZoom || x < 0 || y < 0) {
             throw new Err('z,x,y must be positive integers').metrics('err.req.coords');
@@ -146,12 +165,14 @@ function getTile(req, res) {
         }
         metrics.endTiming(mx, start);
     }).catch(function (err) {
-        res
-            .status(400)
-            .header('Cache-Control', 'public, s-maxage=30, max-age=30')
-            .json(err.message || 'error/unknown');
-        metrics.increment(err.metrics || 'err.unknown');
-        req.logger.log(err);
+        reportError(function (err) {
+            res
+                .status(400)
+                .header('Cache-Control', 'public, s-maxage=30, max-age=30')
+                .json(err.message || 'error/unknown');
+            req.logger.log(err);
+            metrics.increment(err.metrics || 'err.unknown');
+        }, err);
     });
 }
 
