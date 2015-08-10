@@ -12,6 +12,7 @@ BBPromise.promisifyAll(tilelive);
 
 var conf;
 var sources;
+var maxZoom = 20;
 //var vectorHeaders = {'Content-Encoding': 'gzip'};
 //var rasterHeaders = {}; // {'Content-Type': 'image/png'};
 
@@ -67,6 +68,23 @@ function getTile(req, res) {
     if (!source.public) {
         throw new Error('Source ' + srcId + ' not public');
     }
+    var z = req.params.z | 0;
+    var x = req.params.x | 0;
+    var y = req.params.y | 0;
+
+    if (!core.isInteger(z) || !core.isInteger(x) || !core.isInteger(y) || z < 0 || z > maxZoom || x < 0 || y < 0) {
+        throw new Error('z,x,y must be positive integers');
+    }
+    var maxCoord = Math.pow(2, z);
+    if (x >= maxCoord || y >= maxCoord) {
+        throw new Error('x,y exceeded max allowed for this zoom');
+    }
+    if (source.minzoom !== undefined && z < source.minzoom) {
+        throw new Error('Minimum zoom is ' + source.minzoom);
+    }
+    if (source.maxzoom !== undefined && z > source.maxzoom) {
+        throw new Error('Maximum zoom is ' + source.maxzoom);
+    }
 
     var opts;
     if (source.uri.protocol === 'style:') {
@@ -89,7 +107,7 @@ function getTile(req, res) {
     }
 
     return core
-        .getTitleWithParamsAsync(source.handler, req.params.z | 0, req.params.x | 0, req.params.y | 0, opts)
+        .getTitleWithParamsAsync(source.handler, z, x, y, opts)
         .spread(function(data, headers) {
             if (opts && opts.format === 'json') {
                 if ('summary' in req.query) {
