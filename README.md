@@ -91,10 +91,10 @@ osm2pgsql --create --slim --flat-nodes nodes.bin -C 26000 --number-processes 8 -
 ### Get Kartotherian code
 ```
 cd /srv
-git clone https://github.com/nyurik/kartotherian.git    # Clone the repository
+git clone https://github.com/kartotherian/kartotherian.git  # Clone the repository
 cd kartotherian
-git submodule update --init                             # update submodules
-npm install                                             # install npm dependencies
+git submodule update --init                                 # update submodules
+npm install                                                 # install npm dependencies
 ```
 
 ### Edit Kartotherian configuration - config.yaml
@@ -107,6 +107,13 @@ port: 4000
 
 # Comment out this line to listen to the web
 # interface: localhost
+
+# Place all variables (e.g. passwords) here - either as a filename, or as sub-items.
+variables:
+
+# Place all sources you want to serve here - either as a filename, or as sub-items.
+# See sources.prod.yaml for examples
+sources: sources.yaml
 ```
 
 ### Download Water polygons in Mercator format from http://openstreetmapdata.com/data/water-polygons
@@ -119,12 +126,12 @@ $ psql gis
 gis=# select UpdateGeometrySRID('', 'water_polygons', 'way', 900913);
 \q
 
-$ psql -d gis -f map/osm-bright.tm2source/sql/water-indexes.sql
+$ psql -d gis -f node_modules/osm-bright-source/sql/water-indexes.sql
 ```
 
 ### Add mapbox's helper functions
 ```
-psql -d gis -f scripts/mbutils/lib.sql
+psql -d gis -f node_modules/osm-bright-source/sql/functions.sql
 ```
 
 ### Configure Kartotherian
@@ -174,12 +181,6 @@ varnishstat  # monitor varnish performance
 npm start
 ```
 In browser, navigate to `localhost:4000/static`.
-
-For GL display, go to the static/mapbox-gl-js folder and run
-```
-npm install
-```
-Then in browser, navigate to `localhost:4000/static/gl`.
 
 ### Troubleshooting
 
