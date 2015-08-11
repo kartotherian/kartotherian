@@ -13,12 +13,10 @@ var Err = core.Err;
 var tilelive = require('tilelive');
 BBPromise.promisifyAll(tilelive);
 
-var conf;
 var sources;
+var defaultHeaders, overrideHeaders;
 var metrics;
 var maxZoom = 20;
-//var vectorHeaders = {'Content-Encoding': 'gzip'};
-//var rasterHeaders = {}; // {'Content-Type': 'image/png'};
 
 function reportError(errReporterFunc, err) {
     try {
@@ -39,34 +37,33 @@ function reportError(errReporterFunc, err) {
 function init(app) {
     //var log = app.logger.log.bind(app.logger);
 
-    metrics = app.metrics;
-    metrics.increment('init');
+    return BBPromise.try(function () {
+        metrics = app.metrics;
+        metrics.increment('init');
 
-    core.registerProtocols(require('tilelive-bridge'), tilelive);
-    core.registerProtocols(require('tilelive-file'), tilelive);
-    //core.registerProtocols(require('./dynogen'), tilelive);
-    core.registerProtocols(require('kartotherian-overzoom'), tilelive);
-    core.registerProtocols(require('kartotherian-cassandra'), tilelive);
-    core.registerProtocols(require('tilelive-vector'), tilelive);
+        core.registerProtocols(require('tilelive-bridge'), tilelive);
+        core.registerProtocols(require('tilelive-file'), tilelive);
+        //core.registerProtocols(require('./dynogen'), tilelive);
+        core.registerProtocols(require('kartotherian-overzoom'), tilelive);
+        core.registerProtocols(require('kartotherian-cassandra'), tilelive);
+        core.registerProtocols(require('tilelive-vector'), tilelive);
 
-    var resolver = function (module) {
-        return require.resolve(module);
-    };
+        var resolver = function (module) {
+            return require.resolve(module);
+        };
+        app.use('/static/leaflet', express.static(core.sources.getModulePath('leaflet', resolver), core.getStaticOpts(app.conf)));
 
-    app.use('/static/leaflet', express.static(core.sources.getModulePath('leaflet', resolver), core.getStaticOpts(app.conf)));
-
-    core.sources
-        .initAsync(app, tilelive, resolver, pathLib.resolve(__dirname, '..'))
-        .then(function (srcs) {
-            sources = srcs;
-            conf = app.conf;
-        })
-        .catch(function (err) {
-            reportError(function (err) {
-                app.logger.log('fatal', err);
-            }, err);
-            process.exit(1);
-        });
+        return core.sources.initAsync(app, tilelive, resolver, pathLib.resolve(__dirname, '..'))
+    }).then(function (srcs) {
+        sources = srcs;
+        defaultHeaders = app.conf.defaultHeaders || {};
+        overrideHeaders = app.conf.headers || {};
+    }).catch(function (err) {
+        reportError(function (err) {
+            app.logger.log('fatal', err);
+        }, err);
+        process.exit(1);
+    });
 }
 
 /**
@@ -79,7 +76,7 @@ function getTile(req, res) {
     var start = Date.now();
     // These vars might get set before finishing validation.
     // Do not use them unless successful
-    var opts, srcId, z, x, y;
+    var srcId, source, opts, z, x, y;
 
     return BBPromise.try(function () {
         srcId = req.params.src;
@@ -89,7 +86,7 @@ function getTile(req, res) {
         if (!sources.hasOwnProperty(srcId)) {
             throw new Err('Unknown source %s', srcId).metrics('err.req.source');
         }
-        var source = sources[srcId];
+        source = sources[srcId];
         if (!source.public) {
             throw new Err('Source %s not public', srcId).metrics('err.req.source');
         }
@@ -125,7 +122,7 @@ function getTile(req, res) {
             }
         }
         return core.getTitleWithParamsAsync(source.handler, z, x, y, opts);
-    }).spread(function (data, headers) {
+    }).spread(function (data, dataHeaders) {
         if (opts && opts.format === 'json') {
             if ('summary' in req.query) {
                 data = _(data).reduce(function (memo, layer) {
@@ -151,11 +148,16 @@ function getTile(req, res) {
                 data = _.map(data, filter);
             }
         }
-        if (conf.cache) {
-            res.header('Cache-Control', conf.cache);
-        }
-        res.set(headers);
+
+        var hdrs = {};
+        if (defaultHeaders) hdrs = _.extend(hdrs, defaultHeaders);
+        if (source.defaultHeaders) hdrs = _.extend(hdrs, source.defaultHeaders);
+        if (dataHeaders) hdrs = _.extend(hdrs, dataHeaders);
+        if (overrideHeaders) hdrs = _.extend(hdrs, overrideHeaders);
+        if (source.headers) hdrs = _.extend(hdrs, source.headers);
+        res.set(hdrs);
         res.send(data);
+
         var mx = util.format('req.%s.%s', srcId, z);
         if (opts) {
             mx += '.' + opts.format;
