@@ -38,7 +38,7 @@
     "domino": "^1.0.18",
     "express": "^4.12.3",
     "jade": "^1.11.0",
-    "kue": "^0.9.4",
+    "kue": "git+https://github.com/nyurik/kue.git",
     "kue-ui": "^0.1.0",
     "leaflet": "~0.7.3",
     "mapnik": "~3.4.0",
