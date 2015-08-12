@@ -79,9 +79,12 @@ function getTile(req, res) {
     var srcId, source, opts, z, x, y;
 
     return BBPromise.try(function () {
-        srcId = req.params.src;
         if (!sources) {
             throw new Err('The service has not started yet');
+        }
+        srcId = req.params.src;
+        if (!core.sources.isValidSourceId(srcId)) {
+            throw new Err('SourceId is not valid').metrics('err.req.source');
         }
         if (!sources.hasOwnProperty(srcId)) {
             throw new Err('Unknown source %s', srcId).metrics('err.req.source');
