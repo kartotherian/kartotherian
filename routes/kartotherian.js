@@ -100,9 +100,8 @@ function getTile(req, res) {
         if (!core.isInteger(z) || !core.isInteger(x) || !core.isInteger(y) || z < 0 || z > maxZoom || x < 0 || y < 0) {
             throw new Err('z,x,y must be positive integers').metrics('err.req.coords');
         }
-        var maxCoord = Math.pow(2, z);
-        if (x >= maxCoord || y >= maxCoord) {
-            throw new Err('x,y exceeded max allowed for this zoom').metrics('err.req.coords');
+        if (!core.isValidCoordinate(x, z) || !core.isValidCoordinate(y, z)) {
+            throw new Err('x,y are not allowed for this zoom').metrics('err.req.coords');
         }
         if (source.minzoom !== undefined && z < source.minzoom) {
             throw new Err('Minimum zoom is %d', source.minzoom).metrics('err.req.zoom');
