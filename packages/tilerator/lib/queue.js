@@ -159,7 +159,10 @@ module.exports.addJobAsync = function(job) {
 
             var kueJob = queue
                 .create(jobName, j)
-                .priority(priority);
+                .priority(priority)
+                .attempts(10)
+                .backoff({delay: 5 * 1000, type: 'exponential'});
+                //.ttl(30*1000);  -- this does not work because it is based on job completion, not progress update
             return kueJob
                 .saveAsync()
                 .then(function () {
