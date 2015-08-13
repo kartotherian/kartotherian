@@ -5,6 +5,8 @@ var _ = require('underscore');
 var pathLib = require('path');
 
 var mapnik = require('mapnik');
+BBPromise.promisifyAll(mapnik.VectorTile.prototype);
+
 var queue = require('../lib/queue');
 var core = require('kartotherian-core');
 var Err = core.Err;
@@ -66,6 +68,7 @@ function JobProcessor(conf, job) {
     this.job = job;
     this.tileGenerator = conf[job.data.generatorId].handler;
     this.tileStore = conf[job.data.storageId].handler;
+    this.start = new Date();
 }
 
 /**
@@ -75,6 +78,7 @@ function JobProcessor(conf, job) {
 JobProcessor.prototype.runAsync = function() {
     var self = this;
     var job = self.job.data;
+
     return BBPromise.try(function () {
         self.idxFromOriginal = job.idxFrom;
         self.count = job.idxBefore - self.idxFromOriginal;
@@ -97,10 +101,11 @@ JobProcessor.prototype.runAsync = function() {
             self.stats = self.job.progress_data;
             job.idxFrom = self.stats.index;
         }
+        self.retryFromIdx = job.idxFrom;
         // Thread list is used in the generators
         var threadList = _.range(job.threads || 1);
         self.threadIdxState = _.map(threadList, function () {
-            return job.start;
+            return job.idxFrom;
         });
 
         self.iterator = self.getIterator(job.idxFrom, job.idxBefore, 0);
@@ -109,16 +114,26 @@ JobProcessor.prototype.runAsync = function() {
             return self.jobProcessorThreadAsync(threadId);
         });
         return BBPromise.all(threads).then(function () {
-            var stats = self.stats;
-            //var time = (new Date() - self.start) / 1000;
-            //stats.itemAvg = time > 0 ? Math.round(stats.processed / time * 10) / 10 : 0;
-            stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
-            self.job.progress(self.count, self.count, stats);
-
+            self.reportProgress();
             // Until progress info is exposed in the UI, do it here too
-            self.job.log(JSON.stringify(stats, null, '  '));
+            self.job.log(JSON.stringify(self.stats, null, '  '));
         });
     });
+};
+
+JobProcessor.prototype.reportProgress = function(doneCount) {
+    var stats = this.stats;
+    var time = (new Date() - this.start) / 1000;
+    stats.itemTimeAvg = time > 0 ? Math.round((stats.index - this.retryFromIdx) / time * 10) / 10 : 0;
+    stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
+    // how long until we are done, in minutes
+    if (doneCount !== undefined) {
+        stats.estimateInMin = stats.sizeAvg > 0 ? Math.round((this.job.idxBefore - stats.index) * stats.itemTimeAvg / 60 * 10) / 10 : 0;
+    } else {
+        delete stats.estimateMin;
+        doneCount = this.count;
+    }
+    this.job.progress(doneCount, this.count, stats);
 };
 
 JobProcessor.prototype.getIterator = function(idxFrom, idxBefore, filterIndex) {
@@ -291,7 +306,7 @@ JobProcessor.prototype.jobProcessorThreadAsync = function(threadId) {
             var doneCount = self.stats.index - self.idxFromOriginal;
             var progress = doneCount / self.count;
             if (!self.progress || (progress - self.progress) > 0.001) {
-                self.job.progress(doneCount, self.count, self.stats);
+                self.reportProgress(doneCount);
                 self.progress = progress;
             }
             return self.jobProcessorThreadAsync(threadId);
@@ -413,6 +428,7 @@ function toJson(value) {
 }
 
 router.post('/add', enque);
+//router.post('/reque', reque);
 
 module.exports = function(app) {
 

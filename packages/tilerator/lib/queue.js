@@ -49,7 +49,7 @@ module.exports.init = function(app, jobHandler) {
 module.exports.validateJob = function(job) {
     core.checkType(job, 'storageId', 'string', true, 1);
     core.checkType(job, 'generatorId', 'string', true, 1);
-    core.checkType(job, 'zoom', 'integer', true, 0, 32);
+    core.checkType(job, 'zoom', 'zoom');
     core.checkType(job, 'threads', 'integer', false, 1, 100);
     core.checkType(job, 'parts', 'integer', false, 1, 1000);
     core.checkType(job, 'deleteEmpty', 'boolean');
@@ -65,7 +65,7 @@ module.exports.validateJob = function(job) {
         _.each(job.filters, function(filter, ind, all) {
             // Each filter except last must have its own zoom level. Last is optional
             // Each next zoom level must be bigger than the one before, but less than job's zoom
-            core.checkType(filter, 'zoom', 'integer',
+            core.checkType(filter, 'zoom', 'zoom',
                 ind < all.length - 1,
                 ind === 0 ? 0 : all[ind - 1].zoom + 1,
                 job.zoom - 1);
