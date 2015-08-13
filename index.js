@@ -50,6 +50,7 @@ function CassandraStore(uri, callback) {
             self.throwError("Uri 'repclass' must be a valid value");
         }
         self.keyspace = params.keyspace;
+        self.createIfMissing = !!params.createIfMissing;
         self.table = params.table || 'tiles';
         self.repclass = params.repclass || 'SimpleStrategy';
         self.repfactor = typeof params.repfactor === 'undefined' ? 3 : parseInt(params.repfactor);
@@ -70,6 +71,9 @@ function CassandraStore(uri, callback) {
         };
         return self.client.connectAsync();
     }).then(function () {
+        if (!self.createIfMissing) {
+            return true;
+        }
         return self.client.executeAsync(
             "CREATE KEYSPACE IF NOT EXISTS " + self.keyspace +
             " WITH REPLICATION = {'class': '" + self.repclass + "'," +
@@ -78,6 +82,9 @@ function CassandraStore(uri, callback) {
     }).then(function () {
         return self.client.executeAsync("USE " + self.keyspace);
     }).then(function () {
+        if (!self.createIfMissing) {
+            return true;
+        }
         var createTableSql = "CREATE TABLE IF NOT EXISTS " + self.table + " (" +
             " zoom int," +
             (self.blocksize ? " block int," : "") +
