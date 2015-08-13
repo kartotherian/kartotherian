@@ -97,11 +97,11 @@ function getTile(req, res) {
         x = req.params.x | 0;
         y = req.params.y | 0;
 
-        if (!core.isInteger(z) || !core.isInteger(x) || !core.isInteger(y) || z < 0 || z > maxZoom || x < 0 || y < 0) {
-            throw new Err('z,x,y must be positive integers').metrics('err.req.coords');
+        if (!core.isValidZoom(z)) {
+            throw new Err('invalid zoom').metrics('err.req.coords');
         }
         if (!core.isValidCoordinate(x, z) || !core.isValidCoordinate(y, z)) {
-            throw new Err('x,y are not allowed for this zoom').metrics('err.req.coords');
+            throw new Err('x,y coordinates are not valid, or not allowed for this zoom').metrics('err.req.coords');
         }
         if (source.minzoom !== undefined && z < source.minzoom) {
             throw new Err('Minimum zoom is %d', source.minzoom).metrics('err.req.zoom');
