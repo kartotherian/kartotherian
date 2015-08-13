@@ -123,12 +123,13 @@ JobProcessor.prototype.runAsync = function() {
 
 JobProcessor.prototype.reportProgress = function(doneCount) {
     var stats = this.stats;
+    var job = this.job.data;
     var time = (new Date() - this.start) / 1000;
     stats.itemTimeAvg = time > 0 ? Math.round((stats.index - this.retryFromIdx) / time * 10) / 10 : 0;
     stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
     // how long until we are done, in minutes
     if (doneCount !== undefined) {
-        stats.estimateInMin = stats.sizeAvg > 0 ? Math.round((this.job.idxBefore - stats.index) * stats.itemTimeAvg / 60 * 10) / 10 : 0;
+        stats.estimateInMin = stats.sizeAvg > 0 ? Math.round((job.idxBefore - stats.index) * stats.itemTimeAvg / 60 * 10) / 10 : 0;
     } else {
         delete stats.estimateMin;
         doneCount = this.count;
