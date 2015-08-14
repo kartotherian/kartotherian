@@ -42,7 +42,7 @@ function init(app) {
         metrics.increment('init');
 
         core.registerProtocols(require('tilelive-bridge'), tilelive);
-        core.registerProtocols(require('tilelive-file'), tilelive);
+        //core.registerProtocols(require('tilelive-file'), tilelive);
         //core.registerProtocols(require('./dynogen'), tilelive);
         core.registerProtocols(require('kartotherian-overzoom'), tilelive);
         core.registerProtocols(require('kartotherian-cassandra'), tilelive);
