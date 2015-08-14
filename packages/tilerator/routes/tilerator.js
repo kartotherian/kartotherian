@@ -31,7 +31,7 @@ var config = {
  */
 function init(app) {
     core.registerProtocols(require('tilelive-bridge'), tilelive);
-    core.registerProtocols(require('tilelive-file'), tilelive);
+    //core.registerProtocols(require('tilelive-file'), tilelive);
     //core.registerProtocols(require('./dynogen'), tilelive);
     core.registerProtocols(require('kartotherian-overzoom'), tilelive);
     core.registerProtocols(require('kartotherian-cassandra'), tilelive);
@@ -125,13 +125,17 @@ JobProcessor.prototype.reportProgress = function(doneCount) {
     var stats = this.stats;
     var job = this.job.data;
     var time = (new Date() - this.start) / 1000;
-    stats.itemTimeAvg = time > 0 ? Math.round((stats.index - this.retryFromIdx) / time * 10) / 10 : 0;
+    // delete and re-add to position them at the end - makes it easier to see in the kue2
+    delete stats.itemsPerSec;
+    delete stats.sizeAvg;
+    delete stats.estimateHrs;
+    stats.itemsPerSec = time > 0 ? Math.round((stats.index - this.retryFromIdx) / time * 10) / 10 : 0;
     stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
     // how long until we are done, in minutes
     if (doneCount !== undefined) {
-        stats.estimateInMin = stats.sizeAvg > 0 ? Math.round((job.idxBefore - stats.index) * stats.itemTimeAvg / 60 * 10) / 10 : 0;
+        stats.estimateHrs = stats.sizeAvg > 0 ? Math.round((job.idxBefore - stats.index) / stats.itemsPerSec / 60 / 60 * 10) / 10 : 0;
     } else {
-        delete stats.estimateMin;
+        delete stats.estimateHrs;
         doneCount = this.count;
     }
     this.job.progress(doneCount, this.count, stats);
