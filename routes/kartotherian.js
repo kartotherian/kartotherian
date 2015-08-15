@@ -41,12 +41,12 @@ function init(app) {
         metrics = app.metrics;
         metrics.increment('init');
 
-        core.registerProtocols(require('tilelive-bridge'), tilelive);
-        //core.registerProtocols(require('tilelive-file'), tilelive);
-        //core.registerProtocols(require('./dynogen'), tilelive);
-        core.registerProtocols(require('kartotherian-overzoom'), tilelive);
-        core.registerProtocols(require('kartotherian-cassandra'), tilelive);
-        core.registerProtocols(require('tilelive-vector'), tilelive);
+        require('tilelive-bridge').registerProtocols(tilelive);
+        //require('tilelive-file').registerProtocols(tilelive);
+        //require('./dynogen').registerProtocols(tilelive);
+        require('kartotherian-overzoom').registerProtocols(tilelive);
+        require('kartotherian-cassandra').registerProtocols(tilelive);
+        require('tilelive-vector').registerProtocols(tilelive);
 
         var resolver = function (module) {
             return require.resolve(module);
