@@ -7,6 +7,7 @@ var core = require('kartotherian-core');
 var Err = core.Err;
 
 var kue = require('kue');
+BBPromise.promisifyAll(kue.Job);
 BBPromise.promisifyAll(kue.Job.prototype);
 
 var kueui = require('kue-ui');
@@ -18,32 +19,32 @@ module.exports = {};
 
 /**
  * Init job quing
- * @param app if given, adds que UI
+ * @param app express object
  * @param jobHandler if given - function(job, done), will use to run jobs
  */
 module.exports.init = function(app, jobHandler) {
-    if (!queue) {
-        var opts = {};
-        if (app.conf.redisPrefix) opts.prefix = app.conf.redisPrefix;
-        if (app.conf.redis) opts.redis = app.conf.redis;
-        queue = kue.createQueue(opts);
-    }
+    var opts = {};
+    if (app.conf.redisPrefix) opts.prefix = app.conf.redisPrefix;
+    if (app.conf.redis) opts.redis = app.conf.redis;
+    queue = BBPromise.promisifyAll(kue.createQueue(opts));
 
-    if (app) {
-        var uiConf = {
-            apiURL: '/kue/',
-            baseURL: '/kue2',
-            updateInterval: 5000 // Fetches new data every 5000 ms
-        };
+    var uiConf = {
+        apiURL: '/kue/',
+        baseURL: '/kue2',
+        updateInterval: 5000 // Fetches new data every 5000 ms
+    };
 
-        kueui.setup(uiConf);
-        app.use(uiConf.apiURL, kue.app);
-        app.use(uiConf.baseURL, kueui.app);
-    }
+    kueui.setup(uiConf);
+    app.use(uiConf.apiURL, kue.app);
+    app.use(uiConf.baseURL, kueui.app);
 
     if (jobHandler) {
         queue.process(jobName, jobHandler);
     }
+};
+
+module.exports.shutdownAsync = function(timeout) {
+    return queue.shutdownAsync(timeout);
 };
 
 module.exports.validateJob = function(job) {
@@ -209,4 +210,36 @@ module.exports.addPyramidJobsAsync = function(options) {
         }, opts)).then(addJob);
     };
     return addJob();
+};
+
+/**
+ * Move all jobs in the active que to inactive if their update time is more than given time
+ */
+module.exports.cleanup = function(ms, type) {
+    if (!queue) throw new Err('Not started yet');
+    switch (type) {
+        case undefined:
+            type = 'active';
+            break;
+        case 'active':
+        case 'failed':
+        case 'complete':
+        case 'delayed':
+            break;
+        default:
+            throw new Err('Unknown type - must be active or failed');
+    }
+    var result = {};
+    return queue.stateAsync(type).map(function (id) {
+        return kue.Job.getAsync(id).then(function (job) {
+            var diffMs = Date.now() - new Date(parseInt(job.updated_at));
+            if (diffMs > ms) {
+                return job.inactiveAsync().then(function () {
+                    result[id] = 'queued';
+                });
+            } else {
+                result[id] = 'nochange';
+            }
+        })
+    }, {concurrency: 50}).return(result);
 };

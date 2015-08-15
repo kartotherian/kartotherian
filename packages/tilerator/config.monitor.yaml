@@ -30,7 +30,7 @@ services:
     # version: ^0.4.0
     # per-service config
     conf:
-      port: 4100
+      port: 4101
 #      Without this, allows for connections from everyone!
 #      interface: localhost
 
@@ -39,4 +39,4 @@ services:
 
       sources: ../sources.yaml
 
-#      uiOnly: true
+      uiOnly: true
