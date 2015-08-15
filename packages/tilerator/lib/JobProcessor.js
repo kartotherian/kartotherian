@@ -94,6 +94,8 @@ JobProcessor.prototype.reportProgress = function(doneCount) {
     delete stats.itemsPerSec;
     delete stats.sizeAvg;
     delete stats.estimateHrs;
+    delete stats.itemTimeAvg; // todo remove
+    delete stats.estimateInMin; // todo remove
     stats.itemsPerSec = time > 0 ? Math.round((stats.index - this.retryFromIdx) / time * 10) / 10 : 0;
     stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
     // how long until we are done, in minutes
@@ -365,7 +367,7 @@ JobProcessor.prototype.generateTileAsync = function(idx) {
         }
         return self.tileStore.putTileAsync(job.zoom, x, y, data);
     }).then(function() {
-        self.metrics.endTiming(self.metricsPrefix + 'saved', start);
+        self.metrics.endTiming(self.metricsPrefix + 'done', start);
     });
 };
 
