@@ -32,7 +32,7 @@ function JobProcessor(sources, job, metrics) {
     this.tileStore = sources[jd.storageId].handler;
     this.start = new Date();
     this.isShuttingDown = false;
-    self.metricsPrefix = util.format('gen.%s.%s.z%s.', jd.generatorId, jd.storageId,
+    this.metricsPrefix = util.format('gen.%s.%s.z%s.', jd.generatorId, jd.storageId,
         jd.zoom < 10 ? '0' + jd.zoom : jd.zoom);
 }
 
