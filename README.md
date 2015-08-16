@@ -12,10 +12,17 @@ git submodule update --init                                 # update submodules
 npm install                                                 # install npm dependencies
 node server.js -c config.sample.yaml
 ```
-Browse to localhost:4000
+Browse to http://localhost:4000/static
+
+The set up inside `sources.sample.yaml` does not use any storage or caching, so it will not be suitable for production. You will need to configure additional source chains and setup a proper storage to make this into a production system.
 
 ## Service Configuration - General
-Inside the conf key, you must specify sources - either as a set of subkeys, or as a filename. You may also optionally specify a set of variables (string key-value pairs) to be used inside sources, or it could be a filename as well. For the resot of the configuration, see [service runner](https://github.com/wikimedia/service-runner) config info.
+Inside the `conf` key:
+* `sources` - (required) Either a set of subkeys (see below), or a filename.
+* `variables` (optional) - specify a set of variables (string key-value pairs) to be used inside sources, or it could be a filename as well.
+* `defaultHeaders` (optional, object) - a set of extra headers that will be sent to the user unless the source provides its own. (public requests only)
+* `headers` (optional, object) - a set of extra headers that will be sent to the user instead of the headers returned by the source. (public requests only)
+For the rest of the configuration parameters, see [service runner](https://github.com/wikimedia/service-runner) config info.
 
 ## Service Configuration - Sources
 Sources, either as a standalone file or as a set of sub-keys inside the `conf` config key, tell Kartotherian what data sources to use:
@@ -39,6 +46,7 @@ URI is the only mandatory field, and it specifies how [tilelive.js](https://gith
 
 * `public` (boolean) - should this be source be accessible via `/<sourceId>/z/x/y.format` requests
 
+* `params` (object) - a set of additional values to be set in URI
 * `minzoom` (int) - minimum allowable zoom for the public request (public requests only)
 * `maxzoom` (int) - maximum allowable zoom for the public request (public requests only)
 * `defaultHeaders` (object) - a set of extra headers that will be sent to the user unless the source provides its own. (public requests only)
@@ -271,7 +279,7 @@ varnishstat  # monitor varnish performance
 ```
 npm start
 ```
-In browser, navigate to `localhost:4000/static`.
+In browser, navigate to `http://localhost:4000/static`.
 
 ### Troubleshooting
 

@@ -30,10 +30,12 @@ v4c:
 #     ref: {store: v1store, generator: v1gen}
 v1:
   uri: overzoom://
-  ref: {source: v1c}
+  params:
+    source: {ref: v1c}
 v2:
   uri: overzoom://
-  ref: {source: v2c}
+  params:
+    source: {ref: v2c}
 
 #
 # Styles

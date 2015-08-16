@@ -3,7 +3,8 @@ v2:
 
 oz_v2:
   uri: overzoom://
-  ref: {source: v2}
+  params:
+    source: {ref: v2}
 
 s2:
   public: true

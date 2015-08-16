@@ -15,7 +15,8 @@ v3c:
 #          ref: {store: v1store, generator: v1gen}
 oz_v1:
   uri: overzoom://
-  ref: {source: v3c}
+  params:
+    source: {ref: v3c}
 
 s1:
   public: true
