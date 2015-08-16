@@ -37,7 +37,7 @@ function init(app) {
     require('tilelive-vector').registerProtocols(tilelive);
 
     return BBPromise.try(function () {
-        var resolver = function(module) {
+        var resolver = function (module) {
             return require.resolve(module);
         };
         return core.sources.initAsync(mainApp, tilelive, resolver, pathLib.resolve(__dirname, '..'));
@@ -51,6 +51,9 @@ function init(app) {
                     }
                     jobProcessor = new JobProcessor(sources, job, metrics);
                     return jobProcessor.runAsync();
+                }).catch(function (err) {
+                    metrics.increment('joberror');
+                    throw err;
                 }).finally(function () {
                     jobProcessor = undefined;
                 }).nodeify(callback);

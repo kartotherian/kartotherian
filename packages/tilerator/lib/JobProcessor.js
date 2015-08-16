@@ -289,6 +289,23 @@ JobProcessor.prototype.jobProcessorThreadAsync = function(threadId) {
     });
 };
 
+JobProcessor.prototype.recordSamples = function(stat, idx) {
+    var stats = this.stats;
+    if (stat in stats) {
+        // todo: remove this if after z13 is done
+        if (typeof stats[stat] === 'number') {
+            stats[stat] = [stats[stat]];
+        }
+        stats[stat][0]++;
+    } else {
+        stats[stat] = [1];
+    }
+    if (stats[stat].length < 3) {
+        // Record the first few tiles of this type
+        stats[stat].push(idx)
+    }
+};
+
 JobProcessor.prototype.generateTileAsync = function(idx) {
     var start = Date.now(),
         self = this,
@@ -322,7 +339,7 @@ JobProcessor.prototype.generateTileAsync = function(idx) {
         }
         if (data.length >= config.maxsize) {
             self.metrics.endTiming(self.metricsPrefix + 'big', start);
-            stats.tiletoobig++;
+            self.recordSamples('tiletoobig', idx);
             return data; // generated tile is too big, save
         }
         var vt = new mapnik.VectorTile(job.zoom, x, y);
@@ -337,16 +354,7 @@ JobProcessor.prototype.generateTileAsync = function(idx) {
             }).spread(function (solid, key) {
                 if (solid) {
                     // Count different types of solid tiles
-                    var stat = 'solid_' + key;
-                    if (stat in stats) {
-                        stats[stat][0]++;
-                    } else {
-                        stats[stat] = [1];
-                    }
-                    if (stats[stat].length < 3) {
-                        // Record the first few tiles of this type
-                        stats[stat].push(idx)
-                    }
+                    self.recordSamples('solid_' + key, idx);
                     self.metrics.endTiming(self.metricsPrefix + 'solid', start);
                     return null;
                 } else {
