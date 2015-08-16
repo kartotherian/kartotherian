@@ -1,13 +1,26 @@
-# OSM Tile service for Wikipedia
+# Maps Tile service for Wikipedia
 
-Maps nodejs server for vector-based tiles designed for Wikipedia and other sites. It ties together a number of MapBox components for vector and raster rendering based on Mapnik 3.
+Maps nodejs server for vector-based tiles designed for Wikipedia and other sites. It ties together a number of [MapBox components](https://github.com/mapbox) for vector and raster rendering based on [Mapnik 3](https://github.com/mapnik/mapnik), and uses [service runner](https://github.com/wikimedia/service-runner) for scalability and stability.
 
-TODO:  Introduction!
+## Very quick start:
+'''Assumes you have an OSM database (or a part of it) set up locally in the latest Postgress+Postgis, imported using `osm2pgsql --slim --hstore`, and you have set up water polygons with the index as described below.```
+```
+cd /srv
+git clone https://github.com/kartotherian/kartotherian.git  # Clone the repository
+cd kartotherian
+git submodule update --init                                 # update submodules
+npm install                                                 # install npm dependencies
+node server.js -c config.sample.yaml
+```
+Browse to localhost:4000
 
-* The server code is based on the service-template-node - https://travis-ci.org/wikimedia/service-template-node
+## Service Configuration - General
+...
 
+## Service Configuration - Sources
+...
 
-## Quick start:
+## In depth step-by-step:
 
 ### Requirements (on Debian Jessie)
 ```
