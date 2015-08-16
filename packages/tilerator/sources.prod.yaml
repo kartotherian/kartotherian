@@ -29,7 +29,8 @@ v1:
 
 # oz_v1:
 #   uri: overzoom://
-#   ref: {source: v1}
+#  params:
+#    source: {ref: v1}
 
 # s1:
 #   public: true
@@ -49,7 +50,8 @@ v2:
 
 # oz_v2:
 #   uri: overzoom://
-#   ref: {source: v2}
+#  params:
+#    source: {ref: v2}
 
 # s2:
 #   public: true
