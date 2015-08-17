@@ -1,5 +1,9 @@
 # Changes
 
+## v0.4.0 - 8/17/15
+
+* Use newest `mapnik-reference` (for compatibility w/ mapnik 3.x)
+
 ## v0.3.0 - 1/15/15
 
 * Declare a peer dependency on `mapnik`
