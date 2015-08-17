@@ -167,6 +167,10 @@ tilelive.protocols['test:'] = Testsource;
 
 function replacer(key, value) {
     if (key === 'raster') {
+        if ("data" in value)
+        {
+            value = value.data;
+        }
         var ln = value.length || 0;
         var buffer = new Buffer(ln);
         for (var i = 0; i < ln; i++) buffer.writeUInt8(value[i], i);
