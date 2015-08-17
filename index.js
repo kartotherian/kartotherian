@@ -9,8 +9,7 @@ var _ = require("underscore"),
     Bridge = require("tilelive-bridge"),
     carto = require("carto"),
     mapnik = require("mapnik"),
-    // TODO use forthcoming .load() in 7.0.0
-    mapnikref = require('mapnik-reference').version[mapnik.versions.mapnik],
+    mapnikref = require('mapnik-reference').load(mapnik.versions.mapnik),
     yaml = require("js-yaml");
 
 var tm = {};
