@@ -23,7 +23,7 @@ metrics:
   #port: 8125
 
 services:
-  - name: kartotherian
+  - name: tilerator
     # a relative path or the name of an npm package, if different from name
     module: ./app.js
     # optionally, a version constraint of the npm package
@@ -31,12 +31,29 @@ services:
     # per-service config
     conf:
       port: 4100
-#      Without this, allows for connections from everyone!
-#      interface: localhost
 
-      # TODO: This does not work, not sure of the exact reqs here, manually disabling for now
-      csp: default-src 'self'; script-src 'self' 'unsafe-inline';
+      # restrict to localhost access only
+      interface: localhost
+
+      # more per-service config settings
+      # the location of the spec, defaults to spec.yaml if not specified
+      spec: ./spec.template.yaml
+      # allow cross-domain requests to the API (default '*')
+      cors: '*'
+      # to disable use:
+      # cors: false
+      # to restrict to a particular domain, use:
+      # cors: restricted.domain.org
+      # URL of the outbound proxy to use (complete with protocol)
+      # proxy: http://my.proxy.org:8080
+      # the list of domains for which not to use the proxy defined above
+      # no_proxy_list:
+      #   - domain1.com
+      #   - domain2.org
+
 
       sources: ../sources.yaml
 
-#      uiOnly: true
+      # If true, runs this instance without processing tiles
+      # This could be good for queue management
+      uiOnly: false
