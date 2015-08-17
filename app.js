@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var fs = BBPromise.promisifyAll(require('fs'));
 var sUtil = require('./lib/util');
 var packageInfo = require('./package.json');
+var yaml = require('js-yaml');
 var core = require('kartotherian-core');
 
 
@@ -41,6 +42,42 @@ function initApp(options) {
     // set outgoing proxy
     if(app.conf.proxy) {
         process.env.HTTP_PROXY = app.conf.proxy;
+        // if there is a list of domains which should
+        // not be proxied, set it
+        if(app.conf.no_proxy_list) {
+            if(Array.isArray(app.conf.no_proxy_list)) {
+                process.env.NO_PROXY = app.conf.no_proxy_list.join(',');
+            } else {
+                process.env.NO_PROXY = app.conf.no_proxy_list;
+            }
+        }
+    }
+
+    // set up the spec
+    if(!app.conf.spec) {
+        app.conf.spec = __dirname + '/spec.yaml';
+    }
+    if(app.conf.spec.constructor !== Object) {
+        try {
+            app.conf.spec = yaml.safeLoad(fs.readFileSync(app.conf.spec));
+        } catch(e) {
+            app.logger.log('warn/spec', 'Could not load the spec: ' + e);
+            app.conf.spec = {};
+        }
+    }
+    if(!app.conf.spec.swagger) {
+        app.conf.spec.swagger = '2.0';
+    }
+    if(!app.conf.spec.info) {
+        app.conf.spec.info = {
+            version: app.info.version,
+            title: app.info.name,
+            description: app.info.description
+        };
+    }
+    app.conf.spec.info.version = app.info.version;
+    if(!app.conf.spec.paths) {
+        app.conf.spec.paths = {};
     }
 
     // set the CORS and CSP headers
@@ -85,6 +122,7 @@ function initApp(options) {
     app.use('/static', express.static(__dirname + '/static', core.getStaticOpts(app.conf)));
 
     return BBPromise.resolve(app);
+
 }
 
 
@@ -138,8 +176,9 @@ function createServer(app) {
     // return a promise which creates an HTTP server,
     // attaches the app to it, and starts accepting
     // incoming client requests
+    var server;
     return new BBPromise(function (resolve) {
-        http.createServer(app).listen(
+        server = http.createServer(app).listen(
             app.conf.port,
             app.conf.interface,
             resolve
@@ -147,6 +186,7 @@ function createServer(app) {
     }).then(function () {
         app.logger.log('info',
             'Worker ' + process.pid + ' listening on ' + app.conf.interface + ':' + app.conf.port);
+        return server;
     });
 
 }
