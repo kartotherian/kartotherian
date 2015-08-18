@@ -3,6 +3,7 @@
 var BBPromise = require('bluebird');
 var util = require('util');
 var _ = require('underscore');
+var numeral = require('numeral');
 var core = require('kartotherian-core');
 var Err = core.Err;
 
@@ -150,14 +151,7 @@ module.exports.addJobAsync = function(job) {
                 job.idxFrom += partCount;
             }
             parts--;
-            // Create Title
-            j.title = 'Z=' + j.zoom;
-            if (partCount === Math.pow(4, j.zoom)) {
-                j.title = 'All ' + j.title;
-            } else {
-                j.title += ' ' + j.idxFrom + '-' + j.idxBefore + ' (' + (j.idxBefore - j.idxFrom) + ')';
-            }
-
+            setJobTitle(j);
             var kueJob = queue
                 .create(jobName, j)
                 .priority(priority)
@@ -215,25 +209,49 @@ module.exports.addPyramidJobsAsync = function(options) {
 /**
  * Move all jobs in the active que to inactive if their update time is more than given time
  */
-module.exports.cleanup = function(ms, type) {
+module.exports.cleanup = function(ms, type, minHrsToBreak, parts) {
     if (!queue) throw new Err('Not started yet');
     switch (type) {
         case undefined:
             type = 'active';
             break;
+        case 'inactive':
         case 'active':
         case 'failed':
         case 'complete':
         case 'delayed':
             break;
         default:
-            throw new Err('Unknown type - must be active or failed');
+            throw new Err('Unknown que type');
     }
     var result = {};
     return queue.stateAsync(type).map(function (id) {
         return kue.Job.getAsync(id).then(function (job) {
             var diffMs = Date.now() - new Date(parseInt(job.updated_at));
             if (diffMs > ms) {
+                if (job.progress_data && job.progress_data.estimateHrs >= minHrsToBreak) {
+                    var from = job.progress_data.index || job.data.idxFrom;
+                    var before = job.data.idxBefore;
+                    var newBefore = Math.min(before, from + Math.max(1, Math.floor((before - from) * 0.1)));
+                    if (newBefore < before) {
+                        var newJob = _.clone(job.data);
+                        delete newJob.title;
+                        newJob.idxFrom = newBefore;
+                        newJob.parts = parts || 3;
+
+                        job.data.idxBefore = newBefore;
+                        setJobTitle(job.data);
+
+                        return job.saveAsync().then(function () {
+                            return job.inactiveAsync();
+                        }).then(function () {
+                            return module.exports.addJobAsync(newJob);
+                        }).then(function (parts) {
+                            result[id] = parts;
+                        });
+                    }
+                }
+
                 return job.inactiveAsync().then(function () {
                     result[id] = 'queued';
                 });
@@ -243,3 +261,15 @@ module.exports.cleanup = function(ms, type) {
         })
     }, {concurrency: 50}).return(result);
 };
+
+function setJobTitle(job) {
+    job.title = util.format('%s→%s; Z=%d;', job.generatorId, job.storageId, job.zoom);
+    if (job.idxFrom === 0 && job.idxBefore === Math.pow(4, job.zoom)) {
+        job.title = 'All ' + job.title;
+    } else {
+        job.title += util.format(' %s‒%s (%s)',
+            numeral(job.idxFrom).format('0,0'),
+            numeral(job.idxBefore).format('0,0'),
+            numeral(job.idxBefore - job.idxFrom).format('0,0'));
+    }
+}
