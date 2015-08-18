@@ -16,6 +16,7 @@ BBPromise.promisifyAll(tilelive);
 var sources;
 var defaultHeaders, overrideHeaders;
 var metrics;
+var log;
 var maxZoom = 20;
 
 function reportError(errReporterFunc, err) {
@@ -35,7 +36,7 @@ function reportError(errReporterFunc, err) {
  * @returns {*}
  */
 function init(app) {
-    //var log = app.logger.log.bind(app.logger);
+    log = app.logger.log.bind(app.logger);
 
     return BBPromise.try(function () {
         metrics = app.metrics;
@@ -48,19 +49,18 @@ function init(app) {
         require('kartotherian-cassandra').registerProtocols(tilelive);
         require('tilelive-vector').registerProtocols(tilelive);
 
-        var resolver = function (module) {
+        sources = new core.Sources(app, tilelive, function (module) {
             return require.resolve(module);
-        };
-        app.use('/static/leaflet', express.static(core.sources.getModulePath('leaflet', resolver), core.getStaticOpts(app.conf)));
+        }, pathLib.resolve(__dirname, '..'));
 
-        return core.sources.initAsync(app, tilelive, resolver, pathLib.resolve(__dirname, '..'))
-    }).then(function (srcs) {
-        sources = srcs;
         defaultHeaders = app.conf.defaultHeaders || {};
         overrideHeaders = app.conf.headers || {};
+
+        app.use('/static/leaflet', express.static(sources.getModulePath('leaflet'), core.getStaticOpts(app.conf)));
+        return sources.loadAsync(app.conf);
     }).catch(function (err) {
         reportError(function (err) {
-            app.logger.log('fatal', err);
+            log('fatal', err);
         }, err);
         process.exit(1);
     });
@@ -83,15 +83,12 @@ function getTile(req, res) {
             throw new Err('The service has not started yet');
         }
         srcId = req.params.src;
-        if (!core.sources.isValidSourceId(srcId)) {
-            throw new Err('SourceId is not valid').metrics('err.req.source');
+        source = sources.getSourceById(srcId, true);
+        if (!source) {
+            throw new Err('Unknown source').metrics('err.req.source');
         }
-        if (!sources.hasOwnProperty(srcId)) {
-            throw new Err('Unknown source %s', srcId).metrics('err.req.source');
-        }
-        source = sources[srcId];
         if (!source.public) {
-            throw new Err('Source %s not public', srcId).metrics('err.req.source');
+            throw new Err('Source is not public').metrics('err.req.source');
         }
         z = req.params.z | 0;
         x = req.params.x | 0;
