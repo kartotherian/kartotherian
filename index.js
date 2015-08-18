@@ -1,4 +1,4 @@
 'use strict';
 
 module.exports = require('./lib/utils');
-module.exports.sources = require('./lib/sources');
+module.exports.Sources = require('./lib/sources');
