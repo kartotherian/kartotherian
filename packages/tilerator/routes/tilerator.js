@@ -76,6 +76,8 @@ function enque(req, res) {
         priority: req.query.priority,
         idxFrom: req.query.idxFrom,
         idxBefore: req.query.idxBefore,
+        x: req.query.x,
+        y: req.query.y,
         parts: req.query.parts,
         deleteEmpty: req.query.deleteEmpty,
         baseZoom: req.query.baseZoom,

@@ -108,6 +108,27 @@ module.exports.validateJob = function(job) {
  */
 module.exports.addJobAsync = function(job) {
     return BBPromise.try(function() {
+        if (!queue) {
+            throw new Err('Still loading');
+        }
+        if (job.x !== undefined || job.y !== undefined ) {
+            if (job.idxFrom !== undefined || job.idxBefore !== undefined) {
+                throw new Err('idxFrom and idxBefore are not allowed when using x,y');
+            }
+            if (job.x === undefined || job.y === undefined) {
+                throw new Err('Both x and y must be given');
+            }
+            core.checkType(job, 'x', 'integer', true);
+            core.checkType(job, 'y', 'integer', true);
+            var zoom = core.strToInt(job.baseZoom !== undefined ? job.baseZoom : job.zoom);
+            if (!core.isValidZoom(zoom) || !core.isValidCoordinate(job.x, zoom) || !core.isValidCoordinate(job.y, zoom)) {
+                throw new Err('Invalid x,y coordinates for the given zoom');
+            }
+            job.idxFrom = core.xyToIndex(job.x, job.y);
+            job.idxBefore = job.idxFrom + 1;
+            delete job.x;
+            delete job.y;
+        }
 
         if (job.baseZoom !== undefined || job.zoomFrom !== undefined || job.zoomBefore !== undefined) {
             return module.exports.addPyramidJobsAsync(job);
@@ -177,6 +198,12 @@ module.exports.addPyramidJobsAsync = function(options) {
         throw new Err('Pyramid-add requires baseZoom, zoomFrom, and zoomBefore');
     }
 
+    core.checkType(options, 'baseZoom', 'zoom');
+    core.checkType(options, 'zoomFrom', 'zoom');
+    core.checkType(options, 'zoomBefore', 'zoom', true, options.zoomFrom);
+    core.checkType(options, 'idxFrom', 'integer');
+    core.checkType(options, 'idxBefore', 'integer');
+
     var opts = _.clone(options);
     delete opts.baseZoom;
     delete opts.zoomFrom;
@@ -196,11 +223,14 @@ module.exports.addPyramidJobsAsync = function(options) {
             return BBPromise.resolve(result);
         }
         var z = zoom++;
-        var mult = Math.pow(4, z - options.baseZoom);
+        var mult = Math.pow(4, Math.abs(z - options.baseZoom));
+        if (z < options.baseZoom) {
+            mult = 1/mult;
+        }
         return module.exports.addJobAsync(_.extend({
             zoom: z,
-            idxFrom: options.idxFrom === undefined ? undefined : options.idxFrom * mult,
-            idxBefore: options.idxBefore === undefined ? undefined : options.idxBefore * mult
+            idxFrom: options.idxFrom === undefined ? undefined : Math.floor(options.idxFrom * mult),
+            idxBefore: options.idxBefore === undefined ? undefined : Math.ceil(options.idxBefore * mult)
         }, opts)).then(addJob);
     };
     return addJob();
@@ -264,12 +294,18 @@ module.exports.cleanup = function(ms, type, minHrsToBreak, parts) {
 
 function setJobTitle(job) {
     job.title = util.format('%s→%s; Z=%d;', job.generatorId, job.storageId, job.zoom);
-    if (job.idxFrom === 0 && job.idxBefore === Math.pow(4, job.zoom)) {
+    if (job.idxBefore - job.idxFrom === 1) {
+        var xy = core.indexToXY(job.idxFrom);
+        job.title += util.format(' tile at [%d,%d] (idx=%d)', xy[0], xy[1], job.idxFrom);
+    } else if (job.idxFrom === 0 && job.idxBefore === Math.pow(4, job.zoom)) {
         job.title = 'All ' + job.title;
     } else {
-        job.title += util.format(' %s‒%s (%s)',
+        var xyFrom = core.indexToXY(job.idxFrom);
+        var xyLast = core.indexToXY(job.idxBefore - 1);
+        job.title += util.format(' %s‒%s (%s); [%d,%d]‒[%d,%d]',
             numeral(job.idxFrom).format('0,0'),
             numeral(job.idxBefore).format('0,0'),
-            numeral(job.idxBefore - job.idxFrom).format('0,0'));
+            numeral(job.idxBefore - job.idxFrom).format('0,0'),
+            xyFrom[0], xyFrom[1], xyLast[0], xyLast[1]);
     }
 }
