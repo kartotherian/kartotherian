@@ -23,6 +23,12 @@ by taking bits of both X and Y coordinates one bit at a time, thus every odd bit
 This allows us to easily treat the whole tile space as one linear space, yet provides for a convenient way to calculate other zoom levels.
 For example, by simply dividing the index by 4, we get the index of the tile that includes current tile with zoom-1.
 
+## Monitoring Jobs
+It is highly recomended, although not mandatory, to have an extra instance of the tilerator running with the uiOnly setting in the config.
+This way if tilerator can be stopped and the pending jobs rearranged. Without the uiOnly instance, you will always be changing the queue
+while jobs are running.  To configure the uiOnly instance, make a copy of the tilerator config, set uiOnly to true and change the port number.
+To see the currently running jobs, navigate to `http://localhost:4100/kue` (nicer interface) or `http://localhost:4100/kue2` (internal data).
+
 ## Adding jobs
 Jobs can be scheduled via a POST request. Usually I do it with [Chrome Postman extension](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop?hl=en) or similar.
 
