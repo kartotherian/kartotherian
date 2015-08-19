@@ -10,7 +10,7 @@ oz:
   params:
     source: {ref: gen}
 
-s2:
+osm:
   public: true
   uri: vector://
   formats: [png,json,headers,svg,jpeg]
