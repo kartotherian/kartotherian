@@ -16,94 +16,13 @@ Browse to http://localhost:4000/static
 
 The set up inside `sources.sample.yaml` does not use any storage or caching, so it will not be suitable for production. You will need to configure additional source chains and setup a proper storage to make this into a production system.
 
-## Service Configuration - General
+## Configuration
 Inside the `conf` key:
-* `sources` - (required) Either a set of subkeys (see below), or a filename.
-* `variables` (optional) - specify a set of variables (string key-value pairs) to be used inside sources, or it could be a filename as well.
+* `sources` - (required) Either a set of subkeys, a filename, or a list of file names.  See [core](https://github.com/kartotherian/kartotherian-core) on how to configure the sources.
+* `variables` (optional) - specify a set of variables (string key-value pairs) to be used inside sources, or it could be a filename or a list of filenames/objects.
 * `defaultHeaders` (optional, object) - a set of extra headers that will be sent to the user unless the source provides its own. (public requests only)
 * `headers` (optional, object) - a set of extra headers that will be sent to the user instead of the headers returned by the source. (public requests only)
 For the rest of the configuration parameters, see [service runner](https://github.com/wikimedia/service-runner) config info.
-
-## Service Configuration - Sources
-Sources, either as a standalone file or as a set of sub-keys inside the `conf` config key, tell Kartotherian what data sources to use:
-```
-gen:                # The name of the source (could be referenced later)
-  uri: bridge://    # The URI used to construct the source
-  xml:              # Init source with this xml instead of the URI's other parameters
-    # Set xml to the location of the 'data.xml', which is located inside the osm-bright-source npm
-    npm: ["osm-bright-source", "data.xml"]
-  xmlSetDataSource: # Before loading, update the datasource section of the standard mapnik config file
-    if:             # Only update datasources that match all these values (logical AND)
-      dbname: gis   # Instead of 'gis', you can use {npm:...}, {ref:..}, and {var:...}
-      host: ''
-      type: postgis
-    set:            # Replace these keys with the new values
-      host: localhost
-      user: {var: osmdb-user}  # Instead of hardcoding, use the value from the variables file or conf section
-      password: {var: osmdb-pswd}
-```
-URI is the only mandatory field, and it specifies how [tilelive.js](https://github.com/mapbox/tilelive.js) will locate and initialize the new source.  Since sometimes not everything can be added as query parameters to the Uri, Kartotherian has a set of additional keys to help.  Values can either be hardcoded as strings/numbers/booleans, or can be calculated on the fly. Sources support these subkeys:
-
-* `public` (boolean) - should this be source be accessible via `/<sourceId>/z/x/y.format` requests
-
-* `params` (object) - a set of additional values to be set in URI
-* `minzoom` (int) - minimum allowable zoom for the public request (public requests only)
-* `maxzoom` (int) - maximum allowable zoom for the public request (public requests only)
-* `defaultHeaders` (object) - a set of extra headers that will be sent to the user unless the source provides its own. (public requests only)
-* `headers` (object) - a set of extra headers that will be sent to the user instead of the headers returned by the source. (public requests only)
-* `formats` (array) - a list of string values specifyng allowed formats, e.g. `['png','jpeg']`
-
-* `xml` - Some sources such as [tilelive-bridge](https://github.com/mapbox/tilelive-bridge) and [tilelive-vector](https://github.com/mapbox/tilelive-vector) can be initialized with the XML string instead of a URI, which could be used to alter XML before loading it. The `xml` field must evaluate to the xml file path.
-* `xmlSetParams` - for xml, overrides the top level `<Parameters>` values with the new ones. For example, the `vector` source requires xml stylesheet to point to the proper source of PBFs:
-```
-s2:
-  public: true
-  uri: vector://
-  formats: [png,json,headers,svg,jpeg]
-  xml:
-    npm: ["osm-bright-style", "project.xml"]    # stylesheet xml is in npm
-  xmlSetParams:
-    source: {ref: gen}                          # set source parameter to the 'gen' source
-```
-* `xmlLayers` - for xml, keep all non-layer data, but only keep those layers that are listed in this value (whitelist):
-```
-s2:
-  public: true
-  uri: vector://
-  formats: [png,json,headers,svg,jpeg]
-  xml:
-    npm: ["osm-bright-style", "project.xml"]    # stylesheet xml is in npm
-  xmlLayers: ['landuse', 'road']                # Only include these layers when rendering
-```
-* `xmlExceptLayers` - for xml, same as `xmlLayers`, but instead of whitelisting, blacklist (allow all except these):
-```
-s2:
-  public: true
-  uri: vector://
-  formats: [png,json,headers,svg,jpeg]
-  xml:
-    npm: ["osm-bright-style", "project.xml"]    # stylesheet xml is in npm
-  xmlExceptLayers: ['water']                    # Exclude water layer when rendering
-```
-* `xmlSetDataSource` - for xml, change all layer's datasources' parameters if they match conditions:  `if` is a set of parameter values that all must match, `xmlLayers` and `xmlExcludeLayers` just like above set which layers to address, and `set` specifies the new parameter values to be set.
-
-The following value substitutions are available:
-
-* `{var:varname}` - the value becomes the value of the variable `varname` from the variables file / variables conf section of the main config file. This might be useful if you want to make all the settings public except for the passwords that are stored in a secure location.
-* `{ref:sourceId}` - the value becomes a reference to another source. Some sources function as filters/converters, pulling data internally from other sources and converting the result on the fly. For example, the [overzoom](https://github.com/kartotherian/kartotherian-overzoom) source pulls data from another source, and if it's not available, tries to find a lower-zoom tile above the given one, and extract a portion of it. Internally, it uses a forwarding sourceref: source.
-```
-oz:
-  uri: overzoom://
-  # this adds a query parameter to uri: ?source=sourceref:///?ref=gen with proper escaping
-  param:
-    source: {ref: gen}
-```
-* `{npm: ['npm-module-name', 'subdir', 'subdir', 'filename']}`
-Some files may be located inside the NPM modules added to the Kartotherian project, i.e. [osm-bright-source](https://github.com/kartotherian/osm-bright.tm2source). To reference a file inside npm, set npm's value to an array, with the first value being the name of the npm module (resolves to the root of the npm module), and all subsequent strings being subdirs and lastly - the name of the file. Subdirs may be ommited:
-```
-# resolves to a rooted path ..../node_modules/osm-bright-source/data.xml
-npm: ["osm-bright-source", "data.xml"]
-```
 
 ## In depth step-by-step:
 
