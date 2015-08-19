@@ -142,26 +142,28 @@ JobProcessor.prototype.getExistingTilesIterator = function(idxFrom, idxBefore, f
         idxBefore: scale ? Math.ceil(idxBefore / scale) : idxBefore
     };
 
+    // If missing is set, invert the meaning of all other filters, and than invert the result
+
     if (filter.dateBefore !== undefined) {
-        if (!filter.invert)
+        if (!filter.missing)
             opts.dateBefore = filter.dateBefore;
         else
             opts.dateFrom = filter.dateBefore;
     }
     if (filter.dateFrom !== undefined) {
-        if (!filter.invert)
+        if (!filter.missing)
             opts.dateFrom = filter.dateFrom;
         else
             opts.dateBefore = filter.dateFrom;
     }
     if (filter.biggerThan !== undefined) {
-        if (!filter.invert)
+        if (!filter.missing)
             opts.biggerThan = filter.biggerThan;
         else
             opts.smallerThan = filter.biggerThan;
     }
     if (filter.smallerThan !== undefined) {
-        if (!filter.invert)
+        if (!filter.missing)
             opts.smallerThan = filter.smallerThan;
         else
             opts.biggerThan = filter.smallerThan;
@@ -171,7 +173,7 @@ JobProcessor.prototype.getExistingTilesIterator = function(idxFrom, idxBefore, f
         return v.idx;
     });
 
-    if (filter.invert) {
+    if (filter.missing) {
         iterator = this.invertIterator(iterator, opts.idxFrom, opts.idxBefore);
     }
 

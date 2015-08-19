@@ -68,37 +68,55 @@ function init(app) {
 }
 
 function enque(req, res) {
-    var job = {
-        threads: req.query.threads,
-        storageId: req.query.storageId,
-        generatorId: req.query.generatorId,
-        zoom: req.query.zoom,
-        priority: req.query.priority,
-        idxFrom: req.query.idxFrom,
-        idxBefore: req.query.idxBefore,
-        x: req.query.x,
-        y: req.query.y,
-        parts: req.query.parts,
-        deleteEmpty: req.query.deleteEmpty,
-        baseZoom: req.query.baseZoom,
-        zoomFrom: req.query.zoomFrom,
-        zoomBefore: req.query.zoomBefore
-    };
+    reportAsync(res, function () {
+        var job = {
+            threads: req.query.threads,
+            storageId: req.query.storageId,
+            generatorId: req.query.generatorId,
+            zoom: req.query.zoom,
+            priority: req.query.priority,
+            idxFrom: req.query.idxFrom,
+            idxBefore: req.query.idxBefore,
+            x: req.query.x,
+            y: req.query.y,
+            parts: req.query.parts,
+            deleteEmpty: req.query.deleteEmpty,
+            baseZoom: req.query.baseZoom,
+            zoomFrom: req.query.zoomFrom,
+            zoomBefore: req.query.zoomBefore
+        };
 
-    var filter = {
-        dateBefore: req.query.dateBefore,
-        dateFrom: req.query.dateFrom,
-        biggerThan: req.query.biggerThan,
-        smallerThan: req.query.smallerThan,
-        invert: req.query.invert ? true : undefined,
-        zoom: req.query.checkZoom
-    };
+        var filter1 = {
+            dateBefore: req.query.dateBefore,
+            dateFrom: req.query.dateFrom,
+            biggerThan: req.query.biggerThan,
+            smallerThan: req.query.smallerThan,
+            missing: req.query.missing ? true : undefined,
+            zoom: req.query.checkZoom
+        };
+        filter1 = _.any(filter1) ? filter1 : false;
 
-    if (_.any(filter)) {
-        job.filters = filter;
-    }
+        var filter2 = {
+            dateBefore: req.query.dateBefore2,
+            dateFrom: req.query.dateFrom2,
+            biggerThan: req.query.biggerThan2,
+            smallerThan: req.query.smallerThan2,
+            missing: req.query.missing2 ? true : undefined,
+            zoom: req.query.checkZoom2
+        };
+        filter2 = _.any(filter2) ? filter2 : false;
 
-    reportAsync(res, queue.addJobAsync(job));
+        if (filter2 && !filter1) {
+            throw new Err('Cannot set second filter unless the first filter is also set');
+        }
+        if (filter1 && filter2) {
+            job.filters = [filter1, filter2];
+        } else if (filter1) {
+            job.filters = filter1;
+        }
+
+        queue.addJobAsync(job);
+    });
 }
 
 function stop(req, res) {
@@ -117,7 +135,7 @@ function stop(req, res) {
 
 function cleanup(req, res) {
     reportAsync(res, BBPromise.try(function () {
-        return queue.cleanup((req.params.minutes || 60) * 60 * 1000, req.params.type, req.params.minhrs);
+        return queue.cleanup((req.params.minutes || 60) * 60 * 1000, req.params.type, req.params.minRebalanceInMinutes);
     }));
 }
 
@@ -138,7 +156,7 @@ router.post('/stop', stop);
 router.post('/stop/:seconds(\\d+)', stop);
 router.post('/cleanup', cleanup);
 router.post('/cleanup/:type/:minutes(\\d+)', cleanup);
-router.post('/cleanup/:type/:minutes(\\d+)/:minhrs(\\d+)', cleanup);
+router.post('/cleanup/:type/:minutes(\\d+)/:minRebalanceInMinutes(\\d+)', cleanup);
 
 module.exports = function(app) {
 

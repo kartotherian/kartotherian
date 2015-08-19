@@ -45,9 +45,9 @@ http://localhost:4100/add?generatorId=gen&storageId=store&zoom=3
 This mode tells Tilerator to generate more than one zoom level with one request. Given a tip of the pyramid - a tile at a given zoom level (baseZoom),
 the pyramid will contain all the tiles under the given tile (higher zooms), and all the tiles that contain the given tile (lower zooms).
 So a baseZoom+1 zoom will be the 4 tiles corresponding to the tip tile, and baseZoom+2 will have the 16 tiles, etc.
-With all zooms lower than baseZoom, it will always be one tile per zoom that contains the tip.
-Tilerator will only generate the range of zooms requested, which could be different from the baseZoom.
-The base zoom may contain more than one tile or even a whole zoom level. Use idxFrom & idxBefore to specify the tile range, or (x,y) for just one tile.
+For all zoom levels lower than baseZoom, Tilerator will add just one tile per zoom that contains the tip tile.
+Tilerator will only generate the range of zooms requested, which does not have to contain the baseZoom (a cross-section of the piramid)
+The base zoom may contain more than just one tile or even a whole zoom level. Use idxFrom & idxBefore to specify the tile range, or (x,y) for just one tile.
 
 This feature could be useful for the tile invalidation. For example, a user edited a tile at Z=16, and the system automatically scheduled tile refresh at Z=10..17)
 
@@ -57,6 +57,40 @@ This feature could be useful for the tile invalidation. For example, a user edit
 
 ### Job Filters
 Sometimes you may wish to generate only those tiles that satisfy a certain condition.
-Note: For now, only one set of conditions is available, even though internally chaining is also supported.
 
-* `checkZoom` - only generate tiles if the tile at the corresponding tile exists at zoom level `checkZoom`
+If any of these parameters are set, Tilerator will check if a specific tile exists before attempting to regenerate it.
+* `checkZoom` - only generate tiles if the corresponding tile exists at zoom level `checkZoom`.  By default, if any other filter values are set, it uses job's zoom level
+* `dateBefore` - only generate tile if the tile in storage was generated before given date
+* `dateFrom` - only generate tile if the tile in storage was generated after the given date
+* `biggerThan` - only generate tile if the tile in storage is bigger than a given size (compressed)
+* `smallerThan` - only generate tile if the tile in storage is smaller than a given size (compressed)
+* `missing` - if this is set to true, and other filters are not set, gets all the missing tiles.
+If other filters are set, generates the missing tiles plus the ones that match the filter.
+For example, to regenerate missing and small tiles, set the `smallerThan` and `missing` parameters.
+
+Currently `/add/` supports up to two filters. Specify the second filter by adding `2` at the end of each filter parameter.
+If two filters are given, only tiles that satisfy both filters will be generated.
+
+## Queue cleanup and rebalancing
+At times, if a job crashes, or the Tilerator is killed by the admin, it will remain in the "active" queue without being worked on,
+and its `updated` timestamp will stay the same.  These jobs have to be moved back to the `inactive` queue.
+In the future it might be possible to fix this automaticaly, but for now, there is a "clean" POST request:
+```
+http://localhost:4100/cleanup
+```
+Which by default moves all jobs from `active` to `inactive` if they haven't been updated for the past 60 minutes.
+Alternativelly, the originating queue and the number of minutes can be specified as the first two value after the cleanup.
+This will move all jobs from the `failed` queue into `inactive` if they haven't been updated in the last 15 minutes:
+```
+http://localhost:4100/cleanup/failed/15
+```
+Sometimes the few jobs take too long to render, while other machines or CPU cores are not busy. Cleanup can break such jobs
+into smaller chunks. To use it, it is best to have an extra instance of Tilerator running with the `uiOnly` config option.
+Otherwise you may update an active job, without notifying the worker about it, thus causing it to continue processing.
+To use the job rebalancing, stop all the non-uiOnly Tilerator instances, and run cleanup with an extra parameter:
+```
+http://localhost:4100/cleanup/active/0/60
+```
+This tells tilerator to move all jobs from active to inactive, even if they were just updated (you did stop the workers, right?),
+and also to break up all jobs into 5 parts if the job's estimated completion time is more than 60 minutes.  The original job
+will be shortened to the 10% of whatever was left to do.

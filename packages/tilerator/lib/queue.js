@@ -79,7 +79,7 @@ module.exports.validateJob = function(job) {
             }
             core.checkType(filter, 'biggerThan', 'integer');
             core.checkType(filter, 'smallerThan', 'integer');
-            core.checkType(filter, 'invert', 'boolean');
+            core.checkType(filter, 'missing', 'boolean');
         });
     }
 };
@@ -99,7 +99,7 @@ module.exports.validateJob = function(job) {
  *  - dateFrom - Date object to process tiles only newer than this timestamp, or false to disable. false by default.
  *  - biggerThan - number - only process tiles whose compressed size is bigger than this value (inclusive)
  *  - smallerThan - number - only process tiles whose compressed size is smaller than this value (exclusive)
- *  - invert - boolean - if true, yields all tiles that do not match the filtering fields:
+ *  - missing - boolean - if true, yields all tiles that do not match the filtering fields:
  *                        dateBefore, dateAfter, biggerThan, smallerThan. Otherwise yields only those that match.
  *                        Default false. If no filtering fields are given, this value is ignored.
  *  - checkZoom - tiles of which zoom should be checked with 'check' param. By default, equals to zoom.
@@ -241,7 +241,7 @@ module.exports.addPyramidJobsAsync = function(options) {
 /**
  * Move all jobs in the active que to inactive if their update time is more than given time
  */
-module.exports.cleanup = function(ms, type, minHrsToBreak, parts) {
+module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts) {
     if (!queue) throw new Err('Not started yet');
     switch (type) {
         case undefined:
@@ -261,7 +261,7 @@ module.exports.cleanup = function(ms, type, minHrsToBreak, parts) {
         return kue.Job.getAsync(id).then(function (job) {
             var diffMs = Date.now() - new Date(parseInt(job.updated_at));
             if (diffMs > ms) {
-                if (job.progress_data && job.progress_data.estimateHrs >= minHrsToBreak) {
+                if (job.progress_data && (job.progress_data.estimateHrs / 60.0) >= minRebalanceInMinutes) {
                     var from = job.progress_data.index || job.data.idxFrom;
                     var before = job.data.idxBefore;
                     var newBefore = Math.min(before, from + Math.max(1, Math.floor((before - from) * 0.1)));
