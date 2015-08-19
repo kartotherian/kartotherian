@@ -20,44 +20,22 @@ s1gen:
   xmlSetParams:
     source: {ref: v1gen}
 
-
-v1:
-  uri: cassandra://?keyspace=v1&blocksize=0&repfactor=1&durablewrite=0&cp=maps-test2001.codfw.wmnet&cp=maps-test2002.codfw.wmnet&cp=maps-test2003.codfw.wmnet&cp=maps-test2004.codfw.wmnet
-  var:
-    username: cassandra-user
-    password: cassandra-pswd
-
-# oz_v1:
-#   uri: overzoom://
-#  params:
-#    source: {ref: v1}
-
-# s1:
-#   public: true
-#   uri: vector://
-#   formats: [png,json,headers,svg,jpeg]
-#   xml:
-#     npm: ["osm-bright-style", "project.xml"]
-#   xmlSetParams:
-#     source: {ref: oz_v1}
-
-
 v2:
   uri: cassandra://?keyspace=v2&repfactor=4&durablewrite=0&cp=maps-test2001.codfw.wmnet&cp=maps-test2002.codfw.wmnet&cp=maps-test2003.codfw.wmnet&cp=maps-test2004.codfw.wmnet
-  var:
-    username: cassandra-user
-    password: cassandra-pswd
+  params:
+    username: {var: cassandra-user}
+    password: {var: cassandra-pswd}
 
-# oz_v2:
-#   uri: overzoom://
-#  params:
-#    source: {ref: v2}
+oz_v2:
+  uri: overzoom://
+  params:
+    source: {ref: v2}
 
-# s2:
-#   public: true
-#   uri: vector://
-#   formats: [png,json,headers,svg,jpeg]
-#   xml:
-#     npm: ["osm-bright-style", "project.xml"]
-#   xmlSetParams:
-#     source: {ref: oz_v2}
+osm:
+  public: true
+  uri: vector://
+  formats: [png,json,headers,svg,jpeg]
+  xml:
+    npm: ["osm-bright-style", "project.xml"]
+  xmlSetParams:
+    source: {ref: oz_v2}
