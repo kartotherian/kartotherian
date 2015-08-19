@@ -49,6 +49,9 @@ JobProcessor.prototype.runAsync = function() {
         self.count = job.idxBefore - self.idxFromOriginal;
         if (!self.job.progress_data || !self.job.progress_data.index) {
             self.stats = {
+                itemsPerSec: 0,
+                sizeAvg: 0,
+                estimateHrs: -1,
                 index: job.idxFrom,
                 processed: 0,
                 nosave: 0,
@@ -90,12 +93,6 @@ JobProcessor.prototype.reportProgress = function(doneCount) {
     var stats = this.stats;
     var job = this.job.data;
     var time = (new Date() - this.start) / 1000;
-    // delete and re-add to position them at the end - makes it easier to see in the kue2
-    delete stats.itemsPerSec;
-    delete stats.sizeAvg;
-    delete stats.estimateHrs;
-    delete stats.itemTimeAvg; // todo remove
-    delete stats.estimateInMin; // todo remove
     stats.itemsPerSec = time > 0 ? Math.round((stats.index - this.retryFromIdx) / time * 10) / 10 : 0;
     stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
     // how long until we are done, in minutes

@@ -111,6 +111,7 @@ module.exports.addJobAsync = function(job) {
         if (!queue) {
             throw new Err('Still loading');
         }
+        // Convert x,y coordinates into idxdFrom & idxBefore
         if (job.x !== undefined || job.y !== undefined ) {
             if (job.idxFrom !== undefined || job.idxBefore !== undefined) {
                 throw new Err('idxFrom and idxBefore are not allowed when using x,y');
@@ -130,6 +131,7 @@ module.exports.addJobAsync = function(job) {
             delete job.y;
         }
 
+        // If this is a pyramid, break it into individual jobs
         if (job.baseZoom !== undefined || job.zoomFrom !== undefined || job.zoomBefore !== undefined) {
             return module.exports.addPyramidJobsAsync(job);
         }
