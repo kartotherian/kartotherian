@@ -1,5 +1,7 @@
 # Map Tile Pre-Generatior service for Wikipedia
 
+**Tilerator** (Russian: Тилератор, tee-LEH-ruh-tor)
+
 Generating tiles from the SQL queries sometimes requires a considerable time, often too long for the web request.
 Tilerator is a multi-processor, cluster-enabled tile generator, that allows both pre-generation and dirty tile re-generation.
 
