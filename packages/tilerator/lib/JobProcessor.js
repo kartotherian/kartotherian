@@ -63,7 +63,11 @@ JobProcessor.prototype.runAsync = function() {
                 tilenodata: 0,
                 tilenonsolid: 0,
                 tiletoobig: 0,
-                totalsize: 0
+                totalsize: 0,
+                smallestSize: undefined,
+                smallestTile: undefined,
+                largestSize: undefined,
+                largestTile: undefined
             };
         } else {
             self.stats = self.job.progress_data;
@@ -366,6 +370,15 @@ JobProcessor.prototype.generateTileAsync = function(idx) {
         if (data) {
             stats.save++;
             stats.totalsize += data.length;
+            // double negative to treat "undefined" as true
+            if (!(stats.smallestSize <= data.length)) {
+                stats.smallestSize = data.length;
+                stats.smallestTile = idx;
+            }
+            if (!(stats.largestSize >= data.length)) {
+                stats.largestSize = data.length;
+                stats.largestTile = idx;
+            }
         } else {
             stats.nosave++;
             if (!job.deleteEmpty) {
