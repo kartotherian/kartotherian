@@ -29,7 +29,7 @@ For example, by simply dividing the index by 4, we get the index of the tile tha
 It is highly recomended, although not mandatory, to have an extra instance of the tilerator running with the uiOnly setting in the config.
 This way if tilerator can be stopped and the pending jobs rearranged. Without the uiOnly instance, you will always be changing the queue
 while jobs are running.  To configure the uiOnly instance, make a copy of the tilerator config, set uiOnly to true and change the port number.
-To see the currently running jobs, navigate to `http://localhost:4100/kue` (nicer interface) or `http://localhost:4100/kue2` (internal data).
+To see the currently running jobs, navigate to `http://localhost:4100/` (nicer interface) or `http://localhost:4100/raw` (internal data).
 
 ## Adding jobs
 Jobs can be scheduled via a POST request. Usually I do it with [Chrome Postman extension](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop?hl=en) or similar.

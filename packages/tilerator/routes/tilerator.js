@@ -115,7 +115,7 @@ function enque(req, res) {
             job.filters = filter1;
         }
 
-        queue.addJobAsync(job);
+        return queue.addJobAsync(job);
     });
 }
 
@@ -134,17 +134,19 @@ function stop(req, res) {
 }
 
 function cleanup(req, res) {
-    reportAsync(res, BBPromise.try(function () {
+    reportAsync(res, function () {
         return queue.cleanup((req.params.minutes || 60) * 60 * 1000, req.params.type, req.params.minRebalanceInMinutes);
-    }));
+    });
 }
 
 function reportAsync(res, task) {
-    return task.then(toJson, function (err) {
-        return toJson({error: err.message, stack: err.stack})
-    }).then(function (str) {
-        res.type('application/json').send(str);
-    });
+    return BBPromise
+        .try(task)
+        .then(toJson, function (err) {
+            return toJson({error: err.message, stack: err.stack})
+        }).then(function (str) {
+            res.type('application/json').send(str);
+        });
 }
 
 function toJson(value) {

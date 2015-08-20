@@ -48,7 +48,7 @@
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
     "kue": "git+https://github.com/nyurik/kue.git",
-    "kue-ui": "^0.1.0",
+    "kue-ui": "git+https://github.com/nyurik/kue-ui.git",
     "leaflet": "~0.7.3",
     "mapnik": "~3.4.0",
     "numeral": "^1.5.3",
