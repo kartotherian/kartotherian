@@ -113,10 +113,16 @@ function getTile(req, res) {
             }
             opts = {format: req.params.format};
 
-            // For now, if format is allowed, so is scale. We might want to introduce another source config param later
-            var scale = req.params.scale ? req.params.scale[1] | 0 : undefined;
-            scale = scale > 4 ? 4 : scale; // limits scale to 4x (1024 x 1024 tiles or 288dpi)
-            if (scale) {
+            if (req.params.scale) {
+                if (!source.maxscale) {
+                    throw new Err('Scaling is not enabled for this source').metrics('err.req.scale');
+                }
+                // Do not allow scale === 1, because that would allow two types of requests for the same data,
+                // which is not very good for caching (otherwise we would have to normalize URLs in Varnish)
+                var scale = parseInt(req.params.scale[1]);
+                if (scale < 2 || scale > source.maxscale) {
+                    throw new Err('Scaling parameter must be between 2 and %d', source.maxscale).metrics('err.req.scale');
+                }
                 opts.scale = scale;
             }
         }
