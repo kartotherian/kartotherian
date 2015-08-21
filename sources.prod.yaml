@@ -8,7 +8,8 @@ v2:
     username: {var: cassandra-user}
     password: {var: cassandra-pswd}
 
-oz_v2:
+osm-pbf:
+  public: true
   uri: overzoom://
   params:
     source: {ref: v2}
@@ -20,4 +21,4 @@ osm:
   xml:
     npm: ["osm-bright-style", "project.xml"]
   xmlSetParams:
-    source: {ref: oz_v2}
+    source: {ref: osm-pbf}
