@@ -5,10 +5,10 @@ var BBPromise = require('bluebird');
 var _ = require('underscore');
 var express = require('express');
 var router = require('../lib/util').router();
-var pathLib = require('path');
 
 var core = require('kartotherian-core');
 var Err = core.Err;
+core.init(require('path').resolve(__dirname, '..'), function (module) { return require.resolve(module); });
 
 var tilelive = require('tilelive');
 BBPromise.promisifyAll(tilelive);
@@ -42,16 +42,17 @@ function init(app) {
         metrics = app.metrics;
         metrics.increment('init');
 
-        require('tilelive-bridge').registerProtocols(tilelive);
-        //require('tilelive-file').registerProtocols(tilelive);
-        //require('./dynogen').registerProtocols(tilelive);
-        require('kartotherian-overzoom').registerProtocols(tilelive);
-        require('kartotherian-cassandra').registerProtocols(tilelive);
-        require('tilelive-vector').registerProtocols(tilelive);
+        core.safeLoadAndRegister([
+            'tilelive-bridge',
+            'tilelive-file',
+            'tilelive-vector',
+            //'./dynogen',
+            'kartotherian-overzoom',
+            'kartotherian-cassandra',
+            'kartotherian-layermixer'
+        ], tilelive, log);
 
-        sources = new core.Sources(app, tilelive, function (module) {
-            return require.resolve(module);
-        }, pathLib.resolve(__dirname, '..'));
+        sources = new core.Sources(app, tilelive);
 
         defaultHeaders = app.conf.defaultHeaders || {};
         overrideHeaders = app.conf.headers || {};
@@ -90,9 +91,12 @@ function getTile(req, res) {
         if (!source.public) {
             throw new Err('Source is not public').metrics('err.req.source');
         }
-        z = req.params.z | 0;
-        x = req.params.x | 0;
-        y = req.params.y | 0;
+        if (!source.handler) {
+            throw new Err('The source has not started yet').metrics('err.req.source');
+        }
+        z = core.strToInt(req.params.z);
+        x = core.strToInt(req.params.x);
+        y = core.strToInt(req.params.y);
 
         if (!core.isValidZoom(z)) {
             throw new Err('invalid zoom').metrics('err.req.coords');
@@ -107,7 +111,10 @@ function getTile(req, res) {
             throw new Err('Maximum zoom is %d', source.maxzoom).metrics('err.req.zoom');
         }
 
-        if (source.formats) {
+        if (source.pbfsource && req.params.format === 'pbf') {
+            // Allow direct PBF access
+            source = sources.getSourceById(source.pbfsource);
+        } else if (source.formats) {
             if (!_.contains(source.formats, req.params.format)) {
                 throw new Err('Format %s is not known', req.params.format).metrics('err.req.format');
             }
