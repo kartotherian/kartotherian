@@ -2,7 +2,6 @@
 
 var BBPromise = require('bluebird');
 var _ = require('underscore');
-var pathLib = require('path');
 
 var mapnik = require('mapnik');
 BBPromise.promisifyAll(mapnik.VectorTile.prototype);
@@ -10,6 +9,7 @@ BBPromise.promisifyAll(mapnik.VectorTile.prototype);
 var queue = require('../lib/queue');
 var core = require('kartotherian-core');
 var Err = core.Err;
+core.init(require('path').resolve(__dirname, '..'), function (module) { return require.resolve(module); });
 
 var tilelive = require('tilelive');
 BBPromise.promisifyAll(tilelive);
@@ -30,16 +30,16 @@ function init(app) {
         metrics = app.metrics;
         metrics.increment('init');
 
-        require('tilelive-bridge').registerProtocols(tilelive);
-        //require('tilelive-file').registerProtocols(tilelive);
-        //require('./dynogen').registerProtocols(tilelive);
-        require('kartotherian-overzoom').registerProtocols(tilelive);
-        require('kartotherian-cassandra').registerProtocols(tilelive);
-        require('tilelive-vector').registerProtocols(tilelive);
-
-        sources = new core.Sources(app, tilelive, function (module) {
-            return require.resolve(module);
-        }, pathLib.resolve(__dirname, '..'));
+        core.safeLoadAndRegister([
+            'tilelive-bridge',
+            'tilelive-file',
+            'tilelive-vector',
+            //'./dynogen',
+            'kartotherian-overzoom',
+            'kartotherian-cassandra',
+            'kartotherian-layermixer'
+        ], tilelive, log);
+        sources = new core.Sources(app, tilelive);
 
         return sources.loadAsync(app.conf);
     }).then(function (sources) {

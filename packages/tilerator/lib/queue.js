@@ -66,11 +66,11 @@ module.exports.validateJob = function(job) {
         }
         _.each(job.filters, function(filter, ind, all) {
             // Each filter except last must have its own zoom level. Last is optional
-            // Each next zoom level must be bigger than the one before, but less than job's zoom
+            // Each next zoom level must be bigger than the one before, but less than or equal to job's zoom
             core.checkType(filter, 'zoom', 'zoom',
                 ind < all.length - 1,
                 ind === 0 ? 0 : all[ind - 1].zoom + 1,
-                job.zoom - 1);
+                job.zoom);
             if (core.checkType(filter, 'dateFrom', '[object Date]') &&
                 core.checkType(filter, 'dateBefore', '[object Date]') &&
                 filter.dateFrom >= filter.dateBefore
@@ -296,11 +296,12 @@ module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts) {
 
 function setJobTitle(job) {
     job.title = util.format('%s→%s; Z=%d;', job.generatorId, job.storageId, job.zoom);
-    if (job.idxBefore - job.idxFrom === 1) {
+    var zoomMax = Math.pow(4, job.zoom);
+    if (job.idxFrom === 0 && job.idxBefore === zoomMax) {
+        job.title += util.format(' ALL (%s)', numeral(zoomMax).format('0,0'));
+    } else if (job.idxBefore - job.idxFrom === 1) {
         var xy = core.indexToXY(job.idxFrom);
         job.title += util.format(' tile at [%d,%d] (idx=%d)', xy[0], xy[1], job.idxFrom);
-    } else if (job.idxFrom === 0 && job.idxBefore === Math.pow(4, job.zoom)) {
-        job.title = 'All ' + job.title;
     } else {
         var xyFrom = core.indexToXY(job.idxFrom);
         var xyLast = core.indexToXY(job.idxBefore - 1);

@@ -139,7 +139,7 @@ JobProcessor.prototype.getExistingTilesIterator = function(idxFrom, idxBefore, f
 
     var job = this.job.data;
     var filter = job.filters[filterIndex];
-    var scale = filter.zoom !== undefined ? Math.pow(4, job.zoom - filter.zoom) : false;
+    var scale = filter.zoom !== undefined && filter.zoom !== job.zoom ? Math.pow(4, job.zoom - filter.zoom) : false;
     var opts = {
         zoom: scale ? filter.zoom : job.zoom,
         idxFrom: scale ? Math.floor(idxFrom / scale) : idxFrom,
