@@ -9,7 +9,6 @@ BBPromise.promisifyAll(mapnik.VectorTile.prototype);
 var queue = require('../lib/queue');
 var core = require('kartotherian-core');
 var Err = core.Err;
-core.init(require('path').resolve(__dirname, '..'), function (module) { return require.resolve(module); });
 
 var tilelive = require('tilelive');
 BBPromise.promisifyAll(tilelive);
@@ -17,7 +16,7 @@ BBPromise.promisifyAll(tilelive);
 var router = require('../lib/util').router();
 var JobProcessor = require('../lib/JobProcessor');
 
-var log, jobProcessor, metrics, sources;
+var jobProcessor, metrics, sources;
 
 /**
  * Initialize module
@@ -26,19 +25,20 @@ var log, jobProcessor, metrics, sources;
  */
 function init(app) {
     return BBPromise.try(function () {
-        log = app.logger.log.bind(app.logger);
+        core.init(app.logger, require('path').resolve(__dirname, '..'), function (module) {
+            return require.resolve(module);
+        });
         metrics = app.metrics;
         metrics.increment('init');
-
         core.safeLoadAndRegister([
             'tilelive-bridge',
             'tilelive-file',
             'tilelive-vector',
-            //'./dynogen',
+            'kartotherian-autogen',
             'kartotherian-overzoom',
             'kartotherian-cassandra',
             'kartotherian-layermixer'
-        ], tilelive, log);
+        ], tilelive);
         sources = new core.Sources(app, tilelive);
 
         return sources.loadAsync(app.conf);
@@ -48,7 +48,7 @@ function init(app) {
             jobHandler = function (job, callback) {
                 BBPromise.try(function () {
                     if (jobProcessor) {
-                        log('warn', 'Another handler is already running');
+                        core.log('warn', 'Another handler is already running');
                     }
                     jobProcessor = new JobProcessor(sources, job, metrics);
                     return jobProcessor.runAsync();
@@ -62,7 +62,7 @@ function init(app) {
         }
         queue.init(app, jobHandler);
     }).catch(function (err) {
-        console.error((err.body && (err.body.stack || err.body.detail)) || err.stack || err);
+        core.log('fatal', core.errToStr(err));
         process.exit(1);
     });
 }
@@ -128,7 +128,7 @@ function stop(req, res) {
         }
         return queue.shutdownAsync(seconds * 1000);
     }).then(function () {
-        log('warn', 'Manual shutdown with timeout=' + seconds);
+        core.log('warn', 'Manual shutdown with timeout=' + seconds);
         process.exit(1);
     });
 }
