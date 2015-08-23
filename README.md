@@ -2,6 +2,19 @@
 
 Maps nodejs server for vector-based tiles designed for Wikipedia and other sites. It ties together a number of [MapBox components](https://github.com/mapbox) for vector and raster rendering based on [Mapnik 3](https://github.com/mapnik/mapnik), and uses [service runner](https://github.com/wikimedia/service-runner) for scalability and stability.
 
+Kartotherin can serve vector and raster tiles in multiple formats and optional scaling:
+
+    http://.../{source}/{zoom}/{x}/{y}[@{scale}x].{format}
+
+* The sources are configured with the
+[source config file](https://github.com/kartotherian/kartotherian-core). Sources configuration supports different methods of tile storage, such as Cassandra or files, generation from postgress db, overzoom to extract the tile from lower zooms if missing, layer extraction, mixing multiple sources together, etc.
+* Optional scalling can render larger images for high resolution screens.
+* Supported formats include PNG ang JPEG, SVG, PBF vectors, and JSON (with `nogeo` and `summary` debug options)
+
+Additionally, Kartotherian supports static image generation. Users may request a PNG or a JPEG snapshot image of any size, scaling, and zoom level:
+
+    http://.../{source}/{zoom}/{x}/{y}/{width}/{height}[@{scale}x].{format}
+
 ## Very quick start:
 Assumes you have an OSM database (or a part of it) set up locally in the latest Postgress+Postgis, imported using `osm2pgsql --slim --hstore`.
 ```
