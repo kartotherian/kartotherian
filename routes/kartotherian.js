@@ -12,6 +12,8 @@ var Err = core.Err;
 var tilelive = require('tilelive');
 BBPromise.promisifyAll(tilelive);
 
+var abaculus = BBPromise.promisify(require('abaculus'));
+
 var sources;
 var defaultHeaders, overrideHeaders;
 var metrics;
@@ -72,7 +74,7 @@ function getTile(req, res) {
     var start = Date.now();
     // These vars might get set before finishing validation.
     // Do not use them unless successful
-    var srcId, source, opts, z, x, y;
+    var isStatic, srcId, source, opts, z, x, y, scale, format;
 
     return BBPromise.try(function () {
         if (!sources) {
@@ -90,14 +92,8 @@ function getTile(req, res) {
             throw new Err('The source has not started yet').metrics('err.req.source');
         }
         z = core.strToInt(req.params.z);
-        x = core.strToInt(req.params.x);
-        y = core.strToInt(req.params.y);
-
         if (!core.isValidZoom(z)) {
             throw new Err('invalid zoom').metrics('err.req.coords');
-        }
-        if (!core.isValidCoordinate(x, z) || !core.isValidCoordinate(y, z)) {
-            throw new Err('x,y coordinates are not valid, or not allowed for this zoom').metrics('err.req.coords');
         }
         if (source.minzoom !== undefined && z < source.minzoom) {
             throw new Err('Minimum zoom is %d', source.minzoom).metrics('err.req.zoom');
@@ -105,31 +101,67 @@ function getTile(req, res) {
         if (source.maxzoom !== undefined && z > source.maxzoom) {
             throw new Err('Maximum zoom is %d', source.maxzoom).metrics('err.req.zoom');
         }
-
-        if (source.pbfsource && req.params.format === 'pbf') {
-            // Allow direct PBF access
-            source = sources.getSourceById(source.pbfsource);
-        } else if (source.formats) {
+        if (req.params.scale) {
+            if (!source.maxscale) {
+                throw new Err('Scaling is not enabled for this source').metrics('err.req.scale');
+            }
+            // Do not allow scale === 1, because that would allow two types of requests for the same data,
+            // which is not very good for caching (otherwise we would have to normalize URLs in Varnish)
+            scale = parseInt(req.params.scale[1]);
+            if (scale < 2 || scale > source.maxscale) {
+                throw new Err('Scaling parameter must be between 2 and %d', source.maxscale).metrics('err.req.scale');
+            }
+        }
+        if (source.formats) {
             if (!_.contains(source.formats, req.params.format)) {
                 throw new Err('Format %s is not known', req.params.format).metrics('err.req.format');
             }
-            opts = {format: req.params.format};
-
-            if (req.params.scale) {
-                if (!source.maxscale) {
-                    throw new Err('Scaling is not enabled for this source').metrics('err.req.scale');
-                }
-                // Do not allow scale === 1, because that would allow two types of requests for the same data,
-                // which is not very good for caching (otherwise we would have to normalize URLs in Varnish)
-                var scale = parseInt(req.params.scale[1]);
-                if (scale < 2 || scale > source.maxscale) {
-                    throw new Err('Scaling parameter must be between 2 and %d', source.maxscale).metrics('err.req.scale');
-                }
-                opts.scale = scale;
-            }
+            format = req.params.format;
         }
-        return core.getTitleWithParamsAsync(source.handler, z, x, y, opts);
+
+        isStatic = req.params.w || req.params.h;
+
+        if (isStatic) {
+            if (format !== 'png' && format !== 'jpeg') {
+                throw new Err('Format %s is not allowed for static images', req.params.format).metrics('err.req.stformat');
+            }
+            x = core.strToFloat(req.params.x);
+            y = core.strToFloat(req.params.y);
+            var w = core.strToInt(req.params.w);
+            var h = core.strToInt(req.params.h);
+            if (typeof x !== 'number' || typeof y !== 'number') {
+                throw new Err('The x and y coordinates must be numeric for static images').metrics('err.req.stcoords');
+            }
+            if (!core.isInteger(w) || !core.isInteger(h)) {
+                throw new Err('The width and height params must be integers for static images').metrics('err.req.stsize');
+            }
+            var params = {
+                zoom: z,
+                scale: scale,
+                center: {x: x, y: y, w: w, h: h},
+                format: format,
+                getTile: source.handler.getTile.bind(source.handler)
+            };
+            return abaculus(params);
+        } else {
+            x = core.strToInt(req.params.x);
+            y = core.strToInt(req.params.y);
+            if (!core.isValidCoordinate(x, z) || !core.isValidCoordinate(y, z)) {
+                throw new Err('x,y coordinates are not valid, or not allowed for this zoom').metrics('err.req.coords');
+            }
+            if (source.pbfsource && req.params.format === 'pbf') {
+                // Allow direct PBF access
+                source = sources.getSourceById(source.pbfsource);
+            } else if (format) {
+                opts = {format: format};
+                if (scale) {
+                    opts.scale = scale;
+                }
+            }
+            return core.getTitleWithParamsAsync(source.handler, z, x, y, opts);
+        }
     }).spread(function (data, dataHeaders) {
+        // Allow JSON to be shortened to simplify debugging
         if (opts && opts.format === 'json') {
             if ('summary' in req.query) {
                 data = _(data).reduce(function (memo, layer) {
@@ -166,6 +198,9 @@ function getTile(req, res) {
         res.send(data);
 
         var mx = util.format('req.%s.%s', srcId, z);
+        if (isStatic) {
+            mx += '.static';
+        }
         if (opts) {
             mx += '.' + opts.format;
             if (opts.scale) {
@@ -185,8 +220,15 @@ function getTile(req, res) {
     });
 }
 
+// get tile
 router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w\\.]+)', getTile);
 router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+):scale(@\\d+x).:format([\\w\\.]+)', getTile);
+
+// get static image
+// anything is accepted for x and y because float number regex is not handled well here
+// [-+]?\\d*\\.?\\d+
+router.get('/:src(\\w+)/:z(\\d+)/:x/:y/:w(\\d+)/:h(\\d+).:format([\\w\\.]+)', getTile);
+router.get('/:src(\\w+)/:z(\\d+)/:x/:y/:w(\\d+)/:h(\\d+):scale(@\\d+x).:format([\\w\\.]+)', getTile);
 
 module.exports = function(app) {
 
