@@ -8,7 +8,6 @@ var router = require('../lib/util').router();
 
 var core = require('kartotherian-core');
 var Err = core.Err;
-core.init(require('path').resolve(__dirname, '..'), function (module) { return require.resolve(module); });
 
 var tilelive = require('tilelive');
 BBPromise.promisifyAll(tilelive);
@@ -16,17 +15,13 @@ BBPromise.promisifyAll(tilelive);
 var sources;
 var defaultHeaders, overrideHeaders;
 var metrics;
-var log;
 var maxZoom = 20;
 
 function reportError(errReporterFunc, err) {
     try {
         errReporterFunc(err);
     } catch (e2) {
-        console.error('Unable to report: ' +
-            ((err.body && (err.body.stack || err.body.detail)) || err.stack || err) +
-            '\n\nDue to: ' +
-            ((e2.body && (e2.body.stack || e2.body.detail)) || e2.stack || e2));
+        console.error('Unable to report: ' + core.errToStr(err) + '\n\nDue to: ' + core.errToStr(e2));
     }
 }
 
@@ -36,21 +31,21 @@ function reportError(errReporterFunc, err) {
  * @returns {*}
  */
 function init(app) {
-    log = app.logger.log.bind(app.logger);
-
     return BBPromise.try(function () {
+        core.init(app.logger, require('path').resolve(__dirname, '..'), function (module) {
+            return require.resolve(module);
+        });
         metrics = app.metrics;
         metrics.increment('init');
-
         core.safeLoadAndRegister([
             'tilelive-bridge',
             'tilelive-file',
             'tilelive-vector',
-            //'./dynogen',
+            'kartotherian-autogen',
             'kartotherian-overzoom',
             'kartotherian-cassandra',
             'kartotherian-layermixer'
-        ], tilelive, log);
+        ], tilelive);
 
         sources = new core.Sources(app, tilelive);
 
@@ -61,7 +56,7 @@ function init(app) {
         return sources.loadAsync(app.conf);
     }).catch(function (err) {
         reportError(function (err) {
-            log('fatal', err);
+            core.log('fatal', err);
         }, err);
         process.exit(1);
     });
@@ -184,7 +179,7 @@ function getTile(req, res) {
                 .status(400)
                 .header('Cache-Control', 'public, s-maxage=30, max-age=30')
                 .json(err.message || 'error/unknown');
-            req.logger.log(err);
+            core.log(err);
             metrics.increment(err.metrics || 'err.unknown');
         }, err);
     });

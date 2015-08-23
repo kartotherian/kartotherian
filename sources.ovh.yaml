@@ -7,56 +7,10 @@
 # v1store:
 #   uri: file://./vectors?filetype=pbf
 
-v1gen:
-  public: true
+gen:
   uri: bridge://
   xml:
     npm: ["osm-bright-source", "data.xml"]
-
-v1c:
-  uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0&blocksize=0
-v2c:
-  uri: cassandra://?cp=127.0.0.1&keyspace=v2&repfactor=1&durablewrite=0&blocksize=0
-v3c:
-  uri: cassandra://?cp=127.0.0.1&keyspace=v3&repfactor=1&durablewrite=0&blocksize=131072
-v4c:
-  uri: cassandra://?cp=127.0.0.1&keyspace=v4&repfactor=1&durablewrite=0
-
-#
-# Filters/converters
-#
-#  v1a:
-#     uri: autogen://?saveafter=0&minzoom=0&maxzoom=25
-#     ref: {store: v1store, generator: v1gen}
-v1:
-  uri: overzoom://
-  params:
-    source: {ref: v1c}
-v2:
-  uri: overzoom://
-  params:
-    source: {ref: v2c}
-
-#
-# Styles
-#
-s1:
-  public: true
-  uri: vector://
-  formats: [png,json,headers,svg,jpeg]
-  xml:
-    npm: ["osm-bright-style", "project.xml"]
-  xmlSetParams:
-    source: {ref: v1}
-s2:
-  public: true
-  uri: vector://
-  formats: [png,json,headers,svg,jpeg]
-  xml:
-    npm: ["osm-bright-style", "project.xml"]
-  xmlSetParams:
-    source: {ref: v2}
-
 g:
   public: true
   uri: vector://
@@ -64,4 +18,51 @@ g:
   xml:
     npm: ["osm-bright-style", "project.xml"]
   xmlSetParams:
-    source: {ref: v1gen}
+    source: {ref: gen}
+
+c:
+  uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0&createIfMissing=1
+oz:
+  uri: overzoom://
+  params:
+    source: {ref: c}
+osm:
+  public: true
+  pbfsource: oz
+  formats: [png,json,headers,svg,jpeg]
+  uri: vector://
+  xml:
+    npm: ["osm-bright-style", "project.xml"]
+  xmlSetParams:
+    source: {ref: oz}
+
+#  v1a:
+#     uri: autogen://?saveafter=0&minzoom=0&maxzoom=25
+#     ref: {store: v1store, generator: v1gen}
+
+
+gen2:
+  uri: bridge://
+  xml:
+    npm: ["osm-bright-source", "data.xml"]
+  xmlLayers: []
+
+gen3:
+  uri: bridge://
+  xml:
+    npm: ["osm-bright-source", "data.xml"]
+  xmlLayers: [road, road_label]
+
+mixer:
+  uri: layermixer://
+  params:
+    sources: [{ref: gen2}, {ref: gen3}]
+
+mix:
+  public: true
+  uri: vector://
+  formats: [png,json,headers,svg,jpeg]
+  xml:
+    npm: ["osm-bright-style", "project.xml"]
+  xmlSetParams:
+    source: {ref: mixer}
