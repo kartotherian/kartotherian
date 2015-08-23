@@ -1,6 +1,6 @@
 # Maps Tile service for Wikipedia
 
-Maps nodejs server for vector-based tiles designed for Wikipedia and other sites. It ties together a number of [MapBox components](https://github.com/mapbox) for vector and raster rendering based on [Mapnik 3](https://github.com/mapnik/mapnik), and uses [service runner](https://github.com/wikimedia/service-runner) for scalability and stability.
+Maps nodejs server for vector-based tiles designed for Wikipedia and other sites. It ties together a number of [MapBox components](https://github.com/mapbox) for vector and raster rendering based on [Mapnik 3](https://github.com/mapnik/mapnik), and uses [service runner](https://github.com/wikimedia/service-runner) for scalability, performance monitoring and stability.
 
 Kartotherin can serve vector and raster tiles in multiple formats and optional scaling:
 
