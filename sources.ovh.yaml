@@ -1,12 +1,3 @@
-# Source ordering is important for ref value resolution - if uri is not fully resolved before it is referenced,
-# it might be included in incomplete form.  TODO: detect dependencies/throw on circular
-
-#
-# Storage & generation
-#
-# v1store:
-#   uri: file://./vectors?filetype=pbf
-
 gen:
   uri: bridge://
   xml:
@@ -14,6 +5,7 @@ gen:
 g:
   public: true
   uri: vector://
+  pbfsource: gen
   formats: [png,json,headers,svg,jpeg]
   xml:
     npm: ["osm-bright-style", "project.xml"]
@@ -21,7 +13,13 @@ g:
     source: {ref: gen}
 
 c:
-  uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0&createIfMissing=1
+  uri: cassandra://
+  params:
+    cp: 127.0.0.1
+    keyspace: v1
+    repfactor: 1
+    durablewrite: 0
+    createIfMissing: 1
 oz:
   uri: overzoom://
   params:
@@ -36,33 +34,37 @@ osm:
   xmlSetParams:
     source: {ref: oz}
 
-#  v1a:
-#     uri: autogen://?saveafter=0&minzoom=0&maxzoom=25
-#     ref: {store: v1store, generator: v1gen}
+# autogen:
+#   uri: autogen://
+#   params:
+#     storage: {ref: c}
+#     generator: {ref: gen}
+#     mingen: 5
 
 
-gen2:
-  uri: bridge://
-  xml:
-    npm: ["osm-bright-source", "data.xml"]
-  xmlLayers: []
 
-gen3:
-  uri: bridge://
-  xml:
-    npm: ["osm-bright-source", "data.xml"]
-  xmlLayers: [road, road_label]
+# gen2:
+#   uri: bridge://
+#   xml:
+#     npm: ["osm-bright-source", "data.xml"]
+#   xmlLayers: []
 
-mixer:
-  uri: layermixer://
-  params:
-    sources: [{ref: gen2}, {ref: gen3}]
+# gen3:
+#   uri: bridge://
+#   xml:
+#     npm: ["osm-bright-source", "data.xml"]
+#   xmlLayers: [road, road_label]
 
-mix:
-  public: true
-  uri: vector://
-  formats: [png,json,headers,svg,jpeg]
-  xml:
-    npm: ["osm-bright-style", "project.xml"]
-  xmlSetParams:
-    source: {ref: mixer}
+# mixer:
+#   uri: layermixer://
+#   params:
+#     sources: [{ref: gen2}, {ref: gen3}]
+
+# mix:
+#   public: true
+#   uri: vector://
+#   formats: [png,json,headers,svg,jpeg]
+#   xml:
+#     npm: ["osm-bright-style", "project.xml"]
+#   xmlSetParams:
+#     source: {ref: mixer}

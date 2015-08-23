@@ -1,5 +1,3 @@
-# Source ordering is important for ref value resolution - if uri is not fully resolved before it is referenced,
-# it might be included in incomplete form.
 gen:
   uri: bridge://
   xml:
