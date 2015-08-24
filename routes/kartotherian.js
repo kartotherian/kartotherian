@@ -270,6 +270,11 @@ router.get('/:src(\\w+)/:z(\\d+)/:lat/:lon/:w(\\d+)/:h(\\d+):scale(@\\d+x).:form
 router.get('/:src(\\w+)/:info(pbfinfo).json', getTile);
 router.get('/:src(\\w+)/:info(info).json', getTile);
 
+
+// These are used for cache busting - delete them once we have htcp in order
+router.get('/:src(\\w+)/:tmp/:info(pbfinfo).json', getTile);
+router.get('/:src(\\w+)/:tmp/:info(info).json', getTile);
+
 module.exports = function(app) {
 
     init(app);
