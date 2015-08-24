@@ -7,6 +7,7 @@ g:
   uri: vector://
   pbfsource: gen
   formats: [png,json,headers,svg,jpeg]
+  maxscale: 4
   xml:
     npm: ["osm-bright-style", "project.xml"]
   xmlSetParams:
@@ -28,6 +29,7 @@ osm:
   public: true
   pbfsource: oz
   formats: [png,json,headers,svg,jpeg]
+  maxscale: 4
   uri: vector://
   xml:
     npm: ["osm-bright-style", "project.xml"]

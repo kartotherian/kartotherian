@@ -112,18 +112,20 @@ function getTile(req, res) {
                 throw new Err('Scaling parameter must be between 2 and %d', source.maxscale).metrics('err.req.scale');
             }
         }
-        if (source.formats) {
-            if (!_.contains(source.formats, req.params.format)) {
-                throw new Err('Format %s is not known', req.params.format).metrics('err.req.format');
+        format = req.params.format;
+        if (format === 'pbf') {
+            if (!source.pbfsource) {
+                throw new Err('pbf access is not enabled for this source').metrics('err.req.pbf');
             }
-            format = req.params.format;
+        } else if (!_.contains(source.formats, format)) {
+            throw new Err('Format %s is not known', format).metrics('err.req.format');
         }
 
         isStatic = req.params.w || req.params.h;
 
         if (isStatic) {
             if (format !== 'png' && format !== 'jpeg') {
-                throw new Err('Format %s is not allowed for static images', req.params.format).metrics('err.req.stformat');
+                throw new Err('Format %s is not allowed for static images', format).metrics('err.req.stformat');
             }
             x = core.strToFloat(req.params.x);
             y = core.strToFloat(req.params.y);
@@ -149,10 +151,10 @@ function getTile(req, res) {
             if (!core.isValidCoordinate(x, z) || !core.isValidCoordinate(y, z)) {
                 throw new Err('x,y coordinates are not valid, or not allowed for this zoom').metrics('err.req.coords');
             }
-            if (source.pbfsource && req.params.format === 'pbf') {
+            if (format === 'pbf') {
                 // Allow direct PBF access
                 source = sources.getSourceById(source.pbfsource);
-            } else if (format) {
+            } else {
                 opts = {format: format};
                 if (scale) {
                     opts.scale = scale;
