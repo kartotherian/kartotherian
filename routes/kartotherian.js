@@ -196,7 +196,7 @@ function getTile(req, res) {
             var params = {
                 zoom: z,
                 scale: scale,
-                center: {x: lat, y: lon, w: w, h: h},
+                center: {x: lon, y: lat, w: w, h: h},
                 format: format,
                 getTile: source.handler.getTile.bind(source.handler)
             };
