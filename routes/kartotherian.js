@@ -184,8 +184,8 @@ function getTile(req, res) {
             var lon = core.strToFloat(req.params.lon);
             var w = core.strToInt(req.params.w);
             var h = core.strToInt(req.params.h);
-            if (typeof x !== 'number' || typeof y !== 'number') {
-                throw new Err('The x and y coordinates must be numeric for static images').metrics('err.req.stcoords');
+            if (typeof lat !== 'number' || typeof lon !== 'number') {
+                throw new Err('The lat and lon coordinates must be numeric for static images').metrics('err.req.stcoords');
             }
             if (!core.isInteger(w) || !core.isInteger(h)) {
                 throw new Err('The width and height params must be integers for static images').metrics('err.req.stsize');
