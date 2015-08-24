@@ -30,6 +30,9 @@ osm:
   pbfsource: oz
   formats: [png,json,headers,svg,jpeg]
   maxscale: 4
+  static: true
+  maxheight: 1024
+  maxwidth: 1024
   uri: vector://
   xml:
     npm: ["osm-bright-style", "project.xml"]

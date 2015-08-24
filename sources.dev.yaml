@@ -20,6 +20,7 @@ s1:
   public: true
   uri: vector://
   formats: [png,json,headers,svg,jpeg]
+  static: true
   xml:
     npm: ["osm-bright-style", "project.xml"]
   xmlSetParams:

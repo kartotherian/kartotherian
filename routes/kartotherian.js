@@ -19,6 +19,10 @@ var defaultHeaders, overrideHeaders;
 var metrics;
 var maxZoom = 20;
 
+var infoHeaders = {
+
+};
+
 function reportError(errReporterFunc, err) {
     try {
         errReporterFunc(err);
@@ -64,8 +68,36 @@ function init(app) {
     });
 }
 
+function filterJson(query, data) {
+    if ('summary' in query) {
+        data = _(data).reduce(function (memo, layer) {
+            memo[layer.name] = {
+                features: layer.features.length,
+                jsonsize: JSON.stringify(layer).length
+            };
+            return memo;
+        }, {});
+    } else if ('nogeo' in query) {
+        // Recursivelly remove all "geometry" fields, replacing them with geometry's size
+        var filter = function (val, key) {
+            if (key === 'geometry') {
+                return val.length;
+            } else if (_.isArray(val)) {
+                return _.map(val, filter);
+            } else if (_.isObject(val)) {
+                _.each(val, function (v, k) {
+                    val[k] = filter(v, k);
+                });
+            }
+            return val;
+        };
+        data = _.map(data, filter);
+    }
+    return data;
+}
+
 /**
- * Web server (express) route handler to get requested tile
+ * Web server (express) route handler to get requested tile, snapshot image, or info
  * @param req request object
  * @param res response object
  */
@@ -88,9 +120,35 @@ function getTile(req, res) {
         if (!source.public) {
             throw new Err('Source is not public').metrics('err.req.source');
         }
+        var isInfoRequest = false;
+        if (req.params.info) {
+            if (req.params.info === 'pbfinfo' || req.params.info === 'info') {
+                isInfoRequest = true;
+                format = 'json';
+            } else {
+                throw new Err('Unexpected info type').metrics('err.req.info');
+            }
+        } else {
+            format = req.params.format;
+        }
+        if (!isInfoRequest && format !== 'pbf' && !_.contains(source.formats, format)) {
+            throw new Err('Format %s is not known', format).metrics('err.req.format');
+        }
+        if (format === 'pbf' || req.params.info === 'pbfinfo') {
+            if (!source.pbfsource) {
+                throw new Err('pbf access is not enabled for this source').metrics('err.req.pbf');
+            }
+            source = sources.getSourceById(source.pbfsource)
+        }
         if (!source.handler) {
             throw new Err('The source has not started yet').metrics('err.req.source');
         }
+        if (isInfoRequest) {
+            return source.handler.getInfoAsync().then(function(info) {
+                return [info, infoHeaders];
+            });
+        }
+
         z = core.strToInt(req.params.z);
         if (!core.isValidZoom(z)) {
             throw new Err('invalid zoom').metrics('err.req.coords');
@@ -112,23 +170,18 @@ function getTile(req, res) {
                 throw new Err('Scaling parameter must be between 2 and %d', source.maxscale).metrics('err.req.scale');
             }
         }
-        format = req.params.format;
-        if (format === 'pbf') {
-            if (!source.pbfsource) {
-                throw new Err('pbf access is not enabled for this source').metrics('err.req.pbf');
-            }
-        } else if (!_.contains(source.formats, format)) {
-            throw new Err('Format %s is not known', format).metrics('err.req.format');
-        }
 
-        isStatic = req.params.w || req.params.h;
+        isStatic = req.params.w !== undefined || req.params.h !== undefined;
 
         if (isStatic) {
+            if (!source.static) {
+                throw new Err('Static snapshot images are not enabled for this source').metrics('err.req.static');
+            }
             if (format !== 'png' && format !== 'jpeg') {
                 throw new Err('Format %s is not allowed for static images', format).metrics('err.req.stformat');
             }
-            x = core.strToFloat(req.params.x);
-            y = core.strToFloat(req.params.y);
+            var lat = core.strToFloat(req.params.lat);
+            var lon = core.strToFloat(req.params.lon);
             var w = core.strToInt(req.params.w);
             var h = core.strToInt(req.params.h);
             if (typeof x !== 'number' || typeof y !== 'number') {
@@ -137,10 +190,13 @@ function getTile(req, res) {
             if (!core.isInteger(w) || !core.isInteger(h)) {
                 throw new Err('The width and height params must be integers for static images').metrics('err.req.stsize');
             }
+            if (w > source.maxwidth || h > source.maxheight) {
+                throw new Err('Requested image is too big').metrics('err.req.stsizebig');
+            }
             var params = {
                 zoom: z,
                 scale: scale,
-                center: {x: x, y: y, w: w, h: h},
+                center: {x: lat, y: lon, w: w, h: h},
                 format: format,
                 getTile: source.handler.getTile.bind(source.handler)
             };
@@ -151,10 +207,7 @@ function getTile(req, res) {
             if (!core.isValidCoordinate(x, z) || !core.isValidCoordinate(y, z)) {
                 throw new Err('x,y coordinates are not valid, or not allowed for this zoom').metrics('err.req.coords');
             }
-            if (format === 'pbf') {
-                // Allow direct PBF access
-                source = sources.getSourceById(source.pbfsource);
-            } else {
+            if (format !== 'pbf') {
                 opts = {format: format};
                 if (scale) {
                     opts.scale = scale;
@@ -164,30 +217,8 @@ function getTile(req, res) {
         }
     }).spread(function (data, dataHeaders) {
         // Allow JSON to be shortened to simplify debugging
-        if (opts && opts.format === 'json') {
-            if ('summary' in req.query) {
-                data = _(data).reduce(function (memo, layer) {
-                    memo[layer.name] = {
-                        features: layer.features.length,
-                        jsonsize: JSON.stringify(layer).length
-                    };
-                    return memo;
-                }, {});
-            } else if ('nogeo' in req.query) {
-                var filter = function (val, key) {
-                    if (key === 'geometry') {
-                        return val.length;
-                    } else if (_.isArray(val)) {
-                        return _.map(val, filter);
-                    } else if (_.isObject(val)) {
-                        _.each(val, function (v, k) {
-                            val[k] = filter(v, k);
-                        });
-                    }
-                    return val;
-                };
-                data = _.map(data, filter);
-            }
+        if (format === 'json') {
+            data = filterJson(req.query, data);
         }
 
         var hdrs = {};
@@ -197,17 +228,20 @@ function getTile(req, res) {
         if (overrideHeaders) hdrs = _.extend(hdrs, overrideHeaders);
         if (source.headers) hdrs = _.extend(hdrs, source.headers);
         res.set(hdrs);
-        res.send(data);
+        if (format === 'json') {
+            res.json(data);
+        }
+        else {
+            res.send(data);
+        }
 
         var mx = util.format('req.%s.%s', srcId, z);
+        mx += '.' + format;
         if (isStatic) {
             mx += '.static';
         }
-        if (opts) {
-            mx += '.' + opts.format;
-            if (opts.scale) {
-                mx += '.' + opts.scale;
-            }
+        if (scale) {
+            mx += '.' + scale;
         }
         metrics.endTiming(mx, start);
     }).catch(function (err) {
@@ -229,8 +263,12 @@ router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+):scale(@\\d+x).:format([\\w\\.
 // get static image
 // anything is accepted for x and y because float number regex is not handled well here
 // [-+]?\\d*\\.?\\d+
-router.get('/:src(\\w+)/:z(\\d+)/:x/:y/:w(\\d+)/:h(\\d+).:format([\\w\\.]+)', getTile);
-router.get('/:src(\\w+)/:z(\\d+)/:x/:y/:w(\\d+)/:h(\\d+):scale(@\\d+x).:format([\\w\\.]+)', getTile);
+router.get('/:src(\\w+)/:z(\\d+)/:lat/:lon/:w(\\d+)/:h(\\d+).:format([\\w\\.]+)', getTile);
+router.get('/:src(\\w+)/:z(\\d+)/:lat/:lon/:w(\\d+)/:h(\\d+):scale(@\\d+x).:format([\\w\\.]+)', getTile);
+
+// get source info (json)
+router.get('/:src(\\w+)/:info(pbfinfo).json', getTile);
+router.get('/:src(\\w+)/:info(info).json', getTile);
 
 module.exports = function(app) {
 
