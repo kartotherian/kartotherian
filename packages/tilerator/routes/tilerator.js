@@ -71,7 +71,12 @@ function setinfo(req, res) {
     reportAsync(res, function () {
         var generator = sources.getSourceById(req.params.generatorId).handler;
         var storage = sources.getSourceById(req.params.storageId).handler;
+        core.checkType(req.query, 'tiles', 'string-array');
+
         return generator.getInfoAsync().then(function (info) {
+            if (req.query.tiles) {
+                info.tiles = req.query.tiles;
+            }
             return storage.putInfoAsync(info)
         });
     });

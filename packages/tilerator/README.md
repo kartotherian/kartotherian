@@ -108,3 +108,8 @@ This command performs copying of the source `info` object from source to destina
 ```
 http://localhost:4100/setinfo/source/destination
 ```
+
+Optionally you can specify the `?tiles=` parameter to update it:
+```
+http://localhost:4100/setinfo/gen/c?tiles=http://.../osm/{z}/{x}/{y}.pbf
+```
