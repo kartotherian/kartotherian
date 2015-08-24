@@ -67,6 +67,16 @@ function init(app) {
     });
 }
 
+function setinfo(req, res) {
+    reportAsync(res, function () {
+        var generator = sources.getSourceById(req.params.generatorId).handler;
+        var storage = sources.getSourceById(req.params.storageId).handler;
+        return generator.getInfoAsync().then(function (info) {
+            return storage.putInfoAsync(info)
+        });
+    });
+}
+
 function enque(req, res) {
     reportAsync(res, function () {
         var job = {
@@ -82,8 +92,8 @@ function enque(req, res) {
             parts: req.query.parts,
             deleteEmpty: req.query.deleteEmpty,
             baseZoom: req.query.baseZoom,
-            zoomFrom: req.query.zoomFrom,
-            zoomBefore: req.query.zoomBefore
+            fromZoom: req.query.fromZoom,
+            beforeZoom: req.query.beforeZoom
         };
 
         var filter1 = {
@@ -159,6 +169,7 @@ router.post('/stop/:seconds(\\d+)', stop);
 router.post('/cleanup', cleanup);
 router.post('/cleanup/:type/:minutes(\\d+)', cleanup);
 router.post('/cleanup/:type/:minutes(\\d+)/:minRebalanceInMinutes(\\d+)', cleanup);
+router.post('/setinfo/:generatorId/:storageId', setinfo);
 
 module.exports = function(app) {
 

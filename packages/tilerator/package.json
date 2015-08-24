@@ -44,25 +44,25 @@
     "minimist": "0.2.*",
     "underscore": "^1.8.3",
     "numeral": "^1.5.3",
+    "promistreamus": "^0.1.0",
 
     "jade": "^1.11.0",
     "kue": "git+https://github.com/nyurik/kue.git",
     "kue-ui": "git+https://github.com/nyurik/kue-ui.git",
 
     "mapnik": "~3.4.0",
-    "promistreamus": "^0.1.0",
+    "tilelive": "~5.8.2",
+    "tilelive-bridge": "~1.4.0",
+    "tilelive-file": "^0.0.3",
+    "tilelive-vector": "~3.3.0",
 
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "kartotherian-autogen": "git+https://github.com/kartotherian/kartotherian-autogen.git",
     "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",
+    "kartotherian-layermixer": "git+https://github.com/kartotherian/kartotherian-layermixer.git",
     "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
     "osm-bright-source": "git+https://github.com/kartotherian/osm-bright.tm2source.git",
-    "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git",
-
-    "tilelive": "~5.8.2",
-    "tilelive-bridge": "~1.4.0",
-    "tilelive-file": "^0.0.3",
-    "tilelive-vector": "~3.3.0"
+    "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git"
   },
   "devDependencies": {
     "extend": "^3.0.0",

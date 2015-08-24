@@ -60,8 +60,8 @@ The base zoom may contain more than just one tile or even a whole zoom level. Us
 This feature could be useful for the tile invalidation. For example, a user edited a tile at Z=16, and the system automatically scheduled tile refresh at Z=10..17)
 
 * `baseZoom` - the zoom level of the pyramid's tip
-* `zoomFrom` - zoom level at which to start generation (inclusive)
-* `zoomBefore` - zoom level to end tile generation (exclusive)
+* `fromZoom` - zoom level at which to start generation (inclusive)
+* `beforeZoom` - zoom level to end tile generation (exclusive)
 
 ### Job Filters
 Sometimes you may wish to generate only those tiles that satisfy a certain condition.
@@ -102,3 +102,9 @@ http://localhost:4100/cleanup/active/0/60
 This tells tilerator to move all jobs from active to inactive, even if they were just updated (you did stop the workers, right?),
 and also to break up all jobs into 5 parts if the job's estimated completion time is more than 60 minutes.  The original job
 will be shortened to the 10% of whatever was left to do.
+
+## Copying source info
+This command performs copying of the source `info` object from source to destination (immediate, not queued)
+```
+http://localhost:4100/setinfo/source/destination
+```

@@ -132,7 +132,7 @@ module.exports.addJobAsync = function(job) {
         }
 
         // If this is a pyramid, break it into individual jobs
-        if (job.baseZoom !== undefined || job.zoomFrom !== undefined || job.zoomBefore !== undefined) {
+        if (job.baseZoom !== undefined || job.fromZoom !== undefined || job.beforeZoom !== undefined) {
             return module.exports.addPyramidJobsAsync(job);
         }
 
@@ -193,35 +193,35 @@ module.exports.addJobAsync = function(job) {
 };
 
 /**
- * Given an x,y (idxFrom) of the baseZoom, enqueue all tiles below them, with zooms >= zoomFrom and < zoomBefore
+ * Given an x,y (idxFrom) of the baseZoom, enqueue all tiles below them, with zooms >= fromZoom and < beforeZoom
  */
 module.exports.addPyramidJobsAsync = function(options) {
-    if (options.baseZoom === undefined || options.zoomFrom === undefined || options.zoomBefore === undefined) {
-        throw new Err('Pyramid-add requires baseZoom, zoomFrom, and zoomBefore');
+    if (options.baseZoom === undefined || options.fromZoom === undefined || options.beforeZoom === undefined) {
+        throw new Err('Pyramid-add requires baseZoom, fromZoom, and beforeZoom');
     }
 
     core.checkType(options, 'baseZoom', 'zoom');
-    core.checkType(options, 'zoomFrom', 'zoom');
-    core.checkType(options, 'zoomBefore', 'zoom', true, options.zoomFrom);
+    core.checkType(options, 'fromZoom', 'zoom');
+    core.checkType(options, 'beforeZoom', 'zoom', true, options.fromZoom);
     core.checkType(options, 'idxFrom', 'integer');
     core.checkType(options, 'idxBefore', 'integer');
 
     var opts = _.clone(options);
     delete opts.baseZoom;
-    delete opts.zoomFrom;
-    delete opts.zoomBefore;
+    delete opts.fromZoom;
+    delete opts.beforeZoom;
     delete opts.zoom;
     delete opts.idxFrom;
     delete opts.idxBefore;
 
-    var zoom = options.zoomFrom;
+    var zoom = options.fromZoom;
     var result = [];
 
     var addJob = function (res) {
         if (res) {
             result = result.concat(res);
         }
-        if (zoom >= options.zoomBefore) {
+        if (zoom >= options.beforeZoom) {
             return BBPromise.resolve(result);
         }
         var z = zoom++;
