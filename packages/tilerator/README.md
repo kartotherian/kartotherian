@@ -2,6 +2,8 @@
 
 **Tilerator** (Russian: Тилератор, tee-LEH-ruh-tor)
 
+This code is cross-hosted at [gerrit](https://git.wikimedia.org/summary/maps%2Ftilerator)
+
 Generating tiles from the SQL queries sometimes requires a considerable time, often too long for the web request. Tilerator is a multi-processor, cluster-enabled tile generator, that allows both pre-generation and dirty tile re-generation.
 
 Scheduled generation job waits in the queue ([kue](https://github.com/Automattic/kue)) until it is picked up by one of the workers. The worker will update job progress, as well as store intermediate data to allow restarts/crash recovery.
