@@ -2,6 +2,7 @@
 
 Maps nodejs server for vector-based tiles and snapshots, designed for Wikipedia and other sites. It ties together a number of [MapBox](https://github.com/mapbox) components for vector and raster rendering based on [Mapnik 3](https://github.com/mapnik/mapnik), and uses [service runner](https://github.com/wikimedia/service-runner) for scalability, performance monitoring and stability.
 
+### Serving tiles
 Kartotherin can serve vector and raster tiles in multiple formats and optional scaling:
 
     http://.../{source}/{zoom}/{x}/{y}[@{scale}x].{format}
@@ -11,9 +12,17 @@ Kartotherin can serve vector and raster tiles in multiple formats and optional s
 * Optional scalling can render larger images for high resolution screens.
 * Supported formats include PNG ang JPEG, SVG, PBF vectors, and JSON (with `nogeo` and `summary` debug options)
 
-Additionally, Kartotherian supports static image generation. Users may request a PNG or a JPEG snapshot image of any size, scaling, and zoom level:
+### Static map images
+Kartotherian supports static image generation. Users may request a PNG or a JPEG snapshot image of any size, scaling, and zoom level:
 
     http://.../{source}/{zoom}/{lat}/{lon}/{width}/{height}[@{scale}x].{format}
+
+### Info data
+Kartotherian can be used as a source of the PBF data for Mapbox studio. Point it to your `node_modules/osm-bright-source`, clicking layers / change layer, and providing this link:
+
+    http://.../{style}/pbfinfo.json
+    
+(There is currently [a bug](https://github.com/mapbox/mapbox-studio/issues/1268) in the MapBox studio, but it should be resolved soon)
 
 ## Very quick start:
 Assumes you have an OSM database (or a part of it) set up locally in the latest Postgress+Postgis, imported using `osm2pgsql --slim --hstore`.
