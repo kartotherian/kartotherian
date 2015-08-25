@@ -1,15 +1,12 @@
-# Map Tile Pre-Generation Service for Wikipedia
+# Map Tile Pre-Generation Service for [Kartotherian](https://github.com/kartotherian/kartotherian)
 
 **Tilerator** (Russian: Тилератор, tee-LEH-ruh-tor)
 
-Generating tiles from the SQL queries sometimes requires a considerable time, often too long for the web request.
-Tilerator is a multi-processor, cluster-enabled tile generator, that allows both pre-generation and dirty tile re-generation.
+Generating tiles from the SQL queries sometimes requires a considerable time, often too long for the web request. Tilerator is a multi-processor, cluster-enabled tile generator, that allows both pre-generation and dirty tile re-generation.
 
-Scheduled generation job waits in the queue ([kue](https://github.com/Automattic/kue)) until it is picked up by one
-of the workers. The worker will update job progress, as well as store intermediate data to allow restarts/crash recovery.
+Scheduled generation job waits in the queue ([kue](https://github.com/Automattic/kue)) until it is picked up by one of the workers. The worker will update job progress, as well as store intermediate data to allow restarts/crash recovery.
 
-Tilerator is an unprotected Admin tool, and should NOT be exposed to the web. By default, tilerator only accepts
-connections from the localhost. It is recommended that it is left this way, and used via a port forwarding ssh tunnel with `ssh -L 4100:localhost:4100 my.maps.server`
+Tilerator is an unprotected Admin tool, and should NOT be exposed to the web. By default, tilerator only accepts connections from the localhost. It is recommended that it is left this way, and used via a port forwarding ssh tunnel with `ssh -L 4100:localhost:4100 my.maps.server`
 
 ## Configuration
 Inside the `conf` key:
