@@ -1,5 +1,7 @@
 # Maps Tile service for Wikipedia
 
+This code is cross-hosted at [gerrit](https://git.wikimedia.org/log/maps%2Ftilerator/HEAD) ([git clone](https://gerrit.wikimedia.org/r/maps/kartotherian))
+
 Maps nodejs server for vector-based tiles and snapshots, designed for Wikipedia and other sites. It ties together a number of [MapBox](https://github.com/mapbox) components for vector and raster rendering based on [Mapnik 3](https://github.com/mapnik/mapnik), and uses [service runner](https://github.com/wikimedia/service-runner) for scalability, performance monitoring and stability.
 
 ### Serving tiles
