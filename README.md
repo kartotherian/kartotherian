@@ -13,7 +13,7 @@ Kartotherin can serve vector and raster tiles in multiple formats and optional s
 
 Additionally, Kartotherian supports static image generation. Users may request a PNG or a JPEG snapshot image of any size, scaling, and zoom level:
 
-    http://.../{source}/{zoom}/{x}/{y}/{width}/{height}[@{scale}x].{format}
+    http://.../{source}/{zoom}/{lat}/{lon}/{width}/{height}[@{scale}x].{format}
 
 ## Very quick start:
 Assumes you have an OSM database (or a part of it) set up locally in the latest Postgress+Postgis, imported using `osm2pgsql --slim --hstore`.
