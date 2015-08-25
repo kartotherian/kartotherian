@@ -1,4 +1,4 @@
-# Map Tile Pre-Generatior service for Wikipedia
+# Map Tile Pre-Generation Service for Wikipedia
 
 **Tilerator** (Russian: Тилератор, tee-LEH-ruh-tor)
 
