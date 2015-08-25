@@ -24,6 +24,7 @@ module.exports.tm2z = tm2z;
 module.exports.xray = xray;
 module.exports.mapnik = mapnik;
 module.exports.Backend = Backend;
+module.exports.strict = true;
 
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
@@ -83,7 +84,7 @@ Vector.prototype.update = function(opts, callback) {
     var s = this;
     var map = new mapnik.Map(256,256);
     map.fromString(opts.xml, {
-        strict: true,
+        strict: module.exports.strict,
         base: this._base + path.sep
     }, function(err) {
         if (err) {
@@ -304,7 +305,7 @@ Vector.prototype.profile = function(callback) {
     var densest = [];
 
     map.fromString(this._xml, {
-        strict: true,
+        strict: module.exports.strict,
         base: this._base + '/'
     }, function(err) {
         if (err) {
