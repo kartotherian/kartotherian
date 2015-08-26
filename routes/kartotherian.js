@@ -261,10 +261,11 @@ router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w]+)', getTile);
 router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+)@:scale([\\.\\d]+)x.:format([\\w]+)', getTile);
 
 // get static image
-// anything is accepted for x and y because float number regex is not handled well here
-// [-+]?\\d*\\.?\\d+
+// for now allow both _ and / separators until we diced on the format
 router.get('/:src(\\w+)_:z(\\d+)_:lat([-\\d\\.]+)_:lon([-\\d\\.]+)_:w(\\d+)x:h(\\d+).:format([\\w]+)', getTile);
 router.get('/:src(\\w+)_:z(\\d+)_:lat([-\\d\\.]+)_:lon([-\\d\\.]+)_:w(\\d+)x:h(\\d+)@:scale([\\.\\d]+)x.:format([\\w]+)', getTile);
+router.get('/:src(\\w+)/:z(\\d+)/:lat/:lon/:w(\\d+)/:h(\\d+).:format([\\w\\.]+)', getTile);
+router.get('/:src(\\w+)/:z(\\d+)/:lat/:lon/:w(\\d+)/:h(\\d+)@:scale([\\.\\d]+)x.:format([\\w]+)', getTile);
 
 // get source info (json)
 router.get('/:src(\\w+)/:info(pbfinfo).json', getTile);
