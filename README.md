@@ -126,4 +126,5 @@ multple change sets.
 * `maxzoom` (int) - maximum allowable zoom for the public request (public requests only)
 * `defaultHeaders` (object) - a set of extra headers that will be sent to the user unless the source provides its own. (public requests only)
 * `headers` (object) - a set of extra headers that will be sent to the user instead of the headers returned by the source. (public requests only)
-* `formats` (array) - a list of string values specifyng allowed formats, e.g. `['png','jpeg']`
+* `formats` (array of strings) - one string or a list of string values specifying allowed formats, e.g. `['png','jpeg']`
+* `scales` (array of numbers) - one number or a list of number values specifying allowed scalings, e.g. `[1.3, 1.5, 2, 2.6, 3]`
