@@ -11,13 +11,14 @@ Kartotherin can serve vector and raster tiles in multiple formats and optional s
 
 * The sources are configured with the
 [source config file](https://github.com/kartotherian/kartotherian-core). Sources configuration supports different methods of tile storage, such as Cassandra or files, generation from postgress db, overzoom to extract the tile from lower zooms if missing, layer extraction, mixing multiple sources together, etc.
-* Optional scalling can render larger images for high resolution screens.
+* Optional scalling can render larger images for high resolution screens (only those enabled in the source, e.g. `[1.5, 2]`)
 * Supported formats include PNG ang JPEG, SVG, PBF vectors, and JSON (with `nogeo` and `summary` debug options)
 
 ### Static map images
 Kartotherian supports static image generation. Users may request a PNG or a JPEG snapshot image of any size, scaling, and zoom level:
 
-    http://.../{source}/{zoom}/{lat}/{lon}/{width}/{height}[@{scale}x].{format}
+    http://.../{source}_{zoom}_{lat}_{lon}_{width}x{height}[@{scale}x].{format}
+    http://.../osm_4_42_-3.14_800x600.png
 
 ### Info data
 Kartotherian can be used as a source of the PBF data for Mapbox studio. Point it to your `node_modules/osm-bright-source`, clicking layers / change layer, and providing this link:

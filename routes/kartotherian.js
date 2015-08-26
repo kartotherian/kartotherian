@@ -159,16 +159,16 @@ function getTile(req, res) {
         if (source.maxzoom !== undefined && z > source.maxzoom) {
             throw new Err('Maximum zoom is %d', source.maxzoom).metrics('err.req.zoom');
         }
-        if (req.params.scale) {
-            if (!source.maxscale) {
+        scale = req.params.scale;
+        if (scale !== undefined) {
+            if (!source.scales) {
                 throw new Err('Scaling is not enabled for this source').metrics('err.req.scale');
             }
-            // Do not allow scale === 1, because that would allow two types of requests for the same data,
-            // which is not very good for caching (otherwise we would have to normalize URLs in Varnish)
-            scale = parseInt(req.params.scale[1]);
-            if (scale < 2 || scale > source.maxscale) {
-                throw new Err('Scaling parameter must be between 2 and %d', source.maxscale).metrics('err.req.scale');
+            if (!_.contains(source.scales, scale.toString())) {
+                throw new Err('This scaling is not allowed for this source. Allowed: %s', source.scales.join())
+                    .metrics('err.req.scale');
             }
+            scale = parseFloat(scale);
         }
 
         isStatic = req.params.w !== undefined || req.params.h !== undefined;
@@ -230,8 +230,7 @@ function getTile(req, res) {
         res.set(hdrs);
         if (format === 'json') {
             res.json(data);
-        }
-        else {
+        } else {
             res.send(data);
         }
 
@@ -241,7 +240,8 @@ function getTile(req, res) {
             mx += '.static';
         }
         if (scale) {
-            mx += '.' + scale;
+            // replace '.' with ',' -- otherwise grafana treats it as a divider
+            mx += '.' + (scale.toString().replace('.', ','));
         }
         metrics.endTiming(mx, start);
     }).catch(function (err) {
@@ -250,30 +250,25 @@ function getTile(req, res) {
                 .status(400)
                 .header('Cache-Control', 'public, s-maxage=30, max-age=30')
                 .json(err.message || 'error/unknown');
-            core.log(err);
+            core.log('error', err);
             metrics.increment(err.metrics || 'err.unknown');
         }, err);
     });
 }
 
 // get tile
-router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w\\.]+)', getTile);
-router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+):scale(@\\d+x).:format([\\w\\.]+)', getTile);
+router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w]+)', getTile);
+router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+)@:scale([\\.\\d]+)x.:format([\\w]+)', getTile);
 
 // get static image
 // anything is accepted for x and y because float number regex is not handled well here
 // [-+]?\\d*\\.?\\d+
-router.get('/:src(\\w+)/:z(\\d+)/:lat/:lon/:w(\\d+)/:h(\\d+).:format([\\w\\.]+)', getTile);
-router.get('/:src(\\w+)/:z(\\d+)/:lat/:lon/:w(\\d+)/:h(\\d+):scale(@\\d+x).:format([\\w\\.]+)', getTile);
+router.get('/:src(\\w+)_:z(\\d+)_:lat([-\\d\\.]+)_:lon([-\\d\\.]+)_:w(\\d+)x:h(\\d+).:format([\\w]+)', getTile);
+router.get('/:src(\\w+)_:z(\\d+)_:lat([-\\d\\.]+)_:lon([-\\d\\.]+)_:w(\\d+)x:h(\\d+)@:scale([\\.\\d]+)x.:format([\\w]+)', getTile);
 
 // get source info (json)
 router.get('/:src(\\w+)/:info(pbfinfo).json', getTile);
 router.get('/:src(\\w+)/:info(info).json', getTile);
-
-
-// These are used for cache busting - delete them once we have htcp in order
-router.get('/:src(\\w+)/:tmp/:info(pbfinfo).json', getTile);
-router.get('/:src(\\w+)/:tmp/:info(info).json', getTile);
 
 module.exports = function(app) {
 
