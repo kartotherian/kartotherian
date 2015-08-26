@@ -119,7 +119,7 @@ function initApp(options) {
             return lastIndex !== -1 && lastIndex === position;
         };
     }
-    app.use('/static', express.static(__dirname + '/static', core.getStaticOpts(app.conf)));
+    app.use('/', express.static(__dirname + '/static', core.getStaticOpts(app.conf)));
 
     return BBPromise.resolve(app);
 

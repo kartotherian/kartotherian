@@ -58,7 +58,7 @@ function init(app) {
         defaultHeaders = app.conf.defaultHeaders || {};
         overrideHeaders = app.conf.headers || {};
 
-        app.use('/static/leaflet', express.static(sources.getModulePath('leaflet'), core.getStaticOpts(app.conf)));
+        app.use('/leaflet', express.static(sources.getModulePath('leaflet'), core.getStaticOpts(app.conf)));
         return sources.loadAsync(app.conf);
     }).catch(function (err) {
         reportError(function (err) {

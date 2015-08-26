@@ -37,7 +37,7 @@ git submodule update --init                                 # update submodules
 npm install                                                 # install npm dependencies
 node server.js -c config.sample.yaml
 ```
-Browse to http://localhost:4000/static
+Browse to http://localhost:4000/
 
 The set up inside `sources.sample.yaml` does not use any storage or caching, so it will not be suitable for production. You will need to configure additional source chains and setup a proper storage to make this into a production system.
 
@@ -223,7 +223,7 @@ varnishstat  # monitor varnish performance
 ```
 npm start
 ```
-In browser, navigate to `http://localhost:4000/static`.
+In browser, navigate to `http://localhost:4000/`.
 
 ### Troubleshooting
 
