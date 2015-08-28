@@ -48,6 +48,7 @@ function init(app) {
             'tilelive-file',
             'tilelive-vector',
             'kartotherian-autogen',
+            'kartotherian-demultiplexer',
             'kartotherian-overzoom',
             'kartotherian-cassandra',
             'kartotherian-layermixer'

@@ -54,6 +54,32 @@ Inside the `conf` key:
 * `headers` (optional, object) - a set of extra headers that will be sent to the user instead of the headers returned by the source. (public requests only)
 For the rest of the configuration parameters, see [service runner](https://github.com/wikimedia/service-runner) config info.
 
+## Components
+Kartotherian platform consists of a number of elements, some of which conform to the general specifications established
+by [MapBox](https://github.com/mapbox), and therefor can reuse components that confirm to the same specification.
+Also, see [Tilerator](https://github.com/kartotherian/tilerator), an optional stand-alone service to pre-generate tiles.
+Tilerator is separate from Kartotherian, but it reuses most of the same components.
+
+### Components by Wikimedia Foundation
+* [kartotherian-core](https://github.com/kartotherian/kartotherian-core) - Loads and configures tile sources, and provides some common utility functions
+* [kartotherian-autogen](https://github.com/kartotherian/kartotherian-autogen) - Tile source that checks "storage" source for a tile, and if not found, gets it from the "generator" source and saves it into the "storage"
+* [kartotherian-demultiplexer](https://github.com/kartotherian/kartotherian-demultiplexer) - Tile source that combines multiple sources by zoom level
+* [kartotherian-cassandra](https://github.com/kartotherian/kartotherian-cassandra) - Tile source that stores tiles in the Cassandra database 
+* [kartotherian-layermixer](https://github.com/kartotherian/kartotherian-layermixer) - Tile source capable of mixing different vector layers from multiple tile sources
+* [kartotherian-overzoom](https://github.com/kartotherian/kartotherian-overzoom) - Tile source that will zoom out if the requested tile does not exist, and extracts the needed portion from the lower-zoom tile it finds.
+* [osm-bright-source](https://github.com/kartotherian/osm-bright.tm2source) - SQL queries used by the `tilelive-bridge` to generate a vector tile from Postgres Database
+* [osm-bright-style](https://github.com/kartotherian/osm-bright.tm2) - Style used by the `tilelive-vector` to convert vector tiles into images.
+
+### Components by MapBox
+* [tilelive](https://github.com/mapbox/tilelive) - ties together various tile sources, both vector and raster
+* [tilelive-bridge](https://github.com/mapbox/tilelive-bridge) - generates vector tiles from SQL
+* [tilelive-vector](https://github.com/mapbox/tilelive-vector) - converts vector tiles to raster tiles
+* [abaculus](https://github.com/mapbox/abaculus) - generates raster images of any location and size from a tile source
+
+### Other Relevant Components
+* [mapnik](https://github.com/mapnik/node-mapnik) - Tile rendering library for node
+* [leaflet](https://github.com/Leaflet/Leaflet) - JavaScript library for mobile-friendly interactive maps
+
 ## In depth step-by-step:
 
 ### Requirements (on Debian Jessie)
