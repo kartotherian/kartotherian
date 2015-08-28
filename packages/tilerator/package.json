@@ -58,6 +58,7 @@
 
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "kartotherian-autogen": "git+https://github.com/kartotherian/kartotherian-autogen.git",
+    "kartotherian-demultiplexer": "git+https://github.com/kartotherian/kartotherian-demultiplexer.git",
     "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",
     "kartotherian-layermixer": "git+https://github.com/kartotherian/kartotherian-layermixer.git",
     "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
