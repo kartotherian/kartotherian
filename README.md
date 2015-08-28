@@ -21,6 +21,8 @@ mixer:
   uri: layermixer://
   params:
     sources: [{ref: store}, {ref: update}]
+    # Make sure to remove these layers if 2nd source does not generate them for the given tile
+    removeInFirst: [road, road_label]
 ```
 
 Now run the tilerator to copy the the mixer source into the store, possibly limiting it to only those that exist in store
