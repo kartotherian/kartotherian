@@ -17,13 +17,13 @@ Kartotherin can serve vector and raster tiles in multiple formats and optional s
 ### Static map images
 Kartotherian supports static image generation. Users may request a PNG or a JPEG snapshot image of any size, scaling, and zoom level:
 
-    http://.../img/{source}_{zoom}_{lat}_{lon}_{width}x{height}[@{scale}x].{format}
+    http://.../img/{source},{zoom},{lat},{lon},{width}x{height}[@{scale}x].{format}
     
     # image centered at 42,-3.14, at zoom level 4, size 800x600
-    http://.../img/osm_4_42_-3.14_800x600.png
+    http://.../img/osm-intl,4,42,-3.14,800x600.png
 
     # the same but for higher DPI device with 1.5 scaling
-    http://.../img/osm_4_42_-3.14_800x600@1.5x.png
+    http://.../img/osm-intl,4,42,-3.14,800x600@1.5x.png
 
 ### Info data
 Kartotherian can be used as a source of the PBF data for Mapbox studio. Point it to your `node_modules/osm-bright-source`, clicking layers / change layer, and providing this link:

@@ -258,16 +258,16 @@ function getTile(req, res) {
 }
 
 // get tile
-router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w]+)', getTile);
-router.get('/:src(\\w+)/:z(\\d+)/:x(\\d+)/:y(\\d+)@:scale([\\.\\d]+)x.:format([\\w]+)', getTile);
+router.get('/:src(' + core.Sources.sourceIdReStr + ')/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w]+)', getTile);
+router.get('/:src(' + core.Sources.sourceIdReStr + ')/:z(\\d+)/:x(\\d+)/:y(\\d+)@:scale([\\.\\d]+)x.:format([\\w]+)', getTile);
 
 // get static image
-router.get('/img/:src(\\w+)_:z(\\d+)_:lat([-\\d\\.]+)_:lon([-\\d\\.]+)_:w(\\d+)x:h(\\d+).:format([\\w]+)', getTile);
-router.get('/img/:src(\\w+)_:z(\\d+)_:lat([-\\d\\.]+)_:lon([-\\d\\.]+)_:w(\\d+)x:h(\\d+)@:scale([\\.\\d]+)x.:format([\\w]+)', getTile);
+router.get('/img/:src(' + core.Sources.sourceIdReStr + '),:z(\\d+),:lat([-\\d\\.]+),:lon([-\\d\\.]+),:w(\\d+)x:h(\\d+).:format([\\w]+)', getTile);
+router.get('/img/:src(' + core.Sources.sourceIdReStr + '),:z(\\d+),:lat([-\\d\\.]+),:lon([-\\d\\.]+),:w(\\d+)x:h(\\d+)@:scale([\\.\\d]+)x.:format([\\w]+)', getTile);
 
 // get source info (json)
-router.get('/:src(\\w+)/:info(pbfinfo).json', getTile);
-router.get('/:src(\\w+)/:info(info).json', getTile);
+router.get('/:src(' + core.Sources.sourceIdReStr + ')/:info(pbfinfo).json', getTile);
+router.get('/:src(' + core.Sources.sourceIdReStr + ')/:info(info).json', getTile);
 
 module.exports = function(app) {
 
