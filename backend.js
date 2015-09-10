@@ -2,7 +2,6 @@ var tilelive = require('tilelive');
 var crypto = require('crypto');
 var mapnik = require('mapnik');
 var util = require('util');
-var zlib = require('zlib');
 
 module.exports = Backend;
 
@@ -111,10 +110,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         } else if (compression) {
             size = body.length;
             headers = head || {};
-            return zlib[compression](body, function(err, data) {
-                if (err) return callback(err);
-                return makevtile(null, data, 'pbf');
-            });
+            return makevtile(null, body, 'pbf');
         // Image sources do not allow overzooming (yet).
         } else if (bz < z) {
             return makevtile();
@@ -150,17 +146,17 @@ Backend.prototype.getTile = function(z, x, y, callback) {
 
         try {
             if (type === 'pbf') {
-                vtile.setData(data);
+                vtile.setData(data,function(err) {
+                    if (err) return callback(err);
+                    return callback(null, vtile, headers);
+                });
             } else {
                 vtile.addImage(data, backend._layer);
+                return callback(null, vtile, headers);
             }
         } catch (err) {
             return callback(err);
         }
-        vtile.parse(function(err) {
-            if (err) return callback(err);
-            callback(null, vtile, headers);
-        })
     };
 };
 

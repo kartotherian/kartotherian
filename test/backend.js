@@ -1,7 +1,6 @@
 var test = require('tape');
 var tilelive = require('tilelive');
 var url = require('url');
-var zlib = require('zlib');
 var Backend = require('..').Backend;
 var mapnik = require('..').mapnik;
 var path = require('path');
@@ -160,8 +159,11 @@ tilelive.protocols['test:'] = Testsource;
     });
     test('errors out on bad protobuf', function(t) {
         sources.a.getTile(1, 0, 3, function(err, vtile) {
-            t.equal('could not parse buffer as protobuf', err.message);
-            t.end();
+            t.ifError(err);
+            vtile.parse(function(err) {
+                t.equal('could not parse buffer as protobuf', err.message);
+                t.end();
+            });
         });
     });
 
