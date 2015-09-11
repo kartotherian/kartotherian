@@ -1,6 +1,6 @@
 {
   "name": "tilelive-vector",
-  "version": "3.3.3",
+  "version": "3.4.0",
   "main": "./index.js",
   "description": "Vector tile => raster tile backend for tilelive",
   "repository": {
@@ -13,7 +13,7 @@
     }
   ],
   "dependencies": {
-    "mapnik" : "~3.4.1",
+    "mapnik": "~3.4.6",
     "tilelive": "5.8.x",
     "tar": "~0.1.18",
     "request": "~2.48.0",

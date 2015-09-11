@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.0
+
+ - Updated to use mapnik 3.4.6
+
 ## 3.2.7
 
  - Update tilelive.js to 5.8.x
