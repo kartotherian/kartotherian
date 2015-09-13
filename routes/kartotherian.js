@@ -60,7 +60,9 @@ function init(app) {
         overrideHeaders = app.conf.headers || {};
 
         app.use('/leaflet', express.static(sources.getModulePath('leaflet'), core.getStaticOpts(app.conf)));
-        return sources.loadAsync(app.conf);
+        return sources.loadVariablesAsync(app.conf.variables);
+    }).then(function () {
+        return sources.loadSourcesAsync(app.conf.sources);
     }).catch(function (err) {
         reportError(function (err) {
             core.log('fatal', err);
@@ -107,7 +109,7 @@ function getTile(req, res) {
     var start = Date.now();
     // These vars might get set before finishing validation.
     // Do not use them unless successful
-    var isStatic, srcId, source, opts, z, x, y, scale, format;
+    var isStatic, srcId, source, opts, z, x, y, scale, format, handler;
 
     return BBPromise.try(function () {
         if (!sources) {
@@ -139,13 +141,16 @@ function getTile(req, res) {
             if (!source.pbfsource) {
                 throw new Err('pbf access is not enabled for this source').metrics('err.req.pbf');
             }
-            source = sources.getSourceById(source.pbfsource)
+            source = sources.getSourceById(source.pbfsource);
+            handler = sources.getHandlerById(source.pbfsource, true);
+        } else {
+            handler = sources.getHandlerById(srcId, true);
         }
-        if (!source.handler) {
+        if (!handler) {
             throw new Err('The source has not started yet').metrics('err.req.source');
         }
         if (isInfoRequest) {
-            return source.handler.getInfoAsync().then(function(info) {
+            return handler.getInfoAsync().then(function(info) {
                 return [info, infoHeaders];
             });
         }
@@ -199,7 +204,7 @@ function getTile(req, res) {
                 scale: scale,
                 center: {x: lon, y: lat, w: w, h: h},
                 format: format,
-                getTile: source.handler.getTile.bind(source.handler)
+                getTile: handler.getTile.bind(handler)
             };
             return abaculus(params);
         } else {
@@ -214,7 +219,7 @@ function getTile(req, res) {
                     opts.scale = scale;
                 }
             }
-            return core.getTitleWithParamsAsync(source.handler, z, x, y, opts);
+            return core.getTitleWithParamsAsync(handler, z, x, y, opts);
         }
     }).spread(function (data, dataHeaders) {
         // Allow JSON to be shortened to simplify debugging
