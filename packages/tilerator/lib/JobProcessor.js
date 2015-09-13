@@ -19,21 +19,9 @@ var config = {
 };
 
 function JobProcessor(sources, job, metrics) {
-    var jd = job.data;
-    if (!(jd.generatorId in sources)) {
-        throw new Err('Unknown generatorId %s', jd.generatorId);
-    }
-    if (!(jd.storageId in sources)) {
-        throw new Err('Unknown storageId %s', jd.storageId);
-    }
+    this.sources = sources;
     this.job = job;
     this.metrics = metrics;
-    this.tileGenerator = sources[jd.generatorId].handler;
-    this.tileStore = sources[jd.storageId].handler;
-    this.start = new Date();
-    this.isShuttingDown = false;
-    this.metricsPrefix = util.format('gen.%s.%s.z%s.', jd.generatorId, jd.storageId,
-        jd.zoom < 10 ? '0' + jd.zoom : jd.zoom);
 }
 
 /**
@@ -42,9 +30,15 @@ function JobProcessor(sources, job, metrics) {
  */
 JobProcessor.prototype.runAsync = function() {
     var self = this;
-    var job = self.job.data;
+    var job = this.job.data;
 
-    return BBPromise.try(function () {
+    return this.sources.loadSourcesAsync(job.sources).then(function () {
+        self.tileGenerator = self.sources.getHandlerById(job.generatorId);
+        self.tileStore = self.sources.getHandlerById(job.storageId);
+        self.start = new Date();
+        self.isShuttingDown = false;
+        self.metricsPrefix = util.format('gen.%s.%s.z%s.', job.generatorId, job.storageId,
+            job.zoom < 10 ? '0' + job.zoom : job.zoom);
         self.idxFromOriginal = job.idxFrom;
         self.count = job.idxBefore - self.idxFromOriginal;
         if (!self.job.progress_data || !self.job.progress_data.index) {

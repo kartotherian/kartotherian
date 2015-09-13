@@ -2,6 +2,7 @@
 
 var BBPromise = require('bluebird');
 var _ = require('underscore');
+var yaml = require('js-yaml');
 
 var mapnik = require('mapnik');
 BBPromise.promisifyAll(mapnik.VectorTile.prototype);
@@ -41,9 +42,10 @@ function init(app) {
             'kartotherian-layermixer'
         ], tilelive);
         sources = new core.Sources(app, tilelive);
-
-        return sources.loadAsync(app.conf);
-    }).then(function (sources) {
+        return sources.loadVariablesAsync(app.conf.variables);
+    }).then(function () {
+        return sources.loadSourcesAsync(app.conf.sources);
+    }).then(function () {
         var jobHandler;
         if (!app.conf.uiOnly) {
             jobHandler = function (job, callback) {
@@ -70,8 +72,8 @@ function init(app) {
 
 function setinfo(req, res) {
     reportAsync(res, function () {
-        var generator = sources.getSourceById(req.params.generatorId).handler;
-        var storage = sources.getSourceById(req.params.storageId).handler;
+        var generator = sources.getHandlerById(req.params.generatorId);
+        var storage = sources.getHandlerById(req.params.storageId);
         core.checkType(req.query, 'tiles', 'string-array');
 
         return generator.getInfoAsync().then(function (info) {
@@ -80,6 +82,19 @@ function setinfo(req, res) {
             }
             return storage.putInfoAsync(info)
         });
+    });
+}
+
+function loadSources(req, res) {
+    reportAsync(res, function () {
+        if (!req.body) {
+            throw new Err('No sources given');
+        }
+        var src = yaml.safeLoad(req.body);
+        if (!src) {
+            throw new Err('Bad sources value');
+        }
+        return sources.loadSourcesAsync(src);
     });
 }
 
@@ -131,6 +146,7 @@ function enque(req, res) {
             job.filters = filter1;
         }
 
+        job.sources = sources.getSources();
         return queue.addJobAsync(job);
     });
 }
@@ -176,10 +192,12 @@ router.post('/cleanup', cleanup);
 router.post('/cleanup/:type/:minutes(\\d+)', cleanup);
 router.post('/cleanup/:type/:minutes(\\d+)/:minRebalanceInMinutes(\\d+)', cleanup);
 router.post('/setinfo/:generatorId/:storageId', setinfo);
+router.post('/sources', loadSources);
 
 module.exports = function(app) {
 
     init(app);
+    app.use('/sources', require('body-parser').text());
 
     return {
         path: '/',
