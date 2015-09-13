@@ -114,10 +114,12 @@ Optionally you can specify the `?tiles=` parameter to update it:
 http://localhost:4100/setinfo/gen/c?tiles=http://.../osm/{z}/{x}/{y}.pbf
 ```
 
-## Dynamically adding new sources
-Sometimes a temporary source is needed for the generation. Tilerator allows dynamic non-permanent sources to be added
-via the `/sources` command:
+## Viewing and dynamically changes sources
+You may view currently configured sources by browsing to the `/sources` URL (GET) 
 ```
 http://localhost:4100/sources
 ```
-The body of the POST request must be a YAML text, in the same format as in the sources file. Variables cannot be changed.
+
+Sometimes a temporary source is needed for the generation. Tilerator allows dynamic non-permanent sources to be added
+via the `/sources` command as well, by POSTing the new YAML configuration to the same URL, in the same format as in the sources file.
+Note that the operation will ADD sources to the existing ones, overriding the ones with the same name. Variables cannot be changed.

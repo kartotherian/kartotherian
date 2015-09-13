@@ -85,16 +85,19 @@ function setinfo(req, res) {
     });
 }
 
-function loadSources(req, res) {
+function sources(req, res) {
     reportAsync(res, function () {
-        if (!req.body) {
-            throw new Err('No sources given');
+        if (req.method === 'POST') {
+            if (!req.body) {
+                throw new Err('No sources given');
+            }
+            var src = yaml.safeLoad(req.body);
+            if (!src) {
+                throw new Err('Bad sources value');
+            }
+            return sources.loadSourcesAsync(src);
         }
-        var src = yaml.safeLoad(req.body);
-        if (!src) {
-            throw new Err('Bad sources value');
-        }
-        return sources.loadSourcesAsync(src);
+        return sources.getSources();
     });
 }
 
@@ -192,7 +195,8 @@ router.post('/cleanup', cleanup);
 router.post('/cleanup/:type/:minutes(\\d+)', cleanup);
 router.post('/cleanup/:type/:minutes(\\d+)/:minRebalanceInMinutes(\\d+)', cleanup);
 router.post('/setinfo/:generatorId/:storageId', setinfo);
-router.post('/sources', loadSources);
+router.get('/sources', sources);
+router.post('/sources', sources);
 
 module.exports = function(app) {
 
