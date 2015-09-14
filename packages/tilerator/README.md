@@ -47,6 +47,7 @@ http://localhost:4100/add?generatorId=gen&storageId=store&zoom=3
 * `idxBefore`- generate tiles until this index (non-inclusive, 4^zoom by default)
 * `x` and `y` - generate just one tile at these coordinates. Cannot be used with `idxFrom` or `idxBefore`
 * `deleteEmpty` - if true, any non-generated tile (e.g. empty or solid) will be explicitly deleted from the storage (optional, false by default)
+* `saveSolid` - if true, any solid tile will still be saved to the storage (optional, false by default)
 * `threads` - uses preemptive multitasking to process a job, effectivelly multithreading it, while still processing it as one job. This mode is experimental, and might not work in some cases with advanced filtering options.
 
 ### Pyramid mode
@@ -67,6 +68,7 @@ This feature could be useful for the tile invalidation. For example, a user edit
 Sometimes you may wish to generate only those tiles that satisfy a certain condition.
 
 If any of these parameters are set, Tilerator will check if a specific tile exists before attempting to regenerate it.
+* `sourceId` - which source to use for filtering. Will use `storageId` by default.
 * `checkZoom` - only generate tiles if the corresponding tile exists at zoom level `checkZoom`.  By default, if any other filter values are set, it uses job's zoom level
 * `dateBefore` - only generate tile if the tile in storage was generated before given date
 * `dateFrom` - only generate tile if the tile in storage was generated after the given date
@@ -115,7 +117,7 @@ http://localhost:4100/setinfo/gen/c?tiles=http://.../osm/{z}/{x}/{y}.pbf
 ```
 
 ## Viewing and dynamically changes sources
-You may view currently configured sources by browsing to the `/sources` URL (GET) 
+You may view currently configured sources by browsing to the `/sources` URL (GET)
 ```
 http://localhost:4100/sources
 ```
@@ -123,3 +125,9 @@ http://localhost:4100/sources
 Sometimes a temporary source is needed for the generation. Tilerator allows dynamic non-permanent sources to be added
 via the `/sources` command as well, by POSTing the new YAML configuration to the same URL, in the same format as in the sources file.
 Note that the operation will ADD sources to the existing ones, overriding the ones with the same name. Variables cannot be changed.
+
+## Viewing defined variables
+```
+http://localhost:4100/variables
+```
+This URL will show the list of defined variables

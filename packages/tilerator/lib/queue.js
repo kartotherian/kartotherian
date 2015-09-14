@@ -55,6 +55,7 @@ module.exports.validateJob = function(job) {
     core.checkType(job, 'threads', 'integer', false, 1, 100);
     core.checkType(job, 'parts', 'integer', false, 1, 1000);
     core.checkType(job, 'deleteEmpty', 'boolean');
+    core.checkType(job, 'saveSolid', 'boolean');
 
     var maxCount = Math.pow(4, job.zoom);
     core.checkType(job, 'idxFrom', 'integer', 0, 0, maxCount);
@@ -80,6 +81,7 @@ module.exports.validateJob = function(job) {
             core.checkType(filter, 'biggerThan', 'integer');
             core.checkType(filter, 'smallerThan', 'integer');
             core.checkType(filter, 'missing', 'boolean');
+            core.checkType(filter, 'sourceId', 'string', false, 1);
         });
     }
 };

@@ -105,10 +105,21 @@ JobProcessor.prototype.reportProgress = function(doneCount) {
 
 JobProcessor.prototype.getIterator = function(idxFrom, idxBefore, filterIndex) {
     var job = this.job.data;
-    if (job.filters && filterIndex < job.filters.length)
+    if (_.isFunction(this.tileGenerator.query) && (!job.filters || filterIndex >= job.filters.length)) {
+        // tile generator source is capable of iterations - we shouldn't generate one by one
+        if (!job.filters) {
+            job.filters = [];
+        }
+        job.filters.push({
+            sourceId: job.generatorId,
+            zoom: job.zoom
+        });
+    }
+    if (job.filters && filterIndex < job.filters.length) {
         return this.getExistingTilesIterator(idxFrom, idxBefore, filterIndex);
-    else
+    } else {
         return this.getSimpleIterator(idxFrom, idxBefore);
+    }
 };
 
 JobProcessor.prototype.getSimpleIterator = function(idxFrom, idxBefore) {
@@ -116,7 +127,7 @@ JobProcessor.prototype.getSimpleIterator = function(idxFrom, idxBefore) {
     return function() {
         var result = undefined;
         if (idx < idxBefore) {
-            result = idx++;
+            result = {idx: idx++};
         }
         return BBPromise.resolve(result);
     }
@@ -134,10 +145,16 @@ JobProcessor.prototype.getExistingTilesIterator = function(idxFrom, idxBefore, f
     var job = this.job.data;
     var filter = job.filters[filterIndex];
     var scale = filter.zoom !== undefined && filter.zoom !== job.zoom ? Math.pow(4, job.zoom - filter.zoom) : false;
+    var source = filter.sourceId ? this.sources.getHandlerById(filter.sourceId) : this.tileStore;
+    if (!_.isFunction(source.query)) {
+        throw new Err('Tile source %s does not support querying', filter.sourceId || job.storageId);
+    }
+    var getTiles = (filterIndex === job.filters.length - 1 && source === this.tileGenerator && !filter.missing && scale === false);
     var opts = {
         zoom: scale ? filter.zoom : job.zoom,
         idxFrom: scale ? Math.floor(idxFrom / scale) : idxFrom,
-        idxBefore: scale ? Math.ceil(idxBefore / scale) : idxBefore
+        idxBefore: scale ? Math.ceil(idxBefore / scale) : idxBefore,
+        getTiles: getTiles
     };
 
     // If missing is set, invert the meaning of all other filters, and than invert the result
@@ -167,8 +184,13 @@ JobProcessor.prototype.getExistingTilesIterator = function(idxFrom, idxBefore, f
             opts.biggerThan = filter.smallerThan;
     }
 
-    var iterator = promistreamus.select(this.tileStore.query(opts), function (v) {
-        return v.idx;
+    var iterator = promistreamus.select(source.query(opts), function (v) {
+        var res = {idx: v.idx};
+        if (getTiles) {
+            res.tile = v.tile;
+            res.headers = v.headers;
+        }
+        return res;
     });
 
     if (filter.missing) {
@@ -200,15 +222,15 @@ JobProcessor.prototype.invertIterator = function(iterator, idxFrom, idxBefore) {
         } else if (!nextValP) {
             nextValP = iterator();
         }
-        return nextValP.then(function (idx) {
-            var untilIdx = idx === undefined ? idxBefore : idx;
+        return nextValP.then(function (iterValue) {
+            var untilIdx = iterValue === undefined ? idxBefore : iterValue.idx;
             if (idxNext < untilIdx) {
-                return idxNext++;
-            } else if (idx === undefined) {
+                return {idx: idxNext++};
+            } else if (iterValue === undefined) {
                 isDone = true;
-                return idx;
+                return undefined;
             } else {
-                if (idxNext === idx) {
+                if (idxNext === iterValue.idx) {
                     idxNext++;
                     nextValP = iterator();
                 }
@@ -234,7 +256,8 @@ JobProcessor.prototype.generateSubIterators = function(iterator, idxFrom, idxBef
         if (isDone) {
             return BBPromise.resolve(undefined);
         }
-        return iterator().then(function (idx) {
+        return iterator().then(function (iterValue) {
+            var idx = iterValue === undefined ? undefined : iterValue.idx;
             if (firstIdx === undefined) {
                 firstIdx = lastIdx = idx;
                 return getNextValAsync();
@@ -261,14 +284,14 @@ JobProcessor.prototype.generateSubIterators = function(iterator, idxFrom, idxBef
 
 JobProcessor.prototype.jobProcessorThreadAsync = function(threadId) {
     var self = this;
-    return this.iterator().then(function (idx) {
-        if (idx === undefined) {
+    return this.iterator().then(function (iterValue) {
+        if (iterValue === undefined) {
             return;
         }
         // generate tile and repeat
-        return self.generateTileAsync(idx).then(function () {
+        return self.generateTileAsync(iterValue).then(function () {
             self.stats.processed++;
-            self.threadIdxState[threadId] = idx;
+            self.threadIdxState[threadId] = iterValue.idx;
 
             // decide if we want to update the progress status
             self.stats.index = _.min(self.threadIdxState);
@@ -303,65 +326,84 @@ JobProcessor.prototype.recordSamples = function(stat, idx) {
     }
 };
 
-JobProcessor.prototype.generateTileAsync = function(idx) {
+JobProcessor.prototype.generateTileAsync = function(iterValue) {
     var start = Date.now(),
         self = this,
+        idx = iterValue.idx,
+        tile = iterValue.tile,
         stats = this.stats,
         job = this.job.data,
         xy = core.indexToXY(idx),
         x = xy[0],
-        y = xy[1];
+        y = xy[1],
+        promise;
 
-    return BBPromise.try(function () {
-        stats.tilegen++;
-        return self.tileGenerator.getTileAsync(job.zoom, x, y);
-    }).then(function (dataAndHeader) {
-        self.metrics.endTiming(self.metricsPrefix + 'created', start);
-        stats.tilegenok++;
-        return dataAndHeader[0];
-    }, function (err) {
-        if (core.isNoTileError(err)) {
-            stats.tilegenempty++;
-            return null;
-        } else {
-            self.metrics.endTiming(self.metricsPrefix + 'generror', start);
-            stats.tilegenerr++;
-            throw err;
-        }
-    }).then(function (data) {
-        if (!data || !data.length) {
-            self.metrics.endTiming(self.metricsPrefix + 'nodata', start);
-            stats.tilenodata++;
-            return null; // empty tile generated, no need to save
-        }
-        if (data.length >= config.maxsize) {
-            self.metrics.endTiming(self.metricsPrefix + 'big', start);
-            self.recordSamples('tiletoobig', idx);
-            return data; // generated tile is too big, save
-        }
-        var vt = new mapnik.VectorTile(job.zoom, x, y);
-        return core.uncompressAsync(data)
-            .bind(vt)
-            .then(function (uncompressed) {
-                return this.setDataAsync(uncompressed);
-            }).then(function () {
-                return this.parseAsync();
-            }).then(function () {
-                return this.isSolidAsync();
-            }).spread(function (solid, key) {
-                if (solid) {
-                    // Count different types of solid tiles
-                    self.recordSamples('solid_' + key, idx);
-                    self.metrics.endTiming(self.metricsPrefix + 'solid', start);
-                    return null;
-                } else {
-                    self.metrics.endTiming(self.metricsPrefix + 'saving', start);
-                    stats.tilenonsolid++;
-                    return data;
-                }
-            });
-    }).then(function (data) {
+    // Generate tile or get it from the iterator
+    if (!tile) {
+        promise = BBPromise.try(function () {
+            stats.tilegen++;
+            return self.tileGenerator.getTileAsync(job.zoom, x, y);
+        }).then(function (dataAndHeader) {
+            self.metrics.endTiming(self.metricsPrefix + 'created', start);
+            stats.tilegenok++;
+            return dataAndHeader[0];
+        }, function (err) {
+            if (core.isNoTileError(err)) {
+                stats.tilegenempty++;
+                return null;
+            } else {
+                self.metrics.endTiming(self.metricsPrefix + 'generror', start);
+                stats.tilegenerr++;
+                throw err;
+            }
+        }).then(function (data) {
+            if (!data || !data.length) {
+                self.metrics.endTiming(self.metricsPrefix + 'nodata', start);
+                stats.tilenodata++;
+                return null; // empty tile generated, no need to save
+            }
+            return data;
+        });
+    } else {
+        promise = BBPromise.resolve(tile);
+    }
+
+    // Don't save tiles that consist entirely of one layer's solid polygons, and without empty spaces
+    if (!job.saveSolid) {
+        promise = promise.then(function (data) {
+            if (!data) {
+                return data;
+            }
+            if (data.length >= config.maxsize) {
+                self.metrics.endTiming(self.metricsPrefix + 'big', start);
+                self.recordSamples('tiletoobig', idx);
+                return data; // generated tile is too big, save
+            }
+            var vt = new mapnik.VectorTile(job.zoom, x, y);
+            return core.uncompressAsync(data)
+                .bind(vt)
+                .then(function (uncompressed) {
+                    return this.setDataAsync(uncompressed);
+                }).then(function () {
+                    return this.parseAsync();
+                }).then(function () {
+                    return this.isSolidAsync();
+                }).spread(function (solid, key) {
+                    if (solid) {
+                        // Count different types of solid tiles
+                        self.recordSamples('solid_' + key, idx);
+                        self.metrics.endTiming(self.metricsPrefix + 'solid', start);
+                        return null;
+                    } else {
+                        stats.tilenonsolid++;
+                        return data;
+                    }
+                });
+        });
+    }
+    return promise.then(function (data) {
         if (data) {
+            self.metrics.endTiming(self.metricsPrefix + 'saving', start);
             stats.save++;
             stats.totalsize += data.length;
             // double negative to treat "undefined" as true

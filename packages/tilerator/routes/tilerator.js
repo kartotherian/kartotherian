@@ -70,7 +70,7 @@ function init(app) {
     });
 }
 
-function setinfo(req, res) {
+function onSetInfo(req, res) {
     reportAsync(res, function () {
         var generator = sources.getHandlerById(req.params.generatorId);
         var storage = sources.getHandlerById(req.params.storageId);
@@ -85,7 +85,7 @@ function setinfo(req, res) {
     });
 }
 
-function sources(req, res) {
+function onSources(req, res) {
     reportAsync(res, function () {
         if (req.method === 'POST') {
             if (!req.body) {
@@ -101,7 +101,13 @@ function sources(req, res) {
     });
 }
 
-function enque(req, res) {
+function onVariables(req, res) {
+    reportAsync(res, function () {
+        return _.keys(sources.getVariables());
+    });
+}
+
+function onEnque(req, res) {
     reportAsync(res, function () {
         var job = {
             threads: req.query.threads,
@@ -154,7 +160,7 @@ function enque(req, res) {
     });
 }
 
-function stop(req, res) {
+function onStop(req, res) {
     var seconds = (req.params.seconds || 60);
     reportAsync(res, function () {
         if (jobProcessor) {
@@ -168,7 +174,7 @@ function stop(req, res) {
     });
 }
 
-function cleanup(req, res) {
+function onCleanup(req, res) {
     reportAsync(res, function () {
         return queue.cleanup((req.params.minutes || 60) * 60 * 1000, req.params.type, req.params.minRebalanceInMinutes);
     });
@@ -188,15 +194,16 @@ function toJson(value) {
     return JSON.stringify(value, null, '  ');
 }
 
-router.post('/add', enque);
-router.post('/stop', stop);
-router.post('/stop/:seconds(\\d+)', stop);
-router.post('/cleanup', cleanup);
-router.post('/cleanup/:type/:minutes(\\d+)', cleanup);
-router.post('/cleanup/:type/:minutes(\\d+)/:minRebalanceInMinutes(\\d+)', cleanup);
-router.post('/setinfo/:generatorId/:storageId', setinfo);
-router.get('/sources', sources);
-router.post('/sources', sources);
+router.post('/add', onEnque);
+router.post('/stop', onStop);
+router.post('/stop/:seconds(\\d+)', onStop);
+router.post('/cleanup', onCleanup);
+router.post('/cleanup/:type/:minutes(\\d+)', onCleanup);
+router.post('/cleanup/:type/:minutes(\\d+)/:minRebalanceInMinutes(\\d+)', onCleanup);
+router.post('/setinfo/:generatorId/:storageId', onSetInfo);
+router.get('/variables', onVariables);
+router.get('/sources', onSources);
+router.post('/sources', onSources);
 
 module.exports = function(app) {
 
