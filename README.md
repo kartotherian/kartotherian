@@ -27,7 +27,7 @@ mixer:
 
 Now run the tilerator to copy the the mixer source into the store, possibly limiting it to only those that exist in store
 ```
-http://localhost:4100/add?generatorId=mixer&storageId=store&zoom=8&parts=10&checkZoom=8
+http://localhost:6534/add?generatorId=mixer&storageId=store&zoom=8&parts=10&checkZoom=8
 ```
 
 See https://github.com/kartotherian/kartotherian
