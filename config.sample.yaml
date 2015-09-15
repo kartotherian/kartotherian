@@ -21,7 +21,7 @@ services:
 
 
     conf:
-      port: 4000
+      port: 6533
       # Comment this out to allow connections from everywhere
       interface: localhost
 

@@ -30,7 +30,7 @@ services:
     # version: ^0.4.0
     # per-service config
     conf:
-      port: 4000
+      port: 6533
       # interface: localhost # uncomment to only listen on localhost
       # more per-service config settings
       # the location of the spec, defaults to spec.yaml if not specified

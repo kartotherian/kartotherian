@@ -42,7 +42,7 @@ git submodule update --init                                 # update submodules
 npm install                                                 # install npm dependencies
 node server.js -c config.sample.yaml
 ```
-Browse to http://localhost:4000/
+Browse to http://localhost:6533/
 
 The set up inside `sources.sample.yaml` does not use any storage or caching, so it will not be suitable for production. You will need to configure additional source chains and setup a proper storage to make this into a production system.
 
@@ -176,7 +176,7 @@ npm install                                                 # install npm depend
 num_workers: 0
 
 # Host port
-port: 4000
+port: 6533
 
 # Comment out this line to listen to the web
 # interface: localhost
@@ -227,7 +227,7 @@ Change default backend to:
 ```
 backend default {
     .host = "localhost";
-    .port = "4000";
+    .port = "6533";
 }
 ```
 Add this to vcl_deliver (to track hits/misses):
@@ -254,7 +254,7 @@ varnishstat  # monitor varnish performance
 ```
 npm start
 ```
-In browser, navigate to `http://localhost:4000/`.
+In browser, navigate to `http://localhost:6533/`.
 
 ### Troubleshooting
 
