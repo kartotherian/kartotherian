@@ -30,7 +30,7 @@ services:
     # version: ^0.4.0
     # per-service config
     conf:
-      port: 4100
+      port: 6534
 
       # restrict to localhost access only
       interface: localhost
@@ -50,7 +50,6 @@ services:
       # no_proxy_list:
       #   - domain1.com
       #   - domain2.org
-
 
       sources: ../sources.yaml
 

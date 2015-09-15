@@ -8,7 +8,7 @@ Generating tiles from the SQL queries sometimes requires a considerable time, of
 
 Scheduled generation job waits in the queue ([kue](https://github.com/Automattic/kue)) until it is picked up by one of the workers. The worker will update job progress, as well as store intermediate data to allow restarts/crash recovery.
 
-Tilerator is an unprotected Admin tool, and should NOT be exposed to the web. By default, tilerator only accepts connections from the localhost. It is recommended that it is left this way, and used via a port forwarding ssh tunnel with `ssh -L 4100:localhost:4100 my.maps.server`
+Tilerator is an unprotected Admin tool, and should NOT be exposed to the web. By default, tilerator only accepts connections from the localhost. It is recommended that it is left this way, and used via a port forwarding ssh tunnel with `ssh -L 6534:localhost:6534 my.maps.server`
 
 ## Configuration
 Inside the `conf` key:
@@ -29,14 +29,14 @@ For example, by simply dividing the index by 4, we get the index of the tile tha
 It is highly recomended, although not mandatory, to have an extra instance of the tilerator running with the uiOnly setting in the config.
 This way if tilerator can be stopped and the pending jobs rearranged. Without the uiOnly instance, you will always be changing the queue
 while jobs are running.  To configure the uiOnly instance, make a copy of the tilerator config, set uiOnly to true and change the port number.
-To see the currently running jobs, navigate to `http://localhost:4100/` (nicer interface) or `http://localhost:4100/raw` (internal data).
+To see the currently running jobs, navigate to `http://localhost:6534/` (nicer interface) or `http://localhost:6534/raw` (internal data).
 
 ## Adding jobs
 Jobs can be scheduled via a POST request. Usually I do it with [Chrome Postman extension](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop?hl=en) or similar.
 
 The most basic call to generate all tiles of zoom level 3, using `gen` source to produce tiles, and store them in the `store` source.  This job will be executed by one worker, without any multitasking.
 ```
-http://localhost:4100/add?generatorId=gen&storageId=store&zoom=3
+http://localhost:6534/add?generatorId=gen&storageId=store&zoom=3
 ```
 ### Job Parameters
 * `generatorId` - required source ID, as defined in the sources configuration. Tiles from this source will be read.
@@ -86,20 +86,20 @@ At times, if a job crashes, or the Tilerator is killed by the admin, it will rem
 and its `updated` timestamp will stay the same.  These jobs have to be moved back to the `inactive` queue.
 In the future it might be possible to fix this automaticaly, but for now, there is a "clean" POST request:
 ```
-http://localhost:4100/cleanup
+http://localhost:6534/cleanup
 ```
 Which by default moves all jobs from `active` to `inactive` if they haven't been updated for the past 60 minutes.
 Alternativelly, the originating queue and the number of minutes can be specified as the first two value after the cleanup.
 This will move all jobs from the `failed` queue into `inactive` if they haven't been updated in the last 15 minutes:
 ```
-http://localhost:4100/cleanup/failed/15
+http://localhost:6534/cleanup/failed/15
 ```
 Sometimes the few jobs take too long to render, while other machines or CPU cores are not busy. Cleanup can break such jobs
 into smaller chunks. To use it, it is best to have an extra instance of Tilerator running with the `uiOnly` config option.
 Otherwise you may update an active job, without notifying the worker about it, thus causing it to continue processing.
 To use the job rebalancing, stop all the non-uiOnly Tilerator instances, and run cleanup with an extra parameter:
 ```
-http://localhost:4100/cleanup/active/0/60
+http://localhost:6534/cleanup/active/0/60
 ```
 This tells tilerator to move all jobs from active to inactive, even if they were just updated (you did stop the workers, right?),
 and also to break up all jobs into 5 parts if the job's estimated completion time is more than 60 minutes.  The original job
@@ -108,18 +108,18 @@ will be shortened to the 10% of whatever was left to do.
 ## Copying source info
 This command performs copying of the source `info` object from source to destination (immediate, not queued)
 ```
-http://localhost:4100/setinfo/source/destination
+http://localhost:6534/setinfo/source/destination
 ```
 
 Optionally you can specify the `?tiles=` parameter to update it:
 ```
-http://localhost:4100/setinfo/gen/c?tiles=http://.../osm/{z}/{x}/{y}.pbf
+http://localhost:6534/setinfo/gen/c?tiles=http://.../osm/{z}/{x}/{y}.pbf
 ```
 
 ## Viewing and dynamically changes sources
 You may view currently configured sources by browsing to the `/sources` URL (GET)
 ```
-http://localhost:4100/sources
+http://localhost:6534/sources
 ```
 
 Sometimes a temporary source is needed for the generation. Tilerator allows dynamic non-permanent sources to be added
@@ -128,6 +128,6 @@ Note that the operation will ADD sources to the existing ones, overriding the on
 
 ## Viewing defined variables
 ```
-http://localhost:4100/variables
+http://localhost:6534/variables
 ```
 This URL will show the list of defined variables
