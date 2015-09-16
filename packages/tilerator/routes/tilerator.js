@@ -128,6 +128,7 @@ function onEnque(req, res) {
         };
 
         var filter1 = {
+            sourceId: req.query.sourceId,
             dateBefore: req.query.dateBefore,
             dateFrom: req.query.dateFrom,
             biggerThan: req.query.biggerThan,
@@ -138,6 +139,7 @@ function onEnque(req, res) {
         filter1 = _.any(filter1) ? filter1 : false;
 
         var filter2 = {
+            sourceId: req.query.sourceId2,
             dateBefore: req.query.dateBefore2,
             dateFrom: req.query.dateFrom2,
             biggerThan: req.query.biggerThan2,
@@ -156,7 +158,30 @@ function onEnque(req, res) {
             job.filters = filter1;
         }
 
-        job.sources = sources.getSources();
+        // Add only the referenced sources to the job
+        var ids = _.unique(_.filter([req.query.storageId, req.query.generatorId, req.query.sourceId, req.query.sourceId2]));
+        var recursiveIter = function (obj) {
+            if (_.isObject(obj)) {
+                if (Object.keys(obj).length === 1 && typeof obj.ref === 'string' && !_.contains(ids, obj.ref)) {
+                    ids.push(obj.ref);
+                } else {
+                    _.each(obj, recursiveIter);
+                }
+            }
+        };
+
+        var i = 0;
+        var allSources = sources.getSources();
+        var jobSources = {};
+        while (i < ids.length) {
+            var id = ids[i++];
+            if (!allSources[id])
+                throw new Err('Source ID %s is not defined', id);
+            jobSources[id] = allSources[id];
+            _.each(allSources[id], recursiveIter);
+        }
+
+        job.sources = jobSources;
         return queue.addJobAsync(job);
     });
 }
