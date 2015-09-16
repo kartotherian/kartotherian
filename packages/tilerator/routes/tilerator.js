@@ -80,7 +80,7 @@ function onSetInfo(req, res) {
             if (req.query.tiles) {
                 info.tiles = req.query.tiles;
             }
-            return storage.putInfoAsync(info)
+            return storage.putInfoAsync(info);
         });
     });
 }

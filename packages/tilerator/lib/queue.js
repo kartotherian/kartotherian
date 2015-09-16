@@ -277,9 +277,6 @@ module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts, source
 
                         job.data.idxBefore = newBefore;
                         setJobTitle(job.data);
-                        if (!job.sources) {
-                            module.exports.setSources(job, sources);
-                        }
 
                         return job.saveAsync().then(function () {
                             return job.inactiveAsync();
@@ -289,6 +286,13 @@ module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts, source
                             result[id] = parts;
                         });
                     }
+                } else if (!job.sources) {
+                    module.exports.setSources(job, sources);
+                    return job.saveAsync().then(function () {
+                        return job.inactiveAsync();
+                    }).then(function (parts) {
+                        result[id] = 'changedSrcs';
+                    });
                 }
 
                 return job.inactiveAsync().then(function () {
