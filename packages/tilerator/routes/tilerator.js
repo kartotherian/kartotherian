@@ -158,30 +158,7 @@ function onEnque(req, res) {
             job.filters = filter1;
         }
 
-        // Add only the referenced sources to the job
-        var ids = _.unique(_.filter([req.query.storageId, req.query.generatorId, req.query.sourceId, req.query.sourceId2]));
-        var recursiveIter = function (obj) {
-            if (_.isObject(obj)) {
-                if (Object.keys(obj).length === 1 && typeof obj.ref === 'string' && !_.contains(ids, obj.ref)) {
-                    ids.push(obj.ref);
-                } else {
-                    _.each(obj, recursiveIter);
-                }
-            }
-        };
-
-        var i = 0;
-        var allSources = sources.getSources();
-        var jobSources = {};
-        while (i < ids.length) {
-            var id = ids[i++];
-            if (!allSources[id])
-                throw new Err('Source ID %s is not defined', id);
-            jobSources[id] = allSources[id];
-            _.each(allSources[id], recursiveIter);
-        }
-
-        job.sources = jobSources;
+        queue.setSources(job, sources);
         return queue.addJobAsync(job);
     });
 }
@@ -202,7 +179,7 @@ function onStop(req, res) {
 
 function onCleanup(req, res) {
     reportAsync(res, function () {
-        return queue.cleanup((req.params.minutes || 60) * 60 * 1000, req.params.type, req.params.minRebalanceInMinutes);
+        return queue.cleanup((req.params.minutes || 60) * 60 * 1000, req.params.type, req.params.minRebalanceInMinutes, sources);
     });
 }
 

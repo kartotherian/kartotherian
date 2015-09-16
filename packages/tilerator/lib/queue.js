@@ -61,6 +61,8 @@ module.exports.validateJob = function(job) {
     core.checkType(job, 'idxFrom', 'integer', 0, 0, maxCount);
     core.checkType(job, 'idxBefore', 'integer', maxCount, job.idxFrom, maxCount);
 
+    core.checkType(job, 'sources', 'object');
+
     if (core.checkType(job, 'filters', 'object')) {
         if (!Array.isArray(job.filters)) {
             job.filters = [job.filters];
@@ -243,7 +245,7 @@ module.exports.addPyramidJobsAsync = function(options) {
 /**
  * Move all jobs in the active que to inactive if their update time is more than given time
  */
-module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts) {
+module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts, sources) {
     if (!queue) throw new Err('Not started yet');
     switch (type) {
         case undefined:
@@ -275,6 +277,9 @@ module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts) {
 
                         job.data.idxBefore = newBefore;
                         setJobTitle(job.data);
+                        if (!job.sources) {
+                            module.exports.setSources(job, sources);
+                        }
 
                         return job.saveAsync().then(function () {
                             return job.inactiveAsync();
@@ -294,6 +299,31 @@ module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts) {
             }
         })
     }, {concurrency: 50}).return(result);
+};
+
+module.exports.setSources = function(job, sources) {
+    // Add only the referenced sources to the job
+    var ids =  _.unique(_.filter(_.pluck(job.filters, 'sourceId').concat([job.storageId, job.generatorId])));
+    var recursiveIter = function (obj) {
+        if (_.isObject(obj)) {
+            if (Object.keys(obj).length === 1 && typeof obj.ref === 'string' && !_.contains(ids, obj.ref)) {
+                ids.push(obj.ref);
+            } else {
+                _.each(obj, recursiveIter);
+            }
+        }
+    };
+
+    var i = 0;
+    var allSources = sources.getSources();
+    job.sources = {};
+    while (i < ids.length) {
+        var id = ids[i++];
+        if (!allSources[id])
+            throw new Err('Source ID %s is not defined', id);
+        job.sources[id] = allSources[id];
+        _.each(allSources[id], recursiveIter);
+    }
 };
 
 function setJobTitle(job) {
