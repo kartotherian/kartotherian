@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.5.0
+
+ - Updated to use newest version of tilelive.
+
 ## 3.4.0
 
  - Updated to use mapnik 3.4.6
