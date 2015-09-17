@@ -48,15 +48,16 @@
         var brackets = [1, 1.3, 1.5, 2, 2.6, 3],
             baseRatio = window.devicePixelRatio || 1;
         for (var i = 0; i < brackets.length; i++) {
-            if (brackets[i] >= baseRatio) {
-                return brackets[i];
+            var scale = brackets[i];
+            if (scale >= baseRatio || (baseRatio - scale) < 0.1) {
+                return scale;
             }
         }
         return brackets[brackets.length - 1];
     }
 
     var scale = bracketDevicePixelRatio();
-    var scalex = (scale == 1) ? '' : ('@' + scale + 'x');
+    var scalex = (scale === 1) ? '' : ('@' + scale + 'x');
 
     // Add a map layer
     L.tileLayer('/' + style + '/{z}/{x}/{y}' + scalex + '.png', {
