@@ -141,8 +141,9 @@ function getTile(req, res) {
             if (!source.pbfsource) {
                 throw new Err('pbf access is not enabled for this source').metrics('err.req.pbf');
             }
-            source = sources.getSourceById(source.pbfsource);
-            handler = sources.getHandlerById(source.pbfsource, true);
+            var pbfSrcId = source.pbfsource;
+            source = sources.getSourceById(pbfSrcId);
+            handler = sources.getHandlerById(pbfSrcId, true);
         } else {
             handler = sources.getHandlerById(srcId, true);
         }
