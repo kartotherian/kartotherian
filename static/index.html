@@ -44,8 +44,22 @@
     // Create a map
     var map = L.map('map').setView([40.75, -73.96], 4);
 
+    function bracketDevicePixelRatio() {
+        var brackets = [1, 1.3, 1.5, 2, 2.6, 3],
+            baseRatio = window.devicePixelRatio || 1;
+        for (var i = 0; i < brackets.length; i++) {
+            if (brackets[i] >= baseRatio) {
+                return brackets[i];
+            }
+        }
+        return brackets[brackets.length - 1];
+    }
+
+    var scale = bracketDevicePixelRatio();
+    var scalex = (scale == 1) ? '' : ('@' + scale + 'x');
+
     // Add a map layer
-    L.tileLayer('/' + style + '/{z}/{x}/{y}.png', {
+    L.tileLayer('/' + style + '/{z}/{x}/{y}' + scalex + '.png', {
         maxZoom: 18,
         attribution: 'Wikimedia maps beta | Map data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
         id: 'wikipedia-map-01'
