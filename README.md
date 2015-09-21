@@ -40,6 +40,11 @@ git clone https://github.com/kartotherian/kartotherian.git  # Clone the reposito
 cd kartotherian
 git submodule update --init                                 # update submodules
 npm install                                                 # install npm dependencies
+# Add water polygons if missing (see below)
+# Install pgsql functions and admin tables
+psql -d gis -f node_modules/osm-bright-source/node_modules/postgis-vt-util/lib.sql
+psql -d gis -f node_modules/osm-bright-source/sql/functions.sql
+psql -d gis -f node_modules/osm-bright-source/sql/admin.sql
 node server.js -c config.sample.yaml
 ```
 Browse to http://localhost:6533/
@@ -204,7 +209,9 @@ $ psql -d gis -f node_modules/osm-bright-source/sql/water-indexes.sql
 
 ### Add mapbox's helper functions
 ```
+psql -d gis -f node_modules/osm-bright-source/node_modules/postgis-vt-util/lib.sql
 psql -d gis -f node_modules/osm-bright-source/sql/functions.sql
+psql -d gis -f node_modules/osm-bright-source/sql/admin.sql
 ```
 
 ### Configure Kartotherian
