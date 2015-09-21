@@ -26,12 +26,8 @@ Kartotherian supports static image generation. Users may request a PNG or a JPEG
     http://.../img/osm-intl,4,42,-3.14,800x600@1.5x.png
 
 ### Info data
-Kartotherian can be used as a source of the PBF data for Mapbox studio. Point it to your `node_modules/osm-bright-source`, clicking layers / change layer, and providing this link:
-
-    http://.../{style}/pbfinfo.json
+Kartotherian can be used as a source of the PBF data for Mapbox studio. See info about style editing in  `node_modules/osm-bright-source`. The info data is available at `http://.../{style}/pbfinfo.json`
     
-(There is currently [a bug](https://github.com/mapbox/mapbox-studio/issues/1268) in the MapBox studio, but it should be resolved soon)
-
 ## Very quick start:
 Assumes you have an OSM database (or a part of it) set up locally in the latest Postgress+Postgis, imported using `osm2pgsql --slim --hstore`.
 ```
