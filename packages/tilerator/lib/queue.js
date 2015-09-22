@@ -245,12 +245,18 @@ module.exports.addPyramidJobsAsync = function(options) {
 /**
  * Move all jobs in the active que to inactive if their update time is more than given time
  */
-module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts, sources) {
+module.exports.cleanup = function(opts) {
     if (!queue) throw new Err('Not started yet');
+
+    core.checkType(opts, 'type', 'string', 'active');
+    core.checkType(opts, 'minutesSinceUpdate', 'integer', 60);
+    core.checkType(opts, 'breakIntoParts', 'integer', false, 2, 100);
+    core.checkType(opts, 'breakIfLongerThan', 'number', 0.16);
+    core.checkType(opts, 'sources', 'object', true);
+    core.checkType(opts, 'updateSources', 'boolean');
+
+    var type = opts.type;
     switch (type) {
-        case undefined:
-            type = 'active';
-            break;
         case 'inactive':
         case 'active':
         case 'failed':
@@ -264,8 +270,16 @@ module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts, source
     return queue.stateAsync(type).map(function (id) {
         return kue.Job.getAsync(id).then(function (job) {
             var diffMs = Date.now() - new Date(parseInt(job.updated_at));
-            if (diffMs > ms) {
-                if (job.progress_data && (job.progress_data.estimateHrs / 60.0) >= minRebalanceInMinutes) {
+            if (diffMs > (opts.minutesSinceUpdate * 60 * 1000)) {
+                if (opts.updateSources) {
+                    module.exports.setSources(job.data, opts.sources);
+                    return job.saveAsync().then(function () {
+                        return job.inactiveAsync();
+                    }).then(function () {
+                        result[id] = 'changedSrcs';
+                    });
+                }
+                if (job.progress_data && job.progress_data.estimateHrs >= opts.breakIfLongerThan && opts.breakIntoParts) {
                     var from = job.progress_data.index || job.data.idxFrom;
                     var before = job.data.idxBefore;
                     var newBefore = Math.min(before, from + Math.max(1, Math.floor((before - from) * 0.1)));
@@ -273,7 +287,7 @@ module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts, source
                         var newJob = _.clone(job.data);
                         delete newJob.title;
                         newJob.idxFrom = newBefore;
-                        newJob.parts = parts || 3;
+                        newJob.parts = opts.breakIntoParts;
 
                         job.data.idxBefore = newBefore;
                         setJobTitle(job.data);
@@ -282,19 +296,11 @@ module.exports.cleanup = function(ms, type, minRebalanceInMinutes, parts, source
                             return job.inactiveAsync();
                         }).then(function () {
                             return module.exports.addJobAsync(newJob);
-                        }).then(function (parts) {
-                            result[id] = parts;
+                        }).then(function (res) {
+                            result[id] = res;
                         });
                     }
-                } else if (!job.sources) {
-                    module.exports.setSources(job, sources);
-                    return job.saveAsync().then(function () {
-                        return job.inactiveAsync();
-                    }).then(function (parts) {
-                        result[id] = 'changedSrcs';
-                    });
                 }
-
                 return job.inactiveAsync().then(function () {
                     result[id] = 'queued';
                 });
@@ -341,10 +347,10 @@ function setJobTitle(job) {
     } else {
         var xyFrom = core.indexToXY(job.idxFrom);
         var xyLast = core.indexToXY(job.idxBefore - 1);
-        job.title += util.format(' %s‒%s (%s); [%d,%d]‒[%d,%d]',
+        job.title += util.format(' %s (%s‒%s; [%d,%d]‒[%d,%d])',
+            numeral(job.idxBefore - job.idxFrom).format('0,0'),
             numeral(job.idxFrom).format('0,0'),
             numeral(job.idxBefore).format('0,0'),
-            numeral(job.idxBefore - job.idxFrom).format('0,0'),
             xyFrom[0], xyFrom[1], xyLast[0], xyLast[1]);
     }
 }

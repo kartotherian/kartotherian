@@ -179,7 +179,14 @@ function onStop(req, res) {
 
 function onCleanup(req, res) {
     reportAsync(res, function () {
-        return queue.cleanup((req.params.minutes || 60) * 60 * 1000, req.params.type, req.params.minRebalanceInMinutes, sources);
+        return queue.cleanup({
+            type: req.params.type,
+            minutesSinceUpdate: req.params.minutes,
+            breakIfLongerThan: req.query.breakIfLongerThan,
+            breakIntoParts: req.query.breakIntoParts,
+            sources: sources,
+            updateSources: req.query.updateSources
+        });
     });
 }
 
@@ -202,7 +209,6 @@ router.post('/stop', onStop);
 router.post('/stop/:seconds(\\d+)', onStop);
 router.post('/cleanup', onCleanup);
 router.post('/cleanup/:type/:minutes(\\d+)', onCleanup);
-router.post('/cleanup/:type/:minutes(\\d+)/:minRebalanceInMinutes(\\d+)', onCleanup);
 router.post('/setinfo/:generatorId/:storageId', onSetInfo);
 router.get('/variables', onVariables);
 router.get('/sources', onSources);

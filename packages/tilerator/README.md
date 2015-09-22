@@ -97,13 +97,21 @@ http://localhost:6534/cleanup/failed/15
 Sometimes the few jobs take too long to render, while other machines or CPU cores are not busy. Cleanup can break such jobs
 into smaller chunks. To use it, it is best to have an extra instance of Tilerator running with the `uiOnly` config option.
 Otherwise you may update an active job, without notifying the worker about it, thus causing it to continue processing.
-To use the job rebalancing, stop all the non-uiOnly Tilerator instances, and run cleanup with an extra parameter:
+To use the job rebalancing, stop all the non-uiOnly Tilerator instances, and run cleanup with some extra parameter:
 ```
-http://localhost:6534/cleanup/active/0/60
+http://localhost:6534/cleanup/active/0?breakIntoParts=5&breakIfLongerThan=0.5
+
 ```
 This tells tilerator to move all jobs from active to inactive, even if they were just updated (you did stop the workers, right?),
-and also to break up all jobs into 5 parts if the job's estimated completion time is more than 60 minutes.  The original job
-will be shortened to the 10% of whatever was left to do.
+and also to break up all jobs into 5 parts if the job's estimated completion time is more than 30 minutes (1/2 of an hour).
+The original job will be shortened to the 10% of whatever was left to do.
+
+cleanup accept these parameters:
+* breakIntoParts: - number of parts to break the job into. Must be at least 2 if set. Only affect jobs that match breakIfLongerThan
+* breakIfLongerThan - if breakIntoParts is set, and if the job is estimated to run longer than this value, it will be broken into parts. Default is 0.16 hours (10 minutes)
+* updateSources - if true, will update the sources of all the matching jobs
+
+
 
 ## Copying source info
 This command performs copying of the source `info` object from source to destination (immediate, not queued)
