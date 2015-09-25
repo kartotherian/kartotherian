@@ -32,7 +32,8 @@ while jobs are running.  To configure the uiOnly instance, make a copy of the ti
 To see the currently running jobs, navigate to `http://localhost:6534/` (nicer interface) or `http://localhost:6534/raw` (internal data).
 
 ## Adding jobs
-Jobs can be scheduled via a POST request. Usually I do it with [Chrome Postman extension](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop?hl=en) or similar.
+Jobs can be scheduled via a POST request. The best way is to use /static/admin.html from the Kartotherian deployment,
+and point it to Tilerator instance. Or you can make direct calls with [Chrome Postman extension](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop?hl=en) or similar.
 
 The most basic call to generate all tiles of zoom level 3, using `gen` source to produce tiles, and store them in the `store` source.  This job will be executed by one worker, without any multitasking.
 ```
@@ -51,16 +52,17 @@ http://localhost:6534/add?generatorId=gen&storageId=store&zoom=3
 * `threads` - uses preemptive multitasking to process a job, effectivelly multithreading it, while still processing it as one job. This mode is experimental, and might not work in some cases with advanced filtering options.
 
 ### Pyramid mode
-This mode tells Tilerator to generate more than one zoom level with one request. Given a tip of the pyramid - a tile at a given zoom level (baseZoom),
+Specifying `fromZoom` and `beforeZoom` enables pyramid mode. This mode tells Tilerator to generate more than
+one zoom level with one request. Given a tip of the pyramid - a tile at a given zoom level `zoom`,
 the pyramid will contain all the tiles under the given tile (higher zooms), and all the tiles that contain the given tile (lower zooms).
-So a baseZoom+1 zoom will be the 4 tiles corresponding to the tip tile, and baseZoom+2 will have the 16 tiles, etc.
-For all zoom levels lower than baseZoom, Tilerator will add just one tile per zoom that contains the tip tile.
-Tilerator will only generate the range of zooms requested, which does not have to contain the baseZoom (a cross-section of the piramid)
+So a `zoom+1` will be the 4 tiles corresponding to the tip tile, and `zoom+2` will have the 16 tiles, etc.
+For all zoom levels lower than `zoom`, Tilerator will add just one tile per `zoom` that contains the tip tile.
+Tilerator will only generate the range of zooms requested, which does not have to contain the `zoom` (a cross-section of the piramid)
 The base zoom may contain more than just one tile or even a whole zoom level. Use idxFrom & idxBefore to specify the tile range, or (x,y) for just one tile.
 
 This feature could be useful for the tile invalidation. For example, a user edited a tile at Z=16, and the system automatically scheduled tile refresh at Z=10..17)
 
-* `baseZoom` - the zoom level of the pyramid's tip
+* `zoom` - the zoom level of the pyramid's tip
 * `fromZoom` - zoom level at which to start generation (inclusive)
 * `beforeZoom` - zoom level to end tile generation (exclusive)
 
@@ -132,7 +134,7 @@ http://localhost:6534/sources
 
 Sometimes a temporary source is needed for the generation. Tilerator allows dynamic non-permanent sources to be added
 via the `/sources` command as well, by POSTing the new YAML configuration to the same URL, in the same format as in the sources file.
-Note that the operation will ADD sources to the existing ones, overriding the ones with the same name. Variables cannot be changed.
+Note that the operation will add sources to the existing ones, overriding the ones with the same name. Variables cannot be changed.
 
 ## Viewing defined variables
 ```

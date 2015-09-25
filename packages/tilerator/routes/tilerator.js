@@ -122,7 +122,6 @@ function onEnque(req, res) {
             parts: req.query.parts,
             deleteEmpty: req.query.deleteEmpty,
             saveSolid: req.query.saveSolid,
-            baseZoom: req.query.baseZoom,
             fromZoom: req.query.fromZoom,
             beforeZoom: req.query.beforeZoom
         };

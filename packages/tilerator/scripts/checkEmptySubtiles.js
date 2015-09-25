@@ -23,8 +23,8 @@ function init() {
 
         config = c.config;
         config.storeid = argv._[0];
-        config.baseZoom = parseInt(argv._[1]);
-        config.testZoom = parseInt(argv._[2]) || (config.baseZoom + 1);
+        config.zoom = parseInt(argv._[1]);
+        config.testZoom = parseInt(argv._[2]) || (config.zoom + 1);
         // report only if tile is bigger than minsize (compressed)
         config.minsize = typeof argv.minsize !== 'undefined' ? parseInt(argv.minsize) : 0;
 
@@ -41,7 +41,7 @@ function init() {
 var gaps = {};
 init().then(function() {
 
-    var scale = Math.pow(2, config.testZoom - config.baseZoom);
+    var scale = Math.pow(2, config.testZoom - config.zoom);
 
     var test = function(from, count) {
         var to = from + count;
@@ -61,7 +61,7 @@ init().then(function() {
             if (tile.length >= config.minsize) {
                 console.log('Tile size %d exists at %d/%d/%d (%d) with missing %d/%d/%d (%d)',
                     tile.length, config.testZoom, x, y, util.xyToIndex(x, y),
-                    config.baseZoom, bx, by, util.xyToIndex(bx, by));
+                    config.zoom, bx, by, util.xyToIndex(bx, by));
             }
         }).then(function() {
             return next();
@@ -94,15 +94,15 @@ init().then(function() {
         }
         last = id + 1;
     }
-    console.log('Getting empty tiles from Z %d (max %d tiles)', config.baseZoom, Math.pow(4, config.baseZoom));
-    return storage.eachTileAsync({zoom: config.baseZoom, gettile: false}, function(z,x,y) {
+    console.log('Getting empty tiles from Z %d (max %d tiles)', config.zoom, Math.pow(4, config.zoom));
+    return storage.eachTileAsync({zoom: config.zoom, gettile: false}, function(z,x,y) {
         addGap(util.xyToIndex(x, y));
     }).then(function() {
-        addGap(Math.pow(4, config.baseZoom));
+        addGap(Math.pow(4, config.zoom));
         var count = Object.keys(gaps).length;
         var sum = _.reduce(gaps, function (memo, v) { return memo + v; }, 0);
         console.log('Found %d gaps - %d missing tiles (%d%%) at Z %d', count, sum,
-            Math.round(sum / Math.pow(4, config.baseZoom) * 1000) / 10, config.baseZoom);
+            Math.round(sum / Math.pow(4, config.zoom) * 1000) / 10, config.zoom);
         return next();
     });
 

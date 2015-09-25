@@ -70,10 +70,16 @@ module.exports.validateJob = function(job) {
         _.each(job.filters, function(filter, ind, all) {
             // Each filter except last must have its own zoom level. Last is optional
             // Each next zoom level must be bigger than the one before, but less than or equal to job's zoom
-            core.checkType(filter, 'zoom', 'zoom',
-                ind < all.length - 1,
-                ind === 0 ? 0 : all[ind - 1].zoom + 1,
-                job.zoom);
+            // Special case - negative zoom implies job's zoom - N
+            if (core.checkType(filter, 'zoom', 'integer')) {
+                if (filter.zoom < 0) {
+                    filter.zoom = job.zoom + filter.zoom;
+                }
+                core.checkType(filter, 'zoom', 'zoom',
+                    ind < all.length - 1,
+                    ind === 0 ? 0 : all[ind - 1].zoom + 1,
+                    job.zoom);
+            }
             if (core.checkType(filter, 'dateFrom', '[object Date]') &&
                 core.checkType(filter, 'dateBefore', '[object Date]') &&
                 filter.dateFrom >= filter.dateBefore
@@ -91,24 +97,7 @@ module.exports.validateJob = function(job) {
 /**
  * Enque job for later processing
  * @param job object
- *  Mandatory field:
- *  - storageId - string ID of the tile storage as defined in the configuration
- *  - generatorId - string ID of the tile generator as defined in the configuration
- *  - zoom property (integer)
- *  Optional:
- *  - priority - integer, default 0
- *  - idxFrom - integer index, default 0
- *  - idxBefore - integer index, default 4^zoom
- *  - dateBefore - Date object to process tiles only older than this timestamp, or false to disable. false by default.
- *  - dateFrom - Date object to process tiles only newer than this timestamp, or false to disable. false by default.
- *  - biggerThan - number - only process tiles whose compressed size is bigger than this value (inclusive)
- *  - smallerThan - number - only process tiles whose compressed size is smaller than this value (exclusive)
- *  - missing - boolean - if true, yields all tiles that do not match the filtering fields:
- *                        dateBefore, dateAfter, biggerThan, smallerThan. Otherwise yields only those that match.
- *                        Default false. If no filtering fields are given, this value is ignored.
- *  - checkZoom - tiles of which zoom should be checked with 'check' param. By default, equals to zoom.
- *  - layers    - list of layer IDs (strings) to update
- *  - threads   - number of simultaneous threads (same process) to work on this job. 1 by default
+ * See the readme file for all available parameters
  */
 module.exports.addJobAsync = function(job) {
     return BBPromise.try(function() {
@@ -125,7 +114,7 @@ module.exports.addJobAsync = function(job) {
             }
             core.checkType(job, 'x', 'integer', true);
             core.checkType(job, 'y', 'integer', true);
-            var zoom = core.strToInt(job.baseZoom !== undefined ? job.baseZoom : job.zoom);
+            var zoom = core.strToInt(job.zoom);
             if (!core.isValidZoom(zoom) || !core.isValidCoordinate(job.x, zoom) || !core.isValidCoordinate(job.y, zoom)) {
                 throw new Err('Invalid x,y coordinates for the given zoom');
             }
@@ -136,7 +125,7 @@ module.exports.addJobAsync = function(job) {
         }
 
         // If this is a pyramid, break it into individual jobs
-        if (job.baseZoom !== undefined || job.fromZoom !== undefined || job.beforeZoom !== undefined) {
+        if (job.fromZoom !== undefined || job.beforeZoom !== undefined) {
             return module.exports.addPyramidJobsAsync(job);
         }
 
@@ -197,21 +186,20 @@ module.exports.addJobAsync = function(job) {
 };
 
 /**
- * Given an x,y (idxFrom) of the baseZoom, enqueue all tiles below them, with zooms >= fromZoom and < beforeZoom
+ * Given an x,y (idxFrom) of the zoom, enqueue all tiles below them, with zooms >= fromZoom and < beforeZoom
  */
 module.exports.addPyramidJobsAsync = function(options) {
-    if (options.baseZoom === undefined || options.fromZoom === undefined || options.beforeZoom === undefined) {
-        throw new Err('Pyramid-add requires baseZoom, fromZoom, and beforeZoom');
+    if (options.zoom === undefined || options.fromZoom === undefined || options.beforeZoom === undefined) {
+        throw new Err('Pyramid-add requires zoom, fromZoom, and beforeZoom');
     }
 
-    core.checkType(options, 'baseZoom', 'zoom');
+    core.checkType(options, 'zoom', 'zoom');
     core.checkType(options, 'fromZoom', 'zoom');
     core.checkType(options, 'beforeZoom', 'zoom', true, options.fromZoom);
     core.checkType(options, 'idxFrom', 'integer');
     core.checkType(options, 'idxBefore', 'integer');
 
     var opts = _.clone(options);
-    delete opts.baseZoom;
     delete opts.fromZoom;
     delete opts.beforeZoom;
     delete opts.zoom;
@@ -229,8 +217,8 @@ module.exports.addPyramidJobsAsync = function(options) {
             return BBPromise.resolve(result);
         }
         var z = zoom++;
-        var mult = Math.pow(4, Math.abs(z - options.baseZoom));
-        if (z < options.baseZoom) {
+        var mult = Math.pow(4, Math.abs(z - options.zoom));
+        if (z < options.zoom) {
             mult = 1/mult;
         }
         return module.exports.addJobAsync(_.extend({
