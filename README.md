@@ -128,3 +128,4 @@ multple change sets.
 * `headers` (object) - a set of extra headers that will be sent to the user instead of the headers returned by the source. (public requests only)
 * `formats` (array of strings) - one string or a list of string values specifying allowed formats, e.g. `['png','jpeg']`
 * `scales` (array of numbers) - one number or a list of number values specifying allowed scalings, e.g. `[1.3, 1.5, 2, 2.6, 3]`
+* `pbfsource` (string) - expose a raw vector (pbf) tile source as if it is coming from the current source. All requests to the pbf tiles from the current source will be redirected to the given source.
