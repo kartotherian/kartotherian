@@ -1,0 +1,31 @@
+{
+  "name": "kartotherian-server",
+  "version": "0.0.1",
+  "description": "Serves Kartotherian maps",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kartotherian/kartotherian-server.git"
+  },
+  "keywords": [
+    "kartotherian"
+  ],
+  "author": "Yuri Astrakhan <yurik@wikimedia.org>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://phabricator.wikimedia.org/tag/maps/"
+  },
+  "homepage": "https://github.com/kartotherian/kartotherian-server",
+  "dependencies": {
+    "bluebird": "^2.9.24",
+    "express": "^4.13.1",
+    "underscore": "^1.8.3",
+
+    "leaflet": "~0.7.3",
+    "abaculus": "^1.2.1",
+    "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git"
+  }
+}
