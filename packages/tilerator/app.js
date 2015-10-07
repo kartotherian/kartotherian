@@ -10,7 +10,6 @@ var fs = BBPromise.promisifyAll(require('fs'));
 var sUtil = require('./lib/util');
 var packageInfo = require('./package.json');
 var yaml = require('js-yaml');
-var core = require('kartotherian-core');
 
 
 /**
@@ -110,19 +109,6 @@ function initApp(options) {
     app.use(bodyParser.json());
     // use the application/x-www-form-urlencoded parser
     app.use(bodyParser.urlencoded({extended: true}));
-    // serve static files from static/
-    if (!String.prototype.endsWith) {
-        String.prototype.endsWith = function(searchString, position) {
-            var subjectString = this.toString();
-            if (position === undefined || position > subjectString.length) {
-                position = subjectString.length;
-            }
-            position -= searchString.length;
-            var lastIndex = subjectString.indexOf(searchString, position);
-            return lastIndex !== -1 && lastIndex === position;
-        };
-    }
-    app.use('/static', express.static(__dirname + '/static', core.getStaticOpts(app.conf)));
 
     return BBPromise.resolve(app);
 
