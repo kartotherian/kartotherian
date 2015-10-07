@@ -1,10 +1,12 @@
 'use strict';
 
+
 var BBPromise = require('bluebird');
 var util = require('util');
 var express = require('express');
 var uuid = require('cassandra-uuid');
 var bunyan = require('bunyan');
+
 
 /**
  * Error instance wrapping HTTP error responses
@@ -43,7 +45,7 @@ util.inherits(HTTPError, Error);
 /**
  * Generates an object suitable for logging out of a request object
  *
- * @param {Request} the request
+ * @param {Request} req request
  * @return {Object} an object containing the key components of the request
  */
 function reqForLog(req) {
@@ -65,7 +67,7 @@ function reqForLog(req) {
 /**
  * Serialises an error object in a form suitable for logging
  *
- * @param {Error} the error to serialise
+ * @param {Error} err error to serialise
  * @return {Object} the serialised version of the error
  */
 function errForLog(err) {
@@ -97,20 +99,15 @@ function generateRequestId() {
  * regardless of whether a handler returns/uses promises
  * or not.
  *
- * @param {Router} the router object
- * @param {Application} the application object
+ * @param {Router} router object
  */
-function wrapRouteHandlers(router, app) {
+function wrapRouteHandlers(router) {
 
     router.stack.forEach(function(routerLayer) {
         routerLayer.route.stack.forEach(function(layer) {
             var origHandler = layer.handle;
             layer.handle = function(req, res, next) {
                 BBPromise.try(function() {
-                    req.headers = req.headers || {};
-                    req.headers['x-request-id'] = req.headers['x-request-id'] || generateRequestId();
-                    req.logger = app.logger.child({request_id: req.headers['x-request-id']});
-                    req.logger.log('trace/req', {req: reqForLog(req), msg: 'incoming request'});
                     return origHandler(req, res, next);
                 })
                 .catch(next);
@@ -225,9 +222,25 @@ function createRouter(opts) {
 
 }
 
+
+/**
+ * Adds logger to the request and logs it
+ *
+ * @param {*} req request object
+ * @param {Application} app application object
+ */
+function initAndLogRequest(req, app) {
+    req.headers = req.headers || {};
+    req.headers['x-request-id'] = req.headers['x-request-id'] || generateRequestId();
+    req.logger = app.logger.child({request_id: req.headers['x-request-id']});
+    req.logger.log('trace/req', {req: reqForLog(req), msg: 'incoming request'});
+}
+
+
 module.exports = {
     HTTPError: HTTPError,
-    router: createRouter,
-    setErrorHandler: setErrorHandler,
+    initAndLogRequest: initAndLogRequest,
     wrapRouteHandlers: wrapRouteHandlers,
+    setErrorHandler: setErrorHandler,
+    router: createRouter
 };
