@@ -43,7 +43,7 @@ describe('errors', function() {
             // inspect the status
             assert.deepEqual(err.status, 500);
             // check the error title
-            assert.deepEqual(err.body.title, 'OperationalError');
+            assert.deepEqual(err.body.title, 'Error');
         });
     });
 
