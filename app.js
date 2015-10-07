@@ -10,7 +10,6 @@ var fs = BBPromise.promisifyAll(require('fs'));
 var sUtil = require('./lib/util');
 var packageInfo = require('./package.json');
 var yaml = require('js-yaml');
-var core = require('kartotherian-core');
 
 
 /**
