@@ -1,17 +1,19 @@
 'use strict';
 
+var pathLib = require('path');
 var BBPromise = require('bluebird');
-
 var core = require('kartotherian-core');
-var Err = core.Err;
-
+var server = require('kartotherian-server');
 var tilelive = require('tilelive');
+
+var Err = core.Err;
 BBPromise.promisifyAll(tilelive);
+
 
 module.exports = function(app) {
 
     return BBPromise.try(function () {
-        core.init(app.logger, require('path').resolve(__dirname, '..'), function (module) {
+        core.init(app.logger, pathLib.resolve(__dirname, '..'), function (module) {
             return require.resolve(module);
         });
 
@@ -27,17 +29,11 @@ module.exports = function(app) {
         ], tilelive);
 
         var sources = new core.Sources(app, tilelive);
-        return sources.loadVariablesAsync(app.conf.variables).return(sources);
+        return sources.init(app.conf.variables, app.conf.sources);
     }).then(function (sources) {
-        return sources.loadSourcesAsync(app.conf.sources).return(sources);
-    }).then(function (sources) {
-        return require('kartotherian-server').init({
+        return server.init({
             app: app,
-            sources: sources,
-            metrics: app.metrics,
-            defaultHeaders: app.conf.defaultHeaders,
-            overrideHeaders: app.conf.headers,
-            staticCacheHeaders: app.conf.cache
-        }).return(); // avoid app.js's default route initialization
-    });
+            sources: sources
+        });
+    }).return(); // avoid app.js's default route initialization
 };
