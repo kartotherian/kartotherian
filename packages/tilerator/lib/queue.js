@@ -30,8 +30,9 @@ module.exports.init = function(app, jobHandler) {
     queue = BBPromise.promisifyAll(kue.createQueue(opts));
 
     var uiConf = {
-        apiURL: '/',
-        baseURL: '/raw',
+        // these values must either equal, or end in a '/'
+        apiURL: '/jobs/',
+        baseURL: '/raw/',
         updateInterval: 5000 // Fetches new data every 5000 ms
     };
 

@@ -1,6 +1,6 @@
 {
   "name": "tilerator",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Map tiles pre-generation service",
   "main": "./app.js",
   "scripts": {
@@ -51,12 +51,13 @@
     "kue-ui": "git+https://github.com/nyurik/kue-ui.git",
 
     "mapnik": "~3.4.0",
+
     "tilelive": "~5.8.2",
     "tilelive-bridge": "~1.4.0",
-    "tilelive-file": "^0.0.3",
     "tilelive-vector": "~3.3.0",
 
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
+    "kartotherian-server": "git+https://github.com/kartotherian/kartotherian-server.git",
     "kartotherian-autogen": "git+https://github.com/kartotherian/kartotherian-autogen.git",
     "kartotherian-demultiplexer": "git+https://github.com/kartotherian/kartotherian-demultiplexer.git",
     "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",

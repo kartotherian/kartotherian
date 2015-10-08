@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>
+    <title>Wikimedia maps beta</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="leaflet/leaflet.css"/>
+</head>
+<style>
+    html, body {
+        margin: 0;
+        height: 100vh;
+        font-family: verdana, arial, sans-serif;
+    }
+    header {
+        margin: 0;
+        padding: 5px;
+    }
+    #style {
+        width: 50px;
+    }
+    #host {
+        width: 90px;
+    }
+    #generatorId, #storageId, #priority {
+        width: 40px;
+    }
+    #zoom, #fromZoom, #beforeZoom, #parts {
+        width: 18px;
+    }
+    #checkZoom, #sourceId, #dateBefore, #dateFrom, #biggerThan, #smallerThan, #checkZoom2, #sourceId2, #dateBefore2, #dateFrom2, #biggerThan2, #smallerThan2 {
+        width: 42px;
+    }
+    aside {
+        width:200px;
+        height: 76vh;
+        float:left;
+        padding:10px;
+    }
+    #sources {
+        width: 100%;
+        height: 66%;
+        font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace;
+        font-size: 10px;
+    }
+    #map {
+        height: 85vh;
+    }
+    .leaflet-tile-loaded:hover {
+        opacity: .5 !important;
+    }
+    footer {
+        padding: 10px;
+    }
+</style>
+<body>
+
+<header id="params">
+    <input type="button" value="set style" onclick="mapLayer.setUrl(getTileUrl())"><input id="style" type="text">
+    &nbsp;&nbsp;
+    <label for="host">host </label><input id="host" type="text" value="localhost:6534">
+    <label for="generatorId">src </label><input id="generatorId" type="text" value="gen">
+    <label for="storageId">dst </label><input id="storageId" type="text" value="v3">
+    <label for="zoom">zoom </label><input id="zoom" type="text" value="" readonly>
+    <label for="fromZoom">fromZ </label><input id="fromZoom" type="text" value="">
+    <label for="beforeZoom">beforeZ </label><input id="beforeZoom" type="text" value="">
+    <label for="saveSolid">saveSolid </label><input id="saveSolid" type="checkbox">
+    <label for="parts">parts </label><input id="parts" type="text" value="1">
+    <label for="priority">priority </label><input id="priority" type="text" value="normal">
+</header>
+
+<aside>
+    <a href="jobs">jobs</a>, <a href="raw">data</a>, <a href="sources">sources</a>, <a href="variables">vars</a>
+    <table>
+        <tr><th>Filters</th><th>#1</th><th>#2</th></tr>
+        <tr><td><label for="checkZoom">checkZoom</label></td><td><input id="checkZoom" type="text" value=""></td><td><input id="checkZoom2" type="text" value=""></td></tr>
+        <tr><td><label for="sourceId">sourceId</label></td><td><input id="sourceId" type="text" value=""></td><td><input id="sourceId2" type="text" value=""></td></tr>
+        <tr><td><label for="missing">missing</label></td><td><input id="missing" type="checkbox"></td><td><input id="missing2" type="checkbox"></td></tr>
+        <tr><td><label for="dateBefore">dateBefore</label></td><td><input id="dateBefore" type="text" value=""></td><td><input id="dateBefore2" type="text" value=""></td></tr>
+        <tr><td><label for="dateFrom">dateFrom</label></td><td><input id="dateFrom" type="text" value=""></td><td><input id="dateFrom2" type="text" value=""></td></tr>
+        <tr><td><label for="biggerThan">biggerThan</label></td><td><input id="biggerThan" type="text" value=""></td><td><input id="biggerThan2" type="text" value=""></td></tr>
+        <tr><td><label for="smallerThan">smallerThan</label></td><td><input id="smallerThan" type="text" value=""></td><td><input id="smallerThan2" type="text" value=""></td></tr>
+    </table>
+
+    <b><label for="sources">Source overides:</label></b><br>
+    <textarea id="sources"></textarea>
+</aside>
+
+<!-- Map placeholder -->
+<article id="map"></article>
+
+<footer id="result">
+    <b>Result</b>
+</footer>
+
+<!-- Load Leaflet -->
+<script src="leaflet/leaflet.js"></script>
+<!-- Optional - changes URL to reflect the current location on the map -->
+<script src="lib/leaflet-hash.js"></script>
+<script>
+
+    // Allow user to change style via the ?s=xxx URL parameter
+    // Uses "osm-intl" as the default style
+    var match = location.search.match(/s=([^&\/]*)/);
+    var style = (match && match[1]) || 'osm-intl';
+    document.getElementById('style').value = style;
+
+    var initZoom = 5;
+
+    // Create a map
+    var map = L.map('map', {
+        // doubleClickZoom: false
+    }).setView([40.75, -73.96], initZoom);
+
+    function bracketDevicePixelRatio() {
+        var brackets = [1, 1.3, 1.5, 2, 2.6, 3],
+                baseRatio = window.devicePixelRatio || 1;
+        for (var i = 0; i < brackets.length; i++) {
+            var scale = brackets[i];
+            if (scale >= baseRatio || (baseRatio - scale) < 0.1) {
+                return scale;
+            }
+        }
+        return brackets[brackets.length - 1];
+    }
+
+    function updateZoom(zoom) {
+        document.getElementById('zoom').value = zoom;
+    }
+
+    function getTileUrl() {
+        return '/' + document.getElementById('style').value + '/{z}/{x}/{y}' + scalex + '.png';
+    }
+
+    function addField(res, fieldId, value) {
+        if (value === undefined) {
+            var field = document.getElementById(fieldId);
+            switch (field.type) {
+                case 'text':
+                    if (field.value)
+                        value = field.value;
+                    break;
+                case 'checkbox':
+                    if (field.checked)
+                        value = 1;
+                    break;
+                default:
+                    throw new Error('Unknown field type ' + fieldId);
+            }
+        }
+        if (value !== undefined) {
+            if (res) res += '&';
+            res += fieldId + '=' + encodeURIComponent(value);
+        }
+        return res;
+    }
+
+    var scale = bracketDevicePixelRatio();
+    var scalex = (scale === 1) ? '' : ('@' + scale + 'x');
+
+    // Add a map layer
+    var mapLayer = L.tileLayer(getTileUrl(), {
+        maxZoom: 18,
+        attribution: 'Wikimedia maps beta | Map data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+        id: 'wikipedia-map-01'
+    });
+    mapLayer.addTo(map);
+
+    // Add a km/miles scale
+    L.control.scale().addTo(map);
+
+    // Update the zoom level label
+    updateZoom(initZoom);
+    map.on('zoomend', function () {
+        updateZoom(map.getZoom());
+    });
+
+    // Add current location to URL hash
+    var hash = new L.Hash(map);
+
+    map.on('click', function(e) {
+        if (!e.originalEvent.ctrlKey) return;
+        // path = "http://localhost:6533/osm-intl/4/4/4@1.3x.png"
+        var tileRE = /^https?:\/\/[^\/]+\/[^\/]+\/([0-9]+)\/([0-9]+)\/([0-9]+)(@[0-9]+\.[0-9]*x)?\.[a-z]+$/g;
+        var match = tileRE.exec(e.originalEvent.target.currentSrc);
+        if (!match) return;
+
+        var req = '';
+        req = addField(req, 'zoom', match[1]);
+        req = addField(req, 'x', match[2]);
+        req = addField(req, 'y', match[3]);
+        [
+            'generatorId', 'storageId', 'fromZoom', 'beforeZoom', 'parts', 'priority', 'saveSolid',
+            'checkZoom', 'sourceId', 'dateBefore', 'dateFrom', 'biggerThan', 'smallerThan', 'missing',
+            'checkZoom2', 'sourceId2', 'dateBefore2', 'dateFrom2', 'biggerThan2', 'smallerThan2', 'missing2'
+        ].forEach(function (fld) {
+            req = addField(req, fld);
+        });
+
+        var sources = document.getElementById('sources').value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.onerror = function (e) {
+            document.getElementById('result').innerHTML += '<br>' + 'Error #' + e.target.status;
+        };
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                document.getElementById('result').innerHTML += '<br>' + xhr.responseText;
+            }
+        };
+        req = 'http://' + document.getElementById('host').value + "/add?" + req;
+        document.getElementById('result').innerHTML = req;
+        xhr.open("POST", req, true);
+        xhr.send(sources || undefined);
+    });
+    </script>
+</body>
+</html>
