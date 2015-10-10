@@ -14,7 +14,7 @@ gen:
       password: {var: osmdb-pswd}
 
 # View tiles as generated directly from the database
-g:
+gg:
   public: true
   formats: [png,json,headers,svg,jpeg]
   scales: [1.3, 1.5, 2, 2.6, 3]
