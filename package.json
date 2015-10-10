@@ -25,7 +25,6 @@
     "underscore": "^1.8.3",
 
     "leaflet": "~0.7.3",
-    "abaculus": "^1.2.1",
-    "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git"
+    "abaculus": "^1.2.1"
   }
 }
