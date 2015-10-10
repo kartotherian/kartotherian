@@ -23,7 +23,6 @@
   "dependencies": {
     "bluebird": "^2.9.24",
     "cassandra-driver": "^2.1.1",
-    "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "multistream": "^1.6.1",
     "promistreamus": "^0.1.0"
   }
