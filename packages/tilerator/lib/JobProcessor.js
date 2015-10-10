@@ -4,9 +4,6 @@ var BBPromise = require('bluebird');
 var _ = require('underscore');
 var util = require('util');
 
-var mapnik = require('mapnik');
-BBPromise.promisifyAll(mapnik.VectorTile.prototype);
-
 var core = require('kartotherian-core');
 var Err = core.Err;
 
@@ -379,7 +376,7 @@ JobProcessor.prototype.generateTileAsync = function(iterValue) {
                 self.recordSamples('tiletoobig', idx);
                 return data; // generated tile is too big, save
             }
-            var vt = new mapnik.VectorTile(job.zoom, x, y);
+            var vt = new core.mapnik.VectorTile(job.zoom, x, y);
             return core.uncompressAsync(data)
                 .bind(vt)
                 .then(function (uncompressed) {

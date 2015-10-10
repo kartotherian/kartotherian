@@ -6,17 +6,9 @@ var _ = require('underscore');
 var express = require('express');
 var yaml = require('js-yaml');
 
-var mapnik = require('mapnik');
-BBPromise.promisifyAll(mapnik.VectorTile.prototype);
-
 var queue = require('../lib/queue');
 var core = require('kartotherian-core');
 var Err = core.Err;
-
-var tilelive = require('tilelive');
-BBPromise.promisifyAll(tilelive);
-
-var server = require('kartotherian-server');
 
 var JobProcessor = require('../lib/JobProcessor');
 
@@ -171,30 +163,25 @@ function reportAsync(res, task, isYaml) {
 module.exports = function(app) {
 
     return BBPromise.try(function () {
+        if (app.conf.daemonOnly && app.conf.uiOnly) {
+            throw new Err('daemonOnly and uiOnly config params may not be both true');
+        }
         core.init(app.logger, require('path').resolve(__dirname, '..'), function (module) {
             return require.resolve(module);
-        });
+        }, require('tilelive'), require('mapnik'));
         metrics = app.metrics;
         metrics.increment('init');
-        core.safeLoadAndRegister([
-            'tilelive-bridge',
-            'tilelive-file',
-            'tilelive-vector',
-            'kartotherian-autogen',
-            'kartotherian-demultiplexer',
-            'kartotherian-overzoom',
-            'kartotherian-cassandra',
-            'kartotherian-layermixer'
-        ], tilelive);
-        sources = new core.Sources(app, tilelive);
+        core.registerSourceLibs(
+            require('tilelive-bridge'),
+            require('tilelive-vector'),
+            require('kartotherian-autogen'),
+            require('kartotherian-demultiplexer'),
+            require('kartotherian-overzoom'),
+            require('kartotherian-cassandra'),
+            require('kartotherian-layermixer')
+        );
+        sources = new core.Sources(app);
         return sources.init(app.conf.variables, app.conf.sources);
-    }).then(function () {
-        // Init kartotherian web server
-        app.use('/', express.static(pathLib.resolve(__dirname, '../static'), {index: 'admin.html'}));
-        return server.init({
-            app: app,
-            sources: sources
-        });
     }).then(function () {
         var jobHandler;
         if (!app.conf.uiOnly) {
@@ -215,19 +202,28 @@ module.exports = function(app) {
         }
         queue.init(app, jobHandler);
 
-        var textParser = require('body-parser').text();
-        app.use('/sources', textParser, onSources);
+        if (!app.conf.daemonOnly) {
+            var textParser = require('body-parser').text();
+            app.use('/sources', textParser, onSources);
 
-        var router = express.Router();
-        router.post('/add', textParser, onEnque);
-        router.post('/stop', onStop);
-        router.post('/stop/:seconds(\\d+)', onStop);
-        router.post('/cleanup', onCleanup);
-        router.post('/cleanup/:type/:minutes(\\d+)', onCleanup);
-        router.post('/setinfo/:generatorId/:storageId', onSetInfo);
-        router.get('/variables', onVariables);
-        app.use('/', router);
+            var router = express.Router();
+            router.post('/add', textParser, onEnque);
+            router.post('/stop', onStop);
+            router.post('/stop/:seconds(\\d+)', onStop);
+            router.post('/cleanup', onCleanup);
+            router.post('/cleanup/:type/:minutes(\\d+)', onCleanup);
+            router.post('/setinfo/:generatorId/:storageId', onSetInfo);
+            router.get('/variables', onVariables);
+            app.use('/', router);
 
+            // Init kartotherian web server
+            app.use('/', express.static(pathLib.resolve(__dirname, '../static'), {index: 'admin.html'}));
+            require('kartotherian-server').init({
+                core: core,
+                app: app,
+                sources: sources
+            });
+        }
     }).catch(function (err) {
         core.log('fatal', core.errToStr(err));
         process.exit(1);

@@ -29,16 +29,18 @@ module.exports.init = function(app, jobHandler) {
     if (app.conf.redis) opts.redis = app.conf.redis;
     queue = BBPromise.promisifyAll(kue.createQueue(opts));
 
-    var uiConf = {
-        // these values must either equal, or end in a '/'
-        apiURL: '/jobs/',
-        baseURL: '/raw/',
-        updateInterval: 5000 // Fetches new data every 5000 ms
-    };
+    if (!app.conf.daemonOnly) {
+        var uiConf = {
+            // these values must either equal, or end in a '/'
+            apiURL: '/jobs/',
+            baseURL: '/raw/',
+            updateInterval: 5000 // Fetches new data every 5000 ms
+        };
 
-    kueui.setup(uiConf);
-    app.use(uiConf.apiURL, kue.app);
-    app.use(uiConf.baseURL, kueui.app);
+        kueui.setup(uiConf);
+        app.use(uiConf.apiURL, kue.app);
+        app.use(uiConf.baseURL, kueui.app);
+    }
 
     if (jobHandler) {
         queue.process(jobName, jobHandler);

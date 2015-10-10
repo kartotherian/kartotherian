@@ -13,8 +13,9 @@ Tilerator is an unprotected Admin tool, and should NOT be exposed to the web. By
 ## Configuration
 Inside the `conf` key:
 * `sources` - (required) Either a set of subkeys, a filename, or a list of file names.  See [core](https://github.com/kartotherian/kartotherian-core) on how to configure the sources.
-* `variables - (optional) specify a set of variables (string key-value pairs) to be used inside sources, or it could be a filename or a list of filenames/objects.
+* `variables` - (optional) specify a set of variables (string key-value pairs) to be used inside sources, or it could be a filename or a list of filenames/objects.
 * `uiOnly`- (optional, boolean) runs tilerator in UI mode - does not generate tiles, but still allows access to the web-based queue management tools.
+* `daemonOnly`- (optional, boolean) runs tilerator in daemon mode - generates tiles, but does not allows access to the web-based queue management tools.
 For the rest of the configuration parameters, see [service runner](https://github.com/wikimedia/service-runner) config info.
 * redis - (optional) configures redis server connection, e.g. redis://example.com:1234?redis_option=value&redis_option=value
 
