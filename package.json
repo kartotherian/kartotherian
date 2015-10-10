@@ -41,6 +41,7 @@
     "preq": "^0.4.4",
     "service-runner": "^0.2.1",
 
+    "mapnik": "~3.4.0",
     "tilelive": "~5.8.2",
     "tilelive-bridge": "~1.4.0",
     "tilelive-vector": "~3.3.0",
