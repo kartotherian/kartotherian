@@ -21,7 +21,6 @@
     "url": "https://github.com/kartotherian/kartotherian-overzoom/issues"
   },
   "dependencies": {
-    "bluebird": "^2.9.24",
-    "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git"
+    "bluebird": "^2.9.24"
   }
 }
