@@ -21,8 +21,6 @@
   },
   "dependencies": {
     "bluebird": "^2.9.24",
-    "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
-    "mapnik": "~3.4.0",
     "underscore": "^1.8.3"
   }
 }
