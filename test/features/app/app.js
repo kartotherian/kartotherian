@@ -31,7 +31,8 @@ describe('express app', function() {
         }).then(function(res) {
             assert.deepEqual(res.status, 200);
             assert.deepEqual(res.headers['access-control-allow-origin'], '*');
-            assert.notDeepEqual(res.headers['access-control-allow-headers'], undefined);
+            assert.deepEqual(!!res.headers['access-control-allow-headers'], true);
+            assert.deepEqual(!!res.headers['access-control-expose-headers'], true);
         });
     });
 
