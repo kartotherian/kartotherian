@@ -58,7 +58,7 @@ function onVariables(req, res) {
 function onEnque(req, res) {
     reportAsync(res, function () {
         return BBPromise.try(function() {
-            if (req.body) {
+            if (typeof req.body === 'string') {
                 return updateSourcesFromYaml(req.body);
             }
         }).then(function() {
