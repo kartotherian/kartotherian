@@ -20,7 +20,7 @@
         width: 50px;
     }
     #host {
-        width: 90px;
+        width: 100px;
     }
     #generatorId, #storageId, #priority {
         width: 40px;
@@ -43,6 +43,10 @@
         font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace;
         font-size: 10px;
     }
+    #result {
+        font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace;
+        font-size: 9px;
+    }
     #map {
         height: 85vh;
     }
@@ -57,7 +61,7 @@
 
 <header id="params">
     <input type="button" value="set style" onclick="mapLayer.setUrl(getTileUrl())"><input id="style" type="text">
-    &nbsp;&nbsp;
+    &nbsp;
     <label for="host">host </label><input id="host" type="text" value="localhost:6534">
     <label for="generatorId">src </label><input id="generatorId" type="text" value="gen">
     <label for="storageId">dst </label><input id="storageId" type="text" value="v3">
@@ -82,7 +86,7 @@
         <tr><td><label for="smallerThan">smallerThan</label></td><td><input id="smallerThan" type="text" value=""></td><td><input id="smallerThan2" type="text" value=""></td></tr>
     </table>
 
-    <b><label for="sources">Source overides:</label></b><br>
+    <b><label for="sources">Sources</label></b> <input type="button" value="set" onclick="postCommand('sources')"><br>
     <textarea id="sources"></textarea>
 </aside>
 
@@ -169,14 +173,40 @@
     // Add a km/miles scale
     L.control.scale().addTo(map);
 
-    // Update the zoom level label
+    // Init input field values
+    document.getElementById('host').value = window.location.host;
     updateZoom(initZoom);
+
+    // Update the zoom level label
     map.on('zoomend', function () {
         updateZoom(map.getZoom());
     });
 
     // Add current location to URL hash
     var hash = new L.Hash(map);
+
+    function postCommand(command, req) {
+        var sources = document.getElementById('sources').value || undefined;
+        var request = 'http://' + document.getElementById('host').value + '/' + command;
+        if (req) {
+            request += '?' + req;
+        } else if (!sources) {
+            document.getElementById('result').innerHTML += '<br>Error: Nothing to do (sources are not set)';
+            return;
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.onerror = function (e) {
+            document.getElementById('result').innerHTML += '<br>' + 'Error #' + e.target.status;
+        };
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                document.getElementById('result').innerHTML += '<br>' + xhr.responseText;
+            }
+        };
+        document.getElementById('result').innerHTML = request;
+        xhr.open('POST', request, true);
+        xhr.send(sources);
+    }
 
     map.on('click', function(e) {
         if (!e.originalEvent.ctrlKey) return;
@@ -197,21 +227,7 @@
             req = addField(req, fld);
         });
 
-        var sources = document.getElementById('sources').value;
-
-        var xhr = new XMLHttpRequest();
-        xhr.onerror = function (e) {
-            document.getElementById('result').innerHTML += '<br>' + 'Error #' + e.target.status;
-        };
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                document.getElementById('result').innerHTML += '<br>' + xhr.responseText;
-            }
-        };
-        req = 'http://' + document.getElementById('host').value + "/add?" + req;
-        document.getElementById('result').innerHTML = req;
-        xhr.open("POST", req, true);
-        xhr.send(sources || undefined);
+        postCommand('add', req);
     });
     </script>
 </body>

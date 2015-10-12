@@ -30,7 +30,7 @@ services:
     # version: ^0.4.0
     # per-service config
     conf:
-      port: 6534
+      port: 16534
 
       # restrict to localhost access only
       interface: localhost
