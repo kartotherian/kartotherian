@@ -74,7 +74,7 @@
 </header>
 
 <aside>
-    <a href="jobs">jobs</a>, <a href="raw">data</a>, <a href="sources">sources</a>, <a href="variables">vars</a>
+    <a href="jobs" target="_blank">jobs</a>, <a href="raw" target="_blank">data</a>, <a href="sources" target="_blank">sources</a>, <a href="variables" target="_blank">vars</a>
     <table>
         <tr><th>Filters</th><th>#1</th><th>#2</th></tr>
         <tr><td><label for="checkZoom">checkZoom</label></td><td><input id="checkZoom" type="text" value=""></td><td><input id="checkZoom2" type="text" value=""></td></tr>
@@ -209,7 +209,7 @@
     }
 
     map.on('click', function(e) {
-        if (!e.originalEvent.ctrlKey) return;
+        if (!e.originalEvent.ctrlKey && !e.originalEvent.altKey) return;
         // path = "http://localhost:6533/osm-intl/4/4/4@1.3x.png"
         var tileRE = /^https?:\/\/[^\/]+\/[^\/]+\/([0-9]+)\/([0-9]+)\/([0-9]+)(@[0-9]+\.[0-9]*x)?\.[a-z]+$/g;
         var match = tileRE.exec(e.originalEvent.target.currentSrc);
