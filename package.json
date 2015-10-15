@@ -21,8 +21,9 @@
   },
   "dependencies": {
     "bluebird": "^2.9.24",
+    "pg.js": "*",
     "pg-promise": "^2.0.9",
-    "multistream": "^1.6.1",
+    "pg-query-stream": "^0.7.0",
     "promistreamus": "^0.1.0"
   }
 }
