@@ -40,6 +40,7 @@ The most basic call to generate all tiles of zoom level 3, using `gen` source to
 ```
 http://localhost:6534/add?generatorId=gen&storageId=store&zoom=3
 ```
+
 ### Job Parameters
 * `generatorId` - required source ID, as defined in the sources configuration. Tiles from this source will be read.
 * `storageId` - required source ID, as defined in the sources configuration. Tiles will be written to this source.
@@ -66,6 +67,22 @@ This feature could be useful for the tile invalidation. For example, a user edit
 * `zoom` - the zoom level of the pyramid's tip
 * `fromZoom` - zoom level at which to start generation (inclusive)
 * `beforeZoom` - zoom level to end tile generation (exclusive)
+
+### Parsing updates file
+Specifying `filepath` parameter will load that file from the localhost and append its content to the queue. The file
+ must already exist on the server. File must be in the format created by osm2pgsql, and all lines must be of the same
+ zoom level:
+
+```
+zoom/x_coordinate/y_coordinate
+```
+
+Tilerator will convert this file into a list of indexes, sort/deduplicate them, and schedule all the needed jobs.
+Use `fromZoom` and `beforeZoom` to invalidate more than just the zoom level given in the file. Note that if the zoom range is
+given, only those zooms will be regenerated. So if the zoom level in the file is not in `fromZoom <= zoom < beforeZoom`,
+that zoom level will not be regenerated.
+
+ P.S. Please remember that Tilerator is an admin tool, and should not be accessible from the web
 
 ### Job Filters
 Sometimes you may wish to generate only those tiles that satisfy a certain condition.

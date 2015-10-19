@@ -12,7 +12,7 @@
         height: 100vh;
         font-family: verdana, arial, sans-serif;
     }
-    header {
+    #header {
         margin: 0;
         padding: 5px;
     }
@@ -21,6 +21,9 @@
     }
     #host {
         width: 100px;
+    }
+    #filepath {
+        width: 120px;
     }
     #generatorId, #storageId, #priority {
         width: 40px;
@@ -35,11 +38,11 @@
         width:200px;
         height: 76vh;
         float:left;
-        padding:10px;
+        padding:5px 10px;
     }
     #sources {
         width: 100%;
-        height: 66%;
+        height: 63%;
         font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace;
         font-size: 10px;
     }
@@ -59,21 +62,8 @@
 </style>
 <body>
 
-<header id="params">
-    <input type="button" value="set style" onclick="mapLayer.setUrl(getTileUrl())"><input id="style" type="text">
-    &nbsp;
-    <label for="host">host </label><input id="host" type="text" value="localhost:6534">
-    <label for="generatorId">src </label><input id="generatorId" type="text" value="gen">
-    <label for="storageId">dst </label><input id="storageId" type="text" value="v3">
-    <label for="zoom">zoom </label><input id="zoom" type="text" value="" readonly>
-    <label for="fromZoom">fromZ </label><input id="fromZoom" type="text" value="">
-    <label for="beforeZoom">beforeZ </label><input id="beforeZoom" type="text" value="">
-    <label for="saveSolid">saveSolid </label><input id="saveSolid" type="checkbox">
-    <label for="parts">parts </label><input id="parts" type="text" value="1">
-    <label for="priority">priority </label><input id="priority" type="text" value="">
-</header>
-
 <aside>
+    <input type="button" value="set style" onclick="mapLayer.setUrl(getTileUrl())"> <input id="style" type="text"><br>
     <a href="jobs" target="_blank">jobs</a>, <a href="raw" target="_blank">data</a>, <a href="sources" target="_blank">sources</a>, <a href="variables" target="_blank">vars</a>
     <table>
         <tr><th>Filters</th><th>#1</th><th>#2</th></tr>
@@ -86,12 +76,26 @@
         <tr><td><label for="smallerThan">smallerThan</label></td><td><input id="smallerThan" type="text" value=""></td><td><input id="smallerThan2" type="text" value=""></td></tr>
     </table>
 
+    <input id="filepath" type="text" value=""> <input type="button" value="load file" onclick="parseFile()"><br>
+
     <b><label for="sources">Sources</label></b> <input type="button" value="set" onclick="postCommand('sources')"><br>
     <textarea id="sources"></textarea>
 </aside>
 
+<div id="header">
+    <label for="host">host </label><input id="host" type="text" value="localhost:6534">
+    <label for="generatorId">src </label><input id="generatorId" type="text" value="gen">
+    <label for="storageId">dst </label><input id="storageId" type="text" value="v3">
+    <label for="zoom">zoom </label><input id="zoom" type="text" value="" readonly>
+    <label for="fromZoom">fromZ </label><input id="fromZoom" type="text" value="">
+    <label for="beforeZoom">beforeZ </label><input id="beforeZoom" type="text" value="">
+    <label for="saveSolid">saveSolid </label><input id="saveSolid" type="checkbox">
+    <label for="parts">parts </label><input id="parts" type="text" value="">
+    <label for="priority">priority </label><input id="priority" type="text" value="">
+    <br>
+</div>
 <!-- Map placeholder -->
-<article id="map"></article>
+    <article id="map"></article>
 
 <footer id="result">
     <b>Result</b>
@@ -151,8 +155,10 @@
                 default:
                     throw new Error('Unknown field type ' + fieldId);
             }
+        } else {
+            value = value.toString();
         }
-        if (value !== undefined) {
+        if (value !== undefined && value !== '') {
             if (res) res += '&';
             res += fieldId + '=' + encodeURIComponent(value);
         }
@@ -208,6 +214,24 @@
         xhr.send(sources);
     }
 
+    function addCommonFields(req) {
+        [
+            'generatorId', 'storageId', 'fromZoom', 'beforeZoom', 'parts', 'priority', 'saveSolid',
+            'checkZoom', 'sourceId', 'dateBefore', 'dateFrom', 'biggerThan', 'smallerThan', 'missing',
+            'checkZoom2', 'sourceId2', 'dateBefore2', 'dateFrom2', 'biggerThan2', 'smallerThan2', 'missing2'
+        ].forEach(function (fld) {
+                    req = addField(req, fld);
+                });
+        return req;
+    }
+
+    function parseFile() {
+        var req = '';
+        req = addField(req, 'filepath');
+        req = addCommonFields(req);
+        postCommand('add', req);
+    }
+
     map.on('click', function(e) {
         if (!e.originalEvent.ctrlKey && !e.originalEvent.altKey) return;
         // path = "http://localhost:6533/osm-intl/4/4/4@1.3x.png"
@@ -215,18 +239,13 @@
         var match = tileRE.exec(e.originalEvent.target.currentSrc);
         if (!match) return;
 
-        var req = '';
-        req = addField(req, 'zoom', match[1]);
-        req = addField(req, 'x', match[2]);
-        req = addField(req, 'y', match[3]);
-        [
-            'generatorId', 'storageId', 'fromZoom', 'beforeZoom', 'parts', 'priority', 'saveSolid',
-            'checkZoom', 'sourceId', 'dateBefore', 'dateFrom', 'biggerThan', 'smallerThan', 'missing',
-            'checkZoom2', 'sourceId2', 'dateBefore2', 'dateFrom2', 'biggerThan2', 'smallerThan2', 'missing2'
-        ].forEach(function (fld) {
-            req = addField(req, fld);
-        });
+        var zoom = parseInt(match[1]), x = parseInt(match[2]), y = parseInt(match[3]);
 
+        var req = '';
+        req = addField(req, 'zoom', zoom);
+        req = addField(req, 'x', x);
+        req = addField(req, 'y', y);
+        req = addCommonFields(req);
         postCommand('add', req);
     });
     </script>

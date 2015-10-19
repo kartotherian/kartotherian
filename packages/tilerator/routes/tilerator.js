@@ -11,6 +11,7 @@ var core = require('kartotherian-core');
 var Err = core.Err;
 
 var JobProcessor = require('../lib/JobProcessor');
+var fileParser = require('../lib/fileParser');
 
 var jobProcessor, metrics, sources;
 
@@ -110,7 +111,14 @@ function onEnque(req, res) {
                 job.filters = filter1;
             }
             queue.setSources(job, sources);
-            return queue.addJobAsync(job);
+
+            if (req.query.filepath) {
+                return fileParser(req.query.filepath, job, function(job) {
+                    return queue.addJobAsync(job);
+                })
+            } else {
+                return queue.addJobAsync(job);
+            }
         });
     });
 }
@@ -153,7 +161,12 @@ function reportAsync(res, task, isYaml) {
     }
     return BBPromise
         .try(task)
-        .then(format, function (err) {
+        .then(function (val) {
+            // we should have a log of all requests's responses, 'warn' is a good level for that
+            core.log('warn', val);
+            return format(val);
+        }, function (err) {
+            core.log('warn', err);
             return format({error: err.message, stack: err.stack})
         }).then(function (str) {
             res.type(type).send(str);
@@ -177,6 +190,7 @@ module.exports = function(app) {
             require('kartotherian-autogen'),
             require('kartotherian-demultiplexer'),
             require('kartotherian-overzoom'),
+            require('kartotherian-postgres'),
             require('kartotherian-cassandra'),
             require('kartotherian-layermixer')
         );

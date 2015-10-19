@@ -103,6 +103,7 @@ module.exports.validateJob = function(job) {
  * See the readme file for all available parameters
  */
 module.exports.addJobAsync = function(job) {
+    job = _.clone(job);
     return BBPromise.try(function() {
         if (!queue) {
             throw new Err('Still loading');
@@ -334,11 +335,11 @@ function setJobTitle(job) {
         job.title += util.format(' ALL (%s)', numeral(zoomMax).format('0,0'));
     } else if (job.idxBefore - job.idxFrom === 1) {
         var xy = core.indexToXY(job.idxFrom);
-        job.title += util.format(' tile at [%d,%d] (idx=%d)', xy[0], xy[1], job.idxFrom);
+        job.title += util.format(' 1 tile at [%d,%d] (idx=%d)', xy[0], xy[1], job.idxFrom);
     } else {
         var xyFrom = core.indexToXY(job.idxFrom);
         var xyLast = core.indexToXY(job.idxBefore - 1);
-        job.title += util.format(' %s (%s‒%s; [%d,%d]‒[%d,%d])',
+        job.title += util.format(' %s tiles (%s‒%s; [%d,%d]‒[%d,%d])',
             numeral(job.idxBefore - job.idxFrom).format('0,0'),
             numeral(job.idxFrom).format('0,0'),
             numeral(job.idxBefore).format('0,0'),
