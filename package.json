@@ -22,7 +22,7 @@
   "dependencies": {
     "bluebird": "^2.9.24",
     "pg.js": "*",
-    "pg-promise": "git+https://github.com/nyurik/pg-promise.git",
+    "pg-promise": "^2.0.12",
     "pg-query-stream": "^0.7.0",
     "promistreamus": "^0.1.2"
   }
