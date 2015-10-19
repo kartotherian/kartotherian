@@ -1,6 +1,6 @@
 {
   "name": "service-template-node",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A blueprint for MediaWiki REST API services",
   "main": "./app.js",
   "scripts": {
@@ -29,23 +29,23 @@
   "homepage": "https://github.com/wikimedia/service-template-node",
   "dependencies": {
     "bluebird": "~2.8.2",
-    "body-parser": "^1.13.2",
-    "bunyan": "^1.4.0",
+    "body-parser": "^1.14.1",
+    "bunyan": "^1.5.1",
     "cassandra-uuid": "^0.0.2",
-    "compression": "^1.5.1",
-    "domino": "^1.0.18",
-    "express": "^4.13.1",
-    "js-yaml": "^3.3.1",
+    "compression": "^1.6.0",
+    "domino": "^1.0.19",
+    "express": "^4.13.3",
+    "js-yaml": "^3.4.3",
     "preq": "^0.4.4",
-    "service-runner": "^0.2.1"
+    "service-runner": "^0.2.11"
   },
   "devDependencies": {
     "extend": "^3.0.0",
-    "istanbul": "^0.3.17",
-    "mocha": "^2.2.5",
+    "istanbul": "^0.3.22",
+    "mocha": "^2.3.3",
     "mocha-jshint": "^2.2.3",
-    "mocha-lcov-reporter": "^0.0.2",
-    "swagger-router": "^0.1.1"
+    "mocha-lcov-reporter": "^1.0.0",
+    "swagger-router": "^0.2.0"
   },
   "deploy": {
     "target": "ubuntu",

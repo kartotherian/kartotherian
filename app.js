@@ -52,6 +52,17 @@ function initApp(options) {
         }
     }
 
+    // set up header whitelisting for logging
+    if(!app.conf.log_header_whitelist) {
+        app.conf.log_header_whitelist = [
+                'cache-control', 'content-type', 'content-length', 'if-match',
+                'user-agent', 'x-request-id'
+        ];
+    }
+    app.conf.log_header_whitelist = new RegExp('^(?:' + app.conf.log_header_whitelist.map(function(item) {
+        return item.trim();
+    }).join('|') + ')$', 'i');
+
     // set up the spec
     if(!app.conf.spec) {
         app.conf.spec = __dirname + '/spec.yaml';
