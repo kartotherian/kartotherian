@@ -103,9 +103,7 @@ function initApp(options) {
         res.header('content-security-policy', app.conf.csp);
         res.header('x-content-security-policy', app.conf.csp);
         res.header('x-webkit-csp', app.conf.csp);
-
         sUtil.initAndLogRequest(req, app);
-
         next();
     });
 
@@ -135,42 +133,43 @@ function initApp(options) {
 function loadRoutes (app) {
 
     // get the list of files in routes/
-    return fs.readdirAsync(__dirname + '/routes')
-        .map(function (fname) {
-            return BBPromise.try(function () {
-                // ... and then load each route
-                // but only if it's a js file
-                if(!/\.js$/.test(fname)) {
-                    return undefined;
-                }
-                // import the route file
-                var route = require(__dirname + '/routes/' + fname);
-                return route(app);
-            }).then(function (route) {
-                if(route === undefined) {
-                    return undefined;
-                }
-                // check that the route exports the object we need
-                if (route.constructor !== Object || !route.path || !route.router || !(route.api_version || route.skip_domain)) {
-                    throw new TypeError('routes/' + fname + ' does not export the correct object!');
-                }
-                // wrap the route handlers with Promise.try() blocks
-                sUtil.wrapRouteHandlers(route.router);
-                // determine the path prefix
-                var prefix = '';
-                if(!route.skip_domain) {
-                    prefix = '/:domain/v' + route.api_version;
-                }
-                // all good, use that route
-                app.use(prefix + route.path, route.router);
-            });
-        }).then(function () {
-            // catch errors
-            sUtil.setErrorHandler(app);
-            // route loading is now complete, return the app object
-            return BBPromise.resolve(app);
+    return fs.readdirAsync(__dirname + '/routes').map(function(fname) {
+        return BBPromise.try(function() {
+            // ... and then load each route
+            // but only if it's a js file
+            if(!/\.js$/.test(fname)) {
+                return undefined;
+            }
+            // import the route file
+            var route = require(__dirname + '/routes/' + fname);
+            return route(app);
+        }).then(function(route) {
+            if(route === undefined) {
+                return undefined;
+            }
+            // check that the route exports the object we need
+            if(route.constructor !== Object || !route.path || !route.router || !(route.api_version || route.skip_domain)) {
+                throw new TypeError('routes/' + fname + ' does not export the correct object!');
+            }
+            // wrap the route handlers with Promise.try() blocks
+            sUtil.wrapRouteHandlers(route.router);
+            // determine the path prefix
+            var prefix = '';
+            if(!route.skip_domain) {
+                prefix = '/:domain/v' + route.api_version;
+            }
+            // all good, use that route
+            app.use(prefix + route.path, route.router);
         });
+    }).then(function () {
+        // catch errors
+        sUtil.setErrorHandler(app);
+        // route loading is now complete, return the app object
+        return BBPromise.resolve(app);
+    });
+
 }
+
 
 /**
  * Creates and start the service's web server
@@ -196,6 +195,7 @@ function createServer(app) {
     });
 
 }
+
 
 /**
  * The service's entry point. It takes over the configuration
