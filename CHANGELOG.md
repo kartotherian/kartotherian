@@ -1,5 +1,10 @@
 # Changes
 
+## v0.4.2 - 10/27/15
+
+* Eliminate unnecessary (and potentially expensive) sorting of object keys to
+  be written into Mapnik XML.
+
 ## v0.4.1 - 10/27/15
 
 * Catch errors from `normalize()`
