@@ -24,27 +24,6 @@ tm.extent = {
     '900913': [-20037508.34, -20037508.34, 20037508.34, 20037508.34]
 };
 
-// Return an object with sorted keys, ignoring case.
-tm.sortkeys = function(obj) {
-  try {
-    return obj.map(tm.sortkeys);
-  } catch(e) {};
-  try {
-    return Object.keys(obj).sort(function(a, b) {
-      a = a.toLowerCase();
-      b = b.toLowerCase();
-      if (a === 'id') return -1;
-      if (b === 'id') return 1;
-      if (a > b) return 1;
-      if (a < b) return -1;
-      return 0;
-    }).reduce(function(memo, key) {
-      memo[key] = tm.sortkeys(obj[key]);
-      return memo;
-    }, {});
-  } catch(e) { return obj };
-};
-
 // Return an augmented uri object from url.parse with the pathname
 // transformed into an unescaped dirname.
 tm.parse = function(str) {
@@ -172,7 +151,7 @@ var toXML = function(data, callback) {
   });
 
   try {
-    return callback(null, new carto.Renderer().render(tm.sortkeys(opts)));
+    return callback(null, new carto.Renderer().render(opts));
   } catch(err) {
     if (Array.isArray(err)) {
         err.forEach(function(e) {
