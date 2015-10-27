@@ -201,12 +201,12 @@ var TMSource = function(uri, callback) {
 
     try {
       self.info = yaml.load(data);
+
+      self.info.id = url.format(uri);
+      self.info = normalize(self.info);
     } catch (err) {
       return callback(err);
     }
-
-    self.info.id = url.format(uri);
-    self.info = normalize(self.info);
 
     return toXML(self.info, function(err, xml) {
       if (err) {
