@@ -1,5 +1,9 @@
 # Changes
 
+## v0.4.1 - 10/27/15
+
+* Catch errors from `normalize()`
+
 ## v0.4.0 - 8/17/15
 
 * Use newest `mapnik-reference` (for compatibility w/ mapnik 3.x)
