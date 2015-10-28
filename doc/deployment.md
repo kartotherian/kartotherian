@@ -117,6 +117,12 @@ That will make the system look for the repository
 `mediawiki/services/name_in_gerrit` when checking it out in the deploy
 repository.
 
+In case remote name in your deploy repository is different from standard `origin`,
+you could configure an alternative name using the following command:
+```
+git config deploy.remote deploy_repo_remote_name
+```
+
 ## Testing
 
 Before updating the deploy repository you need to make sure your configuration
