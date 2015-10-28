@@ -77,7 +77,7 @@ other, distribution-specific package lists, e.g.:
 ```javascript
 "deploy": {
   "target": "ubuntu",
-  "node": "system"
+  "node": "system",
   "dependencies": {
     "ubuntu": ["pkg1", "pkg2"],
     "debian": ["pkgA", "pkgB"],
@@ -123,8 +123,9 @@ That will make the system look for the repository
 `mediawiki/services/name_in_gerrit` when checking it out in the deploy
 repository.
 
-In case remote name in your deploy repository is different from standard `origin`,
-you could configure an alternative name using the following command:
+The deploy-repo builder script assumes the name of the remote to check out in 
+the deploy repository is `origin`. An alternative name can be configured by 
+invoking (in the source repository):
 ```
 git config deploy.remote deploy_repo_remote_name
 ```
