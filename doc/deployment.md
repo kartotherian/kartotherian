@@ -61,7 +61,12 @@ repository, but it needs to be configured properly in order to work.
 The first part of the configuration involves keeping your source repository's
 `package.json` updated. Look for its [deploy stanza](../package.json#L49).
 Depending on the exact machine on which your service will be deployed, you may
-need to set `target` to either `ubuntu` or `debian`.
+need to set `target` to either `ubuntu` or `debian`. 
+
+If you want to specify node.js version, different from the official distribution
+package, set a value of `node` stanza to a desired version, following 
+[nvm](https://github.com/creationix/nvm) versions naming. 
+To explicitly force official distribution package, `"system"` version could be set.
 
 The important thing is keeping the `dependencies` field up to date at all times.
 There you should list all of the extra packages that are needed in order to
@@ -72,6 +77,7 @@ other, distribution-specific package lists, e.g.:
 ```javascript
 "deploy": {
   "target": "ubuntu",
+  "node": "v4.2.1"
   "dependencies": {
     "ubuntu": ["pkg1", "pkg2"],
     "debian": ["pkgA", "pkgB"],
