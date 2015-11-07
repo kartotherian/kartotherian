@@ -34,12 +34,12 @@ test('tm2z+http content length error', function(assert) {
         res.setHeader('content-length', buffer.length);
         res.writeHead(200);
         res.write(buffer.slice(0,250e3));
-        res.end();
+        req.socket.destroy();
     });
     server.listen(9191, afterListen);
     function afterListen(err) {
         assert.ifError(err);
-        tilelive.load('tm2z+http://127.0.0.1:9191/', function(err, source) {
+        tilelive.load('tm2z+http://127.0.0.1:9191/patternstyle.tm2z', function(err, source) {
             assert.ok(err, 'has error');
             assert.equal(err.code, undefined, 'not a mapnik error');
             server.close(afterClose);
