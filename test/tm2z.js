@@ -28,27 +28,29 @@ tilelive.protocols['mapbox:'] = function Source(uri, callback) {
 // Register font
 Vector.mapnik.register_fonts(path.join(__dirname, 'fonts', 'source-sans-pro'));
 
-test('tm2z+http content length error', function(assert) {
-    var server = require('http').createServer(function(req, res) {
-        var buffer = fs.readFileSync(path.join(fixtureDir, 'patternstyle.tm2z'));
-        res.setHeader('content-length', buffer.length);
-        res.writeHead(200);
-        res.write(buffer.slice(0,250e3));
-        req.socket.destroy();
-    });
-    server.listen(9191, afterListen);
-    function afterListen(err) {
-        assert.ifError(err);
-        tilelive.load('tm2z+http://127.0.0.1:9191/patternstyle.tm2z', function(err, source) {
-            assert.ok(err, 'has error');
-            assert.equal(err.code, undefined, 'not a mapnik error');
-            server.close(afterClose);
+['cold', 'warm'].forEach(function(label) {
+    test(label + ': tm2z+http content length error', function(assert) {
+        var server = require('http').createServer(function(req, res) {
+            var buffer = fs.readFileSync(path.join(fixtureDir, 'patternstyle.tm2z'));
+            res.setHeader('content-length', buffer.length);
+            res.writeHead(200);
+            res.write(buffer.slice(0,250e3));
+            req.socket.destroy();
         });
-    }
-    function afterClose(err) {
-        assert.ifError(err);
-        assert.end();
-    }
+        server.listen(9191, afterListen);
+        function afterListen(err) {
+            assert.ifError(err);
+            tilelive.load('tm2z+http://127.0.0.1:9191/patternstyle.tm2z', function(err, source) {
+                assert.ok(err, 'has error');
+                assert.equal(err.code, undefined, 'not a mapnik error');
+                server.close(afterClose);
+            });
+        }
+        function afterClose(err) {
+            assert.ifError(err);
+            assert.end();
+        }
+    });
 });
 
 test('exposes the mapnik binding', function(t) {
