@@ -493,6 +493,9 @@ function tm2z(uri, callback) {
             // Package unpacked but no project.xml. Call load to error our.
             if (unpacked) return load();
 
+            // Callback already called with an error.
+            if (once) return;
+
             todo.push(function(next) { fs.writeFile(base + '/.unpacked', '', next); });
             var next = function(err) {
                 if (err && err.code !== 'EEXIST') return error(err);
@@ -520,7 +523,11 @@ function tm2z(uri, callback) {
                 break;
             case 'tm2z+http:':
                 uri.protocol = 'http:';
-                stream = request({ uri: uri })
+                stream = request({ uri: uri, encoding:null }, function(err, res, body) {
+                        if (res.headers['content-length'] && parseInt(res.headers['content-length'],10) !== body.length) {
+                            error(new Error('Content-Length does not match response body length'));
+                        }
+                    })
                     .on('data', chunked)
                     .pipe(gunzip)
                     .pipe(parser)
