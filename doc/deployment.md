@@ -145,8 +145,14 @@ everything works as expected (and commit those changes).
 
 ## Update
 
-The final step is updating the deploy repository. From the source repository
-run:
+The final step is updating the deploy repository. First. make sure that your
+source repository has got the latest dependencies installed:
+
+```
+rm -rf node_modules/ && npm install
+```
+
+Update the deploy repository by running from the source repository:
 
 ```
 ./server.js build --deploy-repo
