@@ -41,6 +41,8 @@ services:
       # cors: false
       # to restrict to a particular domain, use:
       # cors: restricted.domain.org
+      # content for the CSP headers
+      # csp: false  # uncomment this line to disable sending them
       # URL of the outbound proxy to use (complete with protocol)
       # proxy: http://my.proxy.org:8080
       # the list of domains for which not to use the proxy defined above
