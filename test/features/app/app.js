@@ -26,6 +26,9 @@ describe('express app', function() {
     });
 
     it('should set CORS headers', function() {
+        if(server.config.service.conf.cors === false) {
+            return true;
+        }
         return preq.get({
             uri: server.config.uri + 'robots.txt'
         }).then(function(res) {
@@ -37,6 +40,9 @@ describe('express app', function() {
     });
 
     it('should set CSP headers', function() {
+        if(server.config.service.conf.csp === false) {
+            return true;
+        }
         return preq.get({
             uri: server.config.uri + 'robots.txt'
         }).then(function(res) {
