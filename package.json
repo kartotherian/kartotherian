@@ -14,13 +14,13 @@
   ],
   "dependencies": {
     "mapnik": "~3.4.6",
-    "tilelive": "5.9.x",
-    "tar": "~0.1.18",
-    "request": "~2.48.0",
+    "tilelive": "5.11.x",
+    "tar": "~2.2.1",
+    "request": "~2.65.0",
     "numeral": "~1.5.3",
     "sphericalmercator": "~1.0.2",
     "spherical": "0.0.1",
-    "underscore": "~1.6.0"
+    "underscore": "~1.8.0"
   },
   "devDependencies": {
     "mapbox-studio-default-style": "1.0.1",
