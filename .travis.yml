@@ -3,10 +3,12 @@ language: node_js
 node_js:
   - "0.10"
   - "0.12"
-  - "iojs"
 
-before_install:
-- sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-- sudo apt-get update -q
-- sudo apt-get install -y libstdc++6
+sudo: false
 
+addons:
+  apt:
+    sources:
+     - ubuntu-toolchain-r-test
+    packages:
+     - libstdc++6 # upgrade libstdc++ on linux to support C++11
