@@ -53,6 +53,14 @@ Vector.mapnik.register_fonts(path.join(__dirname, 'fonts', 'source-sans-pro'));
     });
 });
 
+test('tm2z+http ENOTFOUND', function(assert) {
+    tilelive.load('tm2z+http://not-a-valid-domain/patternstyle.tm2z', function(err, source) {
+        assert.ok(err, 'has error');
+        assert.equal(err.code, 'ENOTFOUND', 'code: ENOTFOUND');
+        assert.end();
+    });
+});
+
 test('exposes the mapnik binding', function(t) {
     t.ok(Vector.mapnik);
     t.end();
