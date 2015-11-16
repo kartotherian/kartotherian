@@ -524,7 +524,9 @@ function tm2z(uri, callback) {
             case 'tm2z+http:':
                 uri.protocol = 'http:';
                 stream = request({ uri: uri, encoding:null }, function(err, res, body) {
-                        if (res.headers['content-length'] && parseInt(res.headers['content-length'],10) !== body.length) {
+                        if (err) {
+                            error(err);
+                        } else if (res.headers['content-length'] && parseInt(res.headers['content-length'],10) !== body.length) {
                             error(new Error('Content-Length does not match response body length'));
                         }
                     })
