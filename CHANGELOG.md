@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.5.2
+
+ - Fix error handling bug in tm2z loading.
+ - Update several dependencies.
+
 ## 3.5.1
 
  - Fix a bug where potentially incomplete tm2z downloads would be marked as complete.
