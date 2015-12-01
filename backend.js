@@ -106,6 +106,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         }
 
         if (!body || !body.length) {
+            headers['x-vector-backend-status'] = 404;
             return makevtile();
         } else if (compression) {
             size = body.length;
@@ -113,6 +114,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             return makevtile(null, body, 'pbf');
         // Image sources do not allow overzooming (yet).
         } else if (bz < z) {
+            headers['x-vector-backend-status'] = 404;
             return makevtile();
         } else {
             size = body.length;
@@ -134,6 +136,9 @@ Backend.prototype.getTile = function(z, x, y, callback) {
 
         // Set content type.
         headers['Content-Type'] = 'application/x-protobuf';
+
+        // Set x-vector-backend-status header.
+        headers['x-vector-backend-status'] = headers['x-vector-backend-status'] || 200;
 
         // Pass-thru of an upstream mapnik vector tile (not pbf) source.
         if (data instanceof mapnik.VectorTile) return callback(null, data, headers);

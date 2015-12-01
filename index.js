@@ -164,6 +164,9 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             .digest('hex'));
         headers['Last-Modified'] = new Date(head && head['Last-Modified'] || 0).toUTCString();
 
+        // Passthrough whether the backend tile exists or not.
+        headers['x-vector-backend-status'] = head['x-vector-backend-status'];
+
         // Return headers for 'headers' format.
         if (format === 'headers') return callback(null, headers, headers);
 

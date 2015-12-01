@@ -151,8 +151,10 @@ Object.keys(tests).forEach(function(source) {
                 // Otherwise, Last-Modified from backend should be passed.
                 if (['1.1.2','1.1.3'].indexOf(key) >= 0) {
                     t.equal(headers['Last-Modified'], new Date(0).toUTCString());
+                    t.equal(headers['x-vector-backend-status'], 404);
                 } else {
                     t.equal(headers['Last-Modified'], Testsource.now.toUTCString());
+                    t.equal(headers['x-vector-backend-status'], 200);
                 }
                 // Check for presence of ETag and store away for later
                 // ETag comparison.
