@@ -38,6 +38,22 @@ test('loads uri', function(t) {
         });
     });
 });
+test('loads uri + transparent', function(t) {
+    new xray({uri:'test:///a', transparent:true}, function(err, source) {
+        t.ifError(err);
+        t.ok(!!source);
+        source.getTile(0,0,0, function(err,buffer) {
+            t.ifError(err);
+            if (UPDATE) {
+                fs.writeFileSync(path.join(__dirname, 'expected', 'xray-a-0-0-0-transparent.png'), buffer);
+            }
+            imageEqualsFile(buffer, path.join(__dirname, 'expected', 'xray-a-0-0-0-transparent.png'), function(err) {
+                t.ifError(err);
+                t.end();
+            });
+        });
+    });
+});
 test('loads source', function(t) {
     var source = new Testsource('a');
     new xray({
@@ -83,11 +99,13 @@ test('color', function(t) {
 test('xml', function(t) {
     var results = {
         'xray-single.xml': xray.xml({
+            map_properties: 'background-color="#000000"',
             vector_layers: [
                 { "id": "coastline" }
             ]
         }),
         'xray-multi.xml': xray.xml({
+            map_properties: 'background-color="#000000"',
             vector_layers: [
                 { "id": "coastline" },
                 { "id": "countries" },

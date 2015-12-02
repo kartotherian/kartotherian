@@ -561,14 +561,17 @@ function xray(opts, callback) {
         if (err) return callback(err);
         if (!backend._vector_layers) return callback(new Error('source must contain a vector_layers property'));
         new Vector({
-            xml: xray.xml({ vector_layers: backend._vector_layers }),
+            xml: xray.xml({
+                map_properties: opts.transparent ? '' : 'background-color="#000000"',
+                vector_layers: backend._vector_layers
+            }),
             backend: backend
         }, callback);
     });
 }
 
 xray.xml = function(opts) {
-    return util.format(xray.templates.map, opts.vector_layers.map(function(layer){
+    return util.format(xray.templates.map, opts.map_properties, opts.vector_layers.map(function(layer){
         var rgb = xray.color(layer.id).join(',');
         return util.format(xray.templates.layer, layer.id, rgb, rgb, rgb, rgb, rgb, layer.id, layer.id);
     }).join('\n'));
