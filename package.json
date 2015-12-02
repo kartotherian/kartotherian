@@ -15,6 +15,7 @@
   "dependencies": {
     "mapnik": "~3.4.6",
     "tilelive": "5.11.x",
+    "tiletype": "0.3.x",
     "tar": "~2.2.1",
     "request": "~2.65.0",
     "numeral": "~1.5.3",

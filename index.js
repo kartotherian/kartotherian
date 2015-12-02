@@ -1,4 +1,5 @@
 var tilelive = require('tilelive');
+var tiletype = require('tiletype');
 var mapnik = require('mapnik');
 var fs = require('fs');
 var tar = require('tar');
@@ -139,6 +140,12 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         // if (err && source._maskLevel && bz > source._maskLevel)
         //     return callback(format === 'utf' ? new Error('Grid does not exist') : err);
 
+        // For xray styles use srcdata tile format.
+        if (source._xray && vtile._srcdata) {
+            var type = tiletype.type(vtile._srcdata);
+            format = type === 'jpg' ? 'jpeg' : 'png8:m=h';
+        }
+
         var headers = {};
         switch (format.match(/^[a-z]+/i)[0]) {
         case 'headers':
@@ -167,7 +174,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         // Passthrough backend expires header if present.
         if (head['Expires']||head['expires']) headers['Expires'] = head['Expires']||head['expires'];
 
-        // Passthrough whether the backend tile exists or not.
+        // Passthrough backend status/format headers.
         headers['x-vector-backend-status'] = head['x-vector-backend-status'];
 
         // Return headers for 'headers' format.
@@ -569,7 +576,11 @@ function xray(opts, callback) {
                 vector_layers: backend._vector_layers
             }),
             backend: backend
-        }, callback);
+        }, function(err, source) {
+            if (err) return callback(err);
+            source._xray = true;
+            return callback(null, source);
+        });
     });
 }
 
