@@ -16,7 +16,8 @@ var xml = {
     b: fs.readFileSync(path.resolve(__dirname + '/fixtures/b.xml'), 'utf8'),
     c: fs.readFileSync(path.resolve(__dirname + '/fixtures/c.xml'), 'utf8'),
     i: fs.readFileSync(path.resolve(__dirname + '/fixtures/i.xml'), 'utf8'),
-    space: fs.readFileSync(path.resolve(__dirname + '/fixtures/s p a c e/i.xml'), 'utf8')
+    space: fs.readFileSync(path.resolve(__dirname + '/fixtures/s p a c e/i.xml'), 'utf8'),
+    expires: fs.readFileSync(path.resolve(__dirname + '/fixtures/expires.xml'), 'utf8')
 };
 
 test('should fail without backend', function(t) {
@@ -86,6 +87,17 @@ test('should use fallback backend', function(t) {
         t.ifError(err);
         t.ok(source);
         t.end();
+    });
+});
+test('passes through backend expires header', function(t) {
+    new Vector({ source:'test:///expires', xml: xml.expires }, function(err, source) {
+        t.ifError(err);
+        source.getTile(0, 0, 0, function(err, buffer, headers) {
+            t.ifError(err);
+            t.ok(buffer);
+            t.equal(headers.Expires, 'Wed, 01 Jan 2020 00:00:00 GMT');
+            t.end();
+        });
     });
 });
 
