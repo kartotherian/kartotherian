@@ -143,7 +143,9 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         // For xray styles use srcdata tile format.
         if (source._xray && vtile._srcdata) {
             var type = tiletype.type(vtile._srcdata);
-            format = /^jpg|webp$/.test(type) ? 'jpeg' : 'png8:m=h';
+            format = type === 'jpg' ? 'jpeg' :
+                type === 'webp' ? 'webp' :
+                'png8:m=h';
         }
 
         var headers = {};
