@@ -71,15 +71,16 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         var by = y | 0;
     }
 
+    var size = 0;
+    var headers = {};
+
     // Overzooming support.
     if (bz > backend._maxzoom) {
         bz = backend._maxzoom;
         bx = Math.floor(x / Math.pow(2, z - bz));
         by = Math.floor(y / Math.pow(2, z - bz));
+        headers['x-vector-backend-object'] = 'overzoom';
     }
-
-    var size = 0;
-    var headers = {};
 
     source.getTile(bz, bx, by, function sourceGet(err, body, head) {
         if (typeof backend._maskLevel === 'number' &&
@@ -88,6 +89,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             bz = backend._maskLevel;
             bx = Math.floor(x / Math.pow(2, z - bz));
             by = Math.floor(y / Math.pow(2, z - bz));
+            headers['x-vector-backend-object'] = 'masklevel';
             return source.getTile(bz, bx, by, sourceGet);
         }
         if (err && err.message !== 'Tile does not exist') return callback(err);
@@ -106,7 +108,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         }
 
         if (!body || !body.length) {
-            headers['x-vector-backend-status'] = 404;
+            headers['x-vector-backend-object'] = 'empty';
             return makevtile();
         } else if (compression) {
             size = body.length;
@@ -114,7 +116,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             return makevtile(null, body, 'pbf');
         // Image sources do not allow overzooming (yet).
         } else if (bz < z) {
-            headers['x-vector-backend-status'] = 404;
+            headers['x-vector-backend-object'] = 'empty';
             return makevtile();
         } else {
             size = body.length;
@@ -138,7 +140,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         headers['Content-Type'] = 'application/x-protobuf';
 
         // Set x-vector-backend-status header.
-        headers['x-vector-backend-status'] = headers['x-vector-backend-status'] || 200;
+        headers['x-vector-backend-object'] = headers['x-vector-backend-object'] || 'default';
 
         // Pass-thru of an upstream mapnik vector tile (not pbf) source.
         if (data instanceof mapnik.VectorTile) return callback(null, data, headers);

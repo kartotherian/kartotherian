@@ -176,8 +176,8 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         // Passthrough backend expires header if present.
         if (head['Expires']||head['expires']) headers['Expires'] = head['Expires']||head['expires'];
 
-        // Passthrough backend status/format headers.
-        headers['x-vector-backend-status'] = head['x-vector-backend-status'];
+        // Passthrough backend object headers.
+        headers['x-vector-backend-object'] = head['x-vector-backend-object'];
 
         // Return headers for 'headers' format.
         if (format === 'headers') return callback(null, headers, headers);
