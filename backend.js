@@ -60,7 +60,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
 
     // If scale > 1 adjusts source data zoom level inversely.
     // scale 2x => z-1, scale 4x => z-2, scale 8x => z-3, etc.
-    if (legacy) {
+    if (legacy && z >= backend._minzoom) {
         var d = Math.round(Math.log(scale)/Math.log(2));
         var bz = (z - d) > backend._minzoom ? z - d : backend._minzoom;
         var bx = Math.floor(x / Math.pow(2, z - bz));
