@@ -23,7 +23,7 @@ tilelive.protocols['test:'] = Testsource;
             t.equal(1, source._scale);
             t.equal(0, source._minzoom);
             t.equal(1, source._maxzoom);
-            t.equal(undefined, source._maskLevel);
+            t.equal(undefined, source._fillzoom);
             t.end();
         });
     });
@@ -32,18 +32,18 @@ tilelive.protocols['test:'] = Testsource;
         t.equal(1, source._scale);
         t.equal(0, source._minzoom);
         t.equal(22, source._maxzoom);
-        t.equal(undefined, source._maskLevel);
+        t.equal(undefined, source._fillzoom);
 
         source = new Backend({
             source: new Testsource('a'),
             minzoom: 2,
             maxzoom: 22,
-            maskLevel: 4
+            fillzoom: 4
         });
         t.equal(1, source._scale);
         t.equal(2, source._minzoom);
         t.equal(22, source._maxzoom);
-        t.equal(4, source._maskLevel);
+        t.equal(4, source._fillzoom);
         t.end();
     });
     test('proxies getInfo', function(t) {
@@ -65,9 +65,9 @@ tilelive.protocols['test:'] = Testsource;
 
     var sources = {
         a: new Backend({ source: new Testsource('a'), minzoom:0, maxzoom: 1 }),
-        b: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1 }),
-        c: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2, legacy: true }),
-        h: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, maskLevel: 1, scale: 2 }),
+        b: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, fillzoom: 1 }),
+        c: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, fillzoom: 1, scale: 2, legacy: true }),
+        h: new Backend({ source: new Testsource('b'), minzoom:0, maxzoom: 2, fillzoom: 1, scale: 2 }),
         i: new Backend({ source: new Testsource('i'), minzoom:0, maxzoom: 1 }),
         iv: new Backend({ source: new Testsource('i'), minzoom:0, maxzoom: 1, vector_layers: [{id:'custom_layer_name'}] }),
         gz: new Backend({ source: new Testsource('gz'), minzoom:0, maxzoom: 0 }),
@@ -80,7 +80,7 @@ tilelive.protocols['test:'] = Testsource;
         // 0.0.1 test that solid bg tiles are generated for 0-length protobufs.
         a: ['0.0.0', '0.0.1', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
         // 2.1.1 should use z2 vector tile -- a coastline shapefile
-        // 2.1.2 should use maskLevel -- place dots, like the others
+        // 2.1.2 should use fillzoom -- place dots, like the others
         b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],
         // test the a legacy flag overriding the scale factor of the request affecting the output tile size
         c: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2', '3.2.2', '3.2.3', '3.2.4'],

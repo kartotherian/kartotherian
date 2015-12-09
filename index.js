@@ -137,9 +137,6 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         if (err && err.message !== 'Tile does not exist')
             return callback(err);
 
-        // if (err && source._maskLevel && bz > source._maskLevel)
-        //     return callback(format === 'utf' ? new Error('Grid does not exist') : err);
-
         // For xray styles use srcdata tile format.
         if (source._xray && vtile._srcdata) {
             var type = tiletype.type(vtile._srcdata);
