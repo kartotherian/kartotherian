@@ -29,10 +29,10 @@ Kartotherian supports static image generation. Users may request a PNG or a JPEG
 Kartotherian can be used as a source of the PBF data for Mapbox studio. See info about style editing in  [osm-bright-source](https://github.com/kartotherian/osm-bright.tm2/blob/master/README.md). The info data is available at `http://.../{style}/pbfinfo.json` for pbf source, and `http://.../{style}/info.json` for the styled image source.
 
 ### Markers
-Kartotherian can generate marker images by wrapping any of the [maki icons](https://www.mapbox.com/maki/) with a pushpin image, in any color.
+Kartotherian can generate marker images by wrapping any of the [maki icons](https://www.mapbox.com/maki/) with a pushpin image, in any color. The URL schema is matched to the one used by the [mapbox.js](https://github.com/mapbox/mapbox.js).
 
-    http://.../marker/pin,l,cafe,de00ff@2x.png
-    http://.../marker/ {base} , {size:s|m|l} , {letter-or-digit-or-icon-name} , {color} [@2x] .png
+    http://.../v4/marker/pin-l-cafe+de00ff@2x.png
+    http://.../v4/marker/ {base} - {size:s|m|l} - {letter-or-digit-or-icon-name} + {color} [@2x] .png
 
 At this point, only "pin" is supported for the base. The color is a 3 digit or 6 digit hex number. Optional scaling can only be 2x. Beyond the pre-defined maki icons, you may give a single digit (0-9), or a single letter (a-z).
 
