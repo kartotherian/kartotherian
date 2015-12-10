@@ -111,7 +111,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             headers = head || {};
             return makevtile(null, body, 'pbf');
         // Image sources do not allow overzooming (yet).
-        } else if (bz < z) {
+        } else if (bz < z && headers['x-vector-backend-object'] !== 'fillzoom') {
             headers['x-vector-backend-object'] = 'empty';
             return makevtile();
         } else {
