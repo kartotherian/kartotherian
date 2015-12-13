@@ -138,7 +138,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             return callback(err);
 
         // For xray styles use srcdata tile format.
-        if (source._xray && vtile._srcdata) {
+        if (!callback.format && source._xray && vtile._srcdata) {
             var type = tiletype.type(vtile._srcdata);
             format = type === 'jpg' ? 'jpeg' :
                 type === 'webp' ? 'webp' :
