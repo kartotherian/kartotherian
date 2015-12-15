@@ -164,6 +164,9 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             .digest('hex'));
         headers['Last-Modified'] = new Date(head && head['Last-Modified'] || 0).toUTCString();
 
+        // Passthrough backend expires header if present.
+        if (head['Expires']||head['expires']) headers['Expires'] = head['Expires']||head['expires'];
+
         // Return headers for 'headers' format.
         if (format === 'headers') return callback(null, headers, headers);
 

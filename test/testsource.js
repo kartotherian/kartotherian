@@ -67,6 +67,23 @@ var infos = {
                 }
             }
         ]
+    },
+    expires: {
+        minzoom:0,
+        maxzoom:1,
+        vector_layers: [
+            {
+                "id": "coastline",
+                "description": "",
+                "minzoom": 0,
+                "maxzoom": 22,
+                "fields": {
+                    "FeatureCla": "String",
+                    "Note": "String",
+                    "ScaleRank": "Number"
+                }
+            }
+        ]
     }
 };
 var tiles = {
@@ -89,7 +106,12 @@ var tiles = {
         var key = basename.split('.').slice(0,3).join('.');
         memo[key] = fs.readFileSync(path.resolve(path.join(__dirname, 'fixtures', 'gz', basename)));
         return memo;
-    }, {})
+    }, {}),
+    expires: fs.readdirSync(path.resolve(path.join(__dirname, 'fixtures','a'))).reduce(function(memo, basename) {
+        var key = basename.split('.').slice(0,3).join('.');
+        memo[key] = fs.readFileSync(path.resolve(path.join(__dirname, 'fixtures', 'a', basename)));
+        return memo;
+    }, {}),
 };
 
 // Additional error tile fixtures.
@@ -132,6 +154,9 @@ Testsource.prototype.getTile = function(z,x,y,callback) {
         'ETag':'73f12a518adef759138c142865287a18',
         'Content-Type':'application/x-protobuf'
     };
+
+    // Additional headers.
+    if (this.uri === 'expires') headers['expires'] = new Date('2020-01-01').toUTCString();
 
     if (!tiles[this.uri][key]) {
         return callback(new Error('Tile does not exist'));
