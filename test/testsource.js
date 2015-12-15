@@ -27,7 +27,7 @@ var infos = {
     b: {
         minzoom:0,
         maxzoom:2,
-        maskLevel:1,
+        fillzoom:1,
         vector_layers: [
             {
                 "id": "coastline",
@@ -134,7 +134,7 @@ function Testsource(uri, callback) {
     if (uri) this.data = {
         minzoom: infos[uri].minzoom,
         maxzoom: infos[uri].maxzoom,
-        maskLevel: infos[uri].maskLevel,
+        fillzoom: infos[uri].fillzoom,
         vector_layers: infos[uri].vector_layers
     };
     this.stats = {};

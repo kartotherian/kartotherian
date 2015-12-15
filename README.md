@@ -21,6 +21,17 @@ Implements the tilelive API for rendering mapnik vector tiles to raster images.
 - *maskLevel tiles*: to avoid requiring many duplicate or empty vector tiles to be generated at high zoom levels, the backend source can specify a `maskLevel`. If a vector tile is not initially found at some `z > maskLevel`, Vector will issue an additional request to the backend using the parent tile of of the request at `maskLevel`. This allows a lower zoom level to "backfill" high zoom levels.
 - *Scale factor adjustment*: the scale argument decrements the backend zoom level such that the requested tile is the visual equivalent (when viewed on the proper dpi device) of its parent counterpart. For example, `scale: 2` decrements `bz` by 1, `scale: 4` decrements by 2, and so on.
 
+### Backend headers
+
+The Backend and Vector sources set the `x-vector-backend-object` header to indicate the type of backend source tile loaded. Possible values:
+
+value | description
+--- | ---
+empty | backend returned no tile
+fillzoom | tile from the fillzoom of the backend (backfilled from a lower zoom)
+overzoom | tile from the maxzoom of the backend (overzoomed)
+default | normal tile
+
 ## Bonus constructors
 
 There are two additional constructors provided for slightly different workflows for loading vector sources.

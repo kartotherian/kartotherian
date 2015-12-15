@@ -31,13 +31,9 @@ function Backend(opts, callback) {
         backend._layer = backend._layer ||
             (info.vector_layers && info.vector_layers.length && info.vector_layers[0].id) ||
             '_image';
-        // @TODO some sources filter out custom keys @ getInfo forcing us
-        // to access info/data properties directly. Fix this.
-        if ('maskLevel' in info && !isNaN(parseInt(info.maskLevel, 10))) {
-            backend._maskLevel = parseInt(info.maskLevel, 10);
-        } else if (source.data && 'maskLevel' in source.data) {
-            backend._maskLevel = source.data.maskLevel;
-        }
+        backend._fillzoom = 'fillzoom' in info && !isNaN(parseInt(info.fillzoom, 10)) ?
+            parseInt(info.fillzoom, 10) :
+            undefined;
         backend._source = source;
         if (callback) callback(null, backend);
     }
@@ -60,7 +56,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
 
     // If scale > 1 adjusts source data zoom level inversely.
     // scale 2x => z-1, scale 4x => z-2, scale 8x => z-3, etc.
-    if (legacy) {
+    if (legacy && z >= backend._minzoom) {
         var d = Math.round(Math.log(scale)/Math.log(2));
         var bz = (z - d) > backend._minzoom ? z - d : backend._minzoom;
         var bx = Math.floor(x / Math.pow(2, z - bz));
@@ -71,23 +67,25 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         var by = y | 0;
     }
 
+    var size = 0;
+    var headers = {};
+
     // Overzooming support.
     if (bz > backend._maxzoom) {
         bz = backend._maxzoom;
         bx = Math.floor(x / Math.pow(2, z - bz));
         by = Math.floor(y / Math.pow(2, z - bz));
+        headers['x-vector-backend-object'] = 'overzoom';
     }
 
-    var size = 0;
-    var headers = {};
-
     source.getTile(bz, bx, by, function sourceGet(err, body, head) {
-        if (typeof backend._maskLevel === 'number' &&
+        if (typeof backend._fillzoom === 'number' &&
             err && err.message === 'Tile does not exist' &&
-            bz > backend._maskLevel) {
-            bz = backend._maskLevel;
+            bz > backend._fillzoom) {
+            bz = backend._fillzoom;
             bx = Math.floor(x / Math.pow(2, z - bz));
             by = Math.floor(y / Math.pow(2, z - bz));
+            headers['x-vector-backend-object'] = 'fillzoom';
             return source.getTile(bz, bx, by, sourceGet);
         }
         if (err && err.message !== 'Tile does not exist') return callback(err);
@@ -106,13 +104,15 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         }
 
         if (!body || !body.length) {
+            headers['x-vector-backend-object'] = 'empty';
             return makevtile();
         } else if (compression) {
             size = body.length;
             headers = head || {};
             return makevtile(null, body, 'pbf');
         // Image sources do not allow overzooming (yet).
-        } else if (bz < z) {
+        } else if (bz < z && headers['x-vector-backend-object'] !== 'fillzoom') {
+            headers['x-vector-backend-object'] = 'empty';
             return makevtile();
         } else {
             size = body.length;
@@ -135,11 +135,15 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         // Set content type.
         headers['Content-Type'] = 'application/x-protobuf';
 
+        // Set x-vector-backend-status header.
+        headers['x-vector-backend-object'] = headers['x-vector-backend-object'] || 'default';
+
         // Pass-thru of an upstream mapnik vector tile (not pbf) source.
         if (data instanceof mapnik.VectorTile) return callback(null, data, headers);
 
         var vtile = new mapnik.VectorTile(bz, bx, by);
         vtile._srcbytes = size;
+        vtile._srcdata = data;
 
         // null/zero length data is a solid tile be painted.
         if (!data || !data.length) return callback(null, vtile, headers);
