@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.6.0
+
+ - No longer uses screen blending mode for image tiles.
+ - Adds `transparent` option to xray source to render xray tiles without a background color.
+ - Renames `maskLevel` to `fillzoom` for backfilled tiles.
+ - Sets and passes through `x-vector-backend-object` header for describing backend object type.
+
 ## 3.5.2
 
  - Fix error handling bug in tm2z loading.
