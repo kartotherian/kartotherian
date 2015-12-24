@@ -49,6 +49,7 @@ npm install                                                 # install npm depend
 psql -d gis -f node_modules/osm-bright-source/node_modules/postgis-vt-util/lib.sql
 psql -d gis -f node_modules/osm-bright-source/sql/functions.sql
 psql -d gis -f node_modules/osm-bright-source/sql/admin.sql
+psql -d gis -c 'select populate_admin();'
 node server.js -c config.sample.yaml
 ```
 Browse to http://localhost:6533/
@@ -211,11 +212,12 @@ gis=# select UpdateGeometrySRID('', 'water_polygons', 'way', 900913);
 $ psql -d gis -f node_modules/osm-bright-source/sql/water-indexes.sql
 ```
 
-### Add mapbox's helper functions
+### Add mapbox's helper functions and generate admin data
 ```
 psql -d gis -f node_modules/osm-bright-source/node_modules/postgis-vt-util/lib.sql
 psql -d gis -f node_modules/osm-bright-source/sql/functions.sql
 psql -d gis -f node_modules/osm-bright-source/sql/admin.sql
+psql -d gis -c 'select populate_admin();'
 ```
 
 ### Configure Kartotherian
