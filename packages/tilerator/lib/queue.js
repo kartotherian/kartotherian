@@ -329,20 +329,21 @@ module.exports.setSources = function(job, sources) {
 };
 
 function setJobTitle(job) {
-    job.title = util.format('%s→%s; Z=%d;', job.generatorId, job.storageId, job.zoom);
+    job.title = util.format('Z=%d', job.zoom);
     var zoomMax = Math.pow(4, job.zoom);
     if (job.idxFrom === 0 && job.idxBefore === zoomMax) {
-        job.title += util.format(' ALL (%s)', numeral(zoomMax).format('0,0'));
+        job.title += util.format('; ALL (%s)', numeral(zoomMax).format('0,0'));
     } else if (job.idxBefore - job.idxFrom === 1) {
         var xy = core.indexToXY(job.idxFrom);
-        job.title += util.format(' 1 tile at [%d,%d] (idx=%d)', xy[0], xy[1], job.idxFrom);
+        job.title += util.format('; 1 tile at [%d,%d] (idx=%d)', xy[0], xy[1], job.idxFrom);
     } else {
         var xyFrom = core.indexToXY(job.idxFrom);
         var xyLast = core.indexToXY(job.idxBefore - 1);
-        job.title += util.format(' %s tiles (%s‒%s; [%d,%d]‒[%d,%d])',
+        job.title += util.format('; %s tiles (%s‒%s; [%d,%d]‒[%d,%d])',
             numeral(job.idxBefore - job.idxFrom).format('0,0'),
             numeral(job.idxFrom).format('0,0'),
             numeral(job.idxBefore).format('0,0'),
             xyFrom[0], xyFrom[1], xyLast[0], xyLast[1]);
     }
+    job.title += util.format('; %s→%s', job.generatorId, job.storageId);
 }

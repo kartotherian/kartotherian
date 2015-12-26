@@ -15,7 +15,7 @@ var utf8 = {encoding: 'utf8'};
 
 /**
  * Convert source file into a file with only indexes (one index per line)
- * @param srcFile
+ * @param {String} srcFile one file to transform
  * @param options
  * @param dstFileDescriptor destination file to write
  * @returns {*} promise
@@ -26,7 +26,7 @@ function parseSourceFile(srcFile, options, dstFileDescriptor) {
     var linestream = byline(instream);
     var writeStream = fs.createWriteStream(null, {fd: dstFileDescriptor});
     var result = BBPromise.pending();
-    options.zoom = undefined;
+    delete options.zoom;
 
     var converter = new stream.Transform({objectMode: true});
     converter._transform = function (line, encoding, done) {
@@ -42,13 +42,13 @@ function parseSourceFile(srcFile, options, dstFileDescriptor) {
             }
             parts[i] = v;
         }
-        if (options.zoom === undefined) {
+        if (options.fileZoom === undefined) {
             if (!core.isValidZoom(parts[0])) {
                 throw new Err('Line #%d zoom=%d is invalid', lineInd, parts[0]);
             }
-            options.zoom = parts[0];
-        } else if (options.zoom !== parts[0]) {
-            throw new Err('Line #%d zoom=%d differs from the zoom of previous lines (%d)', lineInd, parts[0], options.zoom);
+            options.fileZoom = parts[0];
+        } else if (options.fileZoom !== parts[0]) {
+            throw new Err('Line #%d zoom=%d differs from the zoom of previous lines (%d)', lineInd, parts[0], options.fileZoom);
         }
         var index = core.xyToIndex(parts[1], parts[2], parts[0]);
         this.push(index.toString() + '\n', encoding);
@@ -101,9 +101,13 @@ function sortFile(filepath) {
  */
 function addJobsFromFile(filepath, options, addJobCallback) {
     var result = BBPromise.pending();
-    var zoom = options.zoom;
+    var zoom = options.fileZoom;
+    delete options.fileZoom;
     var fromZoom = options.fromZoom !== undefined ? options.fromZoom : zoom;
     var untilZoom = options.beforeZoom !== undefined ? options.beforeZoom - 1 : zoom;
+    // By default, allow max gap of 4 at zoom 14, 16 at zoom 15, 64 at zoom 16 etc.
+    var mergeGapsAsBigAs = options.mergeGapsAsBigAs || (Math.pow(4, Math.max(0, zoom - 13)) - 1);
+    delete options.mergeGapsAsBigAs;
 
     // Each range array element tracks its own zoom level, starting from the original tile's zoom until the lowest
     var ranges = [];
@@ -118,7 +122,9 @@ function addJobsFromFile(filepath, options, addJobCallback) {
             delete job.beforeZoom;
         }
 
-        ranges.push({job: job, div: Math.pow(4, zoom - i), jobCount: 0, tileCount: 0});
+        var rangeItem = {job: job, div: Math.pow(4, zoom - i), jobCount: 0, tileCount: 0};
+        rangeItem.maxGap = 1 + Math.floor(mergeGapsAsBigAs / rangeItem.div);
+        ranges.push(rangeItem);
     }
 
     function addRange(range) {
@@ -145,10 +151,10 @@ function addJobsFromFile(filepath, options, addJobCallback) {
                 range.lastValue = v;
             } else if (range.lastValue === v) {
                 return false; // minor optimization - no need to check lower zooms if lastValue hasn't changed here
-            } else if (range.lastValue + 1 === v) {
-                range.lastValue = v;
             } else if (range.lastValue > v) {
                 throw new Err('Sort result is out of order - %d > %d', range.lastValue, v);
+            } else if (range.maxGap >= v - range.lastValue) {
+                range.lastValue = v;
             } else {
                 addRange(range);
                 range.idxFrom = v;
@@ -206,7 +212,9 @@ module.exports = function(filepath, options, addJobCallback) {
     }).spread(function (path, fd, cleanupCallback) {
         tmpFile = path;
         tmpFileCleanupCb = cleanupCallback;
-        return parseSourceFile(filepath, options, fd);
+        return BBPromise.each(filepath.split('|'), function (file) {
+            return parseSourceFile(file, options, fd);
+        });
     }).then(function () {
         return sortFile(tmpFile);
     }).then(function () {

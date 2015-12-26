@@ -49,7 +49,7 @@
     "byline": "^4.2.1",
 
     "jade": "^1.11.0",
-    "kue": "git+https://github.com/nyurik/kue.git",
+    "kue": "^0.10.4",
     "kue-ui": "git+https://github.com/nyurik/kue-ui.git",
 
     "mapnik": "~3.4.0",

@@ -113,6 +113,9 @@ function onEnque(req, res) {
             queue.setSources(job, sources);
 
             if (req.query.filepath) {
+                if (req.query.mergeGapsAsBigAs) {
+                    job.mergeGapsAsBigAs = req.query.mergeGapsAsBigAs;
+                }
                 return fileParser(req.query.filepath, job, function(job) {
                     return queue.addJobAsync(job);
                 })
