@@ -256,7 +256,12 @@ JobProcessor.prototype.generateSubIterators = function(iterator, idxFrom, idxBef
         return iterator().then(function (iterValue) {
             var idx = iterValue === undefined ? undefined : iterValue.idx;
             if (firstIdx === undefined) {
-                firstIdx = lastIdx = idx;
+                if (idx === undefined) {
+                    // empty result
+                    isDone = true;
+                } else {
+                    firstIdx = lastIdx = idx;
+                }
                 return getNextValAsync();
             }
             if (idx === lastIdx + 1) {

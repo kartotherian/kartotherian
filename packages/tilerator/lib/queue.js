@@ -271,8 +271,8 @@ module.exports.cleanup = function(opts) {
                         result[id] = 'changedSrcs';
                     });
                 }
-                if (job.progress_data && job.progress_data.estimateHrs >= opts.breakIfLongerThan && opts.breakIntoParts) {
-                    var from = job.progress_data.index || job.data.idxFrom;
+                if (opts.breakIntoParts && (opts.breakIfLongerThan <= 0 || (job.progress_data && job.progress_data.estimateHrs >= opts.breakIfLongerThan))) {
+                    var from = job.progress_data ? job.progress_data.index : job.data.idxFrom;
                     var before = job.data.idxBefore;
                     var newBefore = Math.min(before, from + Math.max(1, Math.floor((before - from) * 0.1)));
                     if (newBefore < before) {
