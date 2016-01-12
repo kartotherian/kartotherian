@@ -1,20 +1,21 @@
-v2:
+# Cassandra storage
+v5:
   uri: cassandra://
   params:
     minzoom: 0
-    maxzoom: 15
-    keyspace: v2
+    maxzoom: 16
+    keyspace: v5
     cp: [maps-test2001.codfw.wmnet, maps-test2002.codfw.wmnet, maps-test2003.codfw.wmnet, maps-test2004.codfw.wmnet]
     username: {var: cassandra-user}
     password: {var: cassandra-pswd}
 #    repfactor: 4
 #    durablewrite: 0
-#    createIfMissing: true
+#    createIfMissing: false
 
 oz:
   uri: overzoom://
   params:
-    source: {ref: v2}
+    source: {ref: v5}
 
 # OSM map with international labeling - will be used as default
 osm-intl:
