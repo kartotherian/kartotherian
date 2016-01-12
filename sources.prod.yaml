@@ -45,4 +45,4 @@ osm:
     npm: ["osm-bright-style", "project.xml"]
   xmlSetParams:
     source: {ref: oz}
-  xmlExceptLayers: ['country_label', 'place_label']
+  xmlExceptLayers: ['country_label', 'place_label', 'poi_label']
