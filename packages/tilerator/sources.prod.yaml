@@ -13,7 +13,7 @@ gen:
       user: {var: osmdb-user}
       password: {var: osmdb-pswd}
 
-# View tiles as generated directly from the database
+# View tiles as generated directly from the database. Don't view zoom0-5
 genview:
   public: true
   formats: [png,json,headers,svg,jpeg]
@@ -58,7 +58,7 @@ v5:
 oz:
   uri: overzoom://
   params:
-    source: {ref: v2}
+    source: {ref: v5}
 
 # OSM map with international labeling - will be used as default
 osm-intl:
@@ -88,4 +88,4 @@ osm:
     npm: ["osm-bright-style", "project.xml"]
   xmlSetParams:
     source: {ref: oz}
-  xmlExceptLayers: ['country_label', 'place_label', 'road_label']
+  xmlExceptLayers: ['country_label', 'place_label', 'poi_label']
