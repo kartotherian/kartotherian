@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.7.0
+
+- Add support for `tm2z+s3` protocol for loading tm2z files from S3.
+
 ## 3.6.0
 
  - No longer uses screen blending mode for image tiles.
