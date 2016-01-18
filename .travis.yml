@@ -1,21 +1,20 @@
 language: node_js
-
 node_js:
-  - "0.10"
-  - "0.12"
-
+- '0.10'
+- '0.12'
 addons:
   apt:
     sources:
-     - ubuntu-toolchain-r-test
+    - ubuntu-toolchain-r-test
     packages:
-     - libstdc++6 # upgrade libstdc++ on linux to support C++11
-
+    - libstdc++6
 env:
   global:
-  - secure: "Ud6+6DgQtUHMf//2loICXJQzKD0cEX2cZGm2Ty9VOttEOaZXq8Z6Kw0QVOf4g5pglfS9E+IprHDGzzuwmhzz0HPafRb6/gFZU2Euj+3nsHZYhbPj5HZTRXjzZXhP6tPbQ1E7Wg6uPvKR9YbFTXC8njPqeEAo2dS6TTcIIB7zu/I="
-
+  - secure: Ud6+6DgQtUHMf//2loICXJQzKD0cEX2cZGm2Ty9VOttEOaZXq8Z6Kw0QVOf4g5pglfS9E+IprHDGzzuwmhzz0HPafRb6/gFZU2Euj+3nsHZYhbPj5HZTRXjzZXhP6tPbQ1E7Wg6uPvKR9YbFTXC8njPqeEAo2dS6TTcIIB7zu/I=
+  - secure: Z7g8V0gOqE1r0GyT8NxI7EsjLixC/YlI22iH6n9Ar92X0Dhc7N2wS5FNKILMIICLzJGvCFFA/oc15qcDfkDDeUwq7uGs2cxdTinKZwbGPnfEJ1nuK6VdJfmfdIepGUaiOMQg5UyM8Zi8RBzaW2vP6DO/6Q7a4G0J/V3GNcE1hYg=
+  - secure: N/oZKx7VKaWdhjQhwRPnO1UfjAmuGE3bmB+4lmGTkEoupo5/g1O2V5bPqPoMQqjQEOlRTZqXx4zu9yF/Ew8Ie7Ra35tNbKYz84xS+5UIK/5FgOshi5z1H+nyzs18oTrM1b5cYqAU14eyaEdUD01Vl30dWAD0MfWbVb9fNdLq+8o=
+  - secure: A2YjZ6wxGMAA8Cn6UCIBrySqSjuGjQ7XG6kGPabDT6bvXsiWG0wUi6ZqvjM1HL8S9uc5ZoGWZzrIyRYOTwuX100pOn4JjAphyzYD8fN+6etuq+6s8w6kJI7ENzd7d449aXpRQOYGEW3WoApzbGoRk9EHfHhxfHArgwohzBxjFcg=
+  - secure: CMwaxidCWlxccrPByDsEOcyJ+W6pjXwufb8s8Pe9YecnpEp+ppr6eK5/AYP9bor5QJwS8G/m0JOwDA8Pzn6vhOn/GXCamBCYHtTZPhliYWt9b81ZJbaoqSzJgtkUgyU9DzOkgDa6SJ+jRAmdtcDgDbRcadI7rsA/YVFxeO+mxI0=
 sudo: false
-
 after_success:
- - if [[ ${TRAVIS_NODE_VERSION} == "0.10" ]]; then npm run coverage; fi;
+- if [[ ${TRAVIS_NODE_VERSION} == "0.10" ]]; then npm run coverage; fi;

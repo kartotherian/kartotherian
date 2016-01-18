@@ -16,6 +16,8 @@ var numeral = require('numeral');
 var sm = new (require('sphericalmercator'))();
 var profiler = require('./tile-profiler');
 var Backend = require('./backend');
+var AWS = require('aws-sdk');
+var s3urls = require('s3urls');
 
 // Register fonts for xray styles.
 mapnik.register_fonts(path.resolve(__dirname, 'fonts'));
@@ -66,6 +68,7 @@ Vector.registerProtocols = function(tilelive) {
     tilelive.protocols['vector:'] = Vector;
     tilelive.protocols['tm2z:'] = tm2z;
     tilelive.protocols['tm2z+http:'] = tm2z;
+    tilelive.protocols['tm2z+s3:'] = tm2z;
 };
 
 // Helper for callers to ensure source is open. This is not built directly
@@ -543,6 +546,16 @@ function tm2z(uri, callback) {
                         }
                     })
                     .on('data', chunked)
+                    .pipe(gunzip)
+                    .pipe(parser)
+                    .on('error', error);
+                break;
+            case 'tm2z+s3:':
+                var s3 = new AWS.S3();
+                stream = s3.getObject(s3urls.fromUrl(uri.href.replace('tm2z+', '')))
+                    .createReadStream()
+                    .on('data', chunked)
+                    .on('error', error)
                     .pipe(gunzip)
                     .pipe(parser)
                     .on('error', error);
