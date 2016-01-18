@@ -201,7 +201,7 @@ var TMSource = function(uri, callback) {
 };
 
 TMSource.prototype.getInfo = function(callback) {
-  return setImmediate(callback, this.info);
+  return setImmediate(callback, null, this.info);
 };
 
 util.inherits(TMSource, Bridge);
