@@ -1,5 +1,9 @@
 # Changes
 
+## v0.4.3 - 1/18/16
+
+* Fix `getInfo` callback
+
 ## v0.4.2 - 10/27/15
 
 * Eliminate unnecessary (and potentially expensive) sorting of object keys to
