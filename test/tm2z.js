@@ -286,3 +286,23 @@ test('errors out on an invalid S3 url', function(t) {
     });
 });
 
+test('errors out on private object with tm2z+http protocol', function(t) {
+    tilelive.load('tm2z+http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z-private.tm2z', function(err, source) {
+        t.equal('Z_DATA_ERROR', err.code);
+        t.end();
+    });
+});
+
+test('load private tm2z from s3 using tm2z+s3 protocol', function(t) {
+    tilelive.load('tm2z+s3://mapbox/tilelive-vector/test-tm2z-private.tm2z', function(err, source) {
+        t.ifError(err);
+        t.end();
+    });
+});
+
+test('errors out on tm2z file on s3 where we do not have access', function(t) {
+    tilelive.load('tm2z+s3://example/does-not-exist.tm2z', function(err, source) {
+        t.equal(err.code, 'AccessDenied');
+        t.end();
+    });
+});
