@@ -56,7 +56,7 @@ describe('express app', function() {
         });
     });
 
-    it('should get static content gzipped', function() {
+    it.skip('should get static content gzipped', function() {
         return preq.get({
             uri: server.config.uri + 'static/index.html',
             headers: {
