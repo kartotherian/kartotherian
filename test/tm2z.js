@@ -13,8 +13,8 @@ function md5(str) {
 }
 
 // skip tests that require s3 authentication if necessary
-// use ~$ NO_AUTH=true npm test
-var NO_AUTH = (process.env.NO_AUTH) ? process.env.NO_AUTH : false;
+// use ~$ TILELIVE_VECTOR_NO_AUTH=true npm test
+var TILELIVE_VECTOR_NO_AUTH = (process.env.TILELIVE_VECTOR_NO_AUTH) ? process.env.TILELIVE_VECTOR_NO_AUTH : false;
 
 // Load fixture data.
 var fixtureDir = path.resolve(__dirname, 'fixtures', 'tm2z'),
@@ -290,21 +290,21 @@ test('errors out on an invalid S3 url', function(t) {
     });
 });
 
-test('errors out on private object with tm2z+http protocol', {skip: NO_AUTH}, function(t) {
+test('errors out on private object with tm2z+http protocol', {skip: TILELIVE_VECTOR_NO_AUTH}, function(t) {
     tilelive.load('tm2z+http://mapbox.s3.amazonaws.com/tilelive-vector/test-tm2z-private.tm2z', function(err, source) {
         t.equal('Z_DATA_ERROR', err.code);
         t.end();
     });
 });
 
-test('load private tm2z from s3 using tm2z+s3 protocol', {skip: NO_AUTH}, function(t) {
+test('load private tm2z from s3 using tm2z+s3 protocol', {skip: TILELIVE_VECTOR_NO_AUTH}, function(t) {
     tilelive.load('tm2z+s3://mapbox/tilelive-vector/test-tm2z-private.tm2z', function(err, source) {
         t.ifError(err);
         t.end();
     });
 });
 
-test('errors out on tm2z file on s3 where we do not have access', {skip: NO_AUTH}, function(t) {
+test('errors out on tm2z file on s3 where we do not have access', {skip: TILELIVE_VECTOR_NO_AUTH}, function(t) {
     tilelive.load('tm2z+s3://example/does-not-exist.tm2z', function(err, source) {
         t.equal(err.code, 'AccessDenied');
         t.end();
