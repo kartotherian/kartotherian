@@ -89,7 +89,7 @@ Sometimes you may wish to generate only those tiles that satisfy a certain condi
 
 If any of these parameters are set, Tilerator will check if a specific tile exists before attempting to regenerate it.
 * `sourceId` - which source to use for filtering. Will use `storageId` by default.
-* `checkZoom` - only generate tiles if the corresponding tile exists at zoom level `checkZoom`.  By default, if any other filter values are set, it uses job's zoom level
+* `checkZoom` - only generate tiles if the corresponding tile exists at zoom level `checkZoom`.  By default, if any other filter values are set, it uses job's zoom level. If negative, means use job's zoom level minus the value.
 * `dateBefore` - only generate tile if the tile in storage was generated before given date
 * `dateFrom` - only generate tile if the tile in storage was generated after the given date
 * `biggerThan` - only generate tile if the tile in storage is bigger than a given size (compressed)
