@@ -48,7 +48,7 @@
     "swagger-router": "^0.2.0"
   },
   "deploy": {
-    "target": "ubuntu",
+    "target": "debian",
     "dependencies": {
       "_all": []
     }
