@@ -156,9 +156,13 @@ Backend.prototype.getTile = function(z, x, y, callback) {
                     return callback(null, vtile, headers);
                 });
             } else {
-                var img = new mapnik.Image(256, 256, data);
-                vtile.addImage(img, backend._layer);
-                return callback(null, vtile, headers);
+                new mapnik.Image.fromBytes(data, function(err, res) {
+                    if (err) return callback(err);
+                    vtile.addImage(res, backend._layer);  
+                    return callback(null, vtile, headers);
+                });
+                
+                
             }
         } catch (err) {
             return callback(err);
