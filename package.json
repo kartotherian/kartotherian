@@ -22,7 +22,7 @@
     "request": "~2.65.0",
     "numeral": "~1.5.3",
     "sphericalmercator": "~1.0.2",
-    "spherical": "0.0.1",
+    "spherical": "~0.1.0",
     "underscore": "~1.8.0"
   },
   "devDependencies": {
