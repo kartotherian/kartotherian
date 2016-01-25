@@ -154,18 +154,16 @@ tilelive.protocols['test:'] = Testsource;
     });
     test('treats unknown buffer as image', function(t) {
         sources.a.getTile(1, 0, 2, function(err, vtile) {
-            t.ifError(err);
-            t.deepEqual(vtile.toJSON()[0].name, '_image');
+            t.ok(err);
+            t.equal(err.message, 'image_reader: can\'t determine type from input data');
             t.end();
         });
     });
     test('errors out on bad protobuf', function(t) {
         sources.a.getTile(1, 0, 3, function(err, vtile) {
-            t.ifError(err);
-            vtile.parse(function(err) {
-                t.equal('could not parse buffer as protobuf', err.message);
-                t.end();
-            });
+            t.ok(err);
+            t.equal(err.message, 'Vector Tile Buffer contains invalid tag');
+            t.end();
         });
     });
 
