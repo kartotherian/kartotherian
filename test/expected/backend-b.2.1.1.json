@@ -62,9 +62,7 @@
           9,
           2,
           908,
-          202,
-          0,
-          0,
+          194,
           19,
           15,
           21,
@@ -127,9 +125,7 @@
           9,
           6866,
           28,
-          2090,
-          0,
-          0,
+          2082,
           21,
           12,
           19,
@@ -7332,9 +7328,7 @@
           9,
           16,
           797,
-          666,
-          0,
-          0,
+          658,
           21,
           0,
           23,
@@ -11631,23 +11625,6 @@
         ]
       },
       {
-        "id": 38,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 0
-        },
-        "geometry": [
-          9,
-          6756,
-          7104,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 39,
         "type": 2,
         "properties": {
@@ -12092,13 +12069,7 @@
           20,
           11,
           20,
-          2,
-          9,
-          18,
-          1,
-          10,
-          0,
-          0
+          2
         ]
       },
       {
@@ -12943,57 +12914,6 @@
           5212,
           10,
           2,
-          0
-        ]
-      },
-      {
-        "id": 44,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 0
-        },
-        "geometry": [
-          9,
-          11348,
-          5506,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 45,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 0
-        },
-        "geometry": [
-          9,
-          11118,
-          5210,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 46,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 0
-        },
-        "geometry": [
-          9,
-          11118,
-          5210,
-          10,
-          0,
           0
         ]
       },
@@ -19628,9 +19548,7 @@
           9,
           807,
           16,
-          258,
-          0,
-          0,
+          250,
           8,
           19,
           4,
@@ -21455,9 +21373,7 @@
           9,
           2431,
           1007,
-          26,
-          0,
-          0,
+          18,
           20,
           2,
           19,
@@ -21646,23 +21562,6 @@
           10,
           2,
           6
-        ]
-      },
-      {
-        "id": 94,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          11286,
-          5584,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -21896,9 +21795,7 @@
           9,
           2105,
           5424,
-          50,
-          0,
-          0,
+          42,
           3,
           21,
           17,
@@ -21963,23 +21860,6 @@
         ]
       },
       {
-        "id": 258,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1883,
-          5830,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 259,
         "type": 2,
         "properties": {
@@ -22014,23 +21894,6 @@
         ]
       },
       {
-        "id": 261,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1883,
-          5830,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 262,
         "type": 2,
         "properties": {
@@ -22052,23 +21915,6 @@
         ]
       },
       {
-        "id": 263,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1867,
-          5606,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 264,
         "type": 2,
         "properties": {
@@ -22083,40 +21929,6 @@
           10,
           0,
           2
-        ]
-      },
-      {
-        "id": 265,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1513,
-          6168,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 266,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1893,
-          6396,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -22171,23 +21983,6 @@
         ]
       },
       {
-        "id": 270,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          1501,
-          6180,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 271,
         "type": 2,
         "properties": {
@@ -22233,9 +22028,7 @@
           9,
           1749,
           10754,
-          26,
-          0,
-          0,
+          18,
           19,
           8,
           20,
@@ -22271,9 +22064,7 @@
           9,
           49,
           8216,
-          26,
-          0,
-          0,
+          18,
           19,
           11,
           4,
@@ -22411,23 +22202,6 @@
         ]
       },
       {
-        "id": 282,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          744,
-          7526,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 283,
         "type": 2,
         "properties": {
@@ -22473,9 +22247,7 @@
           9,
           758,
           7516,
-          26,
-          0,
-          0,
+          18,
           7,
           21,
           3,
@@ -22500,23 +22272,6 @@
           19,
           14,
           20,
-          0
-        ]
-      },
-      {
-        "id": 287,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          696,
-          7436,
-          10,
-          0,
           0
         ]
       },
@@ -22660,23 +22415,6 @@
         ]
       },
       {
-        "id": 295,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          2650,
-          7358,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 296,
         "type": 2,
         "properties": {
@@ -22688,9 +22426,7 @@
           9,
           3552,
           8218,
-          34,
-          0,
-          0,
+          26,
           24,
           11,
           21,
@@ -22759,23 +22495,6 @@
         ]
       },
       {
-        "id": 300,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3590,
-          7992,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 301,
         "type": 2,
         "properties": {
@@ -22837,23 +22556,6 @@
         ]
       },
       {
-        "id": 304,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3852,
-          8244,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 305,
         "type": 2,
         "properties": {
@@ -22867,23 +22569,6 @@
           8288,
           10,
           3,
-          0
-        ]
-      },
-      {
-        "id": 306,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          4104,
-          8306,
-          10,
-          0,
           0
         ]
       },
@@ -22998,23 +22683,6 @@
         ]
       },
       {
-        "id": 313,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          4364,
-          8438,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 314,
         "type": 2,
         "properties": {
@@ -23032,23 +22700,6 @@
         ]
       },
       {
-        "id": 315,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          1080,
-          7952,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 316,
         "type": 2,
         "properties": {
@@ -23060,30 +22711,11 @@
           9,
           3534,
           8204,
-          26,
-          0,
-          0,
+          18,
           15,
           20,
           20,
           19
-        ]
-      },
-      {
-        "id": 317,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1108,
-          7948,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -23101,23 +22733,6 @@
           10,
           7,
           6
-        ]
-      },
-      {
-        "id": 319,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          992,
-          7432,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -25995,23 +25610,6 @@
         ]
       },
       {
-        "id": 333,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3659,
-          2310,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 334,
         "type": 2,
         "properties": {
@@ -26032,40 +25630,6 @@
           19,
           21,
           28
-        ]
-      },
-      {
-        "id": 335,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3671,
-          2286,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 336,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3671,
-          2286,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -26217,9 +25781,7 @@
           9,
           3873,
           2450,
-          258,
-          0,
-          0,
+          250,
           22,
           6,
           22,
@@ -26531,9 +26093,7 @@
           9,
           3479,
           2628,
-          26,
-          0,
-          0,
+          18,
           8,
           23,
           9,
@@ -26569,9 +26129,7 @@
           9,
           3485,
           2566,
-          42,
-          0,
-          0,
+          34,
           0,
           19,
           1,
@@ -26811,9 +26369,7 @@
           9,
           3707,
           2234,
-          26,
-          0,
-          0,
+          18,
           19,
           8,
           20,
@@ -27046,23 +26602,6 @@
           2,
           19,
           7
-        ]
-      },
-      {
-        "id": 377,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2620,
-          1914,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -27555,23 +27094,6 @@
           10,
           2,
           2
-        ]
-      },
-      {
-        "id": 390,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1905,
-          1561,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -28694,9 +28216,7 @@
           9,
           1637,
           197,
-          26,
-          0,
-          0,
+          18,
           10,
           19,
           19,
@@ -28815,9 +28335,7 @@
           9,
           1047,
           645,
-          26,
-          0,
-          0,
+          18,
           15,
           24,
           18,
@@ -29455,23 +28973,6 @@
         ]
       },
       {
-        "id": 439,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3132,
-          2976,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 440,
         "type": 2,
         "properties": {
@@ -29538,9 +29039,7 @@
           9,
           3400,
           3262,
-          1554,
-          0,
-          0,
+          1546,
           7,
           19,
           21,
@@ -30122,19 +29621,7 @@
           25,
           9,
           0,
-          108,
-          10,
-          0,
-          0,
-          9,
-          0,
-          10,
-          10,
-          0,
-          0,
-          9,
-          0,
-          36,
+          154,
           58,
           0,
           2,
@@ -30445,9 +29932,7 @@
           9,
           3773,
           2170,
-          42,
-          0,
-          0,
+          34,
           10,
           21,
           15,
@@ -30470,9 +29955,7 @@
           9,
           3819,
           2198,
-          314,
-          0,
-          0,
+          306,
           2,
           19,
           19,
@@ -30669,9 +30152,7 @@
           9,
           3993,
           1930,
-          162,
-          0,
-          0,
+          154,
           1,
           19,
           18,
@@ -31100,9 +30581,7 @@
           9,
           2588,
           6688,
-          42,
-          0,
-          0,
+          34,
           19,
           5,
           0,
@@ -31111,23 +30590,6 @@
           4,
           0,
           19
-        ]
-      },
-      {
-        "id": 523,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1716,
-          6186,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -31197,9 +30659,7 @@
           9,
           2606,
           6790,
-          42,
-          0,
-          0,
+          34,
           10,
           21,
           19,
@@ -31208,23 +30668,6 @@
           20,
           4,
           20
-        ]
-      },
-      {
-        "id": 528,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2620,
-          6994,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -31263,23 +30706,6 @@
           10,
           0,
           1
-        ]
-      },
-      {
-        "id": 531,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2250,
-          6498,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -31366,9 +30792,7 @@
           9,
           2314,
           6548,
-          26,
-          0,
-          0,
+          18,
           19,
           1,
           20,
@@ -31389,23 +30813,6 @@
           7188,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 538,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 3
-        },
-        "geometry": [
-          9,
-          2288,
-          6494,
-          10,
-          0,
           0
         ]
       },
@@ -31537,23 +30944,6 @@
         ]
       },
       {
-        "id": 544,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 3
-        },
-        "geometry": [
-          9,
-          2454,
-          6514,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 545,
         "type": 2,
         "properties": {
@@ -31588,23 +30978,6 @@
         ]
       },
       {
-        "id": 547,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2310,
-          7100,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 548,
         "type": 2,
         "properties": {
@@ -31618,40 +30991,6 @@
           6478,
           10,
           2,
-          0
-        ]
-      },
-      {
-        "id": 549,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2014,
-          6514,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 550,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          2534,
-          6644,
-          10,
-          0,
           0
         ]
       },
@@ -31674,23 +31013,6 @@
           12,
           20,
           3
-        ]
-      },
-      {
-        "id": 552,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 3
-        },
-        "geometry": [
-          9,
-          1982,
-          7070,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -31924,9 +31246,7 @@
           9,
           2656,
           6860,
-          42,
-          0,
-          0,
+          34,
           9,
           19,
           19,
@@ -31935,23 +31255,6 @@
           20,
           20,
           18
-        ]
-      },
-      {
-        "id": 557,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2128,
-          7110,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -32008,23 +31311,6 @@
         ]
       },
       {
-        "id": 561,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2472,
-          6536,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 562,
         "type": 2,
         "properties": {
@@ -32039,23 +31325,6 @@
           10,
           1,
           1
-        ]
-      },
-      {
-        "id": 563,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          2308,
-          6486,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -32090,23 +31359,6 @@
           10,
           0,
           2
-        ]
-      },
-      {
-        "id": 566,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          570,
-          7102,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -32307,23 +31559,6 @@
         ]
       },
       {
-        "id": 578,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          196,
-          6584,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 579,
         "type": 2,
         "properties": {
@@ -32338,23 +31573,6 @@
           10,
           3,
           2
-        ]
-      },
-      {
-        "id": 580,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          166,
-          6556,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -32443,23 +31661,6 @@
           6970,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 586,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          242,
-          6474,
-          10,
-          0,
           0
         ]
       },
@@ -32581,57 +31782,6 @@
           6026,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 592,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          834,
-          6022,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 593,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          918,
-          6042,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 594,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          880,
-          6040,
-          10,
-          0,
           0
         ]
       },
@@ -32765,9 +31915,7 @@
           9,
           968,
           6074,
-          26,
-          0,
-          0,
+          18,
           19,
           15,
           20,
@@ -32805,23 +31953,6 @@
           6224,
           10,
           2,
-          0
-        ]
-      },
-      {
-        "id": 604,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          998,
-          6246,
-          10,
-          0,
           0
         ]
       },
@@ -32940,23 +32071,6 @@
         ]
       },
       {
-        "id": 611,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          894,
-          5772,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 612,
         "type": 2,
         "properties": {
@@ -32968,9 +32082,7 @@
           9,
           874,
           5564,
-          42,
-          0,
-          0,
+          34,
           8,
           26,
           8,
@@ -33068,23 +32180,6 @@
         ]
       },
       {
-        "id": 617,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          784,
-          6166,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 618,
         "type": 2,
         "properties": {
@@ -33102,40 +32197,6 @@
         ]
       },
       {
-        "id": 619,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          754,
-          5880,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 620,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          750,
-          5882,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 621,
         "type": 2,
         "properties": {
@@ -33149,23 +32210,6 @@
           5692,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 622,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          826,
-          5862,
-          10,
-          0,
           0
         ]
       },
@@ -33257,9 +32301,7 @@
           9,
           1378,
           6040,
-          66,
-          0,
-          0,
+          58,
           19,
           15,
           7,
@@ -33274,40 +32316,6 @@
           20,
           12,
           20
-        ]
-      },
-      {
-        "id": 628,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1108,
-          5768,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 629,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1244,
-          5942,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -33376,9 +32384,7 @@
           9,
           1456,
           6072,
-          42,
-          0,
-          0,
+          34,
           4,
           20,
           19,
@@ -33401,9 +32407,7 @@
           9,
           1486,
           6230,
-          58,
-          0,
-          0,
+          50,
           20,
           12,
           24,
@@ -33433,23 +32437,6 @@
           10,
           1,
           2
-        ]
-      },
-      {
-        "id": 635,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1486,
-          6030,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -33498,9 +32485,7 @@
           9,
           1430,
           6066,
-          26,
-          0,
-          0,
+          18,
           24,
           0,
           19,
@@ -33522,23 +32507,6 @@
           10,
           1,
           1
-        ]
-      },
-      {
-        "id": 640,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1060,
-          6278,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -33809,23 +32777,6 @@
         ]
       },
       {
-        "id": 654,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          84,
-          5300,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 655,
         "type": 2,
         "properties": {
@@ -33947,23 +32898,6 @@
         ]
       },
       {
-        "id": 662,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          72,
-          5318,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 663,
         "type": 2,
         "properties": {
@@ -33978,40 +32912,6 @@
           10,
           6,
           1
-        ]
-      },
-      {
-        "id": 664,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          48,
-          5348,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 665,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          852,
-          5516,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -34052,23 +32952,6 @@
           8,
           4,
           21
-        ]
-      },
-      {
-        "id": 668,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          970,
-          5000,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -34140,9 +33023,7 @@
           9,
           174,
           5300,
-          26,
-          0,
-          0,
+          18,
           19,
           0,
           20,
@@ -34161,9 +33042,7 @@
           9,
           478,
           5354,
-          26,
-          0,
-          0,
+          18,
           21,
           12,
           22,
@@ -34264,9 +33143,7 @@
           9,
           437,
           5394,
-          26,
-          0,
-          0,
+          18,
           19,
           20,
           26,
@@ -34285,9 +33162,7 @@
           9,
           643,
           5554,
-          50,
-          0,
-          0,
+          42,
           13,
           20,
           9,
@@ -34312,9 +33187,7 @@
           9,
           583,
           5494,
-          34,
-          0,
-          0,
+          26,
           19,
           14,
           17,
@@ -34342,23 +33215,6 @@
           22,
           16,
           19
-        ]
-      },
-      {
-        "id": 682,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1142,
-          4842,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -34392,9 +33248,7 @@
           9,
           1250,
           4796,
-          26,
-          0,
-          0,
+          18,
           23,
           30,
           16,
@@ -34445,23 +33299,6 @@
           27,
           0,
           21
-        ]
-      },
-      {
-        "id": 687,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1272,
-          4442,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -34571,23 +33408,6 @@
         ]
       },
       {
-        "id": 694,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1094,
-          4908,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 695,
         "type": 2,
         "properties": {
@@ -34602,23 +33422,6 @@
           10,
           0,
           1
-        ]
-      },
-      {
-        "id": 696,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1292,
-          4526,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -34674,23 +33477,6 @@
           10,
           0,
           4
-        ]
-      },
-      {
-        "id": 700,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          1702,
-          4022,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -34787,23 +33573,6 @@
         ]
       },
       {
-        "id": 706,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1422,
-          4278,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 707,
         "type": 2,
         "properties": {
@@ -34876,9 +33645,7 @@
           9,
           1644,
           4084,
-          170,
-          0,
-          0,
+          162,
           19,
           2,
           19,
@@ -34919,23 +33686,6 @@
           7,
           28,
           11
-        ]
-      },
-      {
-        "id": 711,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          1696,
-          4024,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -35008,23 +33758,6 @@
           10,
           1,
           2
-        ]
-      },
-      {
-        "id": 716,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          2683,
-          4976,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -35186,9 +33919,7 @@
           9,
           3345,
           2810,
-          26,
-          0,
-          0,
+          18,
           20,
           3,
           19,
@@ -35443,23 +34174,6 @@
         ]
       },
       {
-        "id": 738,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3089,
-          3398,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 739,
         "type": 2,
         "properties": {
@@ -35491,23 +34205,6 @@
           10,
           2,
           1
-        ]
-      },
-      {
-        "id": 741,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3457,
-          2852,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -35655,23 +34352,6 @@
           6,
           20,
           15
-        ]
-      },
-      {
-        "id": 743,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          469,
-          1407,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -36138,40 +34818,6 @@
           19,
           10,
           27
-        ]
-      },
-      {
-        "id": 752,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1993,
-          2429,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 753,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2167,
-          2315,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -36693,23 +35339,6 @@
           23,
           6,
           21
-        ]
-      },
-      {
-        "id": 755,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1721,
-          2627,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -37237,23 +35866,6 @@
           25,
           0,
           23
-        ]
-      },
-      {
-        "id": 761,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          503,
-          2315,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -37937,9 +36549,7 @@
           9,
           1010,
           2791,
-          106,
-          0,
-          0,
+          98,
           19,
           8,
           13,
@@ -37980,57 +36590,6 @@
           2213,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 783,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          204,
-          2589,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 784,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          960,
-          2477,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 785,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          36,
-          2693,
-          10,
-          0,
           0
         ]
       },
@@ -38649,23 +37208,6 @@
         ]
       },
       {
-        "id": 788,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          126,
-          2619,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 789,
         "type": 2,
         "properties": {
@@ -38677,9 +37219,7 @@
           9,
           544,
           4093,
-          3586,
-          0,
-          0,
+          3578,
           4,
           20,
           22,
@@ -39583,9 +38123,7 @@
           9,
           206,
           3,
-          82,
-          0,
-          0,
+          74,
           2,
           20,
           10,
@@ -39620,40 +38158,6 @@
           3295,
           10,
           2,
-          0
-        ]
-      },
-      {
-        "id": 792,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          500,
-          3449,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 795,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          500,
-          3449,
-          10,
-          0,
           0
         ]
       },
@@ -40884,9 +39388,7 @@
           9,
           502,
           94,
-          130,
-          0,
-          0,
+          122,
           10,
           20,
           20,
@@ -41042,9 +39544,7 @@
           9,
           974,
           894,
-          138,
-          0,
-          0,
+          130,
           13,
           19,
           19,
@@ -41091,9 +39591,7 @@
           9,
           710,
           752,
-          178,
-          0,
-          0,
+          170,
           21,
           12,
           23,
@@ -41411,40 +39909,6 @@
         ]
       },
       {
-        "id": 830,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2278,
-          842,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 831,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2302,
-          590,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 832,
         "type": 2,
         "properties": {
@@ -41645,9 +40109,7 @@
           9,
           912,
           759,
-          130,
-          0,
-          0,
+          122,
           32,
           2,
           24,
@@ -41784,9 +40246,7 @@
           9,
           2052,
           749,
-          26,
-          0,
-          0,
+          18,
           19,
           12,
           28,
@@ -42110,23 +40570,6 @@
         ]
       },
       {
-        "id": 857,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2310,
-          1196,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 858,
         "type": 2,
         "properties": {
@@ -42201,23 +40644,6 @@
           16,
           10,
           19
-        ]
-      },
-      {
-        "id": 861,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1116,
-          832,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -42552,23 +40978,6 @@
           19,
           2,
           19
-        ]
-      },
-      {
-        "id": 872,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1486,
-          351,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -42927,9 +41336,7 @@
           9,
           167,
           819,
-          26,
-          0,
-          0,
+          18,
           20,
           0,
           19,
@@ -43019,23 +41426,6 @@
           24,
           4,
           20
-        ]
-      },
-      {
-        "id": 883,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          789,
-          1965,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -43462,23 +41852,6 @@
         ]
       },
       {
-        "id": 889,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          943,
-          1723,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 890,
         "type": 2,
         "properties": {
@@ -43496,57 +41869,6 @@
         ]
       },
       {
-        "id": 891,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          949,
-          1637,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 892,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          983,
-          1913,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 893,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          955,
-          1643,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 894,
         "type": 2,
         "properties": {
@@ -43558,9 +41880,7 @@
           9,
           4014,
           1194,
-          26,
-          0,
-          0,
+          18,
           25,
           2,
           26,
@@ -43662,23 +41982,6 @@
           14,
           20,
           1
-        ]
-      },
-      {
-        "id": 900,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3912,
-          1174,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -43875,9 +42178,7 @@
           9,
           3808,
           1128,
-          26,
-          0,
-          0,
+          18,
           19,
           5,
           20,
@@ -43936,23 +42237,6 @@
         ]
       },
       {
-        "id": 915,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          3594,
-          714,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 916,
         "type": 2,
         "properties": {
@@ -43977,23 +42261,6 @@
           21,
           18,
           25
-        ]
-      },
-      {
-        "id": 917,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          4168,
-          1304,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -44097,9 +42364,7 @@
           9,
           3736,
           1088,
-          26,
-          0,
-          0,
+          18,
           20,
           5,
           19,
@@ -44140,23 +42405,6 @@
           0,
           20,
           6
-        ]
-      },
-      {
-        "id": 926,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          4172,
-          1340,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -44799,23 +43047,6 @@
         ]
       },
       {
-        "id": 952,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3276,
-          741,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 953,
         "type": 2,
         "properties": {
@@ -45304,40 +43535,6 @@
         ]
       },
       {
-        "id": 973,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          4804,
-          208,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 974,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          5108,
-          69,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 975,
         "type": 2,
         "properties": {
@@ -45349,9 +43546,7 @@
           9,
           5486,
           403,
-          34,
-          0,
-          0,
+          26,
           19,
           3,
           0,
@@ -45411,23 +43606,6 @@
         ]
       },
       {
-        "id": 978,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          5164,
-          195,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 982,
         "type": 2,
         "properties": {
@@ -45439,9 +43617,7 @@
           9,
           3488,
           1053,
-          26,
-          0,
-          0,
+          18,
           12,
           20,
           11,
@@ -45539,9 +43715,7 @@
           9,
           4592,
           266,
-          26,
-          0,
-          0,
+          18,
           19,
           13,
           18,
@@ -45570,23 +43744,6 @@
         ]
       },
       {
-        "id": 991,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10166,
-          4590,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 992,
         "type": 2,
         "properties": {
@@ -45603,40 +43760,6 @@
           1,
           0,
           20
-        ]
-      },
-      {
-        "id": 993,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10172,
-          4590,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 994,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10310,
-          4686,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -45671,40 +43794,6 @@
           10,
           0,
           2
-        ]
-      },
-      {
-        "id": 997,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          10322,
-          4458,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 998,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10296,
-          4528,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -45963,9 +44052,7 @@
           9,
           9798,
           3880,
-          26,
-          0,
-          0,
+          18,
           19,
           5,
           28,
@@ -46012,23 +44099,6 @@
           12,
           22,
           1
-        ]
-      },
-      {
-        "id": 1014,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9512,
-          3644,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -46112,23 +44182,6 @@
         ]
       },
       {
-        "id": 1019,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9498,
-          3648,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1020,
         "type": 2,
         "properties": {
@@ -46163,23 +44216,6 @@
           3738,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 1022,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9618,
-          3766,
-          10,
-          0,
           0
         ]
       },
@@ -46237,9 +44273,7 @@
           9,
           9532,
           3602,
-          34,
-          0,
-          0,
+          26,
           5,
           21,
           19,
@@ -46280,23 +44314,6 @@
           10,
           1,
           3
-        ]
-      },
-      {
-        "id": 1028,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9544,
-          4382,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -46396,9 +44413,7 @@
           9,
           9604,
           4412,
-          290,
-          0,
-          0,
+          282,
           21,
           10,
           19,
@@ -46485,23 +44500,6 @@
           4686,
           10,
           3,
-          0
-        ]
-      },
-      {
-        "id": 1036,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9308,
-          4454,
-          10,
-          0,
           0
         ]
       },
@@ -46645,23 +44643,6 @@
         ]
       },
       {
-        "id": 1044,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          5358,
-          4244,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1045,
         "type": 2,
         "properties": {
@@ -46692,9 +44673,7 @@
           9,
           8496,
           4238,
-          106,
-          0,
-          0,
+          98,
           19,
           1,
           8,
@@ -46733,9 +44712,7 @@
           9,
           8338,
           4318,
-          42,
-          0,
-          0,
+          34,
           19,
           0,
           13,
@@ -46784,23 +44761,6 @@
           4,
           32,
           24
-        ]
-      },
-      {
-        "id": 1050,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          7466,
-          4564,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -46957,9 +44917,7 @@
           9,
           9142,
           3866,
-          26,
-          0,
-          0,
+          18,
           19,
           6,
           20,
@@ -47230,23 +45188,6 @@
         ]
       },
       {
-        "id": 1069,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8930,
-          2372,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1070,
         "type": 2,
         "properties": {
@@ -47280,23 +45221,6 @@
           1,
           19,
           2
-        ]
-      },
-      {
-        "id": 1072,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8862,
-          2370,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -47472,23 +45396,6 @@
         ]
       },
       {
-        "id": 1083,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8104,
-          2804,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1084,
         "type": 2,
         "properties": {
@@ -47500,9 +45407,7 @@
           9,
           8092,
           2818,
-          42,
-          0,
-          0,
+          34,
           21,
           7,
           19,
@@ -47511,23 +45416,6 @@
           14,
           22,
           11
-        ]
-      },
-      {
-        "id": 1085,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          8080,
-          3472,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -47576,9 +45464,7 @@
           9,
           8962,
           2116,
-          26,
-          0,
-          0,
+          18,
           5,
           19,
           4,
@@ -47953,9 +45839,7 @@
           9,
           9502,
           511,
-          162,
-          0,
-          0,
+          154,
           20,
           8,
           6,
@@ -48368,9 +46252,7 @@
           9,
           10084,
           881,
-          50,
-          0,
-          0,
+          42,
           2,
           21,
           21,
@@ -49085,9 +46967,7 @@
           9,
           8642,
           1104,
-          26,
-          0,
-          0,
+          18,
           13,
           22,
           14,
@@ -49173,9 +47053,7 @@
           9,
           8702,
           1310,
-          34,
-          0,
-          0,
+          26,
           21,
           12,
           12,
@@ -49541,9 +47419,7 @@
           9,
           9286,
           2188,
-          290,
-          0,
-          0,
+          282,
           12,
           19,
           13,
@@ -49705,9 +47581,7 @@
           9,
           9750,
           1792,
-          114,
-          0,
-          0,
+          106,
           17,
           20,
           7,
@@ -49856,23 +47730,6 @@
         ]
       },
       {
-        "id": 1173,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10088,
-          594,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1174,
         "type": 2,
         "properties": {
@@ -49953,40 +47810,6 @@
           1160,
           10,
           2,
-          0
-        ]
-      },
-      {
-        "id": 1178,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          10132,
-          1234,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 1179,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          10130,
-          1218,
-          10,
-          0,
           0
         ]
       },
@@ -50318,23 +48141,6 @@
         ]
       },
       {
-        "id": 1197,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10198,
-          1284,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1198,
         "type": 2,
         "properties": {
@@ -50369,23 +48175,6 @@
           2170,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 1200,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          7518,
-          1844,
-          10,
-          0,
           0
         ]
       },
@@ -50693,9 +48482,7 @@
           9,
           7596,
           910,
-          26,
-          0,
-          0,
+          18,
           4,
           19,
           3,
@@ -50803,9 +48590,7 @@
           9,
           7914,
           1446,
-          26,
-          0,
-          0,
+          18,
           20,
           12,
           11,
@@ -50951,23 +48736,6 @@
         ]
       },
       {
-        "id": 1226,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          7566,
-          1640,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1227,
         "type": 2,
         "properties": {
@@ -50996,9 +48764,7 @@
           9,
           7942,
           1508,
-          66,
-          0,
-          0,
+          58,
           19,
           7,
           9,
@@ -51030,23 +48796,6 @@
           10,
           3,
           2
-        ]
-      },
-      {
-        "id": 1230,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          7960,
-          1480,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -51082,9 +48831,7 @@
           9,
           7818,
           2434,
-          50,
-          0,
-          0,
+          42,
           19,
           15,
           21,
@@ -51133,23 +48880,6 @@
           10,
           2,
           2
-        ]
-      },
-      {
-        "id": 1235,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8120,
-          1210,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -51202,9 +48932,7 @@
           9,
           8092,
           1246,
-          138,
-          0,
-          0,
+          130,
           19,
           3,
           1,
@@ -51303,23 +49031,6 @@
         ]
       },
       {
-        "id": 1242,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          7626,
-          1994,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1243,
         "type": 2,
         "properties": {
@@ -51394,9 +49105,7 @@
           9,
           7674,
           1940,
-          66,
-          0,
-          0,
+          58,
           23,
           15,
           13,
@@ -51411,23 +49120,6 @@
           6,
           22,
           3
-        ]
-      },
-      {
-        "id": 1247,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          7678,
-          1968,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -51819,23 +49511,6 @@
         ]
       },
       {
-        "id": 1268,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 3
-        },
-        "geometry": [
-          9,
-          8870,
-          8038,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1269,
         "type": 2,
         "properties": {
@@ -51872,23 +49547,6 @@
           7782,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 1271,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          9010,
-          8248,
-          10,
-          0,
           0
         ]
       },
@@ -52144,9 +49802,7 @@
           9,
           12148,
           9274,
-          42,
-          0,
-          0,
+          34,
           7,
           19,
           0,
@@ -52155,23 +49811,6 @@
           24,
           6,
           20
-        ]
-      },
-      {
-        "id": 1300,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          12176,
-          9320,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -52434,23 +50073,6 @@
         ]
       },
       {
-        "id": 1314,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 3
-        },
-        "geometry": [
-          9,
-          6732,
-          7136,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1315,
         "type": 2,
         "properties": {
@@ -52539,23 +50161,6 @@
           5,
           20,
           8
-        ]
-      },
-      {
-        "id": 1320,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          6782,
-          7124,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -52751,23 +50356,6 @@
         ]
       },
       {
-        "id": 1329,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          6710,
-          7138,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1330,
         "type": 2,
         "properties": {
@@ -52836,9 +50424,7 @@
           9,
           6700,
           6350,
-          26,
-          0,
-          0,
+          18,
           3,
           20,
           8,
@@ -52965,9 +50551,7 @@
           9,
           10558,
           4192,
-          26,
-          0,
-          0,
+          18,
           21,
           3,
           20,
@@ -53030,9 +50614,7 @@
           9,
           10530,
           4158,
-          26,
-          0,
-          0,
+          18,
           21,
           3,
           20,
@@ -53127,23 +50709,6 @@
         ]
       },
       {
-        "id": 1345,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10324,
-          4314,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1346,
         "type": 2,
         "properties": {
@@ -53162,23 +50727,6 @@
           7,
           20,
           16
-        ]
-      },
-      {
-        "id": 1347,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          10370,
-          4304,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -53276,57 +50824,6 @@
         ]
       },
       {
-        "id": 1352,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10520,
-          4376,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 1353,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          10440,
-          4558,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 1354,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10454,
-          4600,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1355,
         "type": 2,
         "properties": {
@@ -53341,23 +50838,6 @@
           10,
           0,
           1
-        ]
-      },
-      {
-        "id": 1356,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10474,
-          4566,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -53413,23 +50893,6 @@
           10,
           0,
           1
-        ]
-      },
-      {
-        "id": 1360,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10430,
-          4580,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -53501,23 +50964,6 @@
         ]
       },
       {
-        "id": 1365,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          10410,
-          4514,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1366,
         "type": 2,
         "properties": {
@@ -53529,9 +50975,7 @@
           9,
           10410,
           4482,
-          26,
-          0,
-          0,
+          18,
           7,
           20,
           8,
@@ -53556,23 +51000,6 @@
         ]
       },
       {
-        "id": 1368,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10534,
-          4632,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1369,
         "type": 2,
         "properties": {
@@ -53584,9 +51011,7 @@
           9,
           10558,
           4568,
-          26,
-          0,
-          0,
+          18,
           19,
           16,
           20,
@@ -53704,23 +51129,6 @@
           4574,
           10,
           2,
-          0
-        ]
-      },
-      {
-        "id": 1376,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          10492,
-          4556,
-          10,
-          0,
           0
         ]
       },
@@ -53902,40 +51310,6 @@
         ]
       },
       {
-        "id": 1384,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10388,
-          4802,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 1385,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10646,
-          4738,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1386,
         "type": 2,
         "properties": {
@@ -53947,9 +51321,7 @@
           9,
           10668,
           4728,
-          26,
-          0,
-          0,
+          18,
           1,
           19,
           7,
@@ -53968,9 +51340,7 @@
           9,
           10762,
           4626,
-          58,
-          0,
-          0,
+          50,
           25,
           8,
           19,
@@ -55024,9 +52394,7 @@
           9,
           10924,
           813,
-          42,
-          0,
-          0,
+          34,
           13,
           19,
           3,
@@ -55172,23 +52540,6 @@
         ]
       },
       {
-        "id": 1814,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10186,
-          1586,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 1815,
         "type": 2,
         "properties": {
@@ -55277,23 +52628,6 @@
           7,
           44,
           12
-        ]
-      },
-      {
-        "id": 2316,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          4093,
-          10356,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -55465,9 +52799,7 @@
           9,
           5864,
           1159,
-          26,
-          0,
-          0,
+          18,
           14,
           22,
           3,
@@ -55669,9 +53001,7 @@
           9,
           6596,
           4027,
-          26,
-          0,
-          0,
+          18,
           10,
           25,
           0,
@@ -55679,9 +53009,7 @@
           9,
           23,
           15,
-          58,
-          0,
-          0,
+          50,
           11,
           34,
           11,
@@ -56195,23 +53523,6 @@
         ]
       },
       {
-        "id": 2366,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          6350,
-          2397,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 2368,
         "type": 2,
         "properties": {
@@ -56362,9 +53673,7 @@
           9,
           900,
           1366,
-          34,
-          0,
-          0,
+          26,
           20,
           17,
           19,
@@ -56436,9 +53745,7 @@
           9,
           888,
           1372,
-          26,
-          0,
-          0,
+          18,
           9,
           20,
           10,
@@ -56683,9 +53990,7 @@
           9,
           1098,
           1618,
-          26,
-          0,
-          0,
+          18,
           20,
           16,
           19,
@@ -56704,9 +54009,7 @@
           9,
           1022,
           1984,
-          42,
-          0,
-          0,
+          34,
           10,
           19,
           1,
@@ -56781,23 +54084,6 @@
         ]
       },
       {
-        "id": 2392,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          932,
-          2402,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 2393,
         "type": 2,
         "properties": {
@@ -56839,23 +54125,6 @@
           28,
           8,
           19
-        ]
-      },
-      {
-        "id": 2395,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1000,
-          2000,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -56965,23 +54234,6 @@
         ]
       },
       {
-        "id": 2402,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1456,
-          3554,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 2403,
         "type": 2,
         "properties": {
@@ -57069,9 +54321,7 @@
           9,
           2722,
           3492,
-          290,
-          0,
-          0,
+          282,
           20,
           17,
           0,
@@ -57342,23 +54592,6 @@
         ]
       },
       {
-        "id": 2413,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1466,
-          3544,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 2414,
         "type": 2,
         "properties": {
@@ -57408,9 +54641,7 @@
           9,
           1500,
           3502,
-          42,
-          0,
-          0,
+          34,
           15,
           20,
           19,
@@ -57583,9 +54814,7 @@
           9,
           1010,
           7418,
-          26,
-          0,
-          0,
+          18,
           1,
           20,
           1,
@@ -57624,23 +54853,6 @@
           10,
           0,
           2
-        ]
-      },
-      {
-        "id": 2725,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          944,
-          6072,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -57974,23 +55186,6 @@
         ]
       },
       {
-        "id": 3008,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          694,
-          7452,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3009,
         "type": 2,
         "properties": {
@@ -58039,23 +55234,6 @@
           10,
           0,
           2
-        ]
-      },
-      {
-        "id": 3017,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1405,
-          10690,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -58127,40 +55305,6 @@
         ]
       },
       {
-        "id": 3026,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          5562,
-          10100,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3310,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          762,
-          7830,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3313,
         "type": 2,
         "properties": {
@@ -58191,23 +55335,6 @@
           3308,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 3315,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3009,
-          3092,
-          10,
-          0,
           0
         ]
       },
@@ -58260,23 +55387,6 @@
           10,
           0,
           1
-        ]
-      },
-      {
-        "id": 3337,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          11290,
-          5592,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -58350,9 +55460,7 @@
           9,
           12006,
           6622,
-          26,
-          0,
-          0,
+          18,
           6,
           20,
           5,
@@ -58434,40 +55542,6 @@
         ]
       },
       {
-        "id": 3565,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9412,
-          4118,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3566,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10326,
-          4570,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3567,
         "type": 2,
         "properties": {
@@ -58481,108 +55555,6 @@
           4580,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 3568,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2418,
-          6468,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3569,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2030,
-          7084,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3570,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2030,
-          7084,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3571,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2030,
-          7086,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3572,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2030,
-          7088,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3573,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2030,
-          7088,
-          10,
-          0,
           0
         ]
       },
@@ -58638,40 +55610,6 @@
         ]
       },
       {
-        "id": 3587,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          181,
-          8040,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3588,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          163,
-          8064,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3589,
         "type": 2,
         "properties": {
@@ -58686,23 +55624,6 @@
           10,
           1,
           2
-        ]
-      },
-      {
-        "id": 3590,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2032,
-          7092,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -58825,23 +55746,6 @@
         ]
       },
       {
-        "id": 3646,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2398,
-          6744,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3651,
         "type": 2,
         "properties": {
@@ -58856,40 +55760,6 @@
           10,
           1,
           1
-        ]
-      },
-      {
-        "id": 3652,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          974,
-          5784,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3653,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          976,
-          5786,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -58944,23 +55814,6 @@
         ]
       },
       {
-        "id": 3657,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          6944,
-          1746,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3660,
         "type": 2,
         "properties": {
@@ -58991,23 +55844,6 @@
           604,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 3662,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          7608,
-          884,
-          10,
-          0,
           0
         ]
       },
@@ -59080,57 +55916,6 @@
         ]
       },
       {
-        "id": 3667,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8108,
-          1252,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3668,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8094,
-          1292,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3669,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8004,
-          1294,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3670,
         "type": 2,
         "properties": {
@@ -59165,23 +55950,6 @@
         ]
       },
       {
-        "id": 3672,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          7252,
-          2642,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3673,
         "type": 2,
         "properties": {
@@ -59195,23 +55963,6 @@
           2684,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 3674,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          7614,
-          2926,
-          10,
-          0,
           0
         ]
       },
@@ -59246,40 +55997,6 @@
           2958,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 3677,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          7976,
-          2998,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3678,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          7766,
-          2750,
-          10,
-          0,
           0
         ]
       },
@@ -59322,57 +56039,6 @@
         ]
       },
       {
-        "id": 3681,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          9234,
-          422,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3682,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9094,
-          540,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3683,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9024,
-          618,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3684,
         "type": 2,
         "properties": {
@@ -59387,23 +56053,6 @@
           10,
           0,
           1
-        ]
-      },
-      {
-        "id": 3685,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8700,
-          880,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -59492,23 +56141,6 @@
         ]
       },
       {
-        "id": 3691,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8666,
-          1302,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3692,
         "type": 2,
         "properties": {
@@ -59522,40 +56154,6 @@
           1482,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 3693,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9198,
-          1488,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3694,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8976,
-          2244,
-          10,
-          0,
           0
         ]
       },
@@ -59906,9 +56504,7 @@
           9,
           9970,
           881,
-          26,
-          0,
-          0,
+          18,
           19,
           9,
           20,
@@ -59965,9 +56561,7 @@
           9,
           9994,
           857,
-          42,
-          0,
-          0,
+          34,
           19,
           18,
           13,
@@ -60085,30 +56679,11 @@
           9,
           9368,
           12,
-          26,
-          0,
-          0,
+          18,
           7,
           20,
           12,
           19
-        ]
-      },
-      {
-        "id": 3724,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9362,
-          50,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -60299,23 +56874,6 @@
         ]
       },
       {
-        "id": 3736,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          10222,
-          1288,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3737,
         "type": 2,
         "properties": {
@@ -60347,23 +56905,6 @@
           10,
           0,
           1
-        ]
-      },
-      {
-        "id": 3739,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10280,
-          1302,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -60435,23 +56976,6 @@
         ]
       },
       {
-        "id": 3744,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          10066,
-          1314,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3745,
         "type": 2,
         "properties": {
@@ -60465,23 +56989,6 @@
           1320,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 3746,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10902,
-          1324,
-          10,
-          0,
           0
         ]
       },
@@ -60537,40 +57044,6 @@
         ]
       },
       {
-        "id": 3750,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9920,
-          1358,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3751,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9908,
-          1394,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3752,
         "type": 2,
         "properties": {
@@ -60588,23 +57061,6 @@
         ]
       },
       {
-        "id": 3753,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10422,
-          1396,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3754,
         "type": 2,
         "properties": {
@@ -60619,23 +57075,6 @@
           10,
           2,
           1
-        ]
-      },
-      {
-        "id": 3755,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9914,
-          1424,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -60707,23 +57146,6 @@
         ]
       },
       {
-        "id": 3760,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9902,
-          1450,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3761,
         "type": 2,
         "properties": {
@@ -60738,23 +57160,6 @@
           10,
           0,
           1
-        ]
-      },
-      {
-        "id": 3762,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          9874,
-          1484,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -60790,23 +57195,6 @@
           1500,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 3765,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9858,
-          1508,
-          10,
-          0,
           0
         ]
       },
@@ -60880,23 +57268,6 @@
           10,
           1,
           1
-        ]
-      },
-      {
-        "id": 3770,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9620,
-          1992,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -61071,40 +57442,6 @@
         ]
       },
       {
-        "id": 3917,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 5
-        },
-        "geometry": [
-          9,
-          11540,
-          5790,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3918,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          11546,
-          5786,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3919,
         "type": 2,
         "properties": {
@@ -61170,57 +57507,6 @@
           10,
           1,
           2
-        ]
-      },
-      {
-        "id": 3923,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9538,
-          3674,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3924,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9534,
-          3686,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3925,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10636,
-          4546,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -61326,23 +57612,6 @@
         ]
       },
       {
-        "id": 3932,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          9340,
-          4730,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 3933,
         "type": 2,
         "properties": {
@@ -61357,40 +57626,6 @@
           10,
           0,
           2
-        ]
-      },
-      {
-        "id": 3934,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10122,
-          760,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3935,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10110,
-          1234,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -61442,40 +57677,6 @@
           10,
           1,
           1
-        ]
-      },
-      {
-        "id": 3939,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10126,
-          1166,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 3940,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10238,
-          1346,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -61660,9 +57861,7 @@
           9,
           1214,
           1834,
-          26,
-          0,
-          0,
+          18,
           3,
           19,
           0,
@@ -61681,9 +57880,7 @@
           9,
           1216,
           1898,
-          26,
-          0,
-          0,
+          18,
           1,
           20,
           2,
@@ -61722,23 +57919,6 @@
           10,
           2,
           1
-        ]
-      },
-      {
-        "id": 3955,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1206,
-          1984,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -61844,23 +58024,6 @@
         ]
       },
       {
-        "id": 3962,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          582,
-          106,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4001,
         "type": 2,
         "properties": {
@@ -61925,23 +58088,6 @@
           2764,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 4005,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3443,
-          2788,
-          10,
-          0,
           0
         ]
       },
@@ -62012,9 +58158,7 @@
           9,
           3251,
           2860,
-          26,
-          0,
-          0,
+          18,
           19,
           1,
           20,
@@ -62094,23 +58238,6 @@
         ]
       },
       {
-        "id": 4014,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3157,
-          2990,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4015,
         "type": 2,
         "properties": {
@@ -62141,40 +58268,6 @@
           2990,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 4017,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3031,
-          3008,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4018,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          3271,
-          3032,
-          10,
-          0,
           0
         ]
       },
@@ -62383,40 +58476,6 @@
         ]
       },
       {
-        "id": 4031,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          57,
-          5424,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4032,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          92,
-          5364,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4033,
         "type": 2,
         "properties": {
@@ -62431,57 +58490,6 @@
           10,
           4,
           3
-        ]
-      },
-      {
-        "id": 4034,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          39,
-          5406,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4035,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          768,
-          5750,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4036,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          756,
-          5748,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -62515,23 +58523,6 @@
           5756,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 4039,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          810,
-          5806,
-          10,
-          0,
           0
         ]
       },
@@ -62587,40 +58578,6 @@
         ]
       },
       {
-        "id": 4043,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          788,
-          5870,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4044,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          774,
-          5872,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4045,
         "type": 2,
         "properties": {
@@ -62655,23 +58612,6 @@
         ]
       },
       {
-        "id": 4047,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          780,
-          5874,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4048,
         "type": 2,
         "properties": {
@@ -62689,108 +58629,6 @@
         ]
       },
       {
-        "id": 4049,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          716,
-          5884,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4050,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          632,
-          5416,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4051,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          664,
-          5456,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4052,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          666,
-          5458,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4053,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1104,
-          5678,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4054,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1160,
-          5690,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4055,
         "type": 2,
         "properties": {
@@ -62804,40 +58642,6 @@
           5762,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 4056,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1104,
-          5798,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4057,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1202,
-          5886,
-          10,
-          0,
           0
         ]
       },
@@ -62910,23 +58714,6 @@
         ]
       },
       {
-        "id": 4062,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          848,
-          6018,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4063,
         "type": 2,
         "properties": {
@@ -62940,40 +58727,6 @@
           6024,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 4064,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          886,
-          6028,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4065,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          904,
-          6034,
-          10,
-          0,
           0
         ]
       },
@@ -62995,40 +58748,6 @@
         ]
       },
       {
-        "id": 4067,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          938,
-          6052,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4068,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          980,
-          6074,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4069,
         "type": 2,
         "properties": {
@@ -63043,57 +58762,6 @@
           10,
           0,
           2
-        ]
-      },
-      {
-        "id": 4070,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1024,
-          6084,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4071,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1290,
-          6100,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4072,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1296,
-          6114,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -63128,57 +58796,6 @@
           10,
           0,
           2
-        ]
-      },
-      {
-        "id": 4075,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1626,
-          6152,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4076,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          740,
-          6170,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4077,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          728,
-          6172,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -63250,40 +58867,6 @@
         ]
       },
       {
-        "id": 4082,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1032,
-          6268,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4083,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1038,
-          6268,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4084,
         "type": 2,
         "properties": {
@@ -63315,40 +58898,6 @@
           10,
           0,
           1
-        ]
-      },
-      {
-        "id": 4086,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          186,
-          6514,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4087,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          184,
-          6516,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -63471,23 +59020,6 @@
         ]
       },
       {
-        "id": 4095,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2622,
-          7010,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4096,
         "type": 2,
         "properties": {
@@ -63501,40 +59033,6 @@
           7022,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 4097,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2598,
-          7034,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4098,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2350,
-          7200,
-          10,
-          0,
           0
         ]
       },
@@ -63587,23 +59085,6 @@
           10,
           0,
           3
-        ]
-      },
-      {
-        "id": 4102,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2518,
-          7284,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -63672,23 +59153,6 @@
           10,
           3,
           6
-        ]
-      },
-      {
-        "id": 4111,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          7368,
-          4346,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -63777,23 +59241,6 @@
         ]
       },
       {
-        "id": 4117,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10084,
-          4370,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4118,
         "type": 2,
         "properties": {
@@ -63828,23 +59275,6 @@
         ]
       },
       {
-        "id": 4120,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          10612,
-          4520,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4121,
         "type": 2,
         "properties": {
@@ -63859,23 +59289,6 @@
           10,
           1,
           2
-        ]
-      },
-      {
-        "id": 4141,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8632,
-          1010,
-          10,
-          0,
-          0
         ]
       },
       {
@@ -63947,40 +59360,6 @@
         ]
       },
       {
-        "id": 4155,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          680,
-          6076,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4156,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          768,
-          6130,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4157,
         "type": 2,
         "properties": {
@@ -64032,40 +59411,6 @@
         ]
       },
       {
-        "id": 4160,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1138,
-          1938,
-          10,
-          0,
-          0
-        ]
-      },
-      {
-        "id": 4162,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          2343,
-          5844,
-          10,
-          0,
-          0
-        ]
-      },
-      {
         "id": 4163,
         "type": 2,
         "properties": {
@@ -64079,23 +59424,6 @@
           6944,
           10,
           1,
-          0
-        ]
-      },
-      {
-        "id": 4164,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          1747,
-          7248,
-          10,
-          0,
           0
         ]
       },
@@ -64114,23 +59442,6 @@
           10,
           0,
           2
-        ]
-      },
-      {
-        "id": 4174,
-        "type": 2,
-        "properties": {
-          "FeatureCla": "Coastline",
-          "Note": "",
-          "ScaleRank": 6
-        },
-        "geometry": [
-          9,
-          8910,
-          2300,
-          10,
-          0,
-          0
         ]
       },
       {
