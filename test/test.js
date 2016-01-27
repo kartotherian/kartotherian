@@ -281,7 +281,7 @@ test('errors out on bad deflate', function(t) {
 });
 test('errors out on bad protobuf', function(t) {
     sources.a.getTile(1, 0, 3, function(err) {
-        t.equal('end of buffer exception', err.message);
+        t.equal('Vector Tile Buffer contains invalid tag', err.message);
         t.end();
     });
 });
