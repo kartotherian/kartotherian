@@ -222,7 +222,7 @@ test('errors out if style causes parse error', function(t) {
         });
     });
 });
-test.only('profiles a tm2z file', function(t) {
+test('profiles a tm2z file', function(t) {
     tilelive.load('tm2z://' + path.join(fixtureDir, 'project-v6.tm2z'), function(err, source) {
         t.ifError(err);
         source.profile(function(err, profile) {
