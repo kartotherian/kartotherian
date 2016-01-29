@@ -4,6 +4,7 @@
     <title>Wikimedia maps beta</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico" />
     <link rel="stylesheet" href="leaflet/leaflet.css"/>
 </head>
 <body>
@@ -60,7 +61,7 @@
     var scalex = (scale === 1) ? '' : ('@' + scale + 'x');
 
     // Add a map layer
-    L.tileLayer('/' + style + '/{z}/{x}/{y}' + scalex + '.png', {
+    L.tileLayer(style + '/{z}/{x}/{y}' + scalex + '.png', {
         maxZoom: 18,
         attribution: 'Wikimedia maps beta | Map data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
         id: 'wikipedia-map-01'
