@@ -52,11 +52,10 @@
     "kue": "^0.10.4",
     "kue-ui": "git+https://github.com/nyurik/kue-ui.git",
 
-    "mapnik": "~3.4.0",
-
-    "tilelive": "~5.8.2",
-    "tilelive-bridge": "~1.4.0",
-    "tilelive-vector": "~3.3.0",
+    "mapnik": "~3.4.14",
+    "tilelive": "~5.12.0",
+    "tilelive-bridge": "~2.2.3",
+    "tilelive-vector": "~3.7.0",
 
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "kartotherian-server": "git+https://github.com/kartotherian/kartotherian-server.git",

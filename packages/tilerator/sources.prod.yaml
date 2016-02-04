@@ -28,20 +28,6 @@ genview:
     source: {ref: gen}
 
 # Cassandra storage
-v2:
-  uri: cassandra://
-  params:
-    minzoom: 0
-    maxzoom: 15
-    keyspace: v2
-    cp: [maps-test2001.codfw.wmnet, maps-test2002.codfw.wmnet, maps-test2003.codfw.wmnet, maps-test2004.codfw.wmnet]
-    username: {var: cassandra-user}
-    password: {var: cassandra-pswd}
-#    repfactor: 4
-#    durablewrite: 0
-#    createIfMissing: false
-
-# Cassandra storage
 v5:
   uri: cassandra://
   params:
