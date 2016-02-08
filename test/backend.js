@@ -173,6 +173,41 @@ tilelive.protocols['test:'] = Testsource;
             });
         });
     });
+    test('errors out on invalid backend tile request - out of range y', function(t) {
+        sources.a.getTile(1, 0, 2, function(err) {
+            t.throws(function() { if (err) throw err; });
+            t.equal('Tile does not exist', err.message);
+            t.end();
+        });
+    });
+    test('errors out on invalid backend tile request - out of range x', function(t) {
+        sources.a.getTile(1, 2, 0, function(err) {
+            t.throws(function() { if (err) throw err; });
+            t.equal('Tile does not exist', err.message);
+            t.end();
+        });
+    });
+    test('errors out on invalid backedn tile request - negative x', function(t) {
+        sources.a.getTile(1, -1, 0, function(err) {
+            t.throws(function() { if (err) throw err; });
+            t.equal('Tile does not exist', err.message);
+            t.end();
+        });
+    });
+    test('errors out on invalid backend tile request - negative y', function(t) {
+        sources.a.getTile(1, 0, -1, function(err) {
+            t.throws(function() { if (err) throw err; });
+            t.equal('Tile does not exist', err.message);
+            t.end();
+        });
+    });
+    test('errors out on invalid backend tile request - negative z', function(t) {
+        sources.a.getTile(-1, 0, 0, function(err) {
+            t.throws(function() { if (err) throw err; });
+            t.equal('Tile does not exist', err.message);
+            t.end();
+        });
+    });
 
 test('query', function(t) {
     var lonlat = [-77.0131, 38.8829];
