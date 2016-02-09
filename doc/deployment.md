@@ -121,11 +121,18 @@ git config deploy.name name_in_gerrit
 
 That will make the system look for the repository
 `mediawiki/services/name_in_gerrit` when checking it out in the deploy
-repository.
+repository. If, however, you do not use MediaWiki's Gerrit installation to host
+your repository, you can specify a different one using the `deploy.submodule`
+configuration directive by supplying the full remote reference URL:
+
+```
+git config deploy.submodule https://github.com/your_team/repo_name
+```
 
 The deploy-repo builder script assumes the name of the remote to check out in 
 the deploy repository is `origin`. An alternative name can be configured by 
 invoking (in the source repository):
+
 ```
 git config deploy.remote deploy_repo_remote_name
 ```
