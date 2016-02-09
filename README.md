@@ -54,7 +54,7 @@ In general, these value substitutions are available:
 * `{npm: ['npm-module-name', 'subdir', 'subdir', 'filename']}`
 Some files may be located inside the NPM modules added to the Kartotherian project, i.e. [osm-bright-source](https://github.com/kartotherian/osm-bright.tm2source). To reference a file inside npm, set npm's value to an array, with the first value being the name of the npm module (resolves to the root of the npm module), and all subsequent strings being subdirs and lastly - the name of the file. Subdirs may be ommited:
 ```
-# resolves to a rooted path ..../node_modules/osm-bright-source/data.xml
+# resolves to a rooted path /.../node_modules/osm-bright-source/data.xml
 npm: ["osm-bright-source", "data.xml"]
 ```
 
@@ -81,6 +81,15 @@ gen:                # The name of the source (could be referenced later)
       password: {var: osmdb-pswd}
 ```
 
+* `xmlSetAttrs` - for xml, overrides the attributes of the root element with the new ones. For example, you may change the font directory of the `<Map>` element:
+```
+s2:
+  uri: vector://
+  xml:
+    npm: ["osm-bright-style", "project.xml"]    # stylesheet xml is in npm
+  xmlSetAttrs:
+    font-directory: {npm: ["osm-bright-fonts", "fonts/"]}
+```
 * `xmlSetParams` - for xml, overrides the top level `<Parameters>` values with the new ones. For example, the `vector` source requires xml stylesheet to point to the proper source of PBFs:
 ```
 s2:
