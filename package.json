@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-layermixer",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Vector tile mixing source, allowing layers from multiple vector tile to be merged into one tile ",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "url": "https://github.com/kartotherian/kartotherian-layermixer/issues"
   },
   "dependencies": {
-    "bluebird": "^2.9.24",
+    "bluebird": "^3.1.1",
     "underscore": "^1.8.3"
   }
 }
