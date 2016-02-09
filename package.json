@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-postgres",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "PostgreSQL tile storage for Kartotherian map tile server",
   "main": "index.js",
   "scripts": {
@@ -20,10 +20,10 @@
     "url": "https://github.com/kartotherian/kartotherian-postgres/issues"
   },
   "dependencies": {
-    "bluebird": "^2.9.24",
+    "bluebird": "^3.1.1",
     "pg.js": "*",
-    "pg-promise": "^2.0.12",
-    "pg-query-stream": "^0.7.0",
-    "promistreamus": "^0.1.2"
+    "pg-promise": "^3.1.6",
+    "pg-query-stream": "^1.0.0",
+    "promistreamus": "^0.1.4"
   }
 }
