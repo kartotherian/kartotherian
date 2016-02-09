@@ -51,12 +51,8 @@ oz:
 In general, these value substitutions are available:
 * `{var:varname}` - the value becomes the value of the variable `varname` from the variables file / variables conf section of the main config file. This might be useful if you want to make all the settings public except for the passwords that are stored in a secure location.
 * `{ref:sourceId}` - the value becomes a reference to another source. Some sources function as filters/converters, pulling data internally from other sources and converting the result on the fly. For example, the [overzoom](https://github.com/kartotherian/kartotherian-overzoom) source pulls data from another source, and if it's not available, tries to find a lower-zoom tile above the given one, and extract a portion of it. Internally, it uses a forwarding sourceref: source.
-* `{npm: ['npm-module-name', 'subdir', 'subdir', 'filename']}`
-Some files may be located inside the NPM modules added to the Kartotherian project, i.e. [osm-bright-source](https://github.com/kartotherian/osm-bright.tm2source). To reference a file inside npm, set npm's value to an array, with the first value being the name of the npm module (resolves to the root of the npm module), and all subsequent strings being subdirs and lastly - the name of the file. Subdirs may be ommited:
-```
-# resolves to a rooted path /.../node_modules/osm-bright-source/data.xml
-npm: ["osm-bright-source", "data.xml"]
-```
+* `{loader: npm-module-name}` or `{loader: ['npm-module-name', 'arg1', 'arg2', ...]}` - if npm module supports loading customization, it should be loaded via the loader. Loader is only available inside the source's `xml` key.
+* `{npm: ['npm-module-name', 'subdir', 'subdir', 'filename']}` - some files may be located inside the NPM modules added to the Kartotherian project, i.e. [osm-bright-source](https://github.com/kartotherian/osm-bright.tm2source). To reference a file inside npm, set npm's value to an array, with the first value being the name of the npm module (resolves to the root of the npm module), and all subsequent strings being subdirs and lastly - the name of the file. Subdirs may be omitted. `npm: ["osm-bright-source", "data.xml"]` would resolve to a rooted path `/.../node_modules/osm-bright-source/data.xml`
 
 ## XML-based sources
 The `xml` parameter is used to load and alter XML for some sources like
@@ -86,8 +82,9 @@ gen:                # The name of the source (could be referenced later)
 s2:
   uri: vector://
   xml:
-    npm: ["osm-bright-style", "project.xml"]    # stylesheet xml is in npm
+    loader: osm-bright-style    # stylesheet xml is in npm
   xmlSetAttrs:
+    # Note that this is not needed for osm-bright-style because that module does this internally
     font-directory: {npm: ["osm-bright-fonts", "fonts/"]}
 ```
 * `xmlSetParams` - for xml, overrides the top level `<Parameters>` values with the new ones. For example, the `vector` source requires xml stylesheet to point to the proper source of PBFs:
@@ -97,7 +94,7 @@ s2:
   uri: vector://
   formats: [png,json,headers,svg,jpeg]
   xml:
-    npm: ["osm-bright-style", "project.xml"]    # stylesheet xml is in npm
+    loader: osm-bright-style    # stylesheet xml is in npm
   xmlSetParams:
     source: {ref: gen}                          # set source parameter to the 'gen' source
 ```
@@ -108,7 +105,7 @@ s2:
   uri: vector://
   formats: [png,json,headers,svg,jpeg]
   xml:
-    npm: ["osm-bright-style", "project.xml"]    # stylesheet xml is in npm
+    loader: osm-bright-style    # stylesheet xml is in npm
   xmlLayers: ['landuse', 'road']                # Only include these layers when rendering
 ```
 * `xmlExceptLayers` - same as `xmlLayers`, but instead of whitelisting, blacklist (allow all except these):
@@ -118,7 +115,7 @@ s2:
   uri: vector://
   formats: [png,json,headers,svg,jpeg]
   xml:
-    npm: ["osm-bright-style", "project.xml"]    # stylesheet xml is in npm
+    loader: osm-bright-style    # stylesheet xml is in npm
   xmlExceptLayers: ['water']                    # Exclude water layer when rendering
 ```
 * `xmlSetDataSource` - change all layer's datasources' parameters if they match conditions:
