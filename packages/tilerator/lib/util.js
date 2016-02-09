@@ -45,14 +45,15 @@ util.inherits(HTTPError, Error);
 /**
  * Generates an object suitable for logging out of a request object
  *
- * @param {Request} req request
+ * @param {Request} req          the request
+ * @param {RegExp}  whitelistRE  the RegExp used to filter headers
  * @return {Object} an object containing the key components of the request
  */
-function reqForLog(req) {
+function reqForLog(req, whitelistRE) {
 
-    return {
+    var ret = {
         url: req.originalUrl,
-        headers: req.headers,
+        headers: {},
         method: req.method,
         params: req.params,
         query: req.query,
@@ -60,6 +61,16 @@ function reqForLog(req) {
         remoteAddress: req.connection.remoteAddress,
         remotePort: req.connection.remotePort
     };
+
+    if(req.headers && whitelistRE) {
+        Object.keys(req.headers).forEach(function(hdr) {
+            if(whitelistRE.test(hdr)) {
+                ret.headers[hdr] = req.headers[hdr];
+            }
+        });
+    }
+
+    return ret;
 
 }
 
@@ -76,6 +87,11 @@ function errForLog(err) {
     ret.status = err.status;
     ret.type = err.type;
     ret.detail = err.detail;
+
+    // log the stack trace only for 500 errors
+    if(Number.parseInt(ret.status) !== 500) {
+        ret.stack = undefined;
+    }
 
     return ret;
 
@@ -233,7 +249,7 @@ function initAndLogRequest(req, app) {
     req.headers = req.headers || {};
     req.headers['x-request-id'] = req.headers['x-request-id'] || generateRequestId();
     req.logger = app.logger.child({request_id: req.headers['x-request-id']});
-    req.logger.log('trace/req', {req: reqForLog(req), msg: 'incoming request'});
+    req.logger.log('trace/req', {req: reqForLog(req, app.conf.log_header_whitelist), msg: 'incoming request'});
 }
 
 
