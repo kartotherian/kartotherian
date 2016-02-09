@@ -23,7 +23,7 @@ genview:
   maxwidth: 2048
   uri: vector://
   xml:
-    npm: ["osm-bright-style", "project.xml"]
+    loader: osm-bright-style
   xmlSetParams:
     source: {ref: gen}
 
@@ -56,7 +56,7 @@ osm-intl:
   maxwidth: 2048
   uri: vector://
   xml:
-    npm: ["osm-bright-style", "project.xml"]
+    loader: osm-bright-style
   xmlSetParams:
     source: {ref: oz}
 
@@ -71,7 +71,7 @@ osm:
   maxwidth: 2048
   uri: vector://
   xml:
-    npm: ["osm-bright-style", "project.xml"]
+     loader: osm-bright-style
   xmlSetParams:
     source: {ref: oz}
   xmlExceptLayers: ['country_label', 'place_label', 'poi_label']
