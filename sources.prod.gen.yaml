@@ -23,7 +23,7 @@ g-osm-intl:
   maxwidth: 2048
   uri: vector://
   xml:
-    npm: ["osm-bright-style", "project.xml"]
+    loader: osm-bright-style
   xmlSetParams:
     source: {ref: gen}
 
@@ -37,7 +37,7 @@ g-osm:
   maxwidth: 2048
   uri: vector://
   xml:
-    npm: ["osm-bright-style", "project.xml"]
+    loader: osm-bright-style
   xmlSetParams:
     source: {ref: gen}
   xmlExceptLayers: ['country_label', 'place_label', 'road_label']

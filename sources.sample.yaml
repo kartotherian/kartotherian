@@ -13,7 +13,7 @@ osm-intl:
   uri: vector://
   formats: [png,json,headers,svg,jpeg]
   xml:
-    npm: ["osm-bright-style", "project.xml"]
+    loader: osm-bright-style
   xmlSetParams:
     source: {ref: oz}
   xmlExceptLayers: ['water']
