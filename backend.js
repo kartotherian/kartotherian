@@ -2,6 +2,7 @@ var tilelive = require('tilelive');
 var crypto = require('crypto');
 var mapnik = require('mapnik');
 var util = require('util');
+var sm = new (require('sphericalmercator'))();
 
 module.exports = Backend;
 
@@ -162,5 +163,36 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             return callback(err);
         }
     };
+};
+
+// Proxies mapnik vtile.query method with the added convienice of
+// letting the tilelive-vector backend do the hard work of finding
+// the right tile to use.
+Backend.prototype.queryTile = function(z, lon, lat, options, callback) {
+    var xyz = sm.xyz([lon, lat, lon, lat], z);
+    this.getTile(z, xyz.minX, xyz.minY, function(err, vtile, head) {
+        if (err) return callback(err);
+        try {
+            var features = vtile.query(lon, lat, options);
+        } catch(err) {
+            return callback(err);
+        }
+        var results = [];
+        for (var i = 0; i < features.length; i++) {
+            results.push({
+                id: features[i].id(),
+                distance: features[i].distance,
+                layer: features[i].layer,
+                attributes: features[i].attributes()
+            });
+        }
+        var headers = {};
+        headers['Content-Type'] = 'application/json';
+        headers['ETag'] = JSON.stringify(crypto.createHash('md5')
+            .update(head && head['ETag'] || (z+','+lon+','+lat))
+            .digest('hex'));
+        headers['Last-Modified'] = new Date(head && head['Last-Modified'] || 0).toUTCString();
+        return callback(null, results, headers);
+    });
 };
 
