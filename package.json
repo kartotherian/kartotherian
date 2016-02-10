@@ -39,7 +39,7 @@
     "express": "^4.13.3",
     "js-yaml": "^3.5.2",
     "preq": "^0.4.8",
-    "service-runner": "^0.3.8"
+    "service-runner": "^0.3.8",
 
     "mapnik": "~3.4.0",
     "tilelive": "~5.8.2",
