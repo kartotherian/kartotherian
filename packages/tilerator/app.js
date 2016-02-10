@@ -92,19 +92,9 @@ function initApp(options) {
 
     // set the CORS and CSP headers
     app.all('*', function(req, res, next) {
-        if(app.conf.cors !== false) {
-            res.header('access-control-allow-origin', app.conf.cors);
-            res.header('access-control-allow-headers', 'accept, x-requested-with, content-type');
-            res.header('access-control-expose-headers', 'etag');
-        }
-        if(app.conf.csp !== false) {
-            res.header('x-xss-protection', '1; mode=block');
-            res.header('x-content-type-options', 'nosniff');
-            res.header('x-frame-options', 'SAMEORIGIN');
-            res.header('content-security-policy', app.conf.csp);
-            res.header('x-content-security-policy', app.conf.csp);
-            res.header('x-webkit-csp', app.conf.csp);
-        }
+        //
+        // Tilerator is an admin app, there is no point to set app.conf.cors and app.conf.csp
+        //
         sUtil.initAndLogRequest(req, app);
         next();
     });
