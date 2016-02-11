@@ -180,7 +180,13 @@ Backend.prototype.queryTile = function(z, lon, lat, options, callback) {
                     id: features[i].id(),
                     distance: features[i].distance,
                     layer: features[i].layer,
-                    attributes: features[i].attributes()
+                    attributes: features[i].attributes(),
+                    geometry: {
+                        type: 'Point',
+                        coordinates: features[i].x_hit !== undefined ?
+                            [ features[i].x_hit, features[i].y_hit ] :
+                            [ lon, lat ]
+                    }
                 });
             }
             var headers = {};
