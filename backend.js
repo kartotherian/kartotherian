@@ -26,8 +26,8 @@ function Backend(opts, callback) {
     }
 
     function setsource(source, info) {
-        backend._minzoom = info.minzoom || 0;
-        backend._maxzoom = info.maxzoom || 22;
+        backend._minzoom = typeof info.minzoom === 'number' ? info.minzoom : 0;
+        backend._maxzoom = typeof info.maxzoom === 'number' ? info.maxzoom : 22;
         backend._vector_layers = info.vector_layers || undefined;
         backend._layer = backend._layer ||
             (info.vector_layers && info.vector_layers.length && info.vector_layers[0].id) ||
@@ -183,7 +183,7 @@ Backend.prototype.queryTile = function(z, lon, lat, options, callback) {
                     attributes: features[i].attributes(),
                     geometry: {
                         type: 'Point',
-                        coordinates: features[i].x_hit !== undefined ?
+                        coordinates: features[i].x_hit ?
                             [ features[i].x_hit, features[i].y_hit ] :
                             [ lon, lat ]
                     }
