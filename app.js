@@ -35,7 +35,7 @@ function initApp(options) {
     if(app.conf.cors === undefined) { app.conf.cors = '*'; }
     if(app.conf.csp === undefined) {
         app.conf.csp =
-            "default-src 'self'; object-src 'none'; media-src *; img-src *; style-src * 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-ancestors 'self'";
+            "default-src 'self'; object-src 'none'; media-src 'none'; style-src 'self'; script-src 'self'; frame-ancestors 'self'";
     }
 
     // set outgoing proxy
