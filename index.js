@@ -231,6 +231,9 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             }
         });
     };
+    if (!callback.format && source._xray) {
+        cb.setSrcData = true;
+    }
     cb.format = format;
     cb.scale = scale;
     cb.legacy = legacy;

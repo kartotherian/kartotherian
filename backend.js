@@ -144,7 +144,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
 
         var vtile = new mapnik.VectorTile(bz, bx, by);
         vtile._srcbytes = size;
-        vtile._srcdata = data;
+        if (callback.setSrcData) vtile._srcdata = data;
 
         // null/zero length data is a solid tile be painted.
         if (!data || !data.length) return callback(null, vtile, headers);
