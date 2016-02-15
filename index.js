@@ -547,7 +547,7 @@ function tm2z(uri, callback) {
         if (once++) return;
         if (!xml) return callback(new Error('project.xml not found in package'));
         new Vector({
-            source: 'mapbox:///mapbox.mapbox-streets-v2',
+            source: 'mapbox:///mapbox.mapbox-streets-v4',
             base: base,
             xml: xml
         }, callback);
