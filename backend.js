@@ -2,6 +2,7 @@ var tilelive = require('tilelive');
 var crypto = require('crypto');
 var mapnik = require('mapnik');
 var util = require('util');
+var sm = new (require('sphericalmercator'))();
 
 module.exports = Backend;
 
@@ -25,8 +26,8 @@ function Backend(opts, callback) {
     }
 
     function setsource(source, info) {
-        backend._minzoom = info.minzoom || 0;
-        backend._maxzoom = info.maxzoom || 22;
+        backend._minzoom = typeof info.minzoom === 'number' ? info.minzoom : 0;
+        backend._maxzoom = typeof info.maxzoom === 'number' ? info.maxzoom : 22;
         backend._vector_layers = info.vector_layers || undefined;
         backend._layer = backend._layer ||
             (info.vector_layers && info.vector_layers.length && info.vector_layers[0].id) ||
@@ -162,5 +163,40 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             return callback(err);
         }
     };
+};
+
+// Proxies mapnik vtile.query method with the added convienice of
+// letting the tilelive-vector backend do the hard work of finding
+// the right tile to use.
+Backend.prototype.queryTile = function(z, lon, lat, options, callback) {
+    var xyz = sm.xyz([lon, lat, lon, lat], z);
+    this.getTile(z, xyz.minX, xyz.minY, function(err, vtile, head) {
+        if (err) return callback(err);
+        vtile.query(lon, lat, options, function(err, features) {
+            if (err) return callback(err);
+            var results = [];
+            for (var i = 0; i < features.length; i++) {
+                results.push({
+                    id: features[i].id(),
+                    distance: features[i].distance,
+                    layer: features[i].layer,
+                    attributes: features[i].attributes(),
+                    geometry: {
+                        type: 'Point',
+                        coordinates: features[i].x_hit ?
+                            [ features[i].x_hit, features[i].y_hit ] :
+                            [ lon, lat ]
+                    }
+                });
+            }
+            var headers = {};
+            headers['Content-Type'] = 'application/json';
+            headers['ETag'] = JSON.stringify(crypto.createHash('md5')
+                .update(head && head['ETag'] || (z+','+lon+','+lat))
+                .digest('hex'));
+            headers['Last-Modified'] = new Date(head && head['Last-Modified'] || 0).toUTCString();
+            return callback(null, results, headers);
+        });
+    });
 };
 

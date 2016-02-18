@@ -169,6 +169,29 @@ tilelive.protocols['test:'] = Testsource;
         });
     });
 
+test('query', function(t) {
+    var lonlat = [-77.0131, 38.8829];
+    var filepath = __dirname + '/expected/query-' + lonlat.join(',') + '.json';
+    sources.a.queryTile(22, lonlat[0], lonlat[1], { tolerance: 10000 }, function(err, data, headers) {
+        t.ifError(err);
+        t.equal(headers['Content-Type'], 'application/json');
+
+        // Nuke float precision for fixture comparison purposes.
+        data[0].distance = parseFloat(data[0].distance.toFixed(4));
+        data[0].geometry.coordinates[0] = parseFloat(data[0].geometry.coordinates[0].toFixed(4));
+        data[0].geometry.coordinates[1] = parseFloat(data[0].geometry.coordinates[1].toFixed(4));
+
+        if (UPDATE) {
+            fs.writeFileSync(filepath, JSON.stringify(data, null, 2));
+        }
+        t.deepEqual(
+            JSON.parse(JSON.stringify(data)),
+            JSON.parse(fs.readFileSync(filepath, 'utf8'))
+        );
+        t.end();
+    });
+});
+
 function replacer(key, value) {
     if (key === 'raster') {
         if ("data" in value)
