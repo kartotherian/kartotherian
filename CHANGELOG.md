@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.8.0
+
+- Add `queryTile` method to Backend.
+
 ## 3.7.0
 
 - Add support for `tm2z+s3` protocol for loading tm2z files from S3.
