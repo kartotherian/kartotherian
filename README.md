@@ -18,7 +18,7 @@ Kartotherin can serve vector and raster tiles in multiple formats and optional s
 Kartotherian supports static image generation. Users may request a PNG or a JPEG snapshot image of any size, scaling, and zoom level:
 
     http://.../img/{source},{zoom},{lat},{lon},{width}x{height}[@{scale}x].{format}
-    
+
     # image centered at 42,-3.14, at zoom level 4, size 800x600
     http://.../img/osm-intl,4,42,-3.14,800x600.png
 
@@ -32,9 +32,9 @@ Kartotherian can be used as a source of the PBF data for Mapbox studio. See info
 Kartotherian can generate marker images by wrapping any of the [maki icons](https://www.mapbox.com/maki/) with a pushpin image, in any color. The URL schema is matched to the one used by the [mapbox.js](https://github.com/mapbox/mapbox.js).
 
     http://.../v4/marker/pin-l-cafe+de00ff@2x.png
-    http://.../v4/marker/ {base} - {size:s|m|l} - {letter-or-digit-or-icon-name} + {color} [@2x] .png
+    http://.../v4/marker/ {base} - {size:s|m|l} [-{letter-or-digit-or-icon-name}] + {color} [@2x] .png
 
-At this point, only "pin" is supported for the base. The color is a 3 digit or 6 digit hex number. Optional scaling can only be 2x. Beyond the pre-defined maki icons, you may give a single digit (0-9), or a single letter (a-z).
+At this point, only "pin" is supported for the base. The color is a 3 digit or 6 digit hex number. Optional scaling can only be 2x. Beyond the pre-defined maki icons, you may give a number (0-99), a single letter (a-z), or nothing.
 
 ## Very quick start
 Assumes you have an OSM database (or a part of it) set up locally in the latest Postgress+Postgis, imported using `osm2pgsql --slim --hstore`.
@@ -74,7 +74,7 @@ Tilerator is separate from Kartotherian, but it reuses most of the same componen
 * [kartotherian-core](https://github.com/kartotherian/kartotherian-core) - Loads and configures tile sources, and provides some common utility functions
 * [kartotherian-autogen](https://github.com/kartotherian/kartotherian-autogen) - Tile source that checks "storage" source for a tile, and if not found, gets it from the "generator" source and saves it into the "storage"
 * [kartotherian-demultiplexer](https://github.com/kartotherian/kartotherian-demultiplexer) - Tile source that combines multiple sources by zoom level
-* [kartotherian-cassandra](https://github.com/kartotherian/kartotherian-cassandra) - Tile source that stores tiles in the Cassandra database 
+* [kartotherian-cassandra](https://github.com/kartotherian/kartotherian-cassandra) - Tile source that stores tiles in the Cassandra database
 * [kartotherian-layermixer](https://github.com/kartotherian/kartotherian-layermixer) - Tile source capable of mixing different vector layers from multiple tile sources
 * [kartotherian-overzoom](https://github.com/kartotherian/kartotherian-overzoom) - Tile source that will zoom out if the requested tile does not exist, and extracts the needed portion from the lower-zoom tile it finds.
 * [osm-bright-source](https://github.com/kartotherian/osm-bright.tm2source) - SQL queries used by the `tilelive-bridge` to generate a vector tile from Postgres Database
