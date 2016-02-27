@@ -223,7 +223,7 @@ test('errors out if style causes parse error', function(t) {
     });
 });
 test('profiles a tm2z file', function(t) {
-    tilelive.load('tm2z://' + path.join(fixtureDir, 'project.tm2z'), function(err, source) {
+    tilelive.load('tm2z://' + path.join(fixtureDir, 'project-v6.tm2z'), function(err, source) {
         t.ifError(err);
         source.profile(function(err, profile) {
             t.ifError(err);
@@ -240,31 +240,8 @@ test('profiles a tm2z file', function(t) {
             t.deepEqual(['avg','min','max'], Object.keys(profile.loadtime));
             t.deepEqual(['avg','min','max'], Object.keys(profile.srcbytes));
             t.deepEqual(['avg','min','max'], Object.keys(profile.imgbytes));
-            t.deepEqual([
-                '0/0/0',
-                '1/1/0',
-                '2/2/1',
-                '3/4/3',
-                '4/9/7',
-                '5/19/14',
-                '6/39/29',
-                '7/79/58',
-                '8/159/117',
-                '9/319/235',
-                '10/638/470',
-                '11/1276/940',
-                '12/2553/1880',
-                '13/5106/3761',
-                '14/10212/7522',
-                '15/20424/15045',
-                '16/40849/30091',
-                '17/81699/60182',
-                '18/163398/120364',
-                '19/326797/240728',
-                '20/653594/481456',
-                '21/1307188/962913',
-                '22/2614376/1925826'
-            ], profile.tiles.map(function(t) { return t.z + '/' + t.x + '/' + t.y }));
+            var expected_tiles = [ '0/0/0', '1/1/0', '2/2/1', '3/4/3', '4/9/6', '5/19/12', '6/39/24', '7/79/48', '8/159/96', '9/319/193', '10/638/387', '11/1276/774', '12/2553/1548', '13/5107/3096', '14/10214/6193', '15/20428/12386', '16/40856/24772', '17/81713/49544', '18/163427/99088', '19/326855/198177', '20/653710/396354', '21/1307421/792709', '22/2614842/1585418' ];
+            t.deepEqual(profile.tiles.map(function(t) { return t.z + '/' + t.x + '/' + t.y }),expected_tiles);
             t.end();
         });
     });

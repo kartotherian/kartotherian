@@ -1,17 +1,12 @@
 [
   {
+    "version": 2,
     "name": "places",
     "extent": 4096,
-    "version": 2,
     "features": [
       {
-        "id": 2,
         "type": 1,
-        "geometry": [
-          9,
-          11814,
-          1085
-        ],
+        "id": 2,
         "properties": {
           "ABBREV": "India",
           "ADM0_A3": "IND",
@@ -44,16 +39,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "IND"
-        }
-      },
-      {
-        "id": 3,
-        "type": 1,
+        },
         "geometry": [
           9,
-          3680,
-          1983
-        ],
+          11814,
+          1085
+        ]
+      },
+      {
+        "type": 1,
+        "id": 3,
         "properties": {
           "ABBREV": "U.S.A.",
           "ADM0_A3": "USA",
@@ -86,16 +81,16 @@
           "TERR_": "",
           "TYPE": "Country",
           "ne_10m_adm": "USA"
-        }
-      },
-      {
-        "id": 5,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5784,
-          426
-        ],
+          3680,
+          1983
+        ]
+      },
+      {
+        "type": 1,
+        "id": 5,
         "properties": {
           "ABBREV": "Brazil",
           "ADM0_A3": "BRA",
@@ -128,16 +123,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BRA"
-        }
-      },
-      {
-        "id": 6,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11350,
-          1437
-        ],
+          5784,
+          426
+        ]
+      },
+      {
+        "type": 1,
+        "id": 6,
         "properties": {
           "ABBREV": "Pak.",
           "ADM0_A3": "PAK",
@@ -170,16 +165,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "PAK"
-        }
-      },
-      {
-        "id": 7,
-        "type": 1,
+        },
         "geometry": [
           9,
-          12286,
-          1129
-        ],
+          11350,
+          1437
+        ]
+      },
+      {
+        "type": 1,
+        "id": 7,
         "properties": {
           "ABBREV": "Bang.",
           "ADM0_A3": "BGD",
@@ -212,16 +207,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BGD"
-        }
-      },
-      {
-        "id": 8,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8560,
-          437
-        ],
+          12286,
+          1129
+        ]
+      },
+      {
+        "type": 1,
+        "id": 8,
         "properties": {
           "ABBREV": "Nigeria",
           "ADM0_A3": "NGA",
@@ -254,16 +249,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "NGA"
-        }
-      },
-      {
-        "id": 11,
-        "type": 1,
+        },
         "geometry": [
           9,
-          3516,
-          1133
-        ],
+          8560,
+          437
+        ]
+      },
+      {
+        "type": 1,
+        "id": 11,
         "properties": {
           "ABBREV": "Mex.",
           "ADM0_A3": "MEX",
@@ -296,16 +291,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MEX"
-        }
-      },
-      {
-        "id": 14,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9994,
-          393
-        ],
+          3516,
+          1133
+        ]
+      },
+      {
+        "type": 1,
+        "id": 14,
         "properties": {
           "ABBREV": "Eth.",
           "ADM0_A3": "ETH",
@@ -338,16 +333,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ETH"
-        }
-      },
-      {
-        "id": 15,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9550,
-          1255
-        ],
+          9994,
+          393
+        ]
+      },
+      {
+        "type": 1,
+        "id": 15,
         "properties": {
           "ABBREV": "Egypt",
           "ADM0_A3": "EGY",
@@ -380,16 +375,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "EGY"
-        }
-      },
-      {
-        "id": 16,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8664,
-          2721
-        ],
+          9550,
+          1255
+        ]
+      },
+      {
+        "type": 1,
+        "id": 16,
         "properties": {
           "ABBREV": "Ger.",
           "ADM0_A3": "DEU",
@@ -422,16 +417,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "DEU"
-        }
-      },
-      {
-        "id": 17,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9792,
-          1935
-        ],
+          8664,
+          2721
+        ]
+      },
+      {
+        "type": 1,
+        "id": 17,
         "properties": {
           "ABBREV": "Tur.",
           "ADM0_A3": "TUR",
@@ -464,16 +459,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "TUR"
-        }
-      },
-      {
-        "id": 18,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9244,
-          132
-        ],
+          9792,
+          1935
+        ]
+      },
+      {
+        "type": 1,
+        "id": 18,
         "properties": {
           "ABBREV": "D.R.C.",
           "ADM0_A3": "COD",
@@ -506,16 +501,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "COD"
-        }
-      },
-      {
-        "id": 19,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10658,
-          1577
-        ],
+          9244,
+          132
+        ]
+      },
+      {
+        "type": 1,
+        "id": 19,
         "properties": {
           "ABBREV": "Iran",
           "ADM0_A3": "IRN",
@@ -548,16 +543,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "IRN"
-        }
-      },
-      {
-        "id": 21,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8306,
-          2475
-        ],
+          10658,
+          1577
+        ]
+      },
+      {
+        "type": 1,
+        "id": 21,
         "properties": {
           "ABBREV": "Fr.",
           "ADM0_A3": "FRA",
@@ -590,16 +585,16 @@
           "TERR_": "",
           "TYPE": "Country",
           "ne_10m_adm": "FRA"
-        }
-      },
-      {
-        "id": 22,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8102,
-          2853
-        ],
+          8306,
+          2475
+        ]
+      },
+      {
+        "type": 1,
+        "id": 22,
         "properties": {
           "ABBREV": "U.K.",
           "ADM0_A3": "GBR",
@@ -632,16 +627,16 @@
           "TERR_": "",
           "TYPE": "Country",
           "ne_10m_adm": "GBR"
-        }
-      },
-      {
-        "id": 23,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8738,
-          2167
-        ],
+          8102,
+          2853
+        ]
+      },
+      {
+        "type": 1,
+        "id": 23,
         "properties": {
           "ABBREV": "Italy",
           "ADM0_A3": "ITA",
@@ -674,16 +669,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ITA"
-        }
-      },
-      {
-        "id": 24,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9214,
-          1442
-        ],
+          8738,
+          2167
+        ]
+      },
+      {
+        "type": 1,
+        "id": 24,
         "properties": {
           "ABBREV": "S.Af.",
           "ADM0_A3": "ZAF",
@@ -716,16 +711,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ZAF"
-        }
-      },
-      {
-        "id": 27,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9618,
-          2569
-        ],
+          9214,
+          1442
+        ]
+      },
+      {
+        "type": 1,
+        "id": 27,
         "properties": {
           "ABBREV": "Ukr.",
           "ADM0_A3": "UKR",
@@ -758,16 +753,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "UKR"
-        }
-      },
-      {
-        "id": 28,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4864,
-          177
-        ],
+          9618,
+          2569
+        ]
+      },
+      {
+        "type": 1,
+        "id": 28,
         "properties": {
           "ABBREV": "Col.",
           "ADM0_A3": "COL",
@@ -800,16 +795,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "COL"
-        }
-      },
-      {
-        "id": 29,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9776,
-          286
-        ],
+          4864,
+          177
+        ]
+      },
+      {
+        "type": 1,
+        "id": 29,
         "properties": {
           "ABBREV": "Tanz.",
           "ADM0_A3": "TZA",
@@ -842,16 +837,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "TZA"
-        }
-      },
-      {
-        "id": 30,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5262,
-          1720
-        ],
+          9776,
+          286
+        ]
+      },
+      {
+        "type": 1,
+        "id": 30,
         "properties": {
           "ABBREV": "Arg.",
           "ADM0_A3": "ARG",
@@ -884,16 +879,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ARG"
-        }
-      },
-      {
-        "id": 31,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8026,
-          2009
-        ],
+          5262,
+          1720
+        ]
+      },
+      {
+        "type": 1,
+        "id": 31,
         "properties": {
           "ABBREV": "Sp.",
           "ADM0_A3": "ESP",
@@ -926,16 +921,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ESP"
-        }
-      },
-      {
-        "id": 32,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9912,
-          25
-        ],
+          8026,
+          2009
+        ]
+      },
+      {
+        "type": 1,
+        "id": 32,
         "properties": {
           "ABBREV": "Ken.",
           "ADM0_A3": "KEN",
@@ -968,16 +963,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "KEN"
-        }
-      },
-      {
-        "id": 33,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9074,
-          2793
-        ],
+          9912,
+          25
+        ]
+      },
+      {
+        "type": 1,
+        "id": 33,
         "properties": {
           "ABBREV": "Pol.",
           "ADM0_A3": "POL",
@@ -1010,16 +1005,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "POL"
-        }
-      },
-      {
-        "id": 34,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7812,
-          1433
-        ],
+          9074,
+          2793
+        ]
+      },
+      {
+        "type": 1,
+        "id": 34,
         "properties": {
           "ABBREV": "Mor.",
           "ADM0_A3": "MAR",
@@ -1052,16 +1047,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MAR"
-        }
-      },
-      {
-        "id": 35,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8310,
-          1347
-        ],
+          7812,
+          1433
+        ]
+      },
+      {
+        "type": 1,
+        "id": 35,
         "properties": {
           "ABBREV": "Alg.",
           "ADM0_A3": "DZA",
@@ -1094,16 +1089,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "DZA"
-        }
-      },
-      {
-        "id": 36,
-        "type": 1,
+        },
         "geometry": [
           9,
-          3638,
-          2971
-        ],
+          8310,
+          1347
+        ]
+      },
+      {
+        "type": 1,
+        "id": 36,
         "properties": {
           "ABBREV": "Can.",
           "ADM0_A3": "CAN",
@@ -1136,16 +1131,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CAN"
-        }
-      },
-      {
-        "id": 37,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9664,
-          57
-        ],
+          3638,
+          2971
+        ]
+      },
+      {
+        "type": 1,
+        "id": 37,
         "properties": {
           "ABBREV": "Uga.",
           "ADM0_A3": "UGA",
@@ -1178,16 +1173,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "UGA"
-        }
-      },
-      {
-        "id": 38,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9554,
-          739
-        ],
+          9664,
+          57
+        ]
+      },
+      {
+        "type": 1,
+        "id": 38,
         "properties": {
           "ABBREV": "Sudan",
           "ADM0_A3": "SDN",
@@ -1220,16 +1215,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SDN"
-        }
-      },
-      {
-        "id": 39,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4764,
-          446
-        ],
+          9554,
+          739
+        ]
+      },
+      {
+        "type": 1,
+        "id": 39,
         "properties": {
           "ABBREV": "Peru",
           "ADM0_A3": "PER",
@@ -1262,16 +1257,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "PER"
-        }
-      },
-      {
-        "id": 40,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10164,
-          1611
-        ],
+          4764,
+          446
+        ]
+      },
+      {
+        "type": 1,
+        "id": 40,
         "properties": {
           "ABBREV": "Iraq",
           "ADM0_A3": "IRQ",
@@ -1304,16 +1299,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "IRQ"
-        }
-      },
-      {
-        "id": 41,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10214,
-          1137
-        ],
+          10164,
+          1611
+        ]
+      },
+      {
+        "type": 1,
+        "id": 41,
         "properties": {
           "ABBREV": "Saud.",
           "ADM0_A3": "SAU",
@@ -1346,16 +1341,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SAU"
-        }
-      },
-      {
-        "id": 42,
-        "type": 1,
+        },
         "geometry": [
           9,
-          12010,
-          1339
-        ],
+          10214,
+          1137
+        ]
+      },
+      {
+        "type": 1,
+        "id": 42,
         "properties": {
           "ABBREV": "Nepal",
           "ADM0_A3": "NPL",
@@ -1388,16 +1383,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "NPL"
-        }
-      },
-      {
-        "id": 43,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11196,
-          1641
-        ],
+          12010,
+          1339
+        ]
+      },
+      {
+        "type": 1,
+        "id": 43,
         "properties": {
           "ABBREV": "Afg.",
           "ADM0_A3": "AFG",
@@ -1430,16 +1425,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "AFG"
-        }
-      },
-      {
-        "id": 44,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11060,
-          2097
-        ],
+          11196,
+          1641
+        ]
+      },
+      {
+        "type": 1,
+        "id": 44,
         "properties": {
           "ABBREV": "Uzb.",
           "ADM0_A3": "UZB",
@@ -1472,16 +1467,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "UZB"
-        }
-      },
-      {
-        "id": 45,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5194,
-          343
-        ],
+          11060,
+          2097
+        ]
+      },
+      {
+        "type": 1,
+        "id": 45,
         "properties": {
           "ABBREV": "Ven.",
           "ADM0_A3": "VEN",
@@ -1514,16 +1509,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "VEN"
-        }
-      },
-      {
-        "id": 47,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8140,
-          347
-        ],
+          5194,
+          343
+        ]
+      },
+      {
+        "type": 1,
+        "id": 47,
         "properties": {
           "ABBREV": "Ghana",
           "ADM0_A3": "GHA",
@@ -1556,16 +1551,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "GHA"
-        }
-      },
-      {
-        "id": 48,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10358,
-          733
-        ],
+          8140,
+          347
+        ]
+      },
+      {
+        "type": 1,
+        "id": 48,
         "properties": {
           "ABBREV": "Yem.",
           "ADM0_A3": "YEM",
@@ -1598,16 +1593,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "YEM"
-        }
-      },
-      {
-        "id": 51,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9328,
-          2353
-        ],
+          10358,
+          733
+        ]
+      },
+      {
+        "type": 1,
+        "id": 51,
         "properties": {
           "ABBREV": "Rom.",
           "ADM0_A3": "ROU",
@@ -1640,16 +1635,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ROU"
-        }
-      },
-      {
-        "id": 52,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9776,
-          818
-        ],
+          9328,
+          2353
+        ]
+      },
+      {
+        "type": 1,
+        "id": 52,
         "properties": {
           "ABBREV": "Moz.",
           "ADM0_A3": "MOZ",
@@ -1682,16 +1677,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MOZ"
-        }
-      },
-      {
-        "id": 53,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11864,
-          345
-        ],
+          9776,
+          818
+        ]
+      },
+      {
+        "type": 1,
+        "id": 53,
         "properties": {
           "ABBREV": "Sri L.",
           "ADM0_A3": "LKA",
@@ -1724,16 +1719,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "LKA"
-        }
-      },
-      {
-        "id": 55,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10316,
-          902
-        ],
+          11864,
+          345
+        ]
+      },
+      {
+        "type": 1,
+        "id": 55,
         "properties": {
           "ABBREV": "Mad.",
           "ADM0_A3": "MDG",
@@ -1766,16 +1761,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MDG"
-        }
-      },
-      {
-        "id": 56,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7938,
-          347
-        ],
+          10316,
+          902
+        ]
+      },
+      {
+        "type": 1,
+        "id": 56,
         "properties": {
           "ABBREV": "I.C.",
           "ADM0_A3": "CIV",
@@ -1808,16 +1803,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CIV"
-        }
-      },
-      {
-        "id": 57,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9944,
-          1703
-        ],
+          7938,
+          347
+        ]
+      },
+      {
+        "type": 1,
+        "id": 57,
         "properties": {
           "ABBREV": "Syria",
           "ADM0_A3": "SYR",
@@ -1850,16 +1845,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SYR"
-        }
-      },
-      {
-        "id": 58,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8744,
-          243
-        ],
+          9944,
+          1703
+        ]
+      },
+      {
+        "type": 1,
+        "id": 58,
         "properties": {
           "ABBREV": "Cam.",
           "ADM0_A3": "CMR",
@@ -1892,16 +1887,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CMR"
-        }
-      },
-      {
-        "id": 59,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8434,
-          2791
-        ],
+          8744,
+          243
+        ]
+      },
+      {
+        "type": 1,
+        "id": 59,
         "properties": {
           "ABBREV": "Neth.",
           "ADM0_A3": "NLD",
@@ -1934,16 +1929,16 @@
           "TERR_": "",
           "TYPE": "Country",
           "ne_10m_adm": "NLD"
-        }
-      },
-      {
-        "id": 60,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4980,
-          1362
-        ],
+          8434,
+          2791
+        ]
+      },
+      {
+        "type": 1,
+        "id": 60,
         "properties": {
           "ABBREV": "Chile",
           "ADM0_A3": "CHL",
@@ -1976,16 +1971,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CHL"
-        }
-      },
-      {
-        "id": 61,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8118,
-          567
-        ],
+          4980,
+          1362
+        ]
+      },
+      {
+        "type": 1,
+        "id": 61,
         "properties": {
           "ABBREV": "B.F.",
           "ADM0_A3": "BFA",
@@ -2018,16 +2013,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BFA"
-        }
-      },
-      {
-        "id": 62,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11256,
-          2525
-        ],
+          8118,
+          567
+        ]
+      },
+      {
+        "type": 1,
+        "id": 62,
         "properties": {
           "ABBREV": "Kaz.",
           "ADM0_A3": "KAZ",
@@ -2060,16 +2055,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "KAZ"
-        }
-      },
-      {
-        "id": 63,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8620,
-          807
-        ],
+          11256,
+          2525
+        ]
+      },
+      {
+        "type": 1,
+        "id": 63,
         "properties": {
           "ABBREV": "Niger",
           "ADM0_A3": "NER",
@@ -2102,16 +2097,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "NER"
-        }
-      },
-      {
-        "id": 64,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4628,
-          44
-        ],
+          8620,
+          807
+        ]
+      },
+      {
+        "type": 1,
+        "id": 64,
         "properties": {
           "ABBREV": "Ecu.",
           "ADM0_A3": "ECU",
@@ -2144,16 +2139,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ECU"
-        }
-      },
-      {
-        "id": 66,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9728,
-          598
-        ],
+          4628,
+          44
+        ]
+      },
+      {
+        "type": 1,
+        "id": 66,
         "properties": {
           "ABBREV": "Mal.",
           "ADM0_A3": "MWI",
@@ -2186,16 +2181,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MWI"
-        }
-      },
-      {
-        "id": 67,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7524,
-          681
-        ],
+          9728,
+          598
+        ]
+      },
+      {
+        "type": 1,
+        "id": 67,
         "properties": {
           "ABBREV": "Sen.",
           "ADM0_A3": "SEN",
@@ -2228,16 +2223,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SEN"
-        }
-      },
-      {
-        "id": 68,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4078,
-          721
-        ],
+          7524,
+          681
+        ]
+      },
+      {
+        "type": 1,
+        "id": 68,
         "properties": {
           "ABBREV": "Guat.",
           "ADM0_A3": "GTM",
@@ -2270,16 +2265,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "GTM"
-        }
-      },
-      {
-        "id": 69,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8990,
-          566
-        ],
+          4078,
+          721
+        ]
+      },
+      {
+        "type": 1,
+        "id": 69,
         "properties": {
           "ABBREV": "Ang.",
           "ADM0_A3": "AGO",
@@ -2312,16 +2307,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "AGO"
-        }
-      },
-      {
-        "id": 70,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8074,
-          797
-        ],
+          8990,
+          566
+        ]
+      },
+      {
+        "type": 1,
+        "id": 70,
         "properties": {
           "ABBREV": "Mali",
           "ADM0_A3": "MLI",
@@ -2354,16 +2349,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MLI"
-        }
-      },
-      {
-        "id": 71,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9412,
-          652
-        ],
+          8074,
+          797
+        ]
+      },
+      {
+        "type": 1,
+        "id": 71,
         "properties": {
           "ABBREV": "Zambia",
           "ADM0_A3": "ZMB",
@@ -2396,16 +2391,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ZMB"
-        }
-      },
-      {
-        "id": 72,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4594,
-          1027
-        ],
+          9412,
+          652
+        ]
+      },
+      {
+        "type": 1,
+        "id": 72,
         "properties": {
           "ABBREV": "Cuba",
           "ADM0_A3": "CUB",
@@ -2438,16 +2433,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CUB"
-        }
-      },
-      {
-        "id": 73,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9544,
-          890
-        ],
+          4594,
+          1027
+        ]
+      },
+      {
+        "type": 1,
+        "id": 73,
         "properties": {
           "ABBREV": "Zimb.",
           "ADM0_A3": "ZWE",
@@ -2480,16 +2475,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ZWE"
-        }
-      },
-      {
-        "id": 74,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9186,
-          1953
-        ],
+          9544,
+          890
+        ]
+      },
+      {
+        "type": 1,
+        "id": 74,
         "properties": {
           "ABBREV": "Greece",
           "ADM0_A3": "GRC",
@@ -2522,16 +2517,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "GRC"
-        }
-      },
-      {
-        "id": 75,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7800,
-          1965
-        ],
+          9186,
+          1953
+        ]
+      },
+      {
+        "type": 1,
+        "id": 75,
         "properties": {
           "ABBREV": "Port.",
           "ADM0_A3": "PRT",
@@ -2564,16 +2559,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "PRT"
-        }
-      },
-      {
-        "id": 76,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8626,
-          1655
-        ],
+          7800,
+          1965
+        ]
+      },
+      {
+        "type": 1,
+        "id": 76,
         "properties": {
           "ABBREV": "Tun.",
           "ADM0_A3": "TUN",
@@ -2606,16 +2601,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "TUN"
-        }
-      },
-      {
-        "id": 77,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9552,
-          90
-        ],
+          8626,
+          1655
+        ]
+      },
+      {
+        "type": 1,
+        "id": 77,
         "properties": {
           "ABBREV": "Rwa.",
           "ADM0_A3": "RWA",
@@ -2648,16 +2643,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "RWA"
-        }
-      },
-      {
-        "id": 78,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8402,
-          2679
-        ],
+          9552,
+          90
+        ]
+      },
+      {
+        "type": 1,
+        "id": 78,
         "properties": {
           "ABBREV": "Belg.",
           "ADM0_A3": "BEL",
@@ -2690,16 +2685,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BEL"
-        }
-      },
-      {
-        "id": 79,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9030,
-          709
-        ],
+          8402,
+          2679
+        ]
+      },
+      {
+        "type": 1,
+        "id": 79,
         "properties": {
           "ABBREV": "Chad",
           "ADM0_A3": "TCD",
@@ -2732,16 +2727,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "TCD"
-        }
-      },
-      {
-        "id": 80,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8888,
-          2615
-        ],
+          9030,
+          709
+        ]
+      },
+      {
+        "type": 1,
+        "id": 80,
         "properties": {
           "ABBREV": "Cz. Rep.",
           "ADM0_A3": "CZE",
@@ -2774,16 +2769,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CZE"
-        }
-      },
-      {
-        "id": 81,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7684,
-          499
-        ],
+          8888,
+          2615
+        ]
+      },
+      {
+        "type": 1,
+        "id": 81,
         "properties": {
           "ABBREV": "Gin.",
           "ADM0_A3": "GIN",
@@ -2816,16 +2811,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "GIN"
-        }
-      },
-      {
-        "id": 82,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9074,
-          2439
-        ],
+          7684,
+          499
+        ]
+      },
+      {
+        "type": 1,
+        "id": 82,
         "properties": {
           "ABBREV": "Hun.",
           "ADM0_A3": "HUN",
@@ -2858,16 +2853,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "HUN"
-        }
-      },
-      {
-        "id": 83,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10248,
-          189
-        ],
+          9074,
+          2439
+        ]
+      },
+      {
+        "type": 1,
+        "id": 83,
         "properties": {
           "ABBREV": "Som.",
           "ADM0_A3": "SOM",
@@ -2900,16 +2895,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SOM"
-        }
-      },
-      {
-        "id": 84,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5248,
-          774
-        ],
+          10248,
+          189
+        ]
+      },
+      {
+        "type": 1,
+        "id": 84,
         "properties": {
           "ABBREV": "Bolivia",
           "ADM0_A3": "BOL",
@@ -2942,16 +2937,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BOL"
-        }
-      },
-      {
-        "id": 85,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4996,
-          873
-        ],
+          5248,
+          774
+        ]
+      },
+      {
+        "type": 1,
+        "id": 85,
         "properties": {
           "ABBREV": "Dom. Rep.",
           "ADM0_A3": "DOM",
@@ -2984,16 +2979,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "DOM"
-        }
-      },
-      {
-        "id": 86,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9468,
-          2897
-        ],
+          4996,
+          873
+        ]
+      },
+      {
+        "type": 1,
+        "id": 86,
         "properties": {
           "ABBREV": "Bela.",
           "ADM0_A3": "BLR",
@@ -3026,16 +3021,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BLR"
-        }
-      },
-      {
-        "id": 87,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9014,
-          3959
-        ],
+          9468,
+          2897
+        ]
+      },
+      {
+        "type": 1,
+        "id": 87,
         "properties": {
           "ABBREV": "Swe.",
           "ADM0_A3": "SWE",
@@ -3068,16 +3063,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SWE"
-        }
-      },
-      {
-        "id": 88,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4864,
-          871
-        ],
+          9014,
+          3959
+        ]
+      },
+      {
+        "type": 1,
+        "id": 88,
         "properties": {
           "ABBREV": "Haiti",
           "ADM0_A3": "HTI",
@@ -3110,16 +3105,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "HTI"
-        }
-      },
-      {
-        "id": 89,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9550,
-          152
-        ],
+          4864,
+          871
+        ]
+      },
+      {
+        "type": 1,
+        "id": 89,
         "properties": {
           "ABBREV": "Bur.",
           "ADM0_A3": "BDI",
@@ -3152,16 +3147,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BDI"
-        }
-      },
-      {
-        "id": 90,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8298,
-          471
-        ],
+          9550,
+          152
+        ]
+      },
+      {
+        "type": 1,
+        "id": 90,
         "properties": {
           "ABBREV": "Benin",
           "ADM0_A3": "BEN",
@@ -3194,16 +3189,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BEN"
-        }
-      },
-      {
-        "id": 91,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9568,
-          331
-        ],
+          8298,
+          471
+        ]
+      },
+      {
+        "type": 1,
+        "id": 91,
         "properties": {
           "ABBREV": "S. Sud.",
           "ADM0_A3": "SDS",
@@ -3236,16 +3231,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SDS"
-        }
-      },
-      {
-        "id": 92,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10362,
-          2009
-        ],
+          9568,
+          331
+        ]
+      },
+      {
+        "type": 1,
+        "id": 92,
         "properties": {
           "ABBREV": "Aze.",
           "ADM0_A3": "AZE",
@@ -3278,16 +3273,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "AZE"
-        }
-      },
-      {
-        "id": 93,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8856,
-          2465
-        ],
+          10362,
+          2009
+        ]
+      },
+      {
+        "type": 1,
+        "id": 93,
         "properties": {
           "ABBREV": "Aust.",
           "ADM0_A3": "AUT",
@@ -3320,16 +3315,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "AUT"
-        }
-      },
-      {
-        "id": 94,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4248,
-          681
-        ],
+          8856,
+          2465
+        ]
+      },
+      {
+        "type": 1,
+        "id": 94,
         "properties": {
           "ABBREV": "Hond.",
           "ADM0_A3": "HND",
@@ -3362,16 +3357,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "HND"
-        }
-      },
-      {
-        "id": 95,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8564,
-          2415
-        ],
+          4248,
+          681
+        ]
+      },
+      {
+        "type": 1,
+        "id": 95,
         "properties": {
           "ABBREV": "Switz.",
           "ADM0_A3": "CHE",
@@ -3404,16 +3399,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CHE"
-        }
-      },
-      {
-        "id": 96,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9136,
-          2247
-        ],
+          8564,
+          2415
+        ]
+      },
+      {
+        "type": 1,
+        "id": 96,
         "properties": {
           "ABBREV": "Serb.",
           "ADM0_A3": "SRB",
@@ -3446,16 +3441,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SRB"
-        }
-      },
-      {
-        "id": 97,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11426,
-          1929
-        ],
+          9136,
+          2247
+        ]
+      },
+      {
+        "type": 1,
+        "id": 97,
         "properties": {
           "ABBREV": "Tjk.",
           "ADM0_A3": "TJK",
@@ -3488,16 +3483,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "TJK"
-        }
-      },
-      {
-        "id": 98,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9778,
-          1485
-        ],
+          11426,
+          1929
+        ]
+      },
+      {
+        "type": 1,
+        "id": 98,
         "properties": {
           "ABBREV": "Isr.",
           "ADM0_A3": "ISR",
@@ -3530,16 +3525,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ISR"
-        }
-      },
-      {
-        "id": 99,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9338,
-          2157
-        ],
+          9778,
+          1485
+        ]
+      },
+      {
+        "type": 1,
+        "id": 99,
         "properties": {
           "ABBREV": "Bulg.",
           "ADM0_A3": "BGR",
@@ -3572,16 +3567,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BGR"
-        }
-      },
-      {
-        "id": 100,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4146,
-          629
-        ],
+          9338,
+          2157
+        ]
+      },
+      {
+        "type": 1,
+        "id": 100,
         "properties": {
           "ABBREV": "El. S.",
           "ADM0_A3": "SLV",
@@ -3614,16 +3609,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SLV"
-        }
-      },
-      {
-        "id": 102,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5534,
-          1088
-        ],
+          4146,
+          629
+        ]
+      },
+      {
+        "type": 1,
+        "id": 102,
         "properties": {
           "ABBREV": "Para.",
           "ADM0_A3": "PRY",
@@ -3656,16 +3651,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "PRY"
-        }
-      },
-      {
-        "id": 104,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7654,
-          389
-        ],
+          5534,
+          1088
+        ]
+      },
+      {
+        "type": 1,
+        "id": 104,
         "properties": {
           "ABBREV": "S.L.",
           "ADM0_A3": "SLE",
@@ -3698,16 +3693,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SLE"
-        }
-      },
-      {
-        "id": 105,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9858,
-          1495
-        ],
+          7654,
+          389
+        ]
+      },
+      {
+        "type": 1,
+        "id": 105,
         "properties": {
           "ABBREV": "Jord.",
           "ADM0_A3": "JOR",
@@ -3740,16 +3735,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "JOR"
-        }
-      },
-      {
-        "id": 106,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9010,
-          1283
-        ],
+          9858,
+          1495
+        ]
+      },
+      {
+        "type": 1,
+        "id": 106,
         "properties": {
           "ABBREV": "Libya",
           "ADM0_A3": "LBY",
@@ -3782,16 +3777,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "LBY"
-        }
-      },
-      {
-        "id": 108,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8234,
-          395
-        ],
+          9010,
+          1283
+        ]
+      },
+      {
+        "type": 1,
+        "id": 108,
         "properties": {
           "ABBREV": "Togo",
           "ADM0_A3": "TGO",
@@ -3824,16 +3819,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "TGO"
-        }
-      },
-      {
-        "id": 109,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4310,
-          587
-        ],
+          8234,
+          395
+        ]
+      },
+      {
+        "type": 1,
+        "id": 109,
         "properties": {
           "ABBREV": "Nic.",
           "ADM0_A3": "NIC",
@@ -3866,16 +3861,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "NIC"
-        }
-      },
-      {
-        "id": 110,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9924,
-          727
-        ],
+          4310,
+          587
+        ]
+      },
+      {
+        "type": 1,
+        "id": 110,
         "properties": {
           "ABBREV": "Erit.",
           "ADM0_A3": "ERI",
@@ -3908,16 +3903,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ERI"
-        }
-      },
-      {
-        "id": 111,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8648,
-          3087
-        ],
+          9924,
+          727
+        ]
+      },
+      {
+        "type": 1,
+        "id": 111,
         "properties": {
           "ABBREV": "Den.",
           "ADM0_A3": "DNK",
@@ -3950,16 +3945,16 @@
           "TERR_": "",
           "TYPE": "Country",
           "ne_10m_adm": "DNK"
-        }
-      },
-      {
-        "id": 112,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9082,
-          2553
-        ],
+          8648,
+          3087
+        ]
+      },
+      {
+        "type": 1,
+        "id": 112,
         "properties": {
           "ABBREV": "Svk.",
           "ADM0_A3": "SVK",
@@ -3992,16 +3987,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SVK"
-        }
-      },
-      {
-        "id": 113,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11596,
-          2101
-        ],
+          9082,
+          2553
+        ]
+      },
+      {
+        "type": 1,
+        "id": 113,
         "properties": {
           "ABBREV": "Kgz.",
           "ADM0_A3": "KGZ",
@@ -4034,16 +4029,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "KGZ"
-        }
-      },
-      {
-        "id": 114,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9398,
-          3753
-        ],
+          11596,
+          2101
+        ]
+      },
+      {
+        "type": 1,
+        "id": 114,
         "properties": {
           "ABBREV": "Fin.",
           "ADM0_A3": "FIN",
@@ -4076,16 +4071,16 @@
           "TERR_": "",
           "TYPE": "County",
           "ne_10m_adm": "FIN"
-        }
-      },
-      {
-        "id": 115,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10892,
-          1939
-        ],
+          9398,
+          3753
+        ]
+      },
+      {
+        "type": 1,
+        "id": 115,
         "properties": {
           "ABBREV": "Turkm.",
           "ADM0_A3": "TKM",
@@ -4118,16 +4113,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "TKM"
-        }
-      },
-      {
-        "id": 116,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10646,
-          1115
-        ],
+          10892,
+          1939
+        ]
+      },
+      {
+        "type": 1,
+        "id": 116,
         "properties": {
           "ABBREV": "U.A.E.",
           "ADM0_A3": "ARE",
@@ -4160,16 +4155,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ARE"
-        }
-      },
-      {
-        "id": 117,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8608,
-          3563
-        ],
+          10646,
+          1115
+        ]
+      },
+      {
+        "type": 1,
+        "id": 117,
         "properties": {
           "ABBREV": "Nor.",
           "ADM0_A3": "NOR",
@@ -4202,16 +4197,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "NOR"
-        }
-      },
-      {
-        "id": 119,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10170,
-          2119
-        ],
+          8608,
+          3563
+        ]
+      },
+      {
+        "type": 1,
+        "id": 119,
         "properties": {
           "ABBREV": "Geo.",
           "ADM0_A3": "GEO",
@@ -4244,16 +4239,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "GEO"
-        }
-      },
-      {
-        "id": 120,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9000,
-          2243
-        ],
+          10170,
+          2119
+        ]
+      },
+      {
+        "type": 1,
+        "id": 120,
         "properties": {
           "ABBREV": "B.H.",
           "ADM0_A3": "BIH",
@@ -4286,16 +4281,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BIH"
-        }
-      },
-      {
-        "id": 121,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9122,
-          297
-        ],
+          9000,
+          2243
+        ]
+      },
+      {
+        "type": 1,
+        "id": 121,
         "properties": {
           "ABBREV": "C.A.R.",
           "ADM0_A3": "CAF",
@@ -4328,16 +4323,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CAF"
-        }
-      },
-      {
-        "id": 122,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8962,
-          2341
-        ],
+          9122,
+          297
+        ]
+      },
+      {
+        "type": 1,
+        "id": 122,
         "properties": {
           "ABBREV": "Cro.",
           "ADM0_A3": "HRV",
@@ -4370,16 +4365,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "HRV"
-        }
-      },
-      {
-        "id": 123,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9486,
-          2441
-        ],
+          8962,
+          2341
+        ]
+      },
+      {
+        "type": 1,
+        "id": 123,
         "properties": {
           "ABBREV": "Mda.",
           "ADM0_A3": "MDA",
@@ -4412,16 +4407,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MDA"
-        }
-      },
-      {
-        "id": 124,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4360,
-          455
-        ],
+          9486,
+          2441
+        ]
+      },
+      {
+        "type": 1,
+        "id": 124,
         "properties": {
           "ABBREV": "C.R.",
           "ADM0_A3": "CRI",
@@ -4454,16 +4449,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CRI"
-        }
-      },
-      {
-        "id": 126,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7832,
-          2895
-        ],
+          4360,
+          455
+        ]
+      },
+      {
+        "type": 1,
+        "id": 126,
         "properties": {
           "ABBREV": "Ire.",
           "ADM0_A3": "IRL",
@@ -4496,16 +4491,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "IRL"
-        }
-      },
-      {
-        "id": 127,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9826,
-          1645
-        ],
+          7832,
+          2895
+        ]
+      },
+      {
+        "type": 1,
+        "id": 127,
         "properties": {
           "ABBREV": "Leb.",
           "ADM0_A3": "LBN",
@@ -4538,16 +4533,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "LBN"
-        }
-      },
-      {
-        "id": 128,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8914,
-          15
-        ],
+          9826,
+          1645
+        ]
+      },
+      {
+        "type": 1,
+        "id": 128,
         "properties": {
           "ABBREV": "Rep. Congo",
           "ADM0_A3": "COG",
@@ -4580,16 +4575,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "COG"
-        }
-      },
-      {
-        "id": 129,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5166,
-          841
-        ],
+          8914,
+          15
+        ]
+      },
+      {
+        "type": 1,
+        "id": 129,
         "properties": {
           "ABBREV": "P.R.",
           "ADM0_A3": "PRI",
@@ -4622,16 +4617,16 @@
           "TERR_": "Commonwealth of U.S.A.",
           "TYPE": "Dependency",
           "ne_10m_adm": "PRI"
-        }
-      },
-      {
-        "id": 130,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9106,
-          2031
-        ],
+          5166,
+          841
+        ]
+      },
+      {
+        "type": 1,
+        "id": 130,
         "properties": {
           "ABBREV": "Alb.",
           "ADM0_A3": "ALB",
@@ -4664,16 +4659,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ALB"
-        }
-      },
-      {
-        "id": 131,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9278,
-          3045
-        ],
+          9106,
+          2031
+        ]
+      },
+      {
+        "type": 1,
+        "id": 131,
         "properties": {
           "ABBREV": "Lith.",
           "ADM0_A3": "LTU",
@@ -4706,16 +4701,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "LTU"
-        }
-      },
-      {
-        "id": 132,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10296,
-          443
-        ],
+          9278,
+          3045
+        ]
+      },
+      {
+        "type": 1,
+        "id": 132,
         "properties": {
           "ABBREV": "Solnd.",
           "ADM0_A3": "SOL",
@@ -4748,16 +4743,16 @@
           "TERR_": "",
           "TYPE": "Disputed",
           "ne_10m_adm": "SOL"
-        }
-      },
-      {
-        "id": 133,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5642,
-          1582
-        ],
+          10296,
+          443
+        ]
+      },
+      {
+        "type": 1,
+        "id": 133,
         "properties": {
           "ABBREV": "Ury.",
           "ADM0_A3": "URY",
@@ -4790,16 +4785,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "URY"
-        }
-      },
-      {
-        "id": 134,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7760,
-          291
-        ],
+          5642,
+          1582
+        ]
+      },
+      {
+        "type": 1,
+        "id": 134,
         "properties": {
           "ABBREV": "Liberia",
           "ADM0_A3": "LBR",
@@ -4832,16 +4827,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "LBR"
-        }
-      },
-      {
-        "id": 135,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10784,
-          985
-        ],
+          7760,
+          291
+        ]
+      },
+      {
+        "type": 1,
+        "id": 135,
         "properties": {
           "ABBREV": "Oman",
           "ADM0_A3": "OMN",
@@ -4874,16 +4869,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "OMN"
-        }
-      },
-      {
-        "id": 136,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4542,
-          405
-        ],
+          10784,
+          985
+        ]
+      },
+      {
+        "type": 1,
+        "id": 136,
         "properties": {
           "ABBREV": "Pan.",
           "ADM0_A3": "PAN",
@@ -4916,16 +4911,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "PAN"
-        }
-      },
-      {
-        "id": 137,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7694,
-          939
-        ],
+          4542,
+          405
+        ]
+      },
+      {
+        "type": 1,
+        "id": 137,
         "properties": {
           "ABBREV": "Mrt.",
           "ADM0_A3": "MRT",
@@ -4958,16 +4953,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MRT"
-        }
-      },
-      {
-        "id": 139,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10220,
-          2023
-        ],
+          7694,
+          939
+        ]
+      },
+      {
+        "type": 1,
+        "id": 139,
         "properties": {
           "ABBREV": "Arm.",
           "ADM0_A3": "ARM",
@@ -5000,16 +4995,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ARM"
-        }
-      },
-      {
-        "id": 140,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4672,
-          841
-        ],
+          10220,
+          2023
+        ]
+      },
+      {
+        "type": 1,
+        "id": 140,
         "properties": {
           "ABBREV": "Jam.",
           "ADM0_A3": "JAM",
@@ -5042,16 +5037,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "JAM"
-        }
-      },
-      {
-        "id": 141,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10356,
-          1395
-        ],
+          4672,
+          841
+        ]
+      },
+      {
+        "type": 1,
+        "id": 141,
         "properties": {
           "ABBREV": "Kwt.",
           "ADM0_A3": "KWT",
@@ -5084,16 +5079,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "KWT"
-        }
-      },
-      {
-        "id": 142,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9796,
-          1535
-        ],
+          10356,
+          1395
+        ]
+      },
+      {
+        "type": 1,
+        "id": 142,
         "properties": {
           "ABBREV": "W.B.",
           "ADM0_A3": "WEB",
@@ -5126,16 +5121,16 @@
           "TERR_": "",
           "TYPE": "Country",
           "ne_10m_adm": "WEB"
-        }
-      },
-      {
-        "id": 143,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9342,
-          3165
-        ],
+          9796,
+          1535
+        ]
+      },
+      {
+        "type": 1,
+        "id": 143,
         "properties": {
           "ABBREV": "Lat.",
           "ADM0_A3": "LVA",
@@ -5168,16 +5163,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "LVA"
-        }
-      },
-      {
-        "id": 144,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9476,
-          1410
-        ],
+          9342,
+          3165
+        ]
+      },
+      {
+        "type": 1,
+        "id": 144,
         "properties": {
           "ABBREV": "Les.",
           "ADM0_A3": "LSO",
@@ -5210,16 +5205,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "LSO"
-        }
-      },
-      {
-        "id": 145,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8974,
-          1038
-        ],
+          9476,
+          1410
+        ]
+      },
+      {
+        "type": 1,
+        "id": 145,
         "properties": {
           "ABBREV": "Nam.",
           "ADM0_A3": "NAM",
@@ -5252,16 +5247,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "NAM"
-        }
-      },
-      {
-        "id": 146,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9178,
-          2083
-        ],
+          8974,
+          1038
+        ]
+      },
+      {
+        "type": 1,
+        "id": 146,
         "properties": {
           "ABBREV": "Mkd.",
           "ADM0_A3": "MKD",
@@ -5294,16 +5289,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MKD"
-        }
-      },
-      {
-        "id": 147,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8858,
-          2369
-        ],
+          9178,
+          2083
+        ]
+      },
+      {
+        "type": 1,
+        "id": 147,
         "properties": {
           "ABBREV": "Slo.",
           "ADM0_A3": "SVN",
@@ -5336,16 +5331,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SVN"
-        }
-      },
-      {
-        "id": 148,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9292,
-          1020
-        ],
+          8858,
+          2369
+        ]
+      },
+      {
+        "type": 1,
+        "id": 148,
         "properties": {
           "ABBREV": "Bwa.",
           "ADM0_A3": "BWA",
@@ -5378,16 +5373,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BWA"
-        }
-      },
-      {
-        "id": 149,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9140,
-          2143
-        ],
+          9292,
+          1020
+        ]
+      },
+      {
+        "type": 1,
+        "id": 149,
         "properties": {
           "ABBREV": "Kos.",
           "ADM0_A3": "KOS",
@@ -5420,16 +5415,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "KOS"
-        }
-      },
-      {
-        "id": 150,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7462,
-          617
-        ],
+          9140,
+          2143
+        ]
+      },
+      {
+        "type": 1,
+        "id": 150,
         "properties": {
           "ABBREV": "Gambia",
           "ADM0_A3": "GMB",
@@ -5462,16 +5457,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "GMB"
-        }
-      },
-      {
-        "id": 151,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9754,
-          1503
-        ],
+          7462,
+          617
+        ]
+      },
+      {
+        "type": 1,
+        "id": 151,
         "properties": {
           "ABBREV": "Gaza",
           "ADM0_A3": "GAZ",
@@ -5504,16 +5499,16 @@
           "TERR_": "",
           "TYPE": "Country",
           "ne_10m_adm": "GAZ"
-        }
-      },
-      {
-        "id": 152,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7510,
-          549
-        ],
+          9754,
+          1503
+        ]
+      },
+      {
+        "type": 1,
+        "id": 152,
         "properties": {
           "ABBREV": "GnB.",
           "ADM0_A3": "GNB",
@@ -5546,16 +5541,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "GNB"
-        }
-      },
-      {
-        "id": 153,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8724,
-          30
-        ],
+          7510,
+          549
+        ]
+      },
+      {
+        "type": 1,
+        "id": 153,
         "properties": {
           "ABBREV": "Gabon",
           "ADM0_A3": "GAB",
@@ -5588,16 +5583,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "GAB"
-        }
-      },
-      {
-        "id": 154,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5404,
-          477
-        ],
+          8724,
+          30
+        ]
+      },
+      {
+        "type": 1,
+        "id": 154,
         "properties": {
           "ABBREV": "Tr.T.",
           "ADM0_A3": "TTO",
@@ -5630,16 +5625,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "TTO"
-        }
-      },
-      {
-        "id": 155,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9364,
-          3325
-        ],
+          5404,
+          477
+        ]
+      },
+      {
+        "type": 1,
+        "id": 155,
         "properties": {
           "ABBREV": "Est.",
           "ADM0_A3": "EST",
@@ -5672,16 +5667,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "EST"
-        }
-      },
-      {
-        "id": 156,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10824,
-          940
-        ],
+          9364,
+          3325
+        ]
+      },
+      {
+        "type": 1,
+        "id": 156,
         "properties": {
           "ABBREV": "Mus.",
           "ADM0_A3": "MUS",
@@ -5714,16 +5709,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MUS"
-        }
-      },
-      {
-        "id": 158,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9624,
-          1254
-        ],
+          10824,
+          940
+        ]
+      },
+      {
+        "type": 1,
+        "id": 158,
         "properties": {
           "ABBREV": "Swz.",
           "ADM0_A3": "SWZ",
@@ -5756,16 +5751,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SWZ"
-        }
-      },
-      {
-        "id": 160,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10520,
-          1189
-        ],
+          9624,
+          1254
+        ]
+      },
+      {
+        "type": 1,
+        "id": 160,
         "properties": {
           "ABBREV": "Qatar",
           "ADM0_A3": "QAT",
@@ -5798,16 +5793,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "QAT"
-        }
-      },
-      {
-        "id": 161,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5506,
-          223
-        ],
+          10520,
+          1189
+        ]
+      },
+      {
+        "type": 1,
+        "id": 161,
         "properties": {
           "ABBREV": "Guy.",
           "ADM0_A3": "GUY",
@@ -5840,16 +5835,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "GUY"
-        }
-      },
-      {
-        "id": 162,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10178,
-          544
-        ],
+          5506,
+          223
+        ]
+      },
+      {
+        "type": 1,
+        "id": 162,
         "properties": {
           "ABBREV": "Com.",
           "ADM0_A3": "COM",
@@ -5882,16 +5877,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "COM"
-        }
-      },
-      {
-        "id": 163,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10492,
-          1227
-        ],
+          10178,
+          544
+        ]
+      },
+      {
+        "type": 1,
+        "id": 163,
         "properties": {
           "ABBREV": "Bahr.",
           "ADM0_A3": "BHR",
@@ -5924,16 +5919,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BHR"
-        }
-      },
-      {
-        "id": 165,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9066,
-          2157
-        ],
+          10492,
+          1227
+        ]
+      },
+      {
+        "type": 1,
+        "id": 165,
         "properties": {
           "ABBREV": "Mont.",
           "ADM0_A3": "MNE",
@@ -5966,16 +5961,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MNE"
-        }
-      },
-      {
-        "id": 166,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8662,
-          75
-        ],
+          9066,
+          2157
+        ]
+      },
+      {
+        "type": 1,
+        "id": 166,
         "properties": {
           "ABBREV": "Eq. G.",
           "ADM0_A3": "GNQ",
@@ -6008,16 +6003,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "GNQ"
-        }
-      },
-      {
-        "id": 169,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9692,
-          1695
-        ],
+          8662,
+          75
+        ]
+      },
+      {
+        "type": 1,
+        "id": 169,
         "properties": {
           "ABBREV": "Cyp.",
           "ADM0_A3": "CYP",
@@ -6050,16 +6045,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CYP"
-        }
-      },
-      {
-        "id": 170,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10128,
-          537
-        ],
+          9692,
+          1695
+        ]
+      },
+      {
+        "type": 1,
+        "id": 170,
         "properties": {
           "ABBREV": "Dji.",
           "ADM0_A3": "DJI",
@@ -6092,16 +6087,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "DJI"
-        }
-      },
-      {
-        "id": 171,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8468,
-          2617
-        ],
+          10128,
+          537
+        ]
+      },
+      {
+        "type": 1,
+        "id": 171,
         "properties": {
           "ABBREV": "Lux.",
           "ADM0_A3": "LUX",
@@ -6134,16 +6129,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "LUX"
-        }
-      },
-      {
-        "id": 172,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5646,
-          181
-        ],
+          8468,
+          2617
+        ]
+      },
+      {
+        "type": 1,
+        "id": 172,
         "properties": {
           "ABBREV": "Sur.",
           "ADM0_A3": "SUR",
@@ -6176,16 +6171,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SUR"
-        }
-      },
-      {
-        "id": 173,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7100,
-          733
-        ],
+          5646,
+          181
+        ]
+      },
+      {
+        "type": 1,
+        "id": 173,
         "properties": {
           "ABBREV": "C.Vd.",
           "ADM0_A3": "CPV",
@@ -6218,16 +6213,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CPV"
-        }
-      },
-      {
-        "id": 174,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8846,
-          1751
-        ],
+          7100,
+          733
+        ]
+      },
+      {
+        "type": 1,
+        "id": 174,
         "properties": {
           "ABBREV": "Malta",
           "ADM0_A3": "MLT",
@@ -6260,16 +6255,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MLT"
-        }
-      },
-      {
-        "id": 175,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11528,
-          165
-        ],
+          8846,
+          1751
+        ]
+      },
+      {
+        "type": 1,
+        "id": 175,
         "properties": {
           "ABBREV": "Mald.",
           "ADM0_A3": "MDV",
@@ -6302,16 +6297,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MDV"
-        }
-      },
-      {
-        "id": 177,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4706,
-          1137
-        ],
+          11528,
+          165
+        ]
+      },
+      {
+        "type": 1,
+        "id": 177,
         "properties": {
           "ABBREV": "Bhs.",
           "ADM0_A3": "BHS",
@@ -6344,16 +6339,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BHS"
-        }
-      },
-      {
-        "id": 178,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4154,
-          793
-        ],
+          4706,
+          1137
+        ]
+      },
+      {
+        "type": 1,
+        "id": 178,
         "properties": {
           "ABBREV": "Belize",
           "ADM0_A3": "BLZ",
@@ -6386,16 +6381,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BLZ"
-        }
-      },
-      {
-        "id": 179,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7356,
-          3929
-        ],
+          4154,
+          793
+        ]
+      },
+      {
+        "type": 1,
+        "id": 179,
         "properties": {
           "ABBREV": "Iceland",
           "ADM0_A3": "ISL",
@@ -6428,16 +6423,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ISL"
-        }
-      },
-      {
-        "id": 180,
-        "type": 1,
+        },
         "geometry": [
           9,
-          1588,
-          704
-        ],
+          7356,
+          3929
+        ]
+      },
+      {
+        "type": 1,
+        "id": 180,
         "properties": {
           "ABBREV": "Fr. Poly.",
           "ADM0_A3": "PYF",
@@ -6470,16 +6465,16 @@
           "TERR_": "Fr.",
           "TYPE": "Dependency",
           "ne_10m_adm": "PYF"
-        }
-      },
-      {
-        "id": 181,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5480,
-          603
-        ],
+          1588,
+          704
+        ]
+      },
+      {
+        "type": 1,
+        "id": 181,
         "properties": {
           "ABBREV": "Barb.",
           "ADM0_A3": "BRB",
@@ -6512,16 +6507,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "BRB"
-        }
-      },
-      {
-        "id": 182,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9720,
-          1715
-        ],
+          5480,
+          603
+        ]
+      },
+      {
+        "type": 1,
+        "id": 182,
         "properties": {
           "ABBREV": "N. Cy.",
           "ADM0_A3": "CYN",
@@ -6554,16 +6549,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "CYN"
-        }
-      },
-      {
-        "id": 184,
-        "type": 1,
+        },
         "geometry": [
           9,
-          356,
-          632
-        ],
+          9720,
+          1715
+        ]
+      },
+      {
+        "type": 1,
+        "id": 184,
         "properties": {
           "ABBREV": "Samoa",
           "ADM0_A3": "WSM",
@@ -6596,16 +6591,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "WSM"
-        }
-      },
-      {
-        "id": 186,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8498,
-          19
-        ],
+          356,
+          632
+        ]
+      },
+      {
+        "type": 1,
+        "id": 186,
         "properties": {
           "ABBREV": "S.T.P.",
           "ADM0_A3": "STP",
@@ -6638,16 +6633,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "STP"
-        }
-      },
-      {
-        "id": 188,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5416,
-          637
-        ],
+          8498,
+          19
+        ]
+      },
+      {
+        "type": 1,
+        "id": 188,
         "properties": {
           "ABBREV": "S.L.",
           "ADM0_A3": "LCA",
@@ -6680,16 +6675,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "LCA"
-        }
-      },
-      {
-        "id": 189,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5052,
-          557
-        ],
+          5416,
+          637
+        ]
+      },
+      {
+        "type": 1,
+        "id": 189,
         "properties": {
           "ABBREV": "Cur.",
           "ADM0_A3": "CUW",
@@ -6722,16 +6717,16 @@
           "TERR_": "Neth.",
           "TYPE": "Country",
           "ne_10m_adm": "CUW"
-        }
-      },
-      {
-        "id": 190,
-        "type": 1,
+        },
         "geometry": [
           9,
-          234,
-          928
-        ],
+          5052,
+          557
+        ]
+      },
+      {
+        "type": 1,
+        "id": 190,
         "properties": {
           "ABBREV": "Tongo",
           "ADM0_A3": "TON",
@@ -6764,16 +6759,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "TON"
-        }
-      },
-      {
-        "id": 191,
-        "type": 1,
+        },
         "geometry": [
           9,
-          658,
-          48
-        ],
+          234,
+          928
+        ]
+      },
+      {
+        "type": 1,
+        "id": 191,
         "properties": {
           "ABBREV": "Kir.",
           "ADM0_A3": "KIR",
@@ -6806,16 +6801,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "KIR"
-        }
-      },
-      {
-        "id": 192,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5242,
-          829
-        ],
+          658,
+          48
+        ]
+      },
+      {
+        "type": 1,
+        "id": 192,
         "properties": {
           "ABBREV": "V.I. (U.S.)",
           "ADM0_A3": "VIR",
@@ -6848,16 +6843,16 @@
           "TERR_": "U.S.A.",
           "TYPE": "Dependency",
           "ne_10m_adm": "VIR"
-        }
-      },
-      {
-        "id": 194,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5406,
-          605
-        ],
+          5242,
+          829
+        ]
+      },
+      {
+        "type": 1,
+        "id": 194,
         "properties": {
           "ABBREV": "St.V.G.",
           "ADM0_A3": "VCT",
@@ -6890,16 +6885,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "VCT"
-        }
-      },
-      {
-        "id": 195,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5006,
-          573
-        ],
+          5406,
+          605
+        ]
+      },
+      {
+        "type": 1,
+        "id": 195,
         "properties": {
           "ABBREV": "Aruba",
           "ADM0_A3": "ABW",
@@ -6932,16 +6927,16 @@
           "TERR_": "Neth.",
           "TYPE": "Country",
           "ne_10m_adm": "ABW"
-        }
-      },
-      {
-        "id": 196,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8094,
-          2579
-        ],
+          5006,
+          573
+        ]
+      },
+      {
+        "type": 1,
+        "id": 196,
         "properties": {
           "ABBREV": "Jey.",
           "ADM0_A3": "JEY",
@@ -6974,16 +6969,16 @@
           "TERR_": "Crown dependency of U.K.",
           "TYPE": "Country",
           "ne_10m_adm": "JEY"
-        }
-      },
-      {
-        "id": 197,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5384,
-          555
-        ],
+          8094,
+          2579
+        ]
+      },
+      {
+        "type": 1,
+        "id": 197,
         "properties": {
           "ABBREV": "Gren.",
           "ADM0_A3": "GRD",
@@ -7016,16 +7011,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "GRD"
-        }
-      },
-      {
-        "id": 199,
-        "type": 1,
+        },
         "geometry": [
           9,
-          10552,
-          300
-        ],
+          5384,
+          555
+        ]
+      },
+      {
+        "type": 1,
+        "id": 199,
         "properties": {
           "ABBREV": "Syc.",
           "ADM0_A3": "SYC",
@@ -7058,16 +7053,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SYC"
-        }
-      },
-      {
-        "id": 200,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5378,
-          797
-        ],
+          10552,
+          300
+        ]
+      },
+      {
+        "type": 1,
+        "id": 200,
         "properties": {
           "ABBREV": "Ant.B.",
           "ADM0_A3": "ATG",
@@ -7100,16 +7095,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "ATG"
-        }
-      },
-      {
-        "id": 201,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8262,
-          2141
-        ],
+          5378,
+          797
+        ]
+      },
+      {
+        "type": 1,
+        "id": 201,
         "properties": {
           "ABBREV": "And.",
           "ADM0_A3": "AND",
@@ -7142,16 +7137,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "AND"
-        }
-      },
-      {
-        "id": 202,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7984,
-          2947
-        ],
+          8262,
+          2141
+        ]
+      },
+      {
+        "type": 1,
+        "id": 202,
         "properties": {
           "ABBREV": "IoMan",
           "ADM0_A3": "IMN",
@@ -7184,16 +7179,16 @@
           "TERR_": "Crown dependency of U.K.",
           "TYPE": "Country",
           "ne_10m_adm": "IMN"
-        }
-      },
-      {
-        "id": 203,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5398,
-          709
-        ],
+          7984,
+          2947
+        ]
+      },
+      {
+        "type": 1,
+        "id": 203,
         "properties": {
           "ABBREV": "D'inca",
           "ADM0_A3": "DMA",
@@ -7226,16 +7221,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "DMA"
-        }
-      },
-      {
-        "id": 204,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11076,
-          2359
-        ],
+          5398,
+          709
+        ]
+      },
+      {
+        "type": 1,
+        "id": 204,
         "properties": {
           "ABBREV": "Bayk.",
           "ADM0_A3": "KAB",
@@ -7268,16 +7263,16 @@
           "TERR_": "Leased by Rus. from Kaz.",
           "TYPE": "Lease",
           "ne_10m_adm": "KAB"
-        }
-      },
-      {
-        "id": 205,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5244,
-          1553
-        ],
+          11076,
+          2359
+        ]
+      },
+      {
+        "type": 1,
+        "id": 205,
         "properties": {
           "ABBREV": "Berm.",
           "ADM0_A3": "BMU",
@@ -7310,16 +7305,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "BMU"
-        }
-      },
-      {
-        "id": 206,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8076,
-          2597
-        ],
+          5244,
+          1553
+        ]
+      },
+      {
+        "type": 1,
+        "id": 206,
         "properties": {
           "ABBREV": "Guern.",
           "ADM0_A3": "GGY",
@@ -7352,16 +7347,16 @@
           "TERR_": "Crown dependency of U.K.",
           "TYPE": "Country",
           "ne_10m_adm": "GGY"
-        }
-      },
-      {
-        "id": 207,
-        "type": 1,
+        },
         "geometry": [
           9,
-          436,
-          654
-        ],
+          8076,
+          2597
+        ]
+      },
+      {
+        "type": 1,
+        "id": 207,
         "properties": {
           "ABBREV": "Am. Samoa",
           "ADM0_A3": "ASM",
@@ -7394,16 +7389,16 @@
           "TERR_": "U.S.A.",
           "TYPE": "Dependency",
           "ne_10m_adm": "ASM"
-        }
-      },
-      {
-        "id": 210,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4510,
-          899
-        ],
+          436,
+          654
+        ]
+      },
+      {
+        "type": 1,
+        "id": 210,
         "properties": {
           "ABBREV": "Cym. Is.",
           "ADM0_A3": "CYM",
@@ -7436,16 +7431,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "CYM"
-        }
-      },
-      {
-        "id": 211,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7878,
-          3627
-        ],
+          4510,
+          899
+        ]
+      },
+      {
+        "type": 1,
+        "id": 211,
         "properties": {
           "ABBREV": "Faroe Is.",
           "ADM0_A3": "FRO",
@@ -7478,16 +7473,16 @@
           "TERR_": "Den.",
           "TYPE": "Dependency",
           "ne_10m_adm": "FRO"
-        }
-      },
-      {
-        "id": 212,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5338,
-          797
-        ],
+          7878,
+          3627
+        ]
+      },
+      {
+        "type": 1,
+        "id": 212,
         "properties": {
           "ABBREV": "St.K.N.",
           "ADM0_A3": "KNA",
@@ -7520,16 +7515,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "KNA"
-        }
-      },
-      {
-        "id": 213,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5320,
-          833
-        ],
+          5338,
+          797
+        ]
+      },
+      {
+        "type": 1,
+        "id": 213,
         "properties": {
           "ABBREV": "St. M.",
           "ADM0_A3": "SXM",
@@ -7562,16 +7557,16 @@
           "TERR_": "Neth.",
           "TYPE": "Country",
           "ne_10m_adm": "SXM"
-        }
-      },
-      {
-        "id": 214,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8626,
-          2437
-        ],
+          5320,
+          833
+        ]
+      },
+      {
+        "type": 1,
+        "id": 214,
         "properties": {
           "ABBREV": "Liech.",
           "ADM0_A3": "LIE",
@@ -7604,16 +7599,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "LIE"
-        }
-      },
-      {
-        "id": 215,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8528,
-          2217
-        ],
+          8626,
+          2437
+        ]
+      },
+      {
+        "type": 1,
+        "id": 215,
         "properties": {
           "ABBREV": "Mco.",
           "ADM0_A3": "MCO",
@@ -7646,16 +7641,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "MCO"
-        }
-      },
-      {
-        "id": 216,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8758,
-          2229
-        ],
+          8528,
+          2217
+        ]
+      },
+      {
+        "type": 1,
+        "id": 216,
         "properties": {
           "ABBREV": "S.M.",
           "ADM0_A3": "SMR",
@@ -7688,16 +7683,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "SMR"
-        }
-      },
-      {
-        "id": 217,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5322,
-          835
-        ],
+          8758,
+          2229
+        ]
+      },
+      {
+        "type": 1,
+        "id": 217,
         "properties": {
           "ABBREV": "St. M.",
           "ADM0_A3": "MAF",
@@ -7730,16 +7725,16 @@
           "TERR_": "Fr.",
           "TYPE": "Dependency",
           "ne_10m_adm": "MAF"
-        }
-      },
-      {
-        "id": 218,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7946,
-          1763
-        ],
+          5322,
+          835
+        ]
+      },
+      {
+        "type": 1,
+        "id": 218,
         "properties": {
           "ABBREV": "Gib.",
           "ADM0_A3": "GIB",
@@ -7772,16 +7767,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "GIB"
-        }
-      },
-      {
-        "id": 219,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9102,
-          3451
-        ],
+          7946,
+          1763
+        ]
+      },
+      {
+        "type": 1,
+        "id": 219,
         "properties": {
           "ABBREV": "Aland",
           "ADM0_A3": "ALD",
@@ -7814,16 +7809,16 @@
           "TERR_": "Fin.",
           "TYPE": "Country",
           "ne_10m_adm": "ALD"
-        }
-      },
-      {
-        "id": 220,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5256,
-          855
-        ],
+          9102,
+          3451
+        ]
+      },
+      {
+        "type": 1,
+        "id": 220,
         "properties": {
           "ABBREV": "V.I. (Br.)",
           "ADM0_A3": "VGB",
@@ -7856,16 +7851,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "VGB"
-        }
-      },
-      {
-        "id": 221,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4920,
-          1015
-        ],
+          5256,
+          855
+        ]
+      },
+      {
+        "type": 1,
+        "id": 221,
         "properties": {
           "ABBREV": "T.C. Is.",
           "ADM0_A3": "TCA",
@@ -7898,16 +7893,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "TCA"
-        }
-      },
-      {
-        "id": 223,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9728,
-          1701
-        ],
+          4920,
+          1015
+        ]
+      },
+      {
+        "type": 1,
+        "id": 223,
         "properties": {
           "ABBREV": "Dhek.",
           "ADM0_A3": "ESB",
@@ -7940,16 +7935,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "ESB"
-        }
-      },
-      {
-        "id": 224,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9692,
-          1679
-        ],
+          9728,
+          1701
+        ]
+      },
+      {
+        "type": 1,
+        "id": 224,
         "properties": {
           "ABBREV": "Akr.",
           "ADM0_A3": "WSB",
@@ -7982,16 +7977,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "WSB"
-        }
-      },
-      {
-        "id": 225,
-        "type": 1,
+        },
         "geometry": [
           9,
-          126,
-          636
-        ],
+          9692,
+          1679
+        ]
+      },
+      {
+        "type": 1,
+        "id": 225,
         "properties": {
           "ABBREV": "Wlf.",
           "ADM0_A3": "WLF",
@@ -8024,16 +8019,16 @@
           "TERR_": "Fr.",
           "TYPE": "Dependency",
           "ne_10m_adm": "WLF"
-        }
-      },
-      {
-        "id": 226,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5322,
-          841
-        ],
+          126,
+          636
+        ]
+      },
+      {
+        "type": 1,
+        "id": 226,
         "properties": {
           "ABBREV": "Ang.",
           "ADM0_A3": "AIA",
@@ -8066,16 +8061,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "AIA"
-        }
-      },
-      {
-        "id": 229,
-        "type": 1,
+        },
         "geometry": [
           9,
-          964,
-          924
-        ],
+          5322,
+          841
+        ]
+      },
+      {
+        "type": 1,
+        "id": 229,
         "properties": {
           "ABBREV": "Cook Is.",
           "ADM0_A3": "COK",
@@ -8108,16 +8103,16 @@
           "TERR_": "Assoc. with N.Z.",
           "TYPE": "Dependency",
           "ne_10m_adm": "COK"
-        }
-      },
-      {
-        "id": 230,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7726,
-          1284
-        ],
+          964,
+          924
+        ]
+      },
+      {
+        "type": 1,
+        "id": 230,
         "properties": {
           "ABBREV": "St.H.",
           "ADM0_A3": "SHN",
@@ -8150,16 +8145,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "SHN"
-        }
-      },
-      {
-        "id": 231,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5332,
-          827
-        ],
+          7726,
+          1284
+        ]
+      },
+      {
+        "type": 1,
+        "id": 231,
         "properties": {
           "ABBREV": "St. B.",
           "ADM0_A3": "BLM",
@@ -8192,16 +8187,16 @@
           "TERR_": "Fr.",
           "TYPE": "Dependency",
           "ne_10m_adm": "BLM"
-        }
-      },
-      {
-        "id": 232,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5628,
-          2423
-        ],
+          5332,
+          827
+        ]
+      },
+      {
+        "type": 1,
+        "id": 232,
         "properties": {
           "ABBREV": "St. P.M.",
           "ADM0_A3": "SPM",
@@ -8234,16 +8229,16 @@
           "TERR_": "Fr.",
           "TYPE": "Dependency",
           "ne_10m_adm": "SPM"
-        }
-      },
-      {
-        "id": 233,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11704,
-          1723
-        ],
+          5628,
+          2423
+        ]
+      },
+      {
+        "type": 1,
+        "id": 233,
         "properties": {
           "ABBREV": "",
           "ADM0_A3": "KAS",
@@ -8276,16 +8271,16 @@
           "TERR_": "",
           "TYPE": "Indeterminate",
           "ne_10m_adm": "KAS"
-        }
-      },
-      {
-        "id": 234,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5360,
-          771
-        ],
+          11704,
+          1723
+        ]
+      },
+      {
+        "type": 1,
+        "id": 234,
         "properties": {
           "ABBREV": "Monts.",
           "ADM0_A3": "MSR",
@@ -8318,16 +8313,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "MSR"
-        }
-      },
-      {
-        "id": 235,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9070,
-          6456
-        ],
+          5360,
+          771
+        ]
+      },
+      {
+        "type": 1,
+        "id": 235,
         "properties": {
           "ABBREV": "Ant.",
           "ADM0_A3": "ATA",
@@ -8360,16 +8355,16 @@
           "TERR_": "Multiple claims held in abeyance",
           "TYPE": "Indeterminate",
           "ne_10m_adm": "ATA"
-        }
-      },
-      {
-        "id": 237,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11482,
-          326
-        ],
+          9070,
+          6456
+        ]
+      },
+      {
+        "type": 1,
+        "id": 237,
         "properties": {
           "ABBREV": "I.O.T.",
           "ADM0_A3": "IOT",
@@ -8402,16 +8397,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "IOT"
-        }
-      },
-      {
-        "id": 238,
-        "type": 1,
+        },
         "geometry": [
           9,
-          5488,
-          2760
-        ],
+          11482,
+          326
+        ]
+      },
+      {
+        "type": 1,
+        "id": 238,
         "properties": {
           "ABBREV": "Flk. Is.",
           "ADM0_A3": "FLK",
@@ -8444,16 +8439,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "FLK"
-        }
-      },
-      {
-        "id": 240,
-        "type": 1,
+        },
         "geometry": [
           9,
-          460,
-          882
-        ],
+          5488,
+          2760
+        ]
+      },
+      {
+        "type": 1,
+        "id": 240,
         "properties": {
           "ABBREV": "Niue",
           "ADM0_A3": "NIU",
@@ -8486,16 +8481,16 @@
           "TERR_": "Assoc. with N.Z.",
           "TYPE": "Dependency",
           "ne_10m_adm": "NIU"
-        }
-      },
-      {
-        "id": 241,
-        "type": 1,
+        },
         "geometry": [
           9,
-          8758,
-          2103
-        ],
+          460,
+          882
+        ]
+      },
+      {
+        "type": 1,
+        "id": 241,
         "properties": {
           "ABBREV": "Vat.",
           "ADM0_A3": "VAT",
@@ -8528,16 +8523,16 @@
           "TERR_": "",
           "TYPE": "Sovereign country",
           "ne_10m_adm": "VAT"
-        }
-      },
-      {
-        "id": 242,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11332,
-          2572
-        ],
+          8758,
+          2103
+        ]
+      },
+      {
+        "type": 1,
+        "id": 242,
         "properties": {
           "ABBREV": "Fr. S.A.L.",
           "ADM0_A3": "ATF",
@@ -8570,16 +8565,16 @@
           "TERR_": "Fr.",
           "TYPE": "Dependency",
           "ne_10m_adm": "ATF"
-        }
-      },
-      {
-        "id": 243,
-        "type": 1,
+        },
         "geometry": [
           9,
-          2344,
-          1146
-        ],
+          11332,
+          2572
+        ]
+      },
+      {
+        "type": 1,
+        "id": 243,
         "properties": {
           "ABBREV": "Pit. Is.",
           "ADM0_A3": "PCN",
@@ -8612,16 +8607,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "PCN"
-        }
-      },
-      {
-        "id": 244,
-        "type": 1,
+        },
         "geometry": [
           9,
-          6560,
-          2988
-        ],
+          2344,
+          1146
+        ]
+      },
+      {
+        "type": 1,
+        "id": 244,
         "properties": {
           "ABBREV": "S.G. S.S. Is.",
           "ADM0_A3": "SGS",
@@ -8654,16 +8649,16 @@
           "TERR_": "U.K.",
           "TYPE": "Dependency",
           "ne_10m_adm": "SGS"
-        }
-      },
-      {
-        "id": 247,
-        "type": 1,
+        },
         "geometry": [
           9,
-          3220,
-          469
-        ],
+          6560,
+          2988
+        ]
+      },
+      {
+        "type": 1,
+        "id": 247,
         "properties": {
           "ABBREV": "Clp. I.",
           "ADM0_A3": "CLP",
@@ -8696,16 +8691,16 @@
           "TERR_": "",
           "TYPE": "Dependency",
           "ne_10m_adm": "CLP"
-        }
-      },
-      {
-        "id": 248,
-        "type": 1,
+        },
         "geometry": [
           9,
-          9706,
-          1709
-        ],
+          3220,
+          469
+        ]
+      },
+      {
+        "type": 1,
+        "id": 248,
         "properties": {
           "ABBREV": "",
           "ADM0_A3": "CNM",
@@ -8738,16 +8733,16 @@
           "TERR_": "",
           "TYPE": "Indeterminate",
           "ne_10m_adm": "CNM"
-        }
-      },
-      {
-        "id": 249,
-        "type": 1,
+        },
         "geometry": [
           9,
-          11536,
-          2860
-        ],
+          9706,
+          1709
+        ]
+      },
+      {
+        "type": 1,
+        "id": 249,
         "properties": {
           "ABBREV": "H.M.Is.",
           "ADM0_A3": "HMD",
@@ -8780,16 +8775,16 @@
           "TERR_": "Auz.",
           "TYPE": "Dependency",
           "ne_10m_adm": "HMD"
-        }
-      },
-      {
-        "id": 251,
-        "type": 1,
+        },
         "geometry": [
           9,
-          3798,
-          669
-        ],
+          11536,
+          2860
+        ]
+      },
+      {
+        "type": 1,
+        "id": 251,
         "properties": {
           "ABBREV": "U.S. MOI",
           "ADM0_A3": "UMI",
@@ -8822,16 +8817,16 @@
           "TERR_": "U.S.A.",
           "TYPE": "Dependency",
           "ne_10m_adm": "UMI"
-        }
-      },
-      {
-        "id": 252,
-        "type": 1,
+        },
         "geometry": [
           9,
-          7604,
-          1117
-        ],
+          3798,
+          669
+        ]
+      },
+      {
+        "type": 1,
+        "id": 252,
         "properties": {
           "ABBREV": "W. Sah.",
           "ADM0_A3": "SAH",
@@ -8864,16 +8859,16 @@
           "TERR_": "Disputed",
           "TYPE": "Disputed",
           "ne_10m_adm": "SAH"
-        }
-      },
-      {
-        "id": 253,
-        "type": 1,
+        },
         "geometry": [
           9,
-          4770,
-          923
-        ],
+          7604,
+          1117
+        ]
+      },
+      {
+        "type": 1,
+        "id": 253,
         "properties": {
           "ABBREV": "G. Bay",
           "ADM0_A3": "USG",
@@ -8906,7 +8901,12 @@
           "TERR_": "Leased by U.S.A. from Cuba",
           "TYPE": "Lease",
           "ne_10m_adm": "USG"
-        }
+        },
+        "geometry": [
+          9,
+          4770,
+          923
+        ]
       }
     ]
   }

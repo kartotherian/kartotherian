@@ -84,9 +84,27 @@ var infos = {
                 }
             }
         ]
+    },
+    invalid: {
+        minzoom:0,
+        maxzoom:2,
+        vector_layers: [
+            {
+                "id": "coastline",
+                "description": "",
+                "minzoom": 0,
+                "maxzoom": 22,
+                "fields": {
+                    "FeatureCla": "String",
+                    "Note": "String",
+                    "ScaleRank": "Number"
+                }
+            }
+        ]
     }
 };
-var tiles = {
+
+Testsource.tiles = {
     a: fs.readdirSync(path.resolve(path.join(__dirname, 'fixtures','a'))).reduce(function(memo, basename) {
         var key = basename.split('.').slice(0,3).join('.');
         memo[key] = fs.readFileSync(path.resolve(path.join(__dirname, 'fixtures', 'a', basename)));
@@ -112,17 +130,13 @@ var tiles = {
         memo[key] = fs.readFileSync(path.resolve(path.join(__dirname, 'fixtures', 'a', basename)));
         return memo;
     }, {}),
+    invalid: {}
 };
 
 // Additional error tile fixtures.
-zlib.deflate(new Buffer('asdf'), function(err, deflated) {
-    if (err) throw err;
-    tiles.a['1.0.2'] = new Buffer('asdf'); // invalid deflate
-    tiles.a['1.0.3'] = deflated;           // invalid protobuf
-});
 zlib.deflate(new Buffer(0), function(err, deflated) {
     if (err) throw err;
-    tiles.a['0.0.1'] = deflated;
+    Testsource.tiles.invalid['0.0.0'] = deflated;
 });
 
 Testsource.now = new Date;
@@ -158,10 +172,10 @@ Testsource.prototype.getTile = function(z,x,y,callback) {
     // Additional headers.
     if (this.uri === 'expires') headers['expires'] = new Date('2020-01-01').toUTCString();
 
-    if (!tiles[this.uri][key]) {
+    if (!Testsource.tiles[this.uri][key]) {
         return callback(new Error('Tile does not exist'));
     } else {
-        return callback(null, tiles[this.uri][key], headers);
+        return callback(null, Testsource.tiles[this.uri][key], headers);
     }
 };
 

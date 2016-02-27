@@ -6,6 +6,7 @@ var path = require('path');
 var fs = require('fs');
 var imageEqualsFile = require('./image.js');
 var Testsource = require('./testsource');
+var zlib = require('zlib');
 var UPDATE = process.env.UPDATE;
 
 // Tilelive test source.
@@ -17,7 +18,8 @@ var xml = {
     c: fs.readFileSync(path.resolve(__dirname + '/fixtures/c.xml'), 'utf8'),
     i: fs.readFileSync(path.resolve(__dirname + '/fixtures/i.xml'), 'utf8'),
     space: fs.readFileSync(path.resolve(__dirname + '/fixtures/s p a c e/i.xml'), 'utf8'),
-    expires: fs.readFileSync(path.resolve(__dirname + '/fixtures/expires.xml'), 'utf8')
+    expires: fs.readFileSync(path.resolve(__dirname + '/fixtures/expires.xml'), 'utf8'),
+    invalid: fs.readFileSync(path.resolve(__dirname + '/fixtures/invalid.xml'), 'utf8')
 };
 
 test('should fail without backend', function(t) {
@@ -113,14 +115,13 @@ var sources = {
     g: new Vector({ backend: new Testsource('a'), xml: xml.a.replace('"scale">1', '"scale">2') }),
     h: new Vector({ backend: new Testsource('b'), xml: xml.b, scale: 2 }),
     i: new Vector({ backend: new Testsource('i'), xml: xml.i }),
-    'i@2x': new Vector({ backend: new Testsource('i'), xml: xml.i })
+    'i@2x': new Vector({ backend: new Testsource('i'), xml: xml.i }),
+    invalid: new Vector({ backend: new Testsource('invalid'), xml: xml.invalid })
 };
 var tests = {
     // 2.0.0, 2.0.1 test overzooming.
-    // 1.1.2, 1.1.3 test that solid bg tiles are generated even when no
-    // backend tile exists.
-    a: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
-    'a@vt': ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '2.0.0', '2.0.1'],
+    a: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.0.0', '2.0.1'],
+    'a@vt': ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.0.0', '2.0.1'],
     // 2.1.1 should use z2 vector tile -- a coastline shapefile
     // 2.1.2 should use maskLevel -- place dots, like the others
     b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],
@@ -139,7 +140,10 @@ var tests = {
     // Image sources.
     i: ['0.0.0', '1.0.0'],
     // Image sources.
-    'i@2x': ['0.0.0', '1.0.0']
+    'i@2x': ['0.0.0', '1.0.0'],
+    // Invalid tiles that are empty
+    invalid: ['1.1.0', '1.1.1'],
+
 };
 var formats = {
     json: { ctype: 'application/json' },
@@ -161,7 +165,7 @@ Object.keys(tests).forEach(function(source) {
                 t.ifError(err);
                 // No backend tiles last modified defaults to Date 0.
                 // Otherwise, Last-Modified from backend should be passed.
-                if (['1.1.2','1.1.3'].indexOf(key) >= 0) {
+                if (source === 'invalid') {
                     t.equal(headers['Last-Modified'], new Date(0).toUTCString());
                     t.equal(headers['x-vector-backend-object'], 'empty');
                 } else {
@@ -190,7 +194,7 @@ Object.keys(tests).forEach(function(source) {
                 t.ifError(err);
                 // No backend tiles last modified defaults to Date 0.
                 // Otherwise, Last-Modified from backend should be passed.
-                if (['1.1.2','1.1.3'].indexOf(key) >= 0) {
+                if (source === 'invalid') {
                     t.equal(headers['Last-Modified'], new Date(0).toUTCString());
                 } else {
                     t.equal(headers['Last-Modified'], Testsource.now.toUTCString());
@@ -273,25 +277,66 @@ test('query', function(t) {
         t.end();
     });
 });
-test('errors out on bad deflate', function(t) {
+test('errors out on invalid tile request - out of range y', function(t) {
     sources.a.getTile(1, 0, 2, function(err) {
+        t.throws(function() { if (err) throw err; });
+        t.equal('Tile does not exist', err.message);
+        t.end();
+    });
+});
+test('errors out on invalid tile request - out of range x', function(t) {
+    sources.a.getTile(1, 2, 0, function(err) {
+        t.throws(function() { if (err) throw err; });
+        t.equal('Tile does not exist', err.message);
+        t.end();
+    });
+});
+test('errors out on invalid tile request - negative x', function(t) {
+    sources.a.getTile(1, -1, 0, function(err) {
+        t.throws(function() { if (err) throw err; });
+        t.equal('Tile does not exist', err.message);
+        t.end();
+    });
+});
+test('errors out on invalid tile request - negative y', function(t) {
+    sources.a.getTile(1, 0, -1, function(err) {
+        t.throws(function() { if (err) throw err; });
+        t.equal('Tile does not exist', err.message);
+        t.end();
+    });
+});
+test('errors out on invalid tile request - negative z', function(t) {
+    sources.a.getTile(-1, 0, 0, function(err) {
+        t.throws(function() { if (err) throw err; });
+        t.equal('Tile does not exist', err.message);
+        t.end();
+    });
+});
+test('errors out on bad deflate', function(t) {
+    Testsource.tiles.invalid['1.0.0'] = new Buffer('asdf'); // invalid deflate
+    sources.invalid.getTile(1, 0, 0, function(err) {
         t.equal('image_reader: can\'t determine type from input data', err.message);
         t.end();
     });
 });
 test('errors out on bad protobuf', function(t) {
-    sources.a.getTile(1, 0, 3, function(err) {
-        t.equal('end of buffer exception', err.message);
-        t.end();
+    zlib.deflate(new Buffer('asdf'), function(err, deflated) {
+        if (err) throw err;
+        Testsource.tiles.invalid['1.0.1'] = deflated;           // invalid protobuf
+        sources.invalid.getTile(1, 0, 1, function(err) {
+            t.equal('Vector Tile Buffer contains invalid tag', err.message);
+            t.end();
+        });
     });
 });
 test('same backend/xml => same ETags', function(t) {
     tests.a.slice(0,4).forEach(function(key) {
         t.equal(etags.a[key], etags.d[key]);
     });
-    t.end();    });
+    t.end();
+});
 test('diff blank tiles => diff ETags', function(t) {
-    t.notEqual(etags.a['1.1.2'], etags.a['1.1.3']);
+    t.notEqual(etags.invalid['1.1.0'], etags.invalid['1.1.1']);
     t.end();
 });
 test('diff backend => diff ETags', function(t) {

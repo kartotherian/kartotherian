@@ -40,24 +40,24 @@ test('returns expected layer information', function(t) {
             t.ok(coastline);
 
             // Tile contains 4177 features
-            t.equal(coastline.coordCount.length, 4177);
-            t.equal(coastline.features, 4177);
+            t.equal(coastline.coordCount.length, 1437);
+            t.equal(coastline.features, 1437);
 
             // Longest/shortest features
-            t.equal(ss.max(coastline.coordCount), 381);
+            t.equal(ss.max(coastline.coordCount), 380);
             t.equal(ss.min(coastline.coordCount), 2);
 
             // Most/least duplication
-            t.equal(ss.max(coastline.duplicateCoordCount), 9);
+            t.equal(ss.max(coastline.duplicateCoordCount), 0);
             t.equal(ss.min(coastline.duplicateCoordCount), 0);
 
             // Max/Min distance between consecutive coords
             var diff = Math.abs(ss.max(coastline.coordDistance) - 570446.5598775251);
             t.ok(diff < 0.1);
-            t.equal(ss.min(coastline.coordDistance), 0);
+            t.equal(ss.min(coastline.coordDistance), 1181.6043940629547);
 
             // Expected jsonsize
-            t.equal(coastline.jsonsize, 520120);
+            t.equal(coastline.jsonsize, 199663);
 
             t.end();
         });

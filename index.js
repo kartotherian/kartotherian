@@ -124,6 +124,9 @@ Vector.prototype.update = function(opts, callback) {
 
 Vector.prototype.getTile = function(z, x, y, callback) {
     if (!this._map) return callback(new Error('Tilesource not loaded'));
+    if (z < 0 || x < 0 || y < 0 || x >= Math.pow(2,z) || y >= Math.pow(2,z)) {
+        return callback(new Error('Tile does not exist'));
+    }
     // Hack around tilelive API - allow params to be passed per request
     // as attributes of the callback function.
     var format = callback.format || this._format;
@@ -228,6 +231,9 @@ Vector.prototype.getTile = function(z, x, y, callback) {
             }
         });
     };
+    if (!callback.format && source._xray) {
+        cb.setSrcData = true;
+    }
     cb.format = format;
     cb.scale = scale;
     cb.legacy = legacy;
@@ -326,12 +332,10 @@ Vector.prototype.profile = function(callback) {
                 // Profile derivative four tiles of z,x,y
                 function getTiles(z, x, y) {
                     var tiles = [];
-                    var queue = [
-                        {z:z, x:x+0, y:y+0},
-                        {z:z, x:x+0, y:y+1},
-                        {z:z, x:x+1, y:y+0},
-                        {z:z, x:x+1, y:y+1}
-                    ];
+                    var queue = [{z:z, x:x+0, y:y+0}];
+                    if (x + 1 < Math.pow(2,z)) queue.push({z:z, x:x+1, y:y+0});
+                    if (y + 1 < Math.pow(2,z)) queue.push({z:z, x:x+0, y:y+1});
+                    if (x + 1 < Math.pow(2,z) && y + 1 < Math.pow(2,z)) queue.push({z:z, x:x+1, y:y+1});
                     getTile();
                     function getTile() {
                         if (queue.length) {
@@ -543,7 +547,7 @@ function tm2z(uri, callback) {
         if (once++) return;
         if (!xml) return callback(new Error('project.xml not found in package'));
         new Vector({
-            source: 'mapbox:///mapbox.mapbox-streets-v2',
+            source: 'mapbox:///mapbox.mapbox-streets-v4',
             base: base,
             xml: xml
         }, callback);
