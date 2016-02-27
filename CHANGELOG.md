@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.9.0
+
+- Updated to use mapnik `3.5.0`
+- Prevent invalid tile coordinates (`x, y, z`), including negative numbers that fall outside of the bounds of spherical mercator
+- Default to `mapbox.mapbox-streets-v4` and only allow versions higher
+
 ## 3.8.0
 
 - Add `queryTile` method to Backend.
