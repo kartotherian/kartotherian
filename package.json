@@ -16,7 +16,7 @@
     "aws-sdk": "^2.2.30",
     "s3urls": "^1.3.0",
     "mapnik": "~3.5.0",
-    "tilelive": "5.11.x",
+    "tilelive": "~5.12.0",
     "tiletype": "0.3.x",
     "tar": "~2.2.1",
     "request": "~2.65.0",
