@@ -1,5 +1,10 @@
 # Changelog
 
+
+## 3.9.1
+
+- Updated to use tilelieve `~5.12.0`
+
 ## 3.9.0
 
 - Updated to use mapnik `3.5.0`
