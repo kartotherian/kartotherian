@@ -24,8 +24,11 @@
     "express": "^4.13.1",
     "underscore": "^1.8.3",
 
-    "abaculus": "git+https://github.com/nyurik/abaculus.git",
+    "abaculus": "git+https://github.com/kartotherian/abaculus.git",
     "leaflet": "~0.7.7",
-    "makizushi": "^1.3.0"
+    "makizushi": "^1.3.0",
+
+    "leaflet-headless": "git+https://github.com/nyurik/leaflet-headless.git",
+    "mapbox.js": "^2.3.0"
   }
 }
