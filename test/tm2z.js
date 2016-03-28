@@ -250,6 +250,16 @@ test('profiles a tm2z file', function(t) {
         });
     });
 });
+test('errors with EMAPNIK when profiling invalid tm2z', function(t) {
+    tilelive.load('tm2z://' + path.join(fixtureDir, 'invalid.tm2z'), function(err, source) {
+        t.ifError(err);
+        source.profile(function(err, profile) {
+            t.equal('EMAPNIK', err.code);
+            t.equal(err.message, 'Tile does not exist');
+            t.end();
+        });
+    });
+});
 
 test('loads a tm2z+http url', function(t) {
     tilelive.load('tm2z+' + remotePath, function(err, source) {

@@ -341,7 +341,10 @@ Vector.prototype.profile = function(callback) {
                         if (queue.length) {
                             var t = queue.shift();
                             s.getTile(t.z, t.x, t.y, function(err, run1, headers) {
-                                if (err) return callback(err);
+                                if (err) {
+                                    err.code = 'EMAPNIK';
+                                    return callback(err);
+                                }
                                 s.getTile(t.z, t.x, t.y, function(err, run2, headers) {
                                     if (err) return callback(err);
                                     t.drawtime = Math.min(run1._drawtime, run2._drawtime);
