@@ -179,7 +179,7 @@ test('errors out if unzipped project.xml size exceeds custom max size', function
 });
 test('errors out if not a directory', function(t) {
     tilelive.load('tm2z://' + path.join(fixtureDir, 'nodirectory.tm2z'), function(err, source) {
-        t.equal(err.message.split(',')[0], 'EISDIR');
+        t.ok(err.message.indexOf('EISDIR') !== -1);
         t.end();
     });
 });
@@ -246,6 +246,16 @@ test('profiles a tm2z file', function(t) {
             t.deepEqual(['avg','min','max'], Object.keys(profile.imgbytes));
             var expected_tiles = [ '0/0/0', '1/1/0', '2/2/1', '3/4/3', '4/9/6', '5/19/12', '6/39/24', '7/79/48', '8/159/96', '9/319/193', '10/638/387', '11/1276/774', '12/2553/1548', '13/5107/3096', '14/10214/6193', '15/20428/12386', '16/40856/24772', '17/81713/49544', '18/163427/99088', '19/326855/198177', '20/653710/396354', '21/1307421/792709', '22/2614842/1585418' ];
             t.deepEqual(profile.tiles.map(function(t) { return t.z + '/' + t.x + '/' + t.y }),expected_tiles);
+            t.end();
+        });
+    });
+});
+test('errors with EMAPNIK when profiling invalid tm2z', function(t) {
+    tilelive.load('tm2z://' + path.join(fixtureDir, 'invalid.tm2z'), function(err, source) {
+        t.ifError(err);
+        source.profile(function(err, profile) {
+            t.equal('EMAPNIK', err.code);
+            t.equal(err.message, 'Tile does not exist');
             t.end();
         });
     });
