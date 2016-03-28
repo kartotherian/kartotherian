@@ -57,10 +57,10 @@ Vector.mapnik.register_fonts(path.join(__dirname, 'fonts', 'source-sans-pro'));
     });
 });
 
-test('tm2z+http ENOTFOUND', function(assert) {
+test('tm2z+http Z_DATA_ERROR', function(assert) {
     tilelive.load('tm2z+http://not-a-valid-domain/patternstyle.tm2z', function(err, source) {
         assert.ok(err, 'has error');
-        assert.equal(err.code, 'ENOTFOUND', 'code: ENOTFOUND');
+        assert.equal(err.code, 'Z_DATA_ERROR', 'code: Z_DATA_ERROR');
         assert.end();
     });
 });
