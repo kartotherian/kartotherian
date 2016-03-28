@@ -179,7 +179,7 @@ test('errors out if unzipped project.xml size exceeds custom max size', function
 });
 test('errors out if not a directory', function(t) {
     tilelive.load('tm2z://' + path.join(fixtureDir, 'nodirectory.tm2z'), function(err, source) {
-        t.equal(err.message.split(',')[0], 'EISDIR');
+        t.ok(err.message.indexOf('EISDIR') !== -1);
         t.end();
     });
 });
