@@ -1,6 +1,10 @@
 # Changelog
 
 
+## 3.9.2
+
+- Add `EMAPNIK` error code to errors returned from `source.profile()`
+
 ## 3.9.1
 
 - Updated to use tilelieve `~5.12.0`
