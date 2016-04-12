@@ -17,6 +17,10 @@ var xml = {
     b: fs.readFileSync(path.resolve(__dirname + '/fixtures/b.xml'), 'utf8'),
     c: fs.readFileSync(path.resolve(__dirname + '/fixtures/c.xml'), 'utf8'),
     i: fs.readFileSync(path.resolve(__dirname + '/fixtures/i.xml'), 'utf8'),
+    a2: fs.readFileSync(path.resolve(__dirname + '/fixtures/a.xml'), 'utf8'),
+    b2: fs.readFileSync(path.resolve(__dirname + '/fixtures/b.xml'), 'utf8'),
+    c2: fs.readFileSync(path.resolve(__dirname + '/fixtures/c.xml'), 'utf8'),
+    i2: fs.readFileSync(path.resolve(__dirname + '/fixtures/i.xml'), 'utf8'),
     space: fs.readFileSync(path.resolve(__dirname + '/fixtures/s p a c e/i.xml'), 'utf8'),
     expires: fs.readFileSync(path.resolve(__dirname + '/fixtures/expires.xml'), 'utf8'),
     invalid: fs.readFileSync(path.resolve(__dirname + '/fixtures/invalid.xml'), 'utf8')
@@ -106,6 +110,7 @@ test('passes through backend expires header', function(t) {
 var sources = {
     a: new Vector({ backend: new Testsource('a'), xml: xml.a }),
     'a@vt': new Vector({ backend: new Vector.Backend('test:///a'), xml: xml.a }),
+    'a.vt2': new Vector({ backend: new Testsource('a'), xml: xml.a }),
     b: new Vector({ backend: new Testsource('b'), xml: xml.b }),
     'b@2x': new Vector({ backend: new Testsource('b'), xml: xml.b }),
     c: new Vector({ backend: new Testsource('b'), xml: xml.b, scale: 2 }),
@@ -122,6 +127,8 @@ var tests = {
     // 2.0.0, 2.0.1 test overzooming.
     a: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.0.0', '2.0.1'],
     'a@vt': ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.0.0', '2.0.1'],
+    // Test vector-tile v2 conversion
+    'a.vt2': ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.0.0', '2.0.1'],
     // 2.1.1 should use z2 vector tile -- a coastline shapefile
     // 2.1.2 should use maskLevel -- place dots, like the others
     b: ['0.0.0', '1.0.0', '1.0.1', '1.1.0', '1.1.1', '2.1.1', '2.1.2'],
@@ -210,6 +217,9 @@ Object.keys(tests).forEach(function(source) {
             if (source === 'c') {
                 cbTile.legacy = true;
                 cbHead.legacy = true;
+            }
+            if (/\.vt2/.test(source)) {
+                cbTile.upgrade = true;
             }
             sources[source].getTile(z,x,y, cbTile);
             sources[source].getHeaders(z,x,y, cbHead);

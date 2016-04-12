@@ -57,7 +57,7 @@ test('returns expected layer information', function(t) {
             t.equal(ss.min(coastline.coordDistance), 1181.6043940629547);
 
             // Expected jsonsize
-            t.equal(coastline.jsonsize, 199663);
+            t.equal(coastline.jsonsize, 520120);
 
             t.end();
         });
