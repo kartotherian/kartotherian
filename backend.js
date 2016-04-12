@@ -153,7 +153,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             if (type === 'pbf') {
                 // We use addData here over setData because we know it was just created
                 // and is empty so skips a clear call internally in mapnik.
-                vtile.addData(data,function(err) {
+                vtile.addData(data,{upgrade:true},function(err) {
                     if (err) return callback(err);
                     return callback(null, vtile, headers);
                 });
