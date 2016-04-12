@@ -3,7 +3,6 @@ os: Visual Studio 2015
 environment:
   matrix:
     - nodejs_version: 0.10.40
-    - nodejs_version: 0.12.7
   MapboxAccessToken:
     secure: 01rO70zKIKzh2l8htHugNS3cCk9u3LfTu2SXojFaYkveumhZRDgRrH/BroS+fIv8T6YB5l0P2nvKAjqhdDW2yuaLWGIB5KdBmhywp4dXa0g=
   AWS_ACCESS_KEY_ID:
