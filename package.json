@@ -27,9 +27,5 @@
     "abaculus": "git+https://github.com/nyurik/abaculus.git",
     "leaflet": "~0.7.7",
     "makizushi": "^1.3.0"
-  },
-  "optionalDependencies": {
-    "leaflet-headless": "^0.1.1",
-    "mapbox.js": "^2.3.0"
   }
 }
