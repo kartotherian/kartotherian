@@ -1,7 +1,7 @@
 {
   "name": "kartotherian-cassandra",
   "version": "0.0.2",
-  "description": " Cassandra tile storage for Kartotherian map tile server",
+  "description": "Cassandra tile storage for Kartotherian map tile server",
   "main": "lib/CassandraStore.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
