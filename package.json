@@ -34,6 +34,7 @@
     "leaflet-image": "~0.1.0",
     "mapbox.js": "^2.3.0",
     "preq": "^0.4.8",
-    "mwapi": "git+https://github.com/nyurik/mwapi.git"
+    "mwapi": "git+https://github.com/nyurik/mwapi.git",
+    "domain-validator": "*"
   }
 }
