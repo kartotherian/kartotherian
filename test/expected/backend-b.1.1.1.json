@@ -1,12 +1,12 @@
 [
   {
-    "version": 2,
     "name": "places",
     "extent": 4096,
+    "version": 1,
     "features": [
       {
-        "type": 1,
         "id": 1,
+        "type": 1,
         "properties": {
           "ABBREV": "China",
           "ADM0_A3": "CHN",
@@ -47,8 +47,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 2,
+        "type": 1,
         "properties": {
           "ABBREV": "India",
           "ADM0_A3": "IND",
@@ -89,8 +89,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 4,
+        "type": 1,
         "properties": {
           "ABBREV": "Indo.",
           "ADM0_A3": "IDN",
@@ -131,8 +131,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 5,
+        "type": 1,
         "properties": {
           "ABBREV": "Brazil",
           "ADM0_A3": "BRA",
@@ -173,8 +173,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 6,
+        "type": 1,
         "properties": {
           "ABBREV": "Pak.",
           "ADM0_A3": "PAK",
@@ -215,8 +215,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 7,
+        "type": 1,
         "properties": {
           "ABBREV": "Bang.",
           "ADM0_A3": "BGD",
@@ -257,8 +257,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 8,
+        "type": 1,
         "properties": {
           "ABBREV": "Nigeria",
           "ADM0_A3": "NGA",
@@ -299,8 +299,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 9,
+        "type": 1,
         "properties": {
           "ABBREV": "Rus.",
           "ADM0_A3": "RUS",
@@ -341,8 +341,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 10,
+        "type": 1,
         "properties": {
           "ABBREV": "Japan",
           "ADM0_A3": "JPN",
@@ -383,8 +383,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 12,
+        "type": 1,
         "properties": {
           "ABBREV": "Phil.",
           "ADM0_A3": "PHL",
@@ -425,8 +425,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 13,
+        "type": 1,
         "properties": {
           "ABBREV": "Viet.",
           "ADM0_A3": "VNM",
@@ -467,8 +467,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 14,
+        "type": 1,
         "properties": {
           "ABBREV": "Eth.",
           "ADM0_A3": "ETH",
@@ -509,8 +509,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 15,
+        "type": 1,
         "properties": {
           "ABBREV": "Egypt",
           "ADM0_A3": "EGY",
@@ -551,8 +551,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 16,
+        "type": 1,
         "properties": {
           "ABBREV": "Ger.",
           "ADM0_A3": "DEU",
@@ -593,8 +593,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 17,
+        "type": 1,
         "properties": {
           "ABBREV": "Tur.",
           "ADM0_A3": "TUR",
@@ -635,8 +635,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 18,
+        "type": 1,
         "properties": {
           "ABBREV": "D.R.C.",
           "ADM0_A3": "COD",
@@ -677,8 +677,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 19,
+        "type": 1,
         "properties": {
           "ABBREV": "Iran",
           "ADM0_A3": "IRN",
@@ -719,8 +719,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 20,
+        "type": 1,
         "properties": {
           "ABBREV": "Thai.",
           "ADM0_A3": "THA",
@@ -761,8 +761,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 21,
+        "type": 1,
         "properties": {
           "ABBREV": "Fr.",
           "ADM0_A3": "FRA",
@@ -803,8 +803,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 22,
+        "type": 1,
         "properties": {
           "ABBREV": "U.K.",
           "ADM0_A3": "GBR",
@@ -845,8 +845,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 23,
+        "type": 1,
         "properties": {
           "ABBREV": "Italy",
           "ADM0_A3": "ITA",
@@ -887,8 +887,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 24,
+        "type": 1,
         "properties": {
           "ABBREV": "S.Af.",
           "ADM0_A3": "ZAF",
@@ -929,8 +929,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 25,
+        "type": 1,
         "properties": {
           "ABBREV": "S.Kor.",
           "ADM0_A3": "KOR",
@@ -971,8 +971,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 26,
+        "type": 1,
         "properties": {
           "ABBREV": "Myan.",
           "ADM0_A3": "MMR",
@@ -1013,8 +1013,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 27,
+        "type": 1,
         "properties": {
           "ABBREV": "Ukr.",
           "ADM0_A3": "UKR",
@@ -1055,8 +1055,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 28,
+        "type": 1,
         "properties": {
           "ABBREV": "Col.",
           "ADM0_A3": "COL",
@@ -1097,8 +1097,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 29,
+        "type": 1,
         "properties": {
           "ABBREV": "Tanz.",
           "ADM0_A3": "TZA",
@@ -1139,8 +1139,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 30,
+        "type": 1,
         "properties": {
           "ABBREV": "Arg.",
           "ADM0_A3": "ARG",
@@ -1181,8 +1181,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 31,
+        "type": 1,
         "properties": {
           "ABBREV": "Sp.",
           "ADM0_A3": "ESP",
@@ -1223,8 +1223,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 32,
+        "type": 1,
         "properties": {
           "ABBREV": "Ken.",
           "ADM0_A3": "KEN",
@@ -1265,8 +1265,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 33,
+        "type": 1,
         "properties": {
           "ABBREV": "Pol.",
           "ADM0_A3": "POL",
@@ -1307,8 +1307,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 34,
+        "type": 1,
         "properties": {
           "ABBREV": "Mor.",
           "ADM0_A3": "MAR",
@@ -1349,8 +1349,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 35,
+        "type": 1,
         "properties": {
           "ABBREV": "Alg.",
           "ADM0_A3": "DZA",
@@ -1391,8 +1391,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 37,
+        "type": 1,
         "properties": {
           "ABBREV": "Uga.",
           "ADM0_A3": "UGA",
@@ -1433,8 +1433,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 38,
+        "type": 1,
         "properties": {
           "ABBREV": "Sudan",
           "ADM0_A3": "SDN",
@@ -1475,8 +1475,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 39,
+        "type": 1,
         "properties": {
           "ABBREV": "Peru",
           "ADM0_A3": "PER",
@@ -1517,8 +1517,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 40,
+        "type": 1,
         "properties": {
           "ABBREV": "Iraq",
           "ADM0_A3": "IRQ",
@@ -1559,8 +1559,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 41,
+        "type": 1,
         "properties": {
           "ABBREV": "Saud.",
           "ADM0_A3": "SAU",
@@ -1601,8 +1601,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 42,
+        "type": 1,
         "properties": {
           "ABBREV": "Nepal",
           "ADM0_A3": "NPL",
@@ -1643,8 +1643,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 43,
+        "type": 1,
         "properties": {
           "ABBREV": "Afg.",
           "ADM0_A3": "AFG",
@@ -1685,8 +1685,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 44,
+        "type": 1,
         "properties": {
           "ABBREV": "Uzb.",
           "ADM0_A3": "UZB",
@@ -1727,8 +1727,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 45,
+        "type": 1,
         "properties": {
           "ABBREV": "Ven.",
           "ADM0_A3": "VEN",
@@ -1769,8 +1769,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 46,
+        "type": 1,
         "properties": {
           "ABBREV": "Malay.",
           "ADM0_A3": "MYS",
@@ -1811,8 +1811,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 47,
+        "type": 1,
         "properties": {
           "ABBREV": "Ghana",
           "ADM0_A3": "GHA",
@@ -1853,8 +1853,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 48,
+        "type": 1,
         "properties": {
           "ABBREV": "Yem.",
           "ADM0_A3": "YEM",
@@ -1895,8 +1895,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 49,
+        "type": 1,
         "properties": {
           "ABBREV": "Taiwan",
           "ADM0_A3": "TWN",
@@ -1937,8 +1937,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 50,
+        "type": 1,
         "properties": {
           "ABBREV": "N. Kor.",
           "ADM0_A3": "PRK",
@@ -1979,8 +1979,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 51,
+        "type": 1,
         "properties": {
           "ABBREV": "Rom.",
           "ADM0_A3": "ROU",
@@ -2021,8 +2021,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 52,
+        "type": 1,
         "properties": {
           "ABBREV": "Moz.",
           "ADM0_A3": "MOZ",
@@ -2063,8 +2063,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 53,
+        "type": 1,
         "properties": {
           "ABBREV": "Sri L.",
           "ADM0_A3": "LKA",
@@ -2105,8 +2105,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 54,
+        "type": 1,
         "properties": {
           "ABBREV": "Auz.",
           "ADM0_A3": "AUS",
@@ -2147,8 +2147,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 55,
+        "type": 1,
         "properties": {
           "ABBREV": "Mad.",
           "ADM0_A3": "MDG",
@@ -2189,8 +2189,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 56,
+        "type": 1,
         "properties": {
           "ABBREV": "I.C.",
           "ADM0_A3": "CIV",
@@ -2231,8 +2231,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 57,
+        "type": 1,
         "properties": {
           "ABBREV": "Syria",
           "ADM0_A3": "SYR",
@@ -2273,8 +2273,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 58,
+        "type": 1,
         "properties": {
           "ABBREV": "Cam.",
           "ADM0_A3": "CMR",
@@ -2315,8 +2315,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 59,
+        "type": 1,
         "properties": {
           "ABBREV": "Neth.",
           "ADM0_A3": "NLD",
@@ -2357,8 +2357,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 60,
+        "type": 1,
         "properties": {
           "ABBREV": "Chile",
           "ADM0_A3": "CHL",
@@ -2399,8 +2399,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 61,
+        "type": 1,
         "properties": {
           "ABBREV": "B.F.",
           "ADM0_A3": "BFA",
@@ -2441,8 +2441,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 62,
+        "type": 1,
         "properties": {
           "ABBREV": "Kaz.",
           "ADM0_A3": "KAZ",
@@ -2483,8 +2483,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 63,
+        "type": 1,
         "properties": {
           "ABBREV": "Niger",
           "ADM0_A3": "NER",
@@ -2525,8 +2525,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 64,
+        "type": 1,
         "properties": {
           "ABBREV": "Ecu.",
           "ADM0_A3": "ECU",
@@ -2567,8 +2567,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 65,
+        "type": 1,
         "properties": {
           "ABBREV": "Camb.",
           "ADM0_A3": "KHM",
@@ -2609,8 +2609,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 66,
+        "type": 1,
         "properties": {
           "ABBREV": "Mal.",
           "ADM0_A3": "MWI",
@@ -2651,8 +2651,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 67,
+        "type": 1,
         "properties": {
           "ABBREV": "Sen.",
           "ADM0_A3": "SEN",
@@ -2693,8 +2693,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 69,
+        "type": 1,
         "properties": {
           "ABBREV": "Ang.",
           "ADM0_A3": "AGO",
@@ -2735,8 +2735,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 70,
+        "type": 1,
         "properties": {
           "ABBREV": "Mali",
           "ADM0_A3": "MLI",
@@ -2777,8 +2777,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 71,
+        "type": 1,
         "properties": {
           "ABBREV": "Zambia",
           "ADM0_A3": "ZMB",
@@ -2819,8 +2819,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 72,
+        "type": 1,
         "properties": {
           "ABBREV": "Cuba",
           "ADM0_A3": "CUB",
@@ -2861,8 +2861,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 73,
+        "type": 1,
         "properties": {
           "ABBREV": "Zimb.",
           "ADM0_A3": "ZWE",
@@ -2903,8 +2903,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 74,
+        "type": 1,
         "properties": {
           "ABBREV": "Greece",
           "ADM0_A3": "GRC",
@@ -2945,8 +2945,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 75,
+        "type": 1,
         "properties": {
           "ABBREV": "Port.",
           "ADM0_A3": "PRT",
@@ -2987,8 +2987,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 76,
+        "type": 1,
         "properties": {
           "ABBREV": "Tun.",
           "ADM0_A3": "TUN",
@@ -3029,8 +3029,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 77,
+        "type": 1,
         "properties": {
           "ABBREV": "Rwa.",
           "ADM0_A3": "RWA",
@@ -3071,8 +3071,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 78,
+        "type": 1,
         "properties": {
           "ABBREV": "Belg.",
           "ADM0_A3": "BEL",
@@ -3113,8 +3113,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 79,
+        "type": 1,
         "properties": {
           "ABBREV": "Chad",
           "ADM0_A3": "TCD",
@@ -3155,8 +3155,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 80,
+        "type": 1,
         "properties": {
           "ABBREV": "Cz. Rep.",
           "ADM0_A3": "CZE",
@@ -3197,8 +3197,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 81,
+        "type": 1,
         "properties": {
           "ABBREV": "Gin.",
           "ADM0_A3": "GIN",
@@ -3239,8 +3239,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 82,
+        "type": 1,
         "properties": {
           "ABBREV": "Hun.",
           "ADM0_A3": "HUN",
@@ -3281,8 +3281,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 83,
+        "type": 1,
         "properties": {
           "ABBREV": "Som.",
           "ADM0_A3": "SOM",
@@ -3323,8 +3323,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 84,
+        "type": 1,
         "properties": {
           "ABBREV": "Bolivia",
           "ADM0_A3": "BOL",
@@ -3365,8 +3365,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 85,
+        "type": 1,
         "properties": {
           "ABBREV": "Dom. Rep.",
           "ADM0_A3": "DOM",
@@ -3407,8 +3407,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 86,
+        "type": 1,
         "properties": {
           "ABBREV": "Bela.",
           "ADM0_A3": "BLR",
@@ -3449,8 +3449,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 87,
+        "type": 1,
         "properties": {
           "ABBREV": "Swe.",
           "ADM0_A3": "SWE",
@@ -3491,8 +3491,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 88,
+        "type": 1,
         "properties": {
           "ABBREV": "Haiti",
           "ADM0_A3": "HTI",
@@ -3533,8 +3533,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 89,
+        "type": 1,
         "properties": {
           "ABBREV": "Bur.",
           "ADM0_A3": "BDI",
@@ -3575,8 +3575,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 90,
+        "type": 1,
         "properties": {
           "ABBREV": "Benin",
           "ADM0_A3": "BEN",
@@ -3617,8 +3617,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 91,
+        "type": 1,
         "properties": {
           "ABBREV": "S. Sud.",
           "ADM0_A3": "SDS",
@@ -3659,8 +3659,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 92,
+        "type": 1,
         "properties": {
           "ABBREV": "Aze.",
           "ADM0_A3": "AZE",
@@ -3701,8 +3701,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 93,
+        "type": 1,
         "properties": {
           "ABBREV": "Aust.",
           "ADM0_A3": "AUT",
@@ -3743,8 +3743,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 94,
+        "type": 1,
         "properties": {
           "ABBREV": "Hond.",
           "ADM0_A3": "HND",
@@ -3785,8 +3785,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 95,
+        "type": 1,
         "properties": {
           "ABBREV": "Switz.",
           "ADM0_A3": "CHE",
@@ -3827,8 +3827,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 96,
+        "type": 1,
         "properties": {
           "ABBREV": "Serb.",
           "ADM0_A3": "SRB",
@@ -3869,8 +3869,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 97,
+        "type": 1,
         "properties": {
           "ABBREV": "Tjk.",
           "ADM0_A3": "TJK",
@@ -3911,8 +3911,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 98,
+        "type": 1,
         "properties": {
           "ABBREV": "Isr.",
           "ADM0_A3": "ISR",
@@ -3953,8 +3953,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 99,
+        "type": 1,
         "properties": {
           "ABBREV": "Bulg.",
           "ADM0_A3": "BGR",
@@ -3995,8 +3995,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 100,
+        "type": 1,
         "properties": {
           "ABBREV": "El. S.",
           "ADM0_A3": "SLV",
@@ -4037,8 +4037,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 101,
+        "type": 1,
         "properties": {
           "ABBREV": "H.K.",
           "ADM0_A3": "HKG",
@@ -4079,8 +4079,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 102,
+        "type": 1,
         "properties": {
           "ABBREV": "Para.",
           "ADM0_A3": "PRY",
@@ -4121,8 +4121,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 103,
+        "type": 1,
         "properties": {
           "ABBREV": "Laos",
           "ADM0_A3": "LAO",
@@ -4163,8 +4163,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 104,
+        "type": 1,
         "properties": {
           "ABBREV": "S.L.",
           "ADM0_A3": "SLE",
@@ -4205,8 +4205,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 105,
+        "type": 1,
         "properties": {
           "ABBREV": "Jord.",
           "ADM0_A3": "JOR",
@@ -4247,8 +4247,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 106,
+        "type": 1,
         "properties": {
           "ABBREV": "Libya",
           "ADM0_A3": "LBY",
@@ -4289,8 +4289,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 107,
+        "type": 1,
         "properties": {
           "ABBREV": "P.N.G.",
           "ADM0_A3": "PNG",
@@ -4331,8 +4331,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 108,
+        "type": 1,
         "properties": {
           "ABBREV": "Togo",
           "ADM0_A3": "TGO",
@@ -4373,8 +4373,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 109,
+        "type": 1,
         "properties": {
           "ABBREV": "Nic.",
           "ADM0_A3": "NIC",
@@ -4415,8 +4415,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 110,
+        "type": 1,
         "properties": {
           "ABBREV": "Erit.",
           "ADM0_A3": "ERI",
@@ -4457,8 +4457,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 111,
+        "type": 1,
         "properties": {
           "ABBREV": "Den.",
           "ADM0_A3": "DNK",
@@ -4499,8 +4499,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 112,
+        "type": 1,
         "properties": {
           "ABBREV": "Svk.",
           "ADM0_A3": "SVK",
@@ -4541,8 +4541,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 113,
+        "type": 1,
         "properties": {
           "ABBREV": "Kgz.",
           "ADM0_A3": "KGZ",
@@ -4583,8 +4583,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 114,
+        "type": 1,
         "properties": {
           "ABBREV": "Fin.",
           "ADM0_A3": "FIN",
@@ -4625,8 +4625,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 115,
+        "type": 1,
         "properties": {
           "ABBREV": "Turkm.",
           "ADM0_A3": "TKM",
@@ -4667,8 +4667,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 116,
+        "type": 1,
         "properties": {
           "ABBREV": "U.A.E.",
           "ADM0_A3": "ARE",
@@ -4709,8 +4709,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 117,
+        "type": 1,
         "properties": {
           "ABBREV": "Nor.",
           "ADM0_A3": "NOR",
@@ -4751,8 +4751,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 118,
+        "type": 1,
         "properties": {
           "ABBREV": "Sing.",
           "ADM0_A3": "SGP",
@@ -4793,8 +4793,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 119,
+        "type": 1,
         "properties": {
           "ABBREV": "Geo.",
           "ADM0_A3": "GEO",
@@ -4835,8 +4835,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 120,
+        "type": 1,
         "properties": {
           "ABBREV": "B.H.",
           "ADM0_A3": "BIH",
@@ -4877,8 +4877,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 121,
+        "type": 1,
         "properties": {
           "ABBREV": "C.A.R.",
           "ADM0_A3": "CAF",
@@ -4919,8 +4919,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 122,
+        "type": 1,
         "properties": {
           "ABBREV": "Cro.",
           "ADM0_A3": "HRV",
@@ -4961,8 +4961,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 123,
+        "type": 1,
         "properties": {
           "ABBREV": "Mda.",
           "ADM0_A3": "MDA",
@@ -5003,8 +5003,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 124,
+        "type": 1,
         "properties": {
           "ABBREV": "C.R.",
           "ADM0_A3": "CRI",
@@ -5045,8 +5045,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 125,
+        "type": 1,
         "properties": {
           "ABBREV": "N.Z.",
           "ADM0_A3": "NZL",
@@ -5087,8 +5087,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 126,
+        "type": 1,
         "properties": {
           "ABBREV": "Ire.",
           "ADM0_A3": "IRL",
@@ -5129,8 +5129,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 127,
+        "type": 1,
         "properties": {
           "ABBREV": "Leb.",
           "ADM0_A3": "LBN",
@@ -5171,8 +5171,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 128,
+        "type": 1,
         "properties": {
           "ABBREV": "Rep. Congo",
           "ADM0_A3": "COG",
@@ -5213,8 +5213,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 129,
+        "type": 1,
         "properties": {
           "ABBREV": "P.R.",
           "ADM0_A3": "PRI",
@@ -5255,8 +5255,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 130,
+        "type": 1,
         "properties": {
           "ABBREV": "Alb.",
           "ADM0_A3": "ALB",
@@ -5297,8 +5297,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 131,
+        "type": 1,
         "properties": {
           "ABBREV": "Lith.",
           "ADM0_A3": "LTU",
@@ -5339,8 +5339,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 132,
+        "type": 1,
         "properties": {
           "ABBREV": "Solnd.",
           "ADM0_A3": "SOL",
@@ -5381,8 +5381,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 133,
+        "type": 1,
         "properties": {
           "ABBREV": "Ury.",
           "ADM0_A3": "URY",
@@ -5423,8 +5423,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 134,
+        "type": 1,
         "properties": {
           "ABBREV": "Liberia",
           "ADM0_A3": "LBR",
@@ -5465,8 +5465,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 135,
+        "type": 1,
         "properties": {
           "ABBREV": "Oman",
           "ADM0_A3": "OMN",
@@ -5507,8 +5507,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 136,
+        "type": 1,
         "properties": {
           "ABBREV": "Pan.",
           "ADM0_A3": "PAN",
@@ -5549,8 +5549,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 137,
+        "type": 1,
         "properties": {
           "ABBREV": "Mrt.",
           "ADM0_A3": "MRT",
@@ -5591,8 +5591,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 138,
+        "type": 1,
         "properties": {
           "ABBREV": "Mong.",
           "ADM0_A3": "MNG",
@@ -5633,8 +5633,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 139,
+        "type": 1,
         "properties": {
           "ABBREV": "Arm.",
           "ADM0_A3": "ARM",
@@ -5675,8 +5675,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 140,
+        "type": 1,
         "properties": {
           "ABBREV": "Jam.",
           "ADM0_A3": "JAM",
@@ -5717,8 +5717,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 141,
+        "type": 1,
         "properties": {
           "ABBREV": "Kwt.",
           "ADM0_A3": "KWT",
@@ -5759,8 +5759,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 142,
+        "type": 1,
         "properties": {
           "ABBREV": "W.B.",
           "ADM0_A3": "WEB",
@@ -5801,8 +5801,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 143,
+        "type": 1,
         "properties": {
           "ABBREV": "Lat.",
           "ADM0_A3": "LVA",
@@ -5843,8 +5843,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 144,
+        "type": 1,
         "properties": {
           "ABBREV": "Les.",
           "ADM0_A3": "LSO",
@@ -5885,8 +5885,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 145,
+        "type": 1,
         "properties": {
           "ABBREV": "Nam.",
           "ADM0_A3": "NAM",
@@ -5927,8 +5927,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 146,
+        "type": 1,
         "properties": {
           "ABBREV": "Mkd.",
           "ADM0_A3": "MKD",
@@ -5969,8 +5969,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 147,
+        "type": 1,
         "properties": {
           "ABBREV": "Slo.",
           "ADM0_A3": "SVN",
@@ -6011,8 +6011,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 148,
+        "type": 1,
         "properties": {
           "ABBREV": "Bwa.",
           "ADM0_A3": "BWA",
@@ -6053,8 +6053,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 149,
+        "type": 1,
         "properties": {
           "ABBREV": "Kos.",
           "ADM0_A3": "KOS",
@@ -6095,8 +6095,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 150,
+        "type": 1,
         "properties": {
           "ABBREV": "Gambia",
           "ADM0_A3": "GMB",
@@ -6137,8 +6137,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 151,
+        "type": 1,
         "properties": {
           "ABBREV": "Gaza",
           "ADM0_A3": "GAZ",
@@ -6179,8 +6179,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 152,
+        "type": 1,
         "properties": {
           "ABBREV": "GnB.",
           "ADM0_A3": "GNB",
@@ -6221,8 +6221,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 153,
+        "type": 1,
         "properties": {
           "ABBREV": "Gabon",
           "ADM0_A3": "GAB",
@@ -6263,8 +6263,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 154,
+        "type": 1,
         "properties": {
           "ABBREV": "Tr.T.",
           "ADM0_A3": "TTO",
@@ -6305,8 +6305,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 155,
+        "type": 1,
         "properties": {
           "ABBREV": "Est.",
           "ADM0_A3": "EST",
@@ -6347,8 +6347,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 156,
+        "type": 1,
         "properties": {
           "ABBREV": "Mus.",
           "ADM0_A3": "MUS",
@@ -6389,8 +6389,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 157,
+        "type": 1,
         "properties": {
           "ABBREV": "E.T.",
           "ADM0_A3": "TLS",
@@ -6431,8 +6431,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 158,
+        "type": 1,
         "properties": {
           "ABBREV": "Swz.",
           "ADM0_A3": "SWZ",
@@ -6473,8 +6473,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 159,
+        "type": 1,
         "properties": {
           "ABBREV": "Fiji",
           "ADM0_A3": "FJI",
@@ -6515,8 +6515,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 160,
+        "type": 1,
         "properties": {
           "ABBREV": "Qatar",
           "ADM0_A3": "QAT",
@@ -6557,8 +6557,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 161,
+        "type": 1,
         "properties": {
           "ABBREV": "Guy.",
           "ADM0_A3": "GUY",
@@ -6599,8 +6599,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 162,
+        "type": 1,
         "properties": {
           "ABBREV": "Com.",
           "ADM0_A3": "COM",
@@ -6641,8 +6641,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 163,
+        "type": 1,
         "properties": {
           "ABBREV": "Bahr.",
           "ADM0_A3": "BHR",
@@ -6683,8 +6683,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 164,
+        "type": 1,
         "properties": {
           "ABBREV": "Bhutan",
           "ADM0_A3": "BTN",
@@ -6725,8 +6725,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 165,
+        "type": 1,
         "properties": {
           "ABBREV": "Mont.",
           "ADM0_A3": "MNE",
@@ -6767,8 +6767,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 166,
+        "type": 1,
         "properties": {
           "ABBREV": "Eq. G.",
           "ADM0_A3": "GNQ",
@@ -6809,8 +6809,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 167,
+        "type": 1,
         "properties": {
           "ABBREV": "S. Is.",
           "ADM0_A3": "SLB",
@@ -6851,8 +6851,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 168,
+        "type": 1,
         "properties": {
           "ABBREV": "Mac.",
           "ADM0_A3": "MAC",
@@ -6893,8 +6893,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 169,
+        "type": 1,
         "properties": {
           "ABBREV": "Cyp.",
           "ADM0_A3": "CYP",
@@ -6935,8 +6935,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 170,
+        "type": 1,
         "properties": {
           "ABBREV": "Dji.",
           "ADM0_A3": "DJI",
@@ -6977,8 +6977,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 171,
+        "type": 1,
         "properties": {
           "ABBREV": "Lux.",
           "ADM0_A3": "LUX",
@@ -7019,8 +7019,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 172,
+        "type": 1,
         "properties": {
           "ABBREV": "Sur.",
           "ADM0_A3": "SUR",
@@ -7061,8 +7061,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 173,
+        "type": 1,
         "properties": {
           "ABBREV": "C.Vd.",
           "ADM0_A3": "CPV",
@@ -7103,8 +7103,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 174,
+        "type": 1,
         "properties": {
           "ABBREV": "Malta",
           "ADM0_A3": "MLT",
@@ -7145,8 +7145,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 175,
+        "type": 1,
         "properties": {
           "ABBREV": "Mald.",
           "ADM0_A3": "MDV",
@@ -7187,8 +7187,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 176,
+        "type": 1,
         "properties": {
           "ABBREV": "Brunei",
           "ADM0_A3": "BRN",
@@ -7229,8 +7229,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 177,
+        "type": 1,
         "properties": {
           "ABBREV": "Bhs.",
           "ADM0_A3": "BHS",
@@ -7271,8 +7271,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 178,
+        "type": 1,
         "properties": {
           "ABBREV": "Belize",
           "ADM0_A3": "BLZ",
@@ -7313,8 +7313,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 179,
+        "type": 1,
         "properties": {
           "ABBREV": "Iceland",
           "ADM0_A3": "ISL",
@@ -7355,8 +7355,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 181,
+        "type": 1,
         "properties": {
           "ABBREV": "Barb.",
           "ADM0_A3": "BRB",
@@ -7397,8 +7397,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 182,
+        "type": 1,
         "properties": {
           "ABBREV": "N. Cy.",
           "ADM0_A3": "CYN",
@@ -7439,8 +7439,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 183,
+        "type": 1,
         "properties": {
           "ABBREV": "New C.",
           "ADM0_A3": "NCL",
@@ -7481,8 +7481,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 185,
+        "type": 1,
         "properties": {
           "ABBREV": "Van.",
           "ADM0_A3": "VUT",
@@ -7523,8 +7523,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 186,
+        "type": 1,
         "properties": {
           "ABBREV": "S.T.P.",
           "ADM0_A3": "STP",
@@ -7565,8 +7565,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 187,
+        "type": 1,
         "properties": {
           "ABBREV": "Guam",
           "ADM0_A3": "GUM",
@@ -7607,8 +7607,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 188,
+        "type": 1,
         "properties": {
           "ABBREV": "S.L.",
           "ADM0_A3": "LCA",
@@ -7649,8 +7649,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 189,
+        "type": 1,
         "properties": {
           "ABBREV": "Cur.",
           "ADM0_A3": "CUW",
@@ -7691,8 +7691,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 192,
+        "type": 1,
         "properties": {
           "ABBREV": "V.I. (U.S.)",
           "ADM0_A3": "VIR",
@@ -7733,8 +7733,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 193,
+        "type": 1,
         "properties": {
           "ABBREV": "F.S.M.",
           "ADM0_A3": "FSM",
@@ -7775,8 +7775,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 194,
+        "type": 1,
         "properties": {
           "ABBREV": "St.V.G.",
           "ADM0_A3": "VCT",
@@ -7817,8 +7817,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 195,
+        "type": 1,
         "properties": {
           "ABBREV": "Aruba",
           "ADM0_A3": "ABW",
@@ -7859,8 +7859,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 196,
+        "type": 1,
         "properties": {
           "ABBREV": "Jey.",
           "ADM0_A3": "JEY",
@@ -7901,8 +7901,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 197,
+        "type": 1,
         "properties": {
           "ABBREV": "Gren.",
           "ADM0_A3": "GRD",
@@ -7943,8 +7943,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 198,
+        "type": 1,
         "properties": {
           "ABBREV": "N.M.I.",
           "ADM0_A3": "MNP",
@@ -7985,8 +7985,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 199,
+        "type": 1,
         "properties": {
           "ABBREV": "Syc.",
           "ADM0_A3": "SYC",
@@ -8027,8 +8027,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 200,
+        "type": 1,
         "properties": {
           "ABBREV": "Ant.B.",
           "ADM0_A3": "ATG",
@@ -8069,8 +8069,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 201,
+        "type": 1,
         "properties": {
           "ABBREV": "And.",
           "ADM0_A3": "AND",
@@ -8111,8 +8111,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 202,
+        "type": 1,
         "properties": {
           "ABBREV": "IoMan",
           "ADM0_A3": "IMN",
@@ -8153,8 +8153,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 203,
+        "type": 1,
         "properties": {
           "ABBREV": "D'inca",
           "ADM0_A3": "DMA",
@@ -8195,8 +8195,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 204,
+        "type": 1,
         "properties": {
           "ABBREV": "Bayk.",
           "ADM0_A3": "KAB",
@@ -8237,8 +8237,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 205,
+        "type": 1,
         "properties": {
           "ABBREV": "Berm.",
           "ADM0_A3": "BMU",
@@ -8279,8 +8279,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 206,
+        "type": 1,
         "properties": {
           "ABBREV": "Guern.",
           "ADM0_A3": "GGY",
@@ -8321,8 +8321,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 208,
+        "type": 1,
         "properties": {
           "ABBREV": "M. Is.",
           "ADM0_A3": "MHL",
@@ -8363,8 +8363,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 210,
+        "type": 1,
         "properties": {
           "ABBREV": "Cym. Is.",
           "ADM0_A3": "CYM",
@@ -8405,8 +8405,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 211,
+        "type": 1,
         "properties": {
           "ABBREV": "Faroe Is.",
           "ADM0_A3": "FRO",
@@ -8447,8 +8447,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 212,
+        "type": 1,
         "properties": {
           "ABBREV": "St.K.N.",
           "ADM0_A3": "KNA",
@@ -8489,8 +8489,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 213,
+        "type": 1,
         "properties": {
           "ABBREV": "St. M.",
           "ADM0_A3": "SXM",
@@ -8531,8 +8531,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 214,
+        "type": 1,
         "properties": {
           "ABBREV": "Liech.",
           "ADM0_A3": "LIE",
@@ -8573,8 +8573,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 215,
+        "type": 1,
         "properties": {
           "ABBREV": "Mco.",
           "ADM0_A3": "MCO",
@@ -8615,8 +8615,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 216,
+        "type": 1,
         "properties": {
           "ABBREV": "S.M.",
           "ADM0_A3": "SMR",
@@ -8657,8 +8657,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 217,
+        "type": 1,
         "properties": {
           "ABBREV": "St. M.",
           "ADM0_A3": "MAF",
@@ -8699,8 +8699,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 218,
+        "type": 1,
         "properties": {
           "ABBREV": "Gib.",
           "ADM0_A3": "GIB",
@@ -8741,8 +8741,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 219,
+        "type": 1,
         "properties": {
           "ABBREV": "Aland",
           "ADM0_A3": "ALD",
@@ -8783,8 +8783,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 220,
+        "type": 1,
         "properties": {
           "ABBREV": "V.I. (Br.)",
           "ADM0_A3": "VGB",
@@ -8825,8 +8825,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 221,
+        "type": 1,
         "properties": {
           "ABBREV": "T.C. Is.",
           "ADM0_A3": "TCA",
@@ -8867,8 +8867,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 222,
+        "type": 1,
         "properties": {
           "ABBREV": "Palau",
           "ADM0_A3": "PLW",
@@ -8909,8 +8909,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 223,
+        "type": 1,
         "properties": {
           "ABBREV": "Dhek.",
           "ADM0_A3": "ESB",
@@ -8951,8 +8951,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 224,
+        "type": 1,
         "properties": {
           "ABBREV": "Akr.",
           "ADM0_A3": "WSB",
@@ -8993,8 +8993,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 226,
+        "type": 1,
         "properties": {
           "ABBREV": "Ang.",
           "ADM0_A3": "AIA",
@@ -9035,8 +9035,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 227,
+        "type": 1,
         "properties": {
           "ABBREV": "Nauru",
           "ADM0_A3": "NRU",
@@ -9077,8 +9077,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 228,
+        "type": 1,
         "properties": {
           "ABBREV": "Tuv.",
           "ADM0_A3": "TUV",
@@ -9119,8 +9119,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 230,
+        "type": 1,
         "properties": {
           "ABBREV": "St.H.",
           "ADM0_A3": "SHN",
@@ -9161,8 +9161,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 231,
+        "type": 1,
         "properties": {
           "ABBREV": "St. B.",
           "ADM0_A3": "BLM",
@@ -9203,8 +9203,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 232,
+        "type": 1,
         "properties": {
           "ABBREV": "St. P.M.",
           "ADM0_A3": "SPM",
@@ -9245,8 +9245,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 233,
+        "type": 1,
         "properties": {
           "ABBREV": "",
           "ADM0_A3": "KAS",
@@ -9287,8 +9287,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 234,
+        "type": 1,
         "properties": {
           "ABBREV": "Monts.",
           "ADM0_A3": "MSR",
@@ -9329,8 +9329,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 235,
+        "type": 1,
         "properties": {
           "ABBREV": "Ant.",
           "ADM0_A3": "ATA",
@@ -9371,8 +9371,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 236,
+        "type": 1,
         "properties": {
           "ABBREV": "Ind. Oc. Ter.",
           "ADM0_A3": "IOA",
@@ -9413,8 +9413,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 237,
+        "type": 1,
         "properties": {
           "ABBREV": "I.O.T.",
           "ADM0_A3": "IOT",
@@ -9455,8 +9455,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 238,
+        "type": 1,
         "properties": {
           "ABBREV": "Flk. Is.",
           "ADM0_A3": "FLK",
@@ -9497,8 +9497,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 239,
+        "type": 1,
         "properties": {
           "ABBREV": "Nfk. I.",
           "ADM0_A3": "NFK",
@@ -9539,8 +9539,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 241,
+        "type": 1,
         "properties": {
           "ABBREV": "Vat.",
           "ADM0_A3": "VAT",
@@ -9581,8 +9581,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 242,
+        "type": 1,
         "properties": {
           "ABBREV": "Fr. S.A.L.",
           "ADM0_A3": "ATF",
@@ -9623,8 +9623,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 244,
+        "type": 1,
         "properties": {
           "ABBREV": "S.G. S.S. Is.",
           "ADM0_A3": "SGS",
@@ -9665,8 +9665,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 245,
+        "type": 1,
         "properties": {
           "ABBREV": "C.S.I.",
           "ADM0_A3": "CSI",
@@ -9707,8 +9707,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 246,
+        "type": 1,
         "properties": {
           "ABBREV": "A.C.Is.",
           "ADM0_A3": "ATC",
@@ -9749,8 +9749,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 248,
+        "type": 1,
         "properties": {
           "ABBREV": "",
           "ADM0_A3": "CNM",
@@ -9791,8 +9791,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 249,
+        "type": 1,
         "properties": {
           "ABBREV": "H.M.Is.",
           "ADM0_A3": "HMD",
@@ -9833,8 +9833,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 250,
+        "type": 1,
         "properties": {
           "ABBREV": "",
           "ADM0_A3": "KNM",
@@ -9875,8 +9875,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 252,
+        "type": 1,
         "properties": {
           "ABBREV": "W. Sah.",
           "ADM0_A3": "SAH",
@@ -9917,8 +9917,8 @@
         ]
       },
       {
-        "type": 1,
         "id": 253,
+        "type": 1,
         "properties": {
           "ABBREV": "G. Bay",
           "ADM0_A3": "USG",
