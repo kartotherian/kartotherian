@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.9.3
+
+- Add an `upgrade` option to source constructor to request that Mapnik upgrade tiles to latest
+  vector tile spec version (in this case v1->v2) inside `getTile`. Default is no upgrade.
 
 ## 3.9.2
 
