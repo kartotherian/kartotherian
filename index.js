@@ -133,6 +133,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
     var scale = callback.scale || this._scale;
     var profile = callback.profile || false;
     var legacy = callback.legacy || false;
+    var upgrade = callback.upgrade || false;
     var width = !legacy ? scale * 256 | 0 || 256 : 256;
     var height = !legacy ? scale * 256 | 0 || 256 : 256;
 
@@ -237,6 +238,7 @@ Vector.prototype.getTile = function(z, x, y, callback) {
     cb.format = format;
     cb.scale = scale;
     cb.legacy = legacy;
+    cb.upgrade = upgrade;
     source._backend.getTile(z, x, y, cb);
 };
 

@@ -56,6 +56,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
     var now = +new Date;
     var legacy = callback.legacy || false;
     var scale = callback.scale || backend._scale;
+    var upgrade = callback.upgrade || false;
 
     // If scale > 1 adjusts source data zoom level inversely.
     // scale 2x => z-1, scale 4x => z-2, scale 8x => z-3, etc.
@@ -153,7 +154,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             if (type === 'pbf') {
                 // We use addData here over setData because we know it was just created
                 // and is empty so skips a clear call internally in mapnik.
-                vtile.addData(data,function(err) {
+                vtile.addData(data,{upgrade:upgrade},function(err) {
                     if (err) return callback(err);
                     return callback(null, vtile, headers);
                 });
