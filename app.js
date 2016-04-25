@@ -207,6 +207,10 @@ module.exports = function(options) {
 
     return initApp(options)
     .then(loadRoutes)
-    .then(createServer);
+    .then(function(app) {
+        // serve static files from static/
+        app.use('/static', express.static(__dirname + '/static'));
+        return app;
+    }).then(createServer);
 
 };
