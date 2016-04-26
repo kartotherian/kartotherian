@@ -3,8 +3,11 @@ v1gen:
   xml:
     npm: ["osm-bright-source", "data.xml"]
 
-v1c:
+osm-pbf:
+  public: true
+  formats: [pbf]
   uri: cassandra://?cp=127.0.0.1&keyspace=v1&repfactor=1&durablewrite=0
+
 v3c:
   uri: cassandra://?cp=127.0.0.1&keyspace=v2&repfactor=1&durablewrite=0&blocksize=10
 #        v1a:
@@ -25,4 +28,4 @@ osm-intl:
   xml:
     loader: osm-bright-style
   xmlSetParams:
-    source: {ref: v1c}
+    source: {ref: osm-pbf}

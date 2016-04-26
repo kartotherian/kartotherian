@@ -59,7 +59,6 @@ services:
       #   - if-match
       #   - user-agent
       #   - x-request-id
-
       # Uncomment to restrict connections to localhost only
       # interface: localhost
 
