@@ -1,8 +1,8 @@
 {
   "name": "kartotherian-autogen",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Tile source to dynamically create tiles if its missing in the storage",
-  "main": "lib/autogen.js",
+  "main": "autogen.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
