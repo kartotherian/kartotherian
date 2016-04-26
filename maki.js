@@ -1,17 +1,15 @@
 'use strict';
 
-var BBPromise = require('bluebird');
-var makizushi = BBPromise.promisify(require('makizushi'));
+var Promise = require('bluebird');
+var makizushi = Promise.promisify(require('makizushi'));
 
 module.exports = {};
 
-var metrics, app, Err, reportRequestError;
+var core, Err;
 
-module.exports.init = function init(opts, router) {
-    Err = opts.core.Err;
-    app = opts.app;
-    metrics = app.metrics;
-    reportRequestError = opts.reportRequestError;
+module.exports = function maki(coreV, router) {
+    core = coreV;
+    Err = core.Err;
 
     // marker icon generator  (base, size, symbol, color, scale), with the symbol being optional
     // /v4/marker/pin-m-cafe+7e7e7e@2x.png -- the format matches that of mapbox to simplify their library usage
@@ -33,7 +31,7 @@ function markerHandler(req, res, next) {
         params = req.params,
         metric = ['marker'];
 
-    return BBPromise.try(function () {
+    return Promise.try(function () {
 
         metric.push(params.base);
         metric.push(params.size);
@@ -62,11 +60,10 @@ function markerHandler(req, res, next) {
             retina: isRetina // true|false
         });
     }).then(function (data) {
-        if (app.conf.defaultHeaders) res.set(app.conf.defaultHeaders);
-        if (app.conf.overrideHeaders) res.set(app.conf.overrideHeaders);
+        core.setResponseHeaders(res);
         res.type('png').send(data);
-        metrics.endTiming(metric.join('.'), start);
+        core.metrics.endTiming(metric.join('.'), start);
     }).catch(function(err) {
-        return reportRequestError(err, res);
+        return core.reportRequestError(err, res);
     }).catch(next);
 }
