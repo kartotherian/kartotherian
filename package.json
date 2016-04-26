@@ -1,8 +1,8 @@
 {
   "name": "kartotherian-server",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Serves Kartotherian maps",
-  "main": "index.js",
+  "main": "lib/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,17 +24,6 @@
     "express": "^4.13.3",
     "underscore": "^1.8.3",
 
-    "abaculus": "git+https://github.com/kartotherian/abaculus.git",
-    "leaflet": "0.7.7",
-    "makizushi": "^1.3.0",
-
-    "leaflet-headless": "git+https://github.com/nyurik/leaflet-headless.git",
-
-    "canvas": "~1.3.0",
-    "leaflet-image": "~0.1.0",
-    "mapbox.js": "^2.3.0",
-    "preq": "^0.4.8",
-    "mwapi": "git+https://github.com/nyurik/mwapi.git",
-    "domain-validator": "*"
+    "leaflet": "0.7.7"
   }
 }
