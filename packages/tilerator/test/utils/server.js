@@ -58,7 +58,7 @@ function start(_options) {
                 console.log('stopping test server');
                 server.close();
                 stop = function () {};
-                };
+            };
             return true;
         });
     } else {

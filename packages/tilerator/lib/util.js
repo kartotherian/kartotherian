@@ -219,7 +219,7 @@ function setErrorHandler(app) {
 /**
  * Creates a new router with some default options.
  *
- * @param {Object=} opts additional options to pass to express.Router()
+ * @param {Object} opts additional options to pass to express.Router()
  * @return {Router} a new router object
  */
 function createRouter(opts) {
@@ -248,8 +248,8 @@ function createRouter(opts) {
 function initAndLogRequest(req, app) {
     req.headers = req.headers || {};
     req.headers['x-request-id'] = req.headers['x-request-id'] || generateRequestId();
-    req.logger = app.logger.child({request_id: req.headers['x-request-id']});
-    req.logger.log('trace/req', {req: reqForLog(req, app.conf.log_header_whitelist), msg: 'incoming request'});
+    req.logger = app.logger.child({request_id: req.headers['x-request-id'], request: reqForLog(req, app.conf.log_header_whitelist)});
+    req.logger.log('trace/req', {msg: 'incoming request'});
 }
 
 

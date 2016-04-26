@@ -1,6 +1,6 @@
 {
   "name": "tilerator",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Map tiles pre-generation service",
   "main": "./app.js",
   "scripts": {
@@ -30,17 +30,17 @@
   },
   "homepage": "https://github.com/kartotherian/tilerator",
   "dependencies": {
-    "bluebird": "^3.1.1",
-    "body-parser": "^1.14.2",
-    "bunyan": "^1.5.1",
+    "bluebird": "^3.3.5",
+    "body-parser": "^1.15.0",
+    "bunyan": "^1.8.1",
     "cassandra-uuid": "^0.0.2",
     "compression": "^1.6.1",
-    "domino": "^1.0.21",
-    "express": "^4.13.3",
-    "js-yaml": "^3.5.2",
-    "preq": "^0.4.8",
-    "service-runner": "^0.3.8",
-
+    "domino": "^1.0.24",
+    "express": "^4.13.4",
+    "js-yaml": "^3.6.0",
+    "preq": "^0.4.9",
+    "service-runner": "^1.2.2"
+    ,
     "minimist": "0.2.*",
     "underscore": "^1.8.3",
     "numeral": "^1.5.3",
@@ -70,11 +70,11 @@
   },
   "devDependencies": {
     "extend": "^3.0.0",
-    "istanbul": "^0.4.2",
-    "mocha": "^2.3.4",
-    "mocha-jshint": "^2.2.6",
-    "mocha-lcov-reporter": "^1.0.0",
-    "swagger-router": "^0.3.4"
+    "istanbul": "^0.4.3",
+    "mocha": "^2.4.5",
+    "mocha-jshint": "^2.3.1",
+    "mocha-lcov-reporter": "^1.2.0",
+    "swagger-router": "^0.4.2"
   },
   "deploy": {
     "node": "4.3.0",
