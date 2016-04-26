@@ -61,11 +61,11 @@ repository, but it needs to be configured properly in order to work.
 The first part of the configuration involves keeping your source repository's
 `package.json` updated. Look for its [deploy stanza](../package.json#L49).
 Depending on the exact machine on which your service will be deployed, you may
-need to set `target` to either `ubuntu` or `debian`. 
+need to set `target` to either `ubuntu` or `debian`.
 
 If you want to specify a version of Node.JS, different from the official distribution
-package, set the value of the `node` stanza to the desired version, following 
-[nvm](https://github.com/creationix/nvm) versions naming. 
+package, set the value of the `node` stanza to the desired version, following
+[nvm](https://github.com/creationix/nvm) versions naming.
 To explicitly force official distribution package, `"system"` version can be used.
 
 The important thing is keeping the `dependencies` field up to date at all times.
@@ -129,8 +129,8 @@ configuration directive by supplying the full remote reference URL:
 git config deploy.submodule https://github.com/your_team/repo_name
 ```
 
-The deploy-repo builder script assumes the name of the remote to check out in 
-the deploy repository is `origin`. An alternative name can be configured by 
+The deploy-repo builder script assumes the name of the remote to check out in
+the deploy repository is `origin`. An alternative name can be configured by
 invoking (in the source repository):
 
 ```
