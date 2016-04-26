@@ -1,0 +1,40 @@
+{
+  "name": "kartotherian-snapshot",
+  "version": "0.0.1",
+  "description": "Serves Kartotherian snapshot images",
+  "main": "lib/snapshot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kartotherian/kartotherian-snapshot.git"
+  },
+  "keywords": [
+    "kartotherian"
+  ],
+  "author": "Yuri Astrakhan <yurik@wikimedia.org>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://phabricator.wikimedia.org/tag/maps/"
+  },
+  "homepage": "https://github.com/kartotherian/kartotherian-snapshot",
+  "dependencies": {
+    "bluebird": "^3.1.1",
+    "underscore": "^1.8.3",
+    "preq": "^0.4.8",
+
+    "abaculus": "git+https://github.com/kartotherian/abaculus.git",
+    "domain-validator": "*"
+  },
+  "optionalDependencies": {
+    "makizushi": "^1.3.0",
+    "mapbox.js": "^2.3.0",
+    "leaflet": "0.7.7",
+    "leaflet-headless": "git+https://github.com/nyurik/leaflet-headless.git",
+    "leaflet-image": "~0.1.0",
+    "canvas": "~1.3.0",
+
+    "mwapi": "git+https://github.com/nyurik/mwapi.git"
+  }
+}
