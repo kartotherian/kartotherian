@@ -1,7 +1,7 @@
 'use strict';
 
 var pathLib = require('path');
-var BBPromise = require('bluebird');
+var Promise = require('bluebird');
 var _ = require('underscore');
 var express = require('express');
 var yaml = require('js-yaml');
@@ -13,12 +13,13 @@ var Err = core.Err;
 var JobProcessor = require('../lib/JobProcessor');
 var fileParser = require('../lib/fileParser');
 
-var jobProcessor, metrics, sources;
+var jobProcessor;
 
 function onSetInfo(req, res) {
     reportAsync(res, function () {
-        var generator = sources.getHandlerById(req.params.generatorId);
-        var storage = sources.getHandlerById(req.params.storageId);
+        var sources = core.getSources(),
+            generator = sources.getHandlerById(req.params.generatorId),
+            storage = sources.getHandlerById(req.params.storageId);
         core.checkType(req.query, 'tiles', 'string-array');
 
         return generator.getInfoAsync().then(function (info) {
@@ -35,7 +36,7 @@ function updateSourcesFromYaml(sourceYaml) {
     if (!src) {
         throw new Err('Bad sources value');
     }
-    return sources.loadSourcesAsync(src);
+    return core.getSources().loadSourcesAsync(src);
 }
 
 function onSources(req, res) {
@@ -46,19 +47,19 @@ function onSources(req, res) {
             }
             return updateSourcesFromYaml(req.body);
         }
-        return sources.getSources();
+        return core.getSources().getSources();
     }, true);
 }
 
 function onVariables(req, res) {
     reportAsync(res, function () {
-        return _.keys(sources.getVariables());
+        return _.keys(core.getSources().getVariables());
     });
 }
 
 function onEnque(req, res) {
     reportAsync(res, function () {
-        return BBPromise.try(function() {
+        return Promise.try(function() {
             if (typeof req.body === 'string') {
                 return updateSourcesFromYaml(req.body);
             }
@@ -110,7 +111,7 @@ function onEnque(req, res) {
             } else if (filter1) {
                 job.filters = filter1;
             }
-            queue.setSources(job, sources);
+            queue.setSources(job, core.getSources());
 
             if (req.query.filepath) {
                 if (req.query.mergeGapsAsBigAs) {
@@ -147,7 +148,7 @@ function onCleanup(req, res) {
             minutesSinceUpdate: req.params.minutes,
             breakIfLongerThan: req.query.breakIfLongerThan,
             breakIntoParts: req.query.breakIntoParts,
-            sources: sources,
+            sources: core.getSources(),
             updateSources: req.query.updateSources
         });
     });
@@ -162,7 +163,7 @@ function reportAsync(res, task, isYaml) {
         format = function(value) { return yaml.safeDump(value); };
         type = 'text/plain';
     }
-    return BBPromise
+    return Promise
         .try(task)
         .then(function (val) {
             // we should have a log of all requests's responses, 'warn' is a good level for that
@@ -178,15 +179,14 @@ function reportAsync(res, task, isYaml) {
 
 module.exports = function(app) {
 
-    return BBPromise.try(function () {
+    return Promise.try(function () {
+        core.init(app, require('path').resolve(__dirname, '..'), function (module) {
+            return require.resolve(module);
+        }, require('tilelive'), require('mapnik'));
         if (app.conf.daemonOnly && app.conf.uiOnly) {
             throw new Err('daemonOnly and uiOnly config params may not be both true');
         }
-        core.init(app.logger, require('path').resolve(__dirname, '..'), function (module) {
-            return require.resolve(module);
-        }, require('tilelive'), require('mapnik'));
-        metrics = app.metrics;
-        metrics.increment('init');
+        core.metrics.increment('init');
         core.registerSourceLibs(
             require('tilelive-bridge'),
             require('tilelive-vector'),
@@ -197,20 +197,21 @@ module.exports = function(app) {
             require('kartotherian-cassandra'),
             require('kartotherian-layermixer')
         );
-        sources = new core.Sources(app);
+        var sources = new core.Sources(app);
         return sources.init(app.conf.variables, app.conf.sources);
-    }).then(function () {
+    }).then(function (sources) {
+        core.setSources(sources);
         var jobHandler;
         if (!app.conf.uiOnly) {
             jobHandler = function (job, callback) {
-                BBPromise.try(function () {
+                Promise.try(function () {
                     if (jobProcessor) {
                         core.log('warn', 'Another handler is already running');
                     }
-                    jobProcessor = new JobProcessor(sources, job, metrics);
+                    jobProcessor = new JobProcessor(sources, job, core.metrics);
                     return jobProcessor.runAsync();
                 }).catch(function (err) {
-                    metrics.increment('joberror');
+                    core.metrics.increment('joberror');
                     throw err;
                 }).finally(function () {
                     jobProcessor = undefined;
@@ -237,8 +238,7 @@ module.exports = function(app) {
             app.use('/', express.static(pathLib.resolve(__dirname, '../static'), {index: 'admin.html'}));
             require('kartotherian-server').init({
                 core: core,
-                app: app,
-                sources: sources
+                app: app
             });
         }
     }).catch(function (err) {

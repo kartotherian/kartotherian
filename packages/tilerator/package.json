@@ -1,6 +1,6 @@
 {
   "name": "tilerator",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Map tiles pre-generation service",
   "main": "./app.js",
   "scripts": {
