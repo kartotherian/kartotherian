@@ -11,8 +11,6 @@ v5:
 #    repfactor: 4
 #    durablewrite: 0
 #    createIfMissing: false
-  info:
-    name: "v5"
 
 # OSM PBF source
 osm-pbf:
