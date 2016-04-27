@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-core",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "The core components of the Kartotherian maps tile service",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "url": "https://github.com/kartotherian/kartotherian-core/issues"
   },
   "dependencies": {
-    "bluebird": "^3.1.1",
+    "bluebird": "^3.3.5",
     "js-yaml": "^3.5.2",
     "underscore": "^1.8.3",
     "xmldoc": "git+https://github.com/nyurik/xmldoc.git"

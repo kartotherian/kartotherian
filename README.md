@@ -134,3 +134,5 @@ multple change sets.
 * `headers` (object) - a set of extra headers that will be sent to the user instead of the headers returned by the source. (public requests only)
 * `formats` (array of strings) - one string or a list of string values specifying allowed formats, e.g. `['png','jpeg']`
 * `scales` (array of numbers) - one number or a list of number values specifying allowed scalings, e.g. `[1.3, 1.5, 2, 2.6, 3]`
+* `setInfo` (object) - provide values that will be reported to the client via the `/<sourceId>/info.json`. See https://github.com/mapbox/tilejson-spec
+* `overrideInfo` (object) - override values produced by the source's getInfo(), or if value is null, remove it. Result will be accessible via `/<sourceId>/info.json`. See https://github.com/mapbox/tilejson-spec
