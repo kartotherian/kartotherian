@@ -160,7 +160,7 @@ function reportAsync(res, task, isYaml) {
         format = function(value) { return JSON.stringify(value, null, '  '); };
         type = 'application/json';
     } else {
-        format = function(value) { return yaml.safeDump(value); };
+        format = function(value) { return yaml.safeDump(value, {skipInvalid: true}); };
         type = 'text/plain';
     }
     return Promise
