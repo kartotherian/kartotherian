@@ -66,22 +66,22 @@ services:
       variables: ../variables.yaml
       sources: ../sources.yaml
 
-      allowedDomains:
-        http:
-          - localhost:8080
-          - 127.0.0.1:8080
-          - wmflabs.org
-          - vega.github.io
-        https:
-          - mediawiki.org
-          - wikibooks.org
-          - wikidata.org
-          - wikimedia.org
-          - wikimediafoundation.org
-          - wikinews.org
-          - wikipedia.org
-          - wikiquote.org
-          - wikisource.org
-          - wikiversity.org
-          - wikivoyage.org
-          - wiktionary.org
+      # allowedDomains:
+      #   http:
+      #     - localhost:8080
+      #     - 127.0.0.1:8080
+      #     - wmflabs.org
+      #     - vega.github.io
+      #   https:
+      #     - mediawiki.org
+      #     - wikibooks.org
+      #     - wikidata.org
+      #     - wikimedia.org
+      #     - wikimediafoundation.org
+      #     - wikinews.org
+      #     - wikipedia.org
+      #     - wikiquote.org
+      #     - wikisource.org
+      #     - wikiversity.org
+      #     - wikivoyage.org
+      #     - wiktionary.org
