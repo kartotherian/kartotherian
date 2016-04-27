@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-overzoom",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Overzoom tile source for Kartotherian map tile server",
   "main": "overzoomer.js",
   "scripts": {
@@ -21,6 +21,6 @@
     "url": "https://github.com/kartotherian/kartotherian-overzoom/issues"
   },
   "dependencies": {
-    "bluebird": "^3.1.1"
+    "bluebird": "^3.3.5"
   }
 }
