@@ -6,15 +6,16 @@
  */
 
 var util = require('util');
-var BBPromise = require('bluebird');
+var Promise = require('bluebird');
 var cassandra = require('cassandra-driver');
 var multistream = require('multistream');
 var promistreamus = require('promistreamus');
+var pckg = require('./package.json');
 
 var core, Err;
 var prepared = {prepare: true};
 
-BBPromise.promisifyAll(cassandra.Client.prototype);
+Promise.promisifyAll(cassandra.Client.prototype);
 
 function CassandraStore(uri, callback) {
     var self = this;
@@ -30,7 +31,7 @@ function CassandraStore(uri, callback) {
         throw err;
     };
 
-    return BBPromise.try(function () {
+    return Promise.try(function () {
         self.headers = {
             'Content-Type': 'application/x-protobuf',
             'Content-Encoding': 'gzip'
@@ -62,7 +63,7 @@ function CassandraStore(uri, callback) {
         var dw = params.durablewrite;
         self.durablewrite = (typeof dw === 'undefined' || (dw && dw !== 'false' && dw !== '0')) ? 'true' : 'false';
         self.minzoom = typeof params.minzoom === 'undefined' ? 0 : parseInt(params.minzoom);
-        self.maxzoom = typeof params.maxzoom === 'undefined' ? 20 : parseInt(params.maxzoom);
+        self.maxzoom = typeof params.maxzoom === 'undefined' ? 22 : parseInt(params.maxzoom);
         self.blocksize = typeof params.blocksize === 'undefined' ? 32768 : parseInt(params.blocksize);
         self.maxBatchSize = typeof params.maxBatchSize === 'undefined' ? undefined : parseInt(params.maxBatchSize);
         var clientOpts = {contactPoints: self.contactPoints};
@@ -120,7 +121,7 @@ function CassandraStore(uri, callback) {
 
 CassandraStore.prototype.getTile = function(z, x, y, callback) {
     var self = this;
-    return BBPromise.try(function () {
+    return Promise.try(function () {
         if (z < self.minzoom || z > self.maxzoom) {
             core.throwNoTile();
         }
@@ -130,7 +131,7 @@ CassandraStore.prototype.getTile = function(z, x, y, callback) {
             core.throwNoTile();
         }
         return [row.tile, self.headers];
-    }).catch(this.attachUri).nodeify(callback, {spread: true});
+    }).nodeify(callback, {spread: true});
 };
 
 CassandraStore.prototype.putInfo = function(data, callback) {
@@ -145,14 +146,11 @@ CassandraStore.prototype.getInfo = function(callback) {
             return JSON.parse(row.tile.toString());
         } else {
             return {
-                "bounds": "-180,-85.0511,180,85.0511",
-                "center": "0,0,2",
-                "description": "",
-                "maxzoom": self.maxzoom,
-                "minzoom": self.minzoom,
-                "name": "cassandra",
-                "template": "",
-                "version": "1.0.0"
+                'tilejson': '2.1.0',
+                'name': 'CassandraStore ' + pckg.version,
+                'bounds': '-180,-85.0511,180,85.0511',
+                'minzoom': self.minzoom,
+                'maxzoom': self.maxzoom
             };
         }
     }).catch(this.attachUri).nodeify(callback);
@@ -168,7 +166,7 @@ CassandraStore.prototype.putTile = function(z, x, y, tile, callback) {
 
 CassandraStore.prototype._storeDataAsync = function(zoom, idx, data) {
     var self = this;
-    return BBPromise.try(function () {
+    return Promise.try(function () {
         var query, params;
         if (data && data.length > 0) {
             query = self.queries.set;
@@ -196,7 +194,7 @@ CassandraStore.prototype.close = function(callback) {
         callback(null);
     } else {
         var self = this;
-        BBPromise.try(function () {
+       BPromise.try(function () {
             return (self.batchMode && self.maxBatchSize) ? self.flushAsync() : true;
         }).then(function () {
             delete self.client;
@@ -226,7 +224,7 @@ CassandraStore.prototype.flush = function(callback) {
 
 CassandraStore.prototype.stopWriting = function(callback) {
     var self = this;
-    BBPromise.try(function () {
+   BPromise.try(function () {
         if (self.batchMode === 0) {
             self.throwError('stopWriting() called more times than startWriting()')
         }
@@ -240,7 +238,7 @@ CassandraStore.prototype.stopWriting = function(callback) {
 CassandraStore.prototype.queryTileAsync = function(options) {
     var self = this, getTile, getWriteTime, getSize;
 
-    return BBPromise.try(function() {
+    return Promise.try(function() {
         if (options.info) {
             options.zoom = -1;
             options.idx = 0;
@@ -397,5 +395,5 @@ CassandraStore.initKartotherian = function(cor) {
     core.tilelive.protocols['cassandra:'] = CassandraStore;
 };
 
-BBPromise.promisifyAll(CassandraStore.prototype);
+Promise.promisifyAll(CassandraStore.prototype);
 module.exports = CassandraStore;
