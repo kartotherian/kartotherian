@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-server",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Serves Kartotherian maps",
   "main": "lib/server.js",
   "scripts": {
@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/kartotherian/kartotherian-server",
   "dependencies": {
-    "bluebird": "^3.1.1",
-    "express": "^4.13.3",
+    "bluebird": "^3.3.5",
+    "express": "^4.13.4",
     "underscore": "^1.8.3",
 
     "leaflet": "0.7.7"
