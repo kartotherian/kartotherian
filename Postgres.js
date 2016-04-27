@@ -10,6 +10,7 @@ var BBPromise = require('bluebird');
 var postgres = require('pg-promise')({promiseLib: BBPromise});
 var promistreamus = require('promistreamus');
 var QueryStream = require('pg-query-stream');
+var pckg = require('./package.json');
 
 var core, Err;
 
@@ -44,7 +45,7 @@ function PostgresStore(uri, callback) {
         self.createIfMissing = !!params.createIfMissing;
         self.table = params.table || 'tiles';
         self.minzoom = typeof params.minzoom === 'undefined' ? 0 : parseInt(params.minzoom);
-        self.maxzoom = typeof params.maxzoom === 'undefined' ? 20 : parseInt(params.maxzoom);
+        self.maxzoom = typeof params.maxzoom === 'undefined' ? 22 : parseInt(params.maxzoom);
         self.maxBatchSize = typeof params.maxBatchSize === 'undefined' ? undefined : parseInt(params.maxBatchSize);
         var clientOpts = {
             host: params.host,
@@ -109,14 +110,11 @@ PostgresStore.prototype.getInfo = function(callback) {
             return JSON.parse(row.tile.toString());
         } else {
             return {
-                "bounds": "-180,-85.0511,180,85.0511",
-                "center": "0,0,2",
-                "description": "",
-                "maxzoom": self.maxzoom,
-                "minzoom": self.minzoom,
-                "name": "postgres",
-                "template": "",
-                "version": "1.0.0"
+                'tilejson': '2.1.0',
+                'name': 'PostgresStore ' + pckg.version,
+                'bounds': '-180,-85.0511,180,85.0511',
+                'minzoom': self.minzoom,
+                'maxzoom': self.maxzoom
             };
         }
     }).catch(this.attachUri).nodeify(callback);
