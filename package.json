@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-snapshot",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Serves Kartotherian snapshot images",
   "main": "lib/snapshot.js",
   "scripts": {
@@ -20,9 +20,9 @@
   },
   "homepage": "https://github.com/kartotherian/kartotherian-snapshot",
   "dependencies": {
-    "bluebird": "^3.1.1",
+    "bluebird": "^3.3.5",
     "underscore": "^1.8.3",
-    "preq": "^0.4.8",
+    "preq": "^0.4.9",
 
     "abaculus": "git+https://github.com/kartotherian/abaculus.git",
     "domain-validator": "*"
