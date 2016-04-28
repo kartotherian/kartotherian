@@ -1,5 +1,7 @@
 # Generates vtiles from database
 gen:
+  public: true
+  formats: [pbf]
   uri: bridge://
   xml:
     npm: ["osm-bright-source", "data.xml"]
@@ -29,6 +31,8 @@ genview:
 
 # Cassandra storage
 v5:
+  public: true
+  formats: [pbf]
   uri: cassandra://
   params:
     maxzoom: 16
