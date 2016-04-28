@@ -11,10 +11,6 @@ worker_heap_limit_mb: 250
 logging:
   level: trace
 
-# Statsd metrics reporter
-metrics:
-  type: info
-
 services:
   - name: kartotherian
     module: ./app.js

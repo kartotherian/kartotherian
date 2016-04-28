@@ -1,3 +1,4 @@
+# Generates vtiles from database
 gen:
   uri: bridge://
   xml:
@@ -12,11 +13,12 @@ gen:
       user: {var: osmdb-user}
       password: {var: osmdb-pswd}
 
-# OSM map with international labeling - will be used as default
-g-osm-intl:
+# View tiles as generated directly from the database. Don't view zoom0-5
+osm-intl:
   public: true
   formats: [png,json,headers,svg,jpeg]
   scales: [1.3, 1.5, 2, 2.6, 3]
+  maxzoom: 18
   static: true
   maxheight: 2048
   maxwidth: 2048
@@ -25,18 +27,7 @@ g-osm-intl:
     loader: osm-bright-style
   xmlSetParams:
     source: {ref: gen}
-
-# OSM map without any labels
-g-osm:
-  public: true
-  formats: [png,json,headers,svg,jpeg]
-  scales: [1.3, 1.5, 2, 2.6, 3]
-  static: true
-  maxheight: 2048
-  maxwidth: 2048
-  uri: vector://
-  xml:
-    loader: osm-bright-style
-  xmlSetParams:
-    source: {ref: gen}
-  xmlExceptLayers: ['country_label', 'place_label', 'road_label']
+  setInfo:
+    attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+    bounds: [-180,-85.0511,180,85.0511]
+    tiles: ["https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"]
