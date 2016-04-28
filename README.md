@@ -69,13 +69,23 @@ Tilerator is separate from Kartotherian, but it reuses most of the same componen
 
 ### Components by Wikimedia Foundation
 * [kartotherian-core](https://github.com/kartotherian/kartotherian-core) - Loads and configures tile sources, and provides some common utility functions
+* [kartotherian-server](https://github.com/kartotherian/kartotherian-server) - Handles user requests for tiles and source info, as well as registers additional data type handlers like maki markers and image snapshots.
+* [kartotherian-maki](https://github.com/kartotherian/kartotherian-maki) - Request handler for maki markers - generates PNG marker images that can be used from geojson.
+* [kartotherian-snapshot](https://github.com/kartotherian/kartotherian-snapshot) - Request handler for static images by combining multiple tiles into one snapshot image of a requested size.
+
+#### Tile sources
 * [kartotherian-autogen](https://github.com/kartotherian/kartotherian-autogen) - Tile source that checks "storage" source for a tile, and if not found, gets it from the "generator" source and saves it into the "storage"
-* [kartotherian-demultiplexer](https://github.com/kartotherian/kartotherian-demultiplexer) - Tile source that combines multiple sources by zoom level
 * [kartotherian-cassandra](https://github.com/kartotherian/kartotherian-cassandra) - Tile source that stores tiles in the Cassandra database
+* [kartotherian-demultiplexer](https://github.com/kartotherian/kartotherian-demultiplexer) - Tile source that combines multiple sources by zoom level
 * [kartotherian-layermixer](https://github.com/kartotherian/kartotherian-layermixer) - Tile source capable of mixing different vector layers from multiple tile sources
 * [kartotherian-overzoom](https://github.com/kartotherian/kartotherian-overzoom) - Tile source that will zoom out if the requested tile does not exist, and extracts the needed portion from the lower-zoom tile it finds.
+* [kartotherian-postgres](https://github.com/kartotherian/kartotherian-postgres) - Tile source that stores tiles in the Postgres database
+
+#### Data and Styling
 * [osm-bright-source](https://github.com/kartotherian/osm-bright.tm2source) - SQL queries used by the `tilelive-bridge` to generate a vector tile from Postgres Database
 * [osm-bright-style](https://github.com/kartotherian/osm-bright.tm2) - Style used by the `tilelive-vector` to convert vector tiles into images.
+* [osm-bright-fonts](https://github.com/kartotherian/osm-bright.fonts) - Fonts used by the `osm-bright-style`.
+
 
 ### Components by MapBox
 * [tilelive](https://github.com/mapbox/tilelive) - ties together various tile sources, both vector and raster
