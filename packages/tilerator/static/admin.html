@@ -63,7 +63,7 @@
 <body>
 
 <aside>
-    <input type="button" value="set style" onclick="mapLayer.setUrl(getTileUrl())"> <input id="style" type="text"><br>
+    <input type="button" value="set style" onclick="mapLayer.setUrl(getTileUrl())"> <input id="style" type="text"> <a href="#" onclick="return getInfo('style')">info</a><br>
     <a href="jobs" target="_blank">jobs</a>, <a href="raw" target="_blank">data</a>, <a href="sources" target="_blank">sources</a>, <a href="variables" target="_blank">vars</a>
     <table>
         <tr><th>Filters</th><th>#1</th><th>#2</th></tr>
@@ -84,8 +84,9 @@
 
 <div id="header">
     <label for="host">host </label><input id="host" type="text" value="localhost:6534">
-    <label for="generatorId">src </label><input id="generatorId" type="text" value="gen">
-    <label for="storageId">dst </label><input id="storageId" type="text" value="v5">
+    <label for="generatorId"><a href="#" onclick="return getInfo('generatorId')">src</a> </label><input id="generatorId" type="text" value="gen">
+    <label for="storageId"><a href="#" onclick="return getInfo('storageId')">dst</a> </label><input id="storageId" type="text" value="v5">
+    <input type="button" value="copy info" onclick="copyInfo()">
     <label for="zoom">zoom </label><input id="zoom" type="text" value="" readonly>
     <label for="fromZoom">fromZ </label><input id="fromZoom" type="text" value="">
     <label for="beforeZoom">beforeZ </label><input id="beforeZoom" type="text" value="">
@@ -140,7 +141,7 @@
         return '/' + document.getElementById('style').value + '/{z}/{x}/{y}' + scalex + '.png';
     }
 
-    function addField(res, fieldId, value) {
+    function addField(res, fieldId, value, addToPath) {
         if (value === undefined) {
             var field = document.getElementById(fieldId);
             switch (field.type) {
@@ -159,8 +160,15 @@
             value = value.toString();
         }
         if (value !== undefined && value !== '') {
-            if (res) res += '&';
-            res += fieldId + '=' + encodeURIComponent(value);
+            if (addToPath) {
+                res += '/';
+            } else {
+                if (res) res += '&';
+                res += fieldId + '=';
+            }
+            res += encodeURIComponent(value);
+        } else if (addToPath) {
+            throw new Error('Required value is not set: ' + fieldId);
         }
         return res;
     }
@@ -196,7 +204,7 @@
         var request = 'http://' + document.getElementById('host').value + '/' + command;
         if (req) {
             request += '?' + req;
-        } else if (!sources) {
+        } else if (req !== false && !sources) {
             document.getElementById('result').innerHTML += '<br>Error: Nothing to do (sources are not set)';
             return;
         }
@@ -230,6 +238,21 @@
         req = addField(req, 'filepath');
         req = addCommonFields(req);
         postCommand('add', req);
+    }
+
+    function copyInfo() {
+        var command = 'setinfo';
+        command = addField(command, 'generatorId', undefined, true);
+        command = addField(command, 'storageId', undefined, true);
+        postCommand(command, false);
+    }
+
+    function getInfo(field) {
+        var href = '';
+        href = addField(href, field, undefined, true);
+        href += '/info.json?format=1';
+        window.open(href,'_blank');
+        return false;
     }
 
     map.on('click', function(e) {

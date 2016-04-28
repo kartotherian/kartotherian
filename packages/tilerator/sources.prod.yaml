@@ -48,9 +48,8 @@ osm-pbf:
   params:
     source: {ref: v5}
     maxzoom: 18
-  setInfo:
+  overrideInfo:
     attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-    bounds: [-180,-85.0511,180,85.0511]
     tiles: ["https://maps.wikimedia.org/osm-pbf/{z}/{x}/{y}.pbf"]
 
 # OSM map with international labeling - will be used as default
@@ -67,9 +66,8 @@ osm-intl:
     loader: osm-bright-style
   xmlSetParams:
     source: {ref: osm-pbf}
-  setInfo:
+  overrideInfo:
     attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-    bounds: [-180,-85.0511,180,85.0511]
     tiles: ["https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"]
 
 # OSM map without any labels
@@ -87,7 +85,6 @@ osm:
   xmlSetParams:
     source: {ref: osm-pbf}
   xmlExceptLayers: ['country_label', 'place_label', 'poi_label']
-  setInfo:
+  overrideInfo:
     attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-    bounds: [-180,-85.0511,180,85.0511]
     tiles: ["https://maps.wikimedia.org/osm/{z}/{x}/{y}.png"]
