@@ -27,7 +27,6 @@ osm-intl:
     loader: osm-bright-style
   xmlSetParams:
     source: {ref: gen}
-  setInfo:
+  overrideInfo:
     attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-    bounds: [-180,-85.0511,180,85.0511]
     tiles: ["https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"]
