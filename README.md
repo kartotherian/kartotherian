@@ -37,19 +37,16 @@ Kartotherian can generate marker images by wrapping any of the [maki icons](http
 At this point, only "pin" is supported for the base. The color is a 3 digit or 6 digit hex number. Optional scaling can only be 2x. Beyond the pre-defined maki icons, you may give a number (0-99), a single letter (a-z), or nothing.
 
 ## Very quick start
-Assumes you have an OSM database (or a part of it) set up locally in the latest Postgress+Postgis, imported using `osm2pgsql --slim --hstore`.
+
 ```
-cd /srv
-git clone https://github.com/kartotherian/kartotherian.git  # Clone the repository
+git clone --recursive https://github.com/kartotherian/kartotherian.git  # Clone the repository
 cd kartotherian
-git submodule update --init                                 # update submodules
 npm install                                                 # install npm dependencies
-# Add water polygons if missing (see below)
-# Install pgsql functions and admin tables
-psql -d gis -f node_modules/osm-bright-source/node_modules/postgis-vt-util/lib.sql
-psql -d gis -f node_modules/osm-bright-source/sql/functions.sql
-psql -d gis -f node_modules/osm-bright-source/sql/admin.sql
-psql -d gis -c 'select populate_admin();'
+```
+
+Set up a database as described in [osm-bright.tm2source](https://github.com/kartotherian/osm-bright.tm2source), which is installed in `node_modules/osm-bright-source`.
+
+```
 node server.js -c config.sample.yaml
 ```
 Browse to http://localhost:6533/
@@ -92,93 +89,29 @@ Tilerator is separate from Kartotherian, but it reuses most of the same componen
 
 ## In depth step-by-step:
 
-### Requirements (on Debian Jessie)
-```
-apt-get install sudo git unzip curl build-essential postgresql-9.4-postgis-2.1 postgresql-contrib-9.4 proj-bin libgeos-dev osm2pgsql sqlite3 nodejs-legacy npm
-```
+This documentation assumes that you are going to use [osm-bright.tm2](https://github.com/kartotherian/osm-bright.tm2) and [osm-bright.tm2source](https://github.com/kartotherian/osm-bright.tm2source) for a map style.
 
-### Initial server settings (The notes are for the user "yurik")
-```
-useradd -m -G adm,sudo yurik
-vi /etc/sudoers  # Allow nopassword sudoing by changing this line:
-                 %sudo   ALL=(ALL:ALL) NOPASSWD: ALL
+### Install dependencies
 
-# As user, add some git helpers and vim syntax colors:
-git config --global alias.co checkout
-git config --global alias.st status
-git config --global alias.br branch
-git config --global alias.hist 'log --pretty=format:"%h %ad | %s%d [%an]" --graph --date=short'
+Kartotherian requires nodejs and npm. On Ubuntu these can be installed with
 ```
-
-### Setup an osm2pgsql database named gis
-```
-mkdir /srv/planet
-cd /srv
-groupadd osm
-usermod -a -G osm yurik
-# TODO: seems wrong, double check these 4 lines
-chgrp osm planet
-chgrp osm .
-chmod g+w . planet
-chmod g+w . osm
-
-# Download the latest OSM dump from http://planet.osm.org/pbf/ - both md5 and the actual data
-curl -O http://planet.osm.org/pbf/planet-150601.osm.pbf.md5
-curl -O http://planet.osm.org/pbf/planet-150601.osm.pbf    # You can do other steps in the mean time
-md5sum -c planet-150601.osm.pbf.md5  # Make sure the file downloaded ok
-```
-
-### Configure Postgres database
-```
-service postgresql stop
-mv /var/lib/postgresql/ /srv
-ln -s /srv/postgresql /var/lib
-
-vi /etc/postgresql/9.4/main/postgresql.conf
-# uncomment conf.d line in /etc/postgresql/9.4/main/postgresql.conf
-
-mkdir /etc/postgresql/9.4/main/conf.d
-vi /etc/postgresql/9.4/main/conf.d/settings.conf
-```
-Add this text:
-```
-# from http://paulnorman.ca/blog/2014/11/new-server-postgresql-tuning/
-shared_buffers = 512MB
-work_mem = 64MB
-maintenance_work_mem = 1024MB
-# full_page_writes = off
-wal_buffers = 16MB
-checkpoint_segments = 64
-checkpoint_completion_target = 0.9
-random_page_cost = 2.0
-cpu_tuple_cost = 0.05
-autovacuum_vacuum_scale_factor = 0.05
-autovacuum_analyze_scale_factor = 0.2
-
-# Uncomment to log slow queries - http://www.postgresql.org/docs/9.2/static/auto-explain.html
-# shared_preload_libraries = 'auto_explain'
-# auto_explain.log_min_duration = '5s'
-```
-
-In bash:
-```
-service postgresql start
-sudo -u postgres createuser -s yurik
-createdb -E UTF8 -T template0 gis
-psql -d gis -c 'CREATE EXTENSION hstore; CREATE EXTENSION postgis;'
-
-# Once OSM dump is downloaded, import. Takes about 14 hours on a reasonable SSD server.
-osm2pgsql --create --slim --flat-nodes nodes.bin -C 26000 --number-processes 8 --hstore planet-150601.osm.pbf
+sudo apt-get install git unzip curl build-essential sqlite3 nodejs-legacy npm
 ```
 
 ### Get Kartotherian code
+
 ```
-cd /srv
-git clone https://github.com/kartotherian/kartotherian.git  # Clone the repository
+git clone --recursive https://github.com/kartotherian/kartotherian.git  # Clone the repository
 cd kartotherian
 git submodule update --init                                 # update submodules
 npm install                                                 # install npm dependencies
 ```
+
+### Source
+
+Set up osm-bright.tm2source as described in [its documentation.](https://github.com/kartotherian/osm-bright.tm2source#install).
+
+osm-bright.tm2source is installed in `node_modules/osm-bright-source`
 
 ### Edit Kartotherian configuration - config.yaml
 ```
@@ -197,27 +130,6 @@ variables:
 # Place all sources you want to serve here - either as a filename, or as sub-items.
 # See sources.prod.yaml for examples
 sources: sources.yaml
-```
-
-### Download Water polygons in Mercator format from http://openstreetmapdata.com/data/water-polygons
-```
-$ curl -O http://data.openstreetmapdata.com/water-polygons-split-3857.zip
-$ unzip water-polygons-split-3857.zip && rm water-polygons-split-3857.zip
-$ cd water-polygons-split-3857
-$ shp2pgsql -I -s 3857 -g way water_polygons.shp water_polygons | psql -d gis
-$ psql gis
-gis=# select UpdateGeometrySRID('', 'water_polygons', 'way', 900913);
-\q
-
-$ psql -d gis -f node_modules/osm-bright-source/sql/water-indexes.sql
-```
-
-### Add mapbox's helper functions and generate admin data
-```
-psql -d gis -f node_modules/osm-bright-source/node_modules/postgis-vt-util/lib.sql
-psql -d gis -f node_modules/osm-bright-source/sql/functions.sql
-psql -d gis -f node_modules/osm-bright-source/sql/admin.sql
-psql -d gis -c 'select populate_admin();'
 ```
 
 ### Configure Kartotherian
