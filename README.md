@@ -39,7 +39,7 @@ At this point, only "pin" is supported for the base. The color is a 3 digit or 6
 ## Very quick start
 
 ```
-git clone --recursive https://github.com/kartotherian/kartotherian.git  # Clone the repository
+git clone https://github.com/kartotherian/kartotherian.git  # Clone the repository
 cd kartotherian
 npm install                                                 # install npm dependencies
 ```
@@ -101,9 +101,8 @@ sudo apt-get install git unzip curl build-essential sqlite3 nodejs-legacy npm
 ### Get Kartotherian code
 
 ```
-git clone --recursive https://github.com/kartotherian/kartotherian.git  # Clone the repository
+git clone https://github.com/kartotherian/kartotherian.git  # Clone the repository
 cd kartotherian
-git submodule update --init                                 # update submodules
 npm install                                                 # install npm dependencies
 ```
 
