@@ -31,7 +31,6 @@ genview:
 v5:
   uri: cassandra://
   params:
-    minzoom: 0
     maxzoom: 16
     keyspace: v5
     cp: [maps-test2001.codfw.wmnet, maps-test2002.codfw.wmnet, maps-test2003.codfw.wmnet, maps-test2004.codfw.wmnet]

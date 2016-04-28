@@ -18,22 +18,53 @@ logging:
 
 # Statsd metrics reporter
 metrics:
-  type: info
+  #type: log
   #host: localhost
   #port: 8125
 
 services:
-  - name: kartotherian
+  - name: tileratorui
     # a relative path or the name of an npm package, if different from name
     module: ./app.js
     # optionally, a version constraint of the npm package
     # version: ^0.4.0
     # per-service config
     conf:
-      port: 4101
+      port: 16535
+
       # restrict to localhost access only
       interface: localhost
 
+      # more per-service config settings
+      # the location of the spec, defaults to spec.yaml if not specified
+      spec: ./spec.template.yaml
+      # allow cross-domain requests to the API (default '*')
+      cors: '*'
+      # to disable use:
+      # cors: false
+      # to restrict to a particular domain, use:
+      # cors: restricted.domain.org
+      # content for the CSP headers
+      # csp: false  # uncomment this line to disable sending them
+      # URL of the outbound proxy to use (complete with protocol)
+      # proxy: http://my.proxy.org:8080
+      # the list of domains for which not to use the proxy defined above
+      # no_proxy_list:
+      #   - domain1.com
+      #   - domain2.org
+      # the list of incoming request headers that can be logged; if left empty,
+      # the following headers are allowed: cache-control, content-length,
+      # content-type, if-match, user-agent, x-request-id
+      # log_header_whitelist:
+      #   - cache-control
+      #   - content-length
+      #   - content-type
+      #   - if-match
+      #   - user-agent
+      #   - x-request-id
+
       sources: ../sources.yaml
 
+      # If true, runs this instance without processing tiles
+      # This could be good for queue management
       uiOnly: true
