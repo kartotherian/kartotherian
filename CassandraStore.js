@@ -235,6 +235,17 @@ CassandraStore.prototype.stopWriting = function(callback) {
         .nodeify(callback);
 };
 
+/**
+ * Iterate all tiles that match the given parameters
+ * @param {object} options
+ * @param {number} options.idx Index of the tile
+ * @param {number} options.zoom
+ * @param {boolean} options.getSize
+ * @param {boolean} options.getTile
+ * @param {boolean} options.getWriteTime
+ * @param {boolean} options.info
+ * @returns {*}
+ */
 CassandraStore.prototype.queryTileAsync = function(options) {
     var self = this, getTile, getWriteTime, getSize;
 
@@ -292,7 +303,11 @@ CassandraStore.prototype.queryTileAsync = function(options) {
  *  biggerThan - number - return only tiles whose compressed size is bigger than this value (inclusive)
  *  smallerThan - number - return only tiles whose compressed size is smaller than this value (exclusive)
  * @returns {Function} - a function that returns a promise. If promise resolves to undefined, there are no more values
- * in the stream.
+ * in the stream. The promised values will contain:
+ *  {number} zoom
+ *  {number} idx
+ *  {Buffer} tile if options.getTiles is set, get tile data
+ *  {object} headers if options.getTiles is set, get tile header
  */
 CassandraStore.prototype.query = function(options) {
     var self = this,
