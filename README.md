@@ -80,6 +80,7 @@ Tilerator is separate from Kartotherian, but it reuses most of the same componen
 * [kartotherian-layermixer](https://github.com/kartotherian/kartotherian-layermixer) - Tile source capable of mixing different vector layers from multiple tile sources
 * [kartotherian-overzoom](https://github.com/kartotherian/kartotherian-overzoom) - Tile source that will zoom out if the requested tile does not exist, and extracts the needed portion from the lower-zoom tile it finds.
 * [kartotherian-postgres](https://github.com/kartotherian/kartotherian-postgres) - Tile source that stores tiles in the Postgres database
+* [kartotherian-substantial](https://github.com/kartotherian/kartotherian-substantial) - Tile source that filters out tiles that are not significant - e.g. nothing but water or land.
 
 #### Data and Styling
 * [osm-bright-source](https://github.com/kartotherian/osm-bright.tm2source) - SQL queries used by the `tilelive-bridge` to generate a vector tile from Postgres Database

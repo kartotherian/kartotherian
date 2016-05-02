@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
@@ -29,6 +29,24 @@
     "url": "https://phabricator.wikimedia.org/tag/maps/"
   },
   "homepage": "https://github.com/kartotherian/kartotherian",
+
+  "kartotherian": {
+    "registerSourceLibs": [
+      "tilelive-bridge",
+      "tilelive-vector",
+      "kartotherian-autogen",
+      "kartotherian-cassandra",
+      "kartotherian-demultiplexer",
+      "kartotherian-layermixer",
+      "kartotherian-overzoom",
+      "kartotherian-substantial"
+    ],
+    "requestHandlers": [
+      "kartotherian-maki",
+      "kartotherian-snapshot"
+    ]
+  },
+
   "dependencies": {
     "bluebird": "^3.3.5",
     "body-parser": "^1.15.0",
@@ -48,13 +66,14 @@
 
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "kartotherian-server": "git+https://github.com/kartotherian/kartotherian-server.git",
-    "kartotherian-maki": "git+https://github.com/kartotherian/kartotherian-maki.git",
-    "kartotherian-snapshot": "git+https://github.com/kartotherian/kartotherian-snapshot.git",
     "kartotherian-autogen": "git+https://github.com/kartotherian/kartotherian-autogen.git",
-    "kartotherian-demultiplexer": "git+https://github.com/kartotherian/kartotherian-demultiplexer.git",
     "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",
+    "kartotherian-demultiplexer": "git+https://github.com/kartotherian/kartotherian-demultiplexer.git",
     "kartotherian-layermixer": "git+https://github.com/kartotherian/kartotherian-layermixer.git",
+    "kartotherian-maki": "git+https://github.com/kartotherian/kartotherian-maki.git",
     "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
+    "kartotherian-snapshot": "git+https://github.com/kartotherian/kartotherian-snapshot.git",
+    "kartotherian-substantial": "git+https://github.com/kartotherian/kartotherian-substantial.git",
     "osm-bright-source": "git+https://github.com/kartotherian/osm-bright.tm2source.git",
     "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git"
   },
