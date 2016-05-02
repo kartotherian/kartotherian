@@ -10,6 +10,7 @@ var queue = require('../lib/queue');
 var core = require('kartotherian-core');
 var Err = core.Err;
 
+var info = require('../package.json');
 var JobProcessor = require('../lib/JobProcessor');
 var fileParser = require('../lib/fileParser');
 
@@ -76,7 +77,6 @@ function onEnque(req, res) {
                 y: req.query.y,
                 parts: req.query.parts,
                 deleteEmpty: req.query.deleteEmpty,
-                saveSolid: req.query.saveSolid,
                 fromZoom: req.query.fromZoom,
                 beforeZoom: req.query.beforeZoom
             };
@@ -180,23 +180,18 @@ function reportAsync(res, task, isYaml) {
 module.exports = function(app) {
 
     return Promise.try(function () {
-        core.init(app, require('path').resolve(__dirname, '..'), function (module) {
-            return require.resolve(module);
-        }, require('tilelive'), require('mapnik'));
+        core.init(app, info.kartotherian, require('path').resolve(__dirname, '..'),
+            function (module) {
+                return require(module);
+            },
+            function (module) {
+                return require.resolve(module);
+            }
+        );
         if (app.conf.daemonOnly && app.conf.uiOnly) {
             throw new Err('daemonOnly and uiOnly config params may not be both true');
         }
         core.metrics.increment('init');
-        core.registerSourceLibs(
-            require('tilelive-bridge'),
-            require('tilelive-vector'),
-            require('kartotherian-autogen'),
-            require('kartotherian-demultiplexer'),
-            require('kartotherian-overzoom'),
-            require('kartotherian-postgres'),
-            require('kartotherian-cassandra'),
-            require('kartotherian-layermixer')
-        );
         var sources = new core.Sources(app);
         return sources.init(app.conf.variables, app.conf.sources);
     }).then(function (sources) {

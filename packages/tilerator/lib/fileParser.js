@@ -4,7 +4,7 @@ var BBPromise = require('bluebird');
 var _ = require('underscore');
 var exec = require('child_process').exec;
 var fs = BBPromise.promisifyAll(require('fs'));
-var tmp = BBPromise.promisifyAll(require('tmp'));
+var createTempFile = BBPromise.promisify(require('tmp').file, {multiArgs: true});
 var byline = require('byline');
 var stream = require('stream');
 
@@ -208,7 +208,7 @@ module.exports = function(filepath, options, addJobCallback) {
             core.checkType(options, 'fromZoom', 'zoom');
             core.checkType(options, 'beforeZoom', 'zoom', true, options.fromZoom + 1);
         }
-        return tmp.fileAsync();
+        return createTempFile();
     }).spread(function (path, fd, cleanupCallback) {
         tmpFile = path;
         tmpFileCleanupCb = cleanupCallback;

@@ -90,7 +90,6 @@
     <label for="zoom">zoom </label><input id="zoom" type="text" value="" readonly>
     <label for="fromZoom">fromZ </label><input id="fromZoom" type="text" value="">
     <label for="beforeZoom">beforeZ </label><input id="beforeZoom" type="text" value="">
-    <label for="saveSolid">saveSolid </label><input id="saveSolid" type="checkbox">
     <label for="parts">parts </label><input id="parts" type="text" value="">
     <label for="priority">priority </label><input id="priority" type="text" value="">
     <br>
@@ -224,7 +223,7 @@
 
     function addCommonFields(req) {
         [
-            'generatorId', 'storageId', 'fromZoom', 'beforeZoom', 'parts', 'priority', 'saveSolid',
+            'generatorId', 'storageId', 'fromZoom', 'beforeZoom', 'parts', 'priority',
             'checkZoom', 'sourceId', 'dateBefore', 'dateFrom', 'biggerThan', 'smallerThan', 'missing',
             'checkZoom2', 'sourceId2', 'dateBefore2', 'dateFrom2', 'biggerThan2', 'smallerThan2', 'missing2'
         ].forEach(function (fld) {

@@ -50,7 +50,6 @@ http://localhost:6534/add?generatorId=gen&storageId=store&zoom=3
 * `idxBefore`- generate tiles until this index (non-inclusive, 4^zoom by default)
 * `x` and `y` - generate just one tile at these coordinates. Cannot be used with `idxFrom` or `idxBefore`
 * `deleteEmpty` - if true, any non-generated tile (e.g. empty or solid) will be explicitly deleted from the storage (optional, false by default)
-* `saveSolid` - if true, any solid tile will still be saved to the storage (optional, false by default)
 * `threads` - uses preemptive multitasking to process a job, effectivelly multithreading it, while still processing it as one job. This mode is experimental, and might not work in some cases with advanced filtering options.
 
 ### Pyramid mode

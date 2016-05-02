@@ -65,6 +65,9 @@ services:
 
       sources: ../sources.yaml
 
+      # If true, do not enable admin interface
+      daemonOnly: false
+
       # If true, runs this instance without processing tiles
       # This could be good for queue management
       uiOnly: true

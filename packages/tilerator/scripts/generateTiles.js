@@ -127,8 +127,6 @@ function renderTileAsync(threadNo) {
                         .bind(vt)
                         .then(function (uncompressed) {
                             return this.setDataAsync(uncompressed);
-                        }).then(function() {
-                            return this.parseAsync();
                         }).then(function () {
                             return this.isSolidAsync();
                         }).spread(function (solid, key) {

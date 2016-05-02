@@ -29,6 +29,21 @@
     "url": "https://phabricator.wikimedia.org/tag/maps/"
   },
   "homepage": "https://github.com/kartotherian/tilerator",
+
+  "kartotherian": {
+    "registerSourceLibs": [
+      "tilelive-bridge",
+      "tilelive-vector",
+      "kartotherian-autogen",
+      "kartotherian-cassandra",
+      "kartotherian-demultiplexer",
+      "kartotherian-layermixer",
+      "kartotherian-overzoom",
+      "kartotherian-postgres",
+      "kartotherian-substantial"
+    ]
+  },
+
   "dependencies": {
     "bluebird": "^3.3.5",
     "body-parser": "^1.15.0",
@@ -48,6 +63,7 @@
     "tmp": "git+https://github.com/nyurik/node-tmp.git",
     "byline": "^4.2.1",
 
+    "htcp-purge": "^0.1.2",
     "jade": "^1.11.0",
     "kue": "^0.10.5",
     "kue-ui": "git+https://github.com/nyurik/kue-ui.git",
@@ -60,11 +76,12 @@
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "kartotherian-server": "git+https://github.com/kartotherian/kartotherian-server.git",
     "kartotherian-autogen": "git+https://github.com/kartotherian/kartotherian-autogen.git",
-    "kartotherian-demultiplexer": "git+https://github.com/kartotherian/kartotherian-demultiplexer.git",
     "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",
+    "kartotherian-demultiplexer": "git+https://github.com/kartotherian/kartotherian-demultiplexer.git",
     "kartotherian-layermixer": "git+https://github.com/kartotherian/kartotherian-layermixer.git",
     "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
     "kartotherian-postgres": "git+https://github.com/kartotherian/kartotherian-postgres.git",
+    "kartotherian-substantial": "git+https://github.com/kartotherian/kartotherian-substantial.git",
     "osm-bright-source": "git+https://github.com/kartotherian/osm-bright.tm2source.git",
     "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git"
   },

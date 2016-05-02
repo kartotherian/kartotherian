@@ -370,39 +370,6 @@ JobProcessor.prototype.generateTileAsync = function(iterValue) {
         promise = BBPromise.resolve(tile);
     }
 
-    // Don't save tiles that consist entirely of one layer's solid polygons, and without empty spaces
-    if (!job.saveSolid) {
-        promise = promise.then(function (data) {
-            if (!data) {
-                return data;
-            }
-            if (data.length >= config.maxsize) {
-                self.metrics.endTiming(self.metricsPrefix + 'big', start);
-                self.recordSamples('tiletoobig', idx);
-                return data; // generated tile is too big, save
-            }
-            var vt = new core.mapnik.VectorTile(job.zoom, x, y);
-            return core.uncompressAsync(data)
-                .bind(vt)
-                .then(function (uncompressed) {
-                    return this.setDataAsync(uncompressed);
-                }).then(function () {
-                    return this.parseAsync();
-                }).then(function () {
-                    return this.isSolidAsync();
-                }).spread(function (solid, key) {
-                    if (solid) {
-                        // Count different types of solid tiles
-                        self.recordSamples('solid_' + key, idx);
-                        self.metrics.endTiming(self.metricsPrefix + 'solid', start);
-                        return null;
-                    } else {
-                        stats.tilenonsolid++;
-                        return data;
-                    }
-                });
-        });
-    }
     return promise.then(function (data) {
         if (data) {
             self.metrics.endTiming(self.metricsPrefix + 'saving', start);
