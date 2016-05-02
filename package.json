@@ -1,0 +1,27 @@
+{
+  "name": "kartotherian-substantial",
+  "version": "0.0.4",
+  "description": "Filtering tile source to save only tiles that should be saved rather than overzoomed",
+  "main": "substantial.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kartotherian/kartotherian-substantial.git"
+  },
+  "keywords": [
+    "kartotherian",
+    "substantial",
+    "tilelive"
+  ],
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/kartotherian/kartotherian-substantial/issues"
+  },
+  "dependencies": {
+    "bluebird": "^3.3.5",
+    "underscore": "^1.8.3"
+  }
+}
