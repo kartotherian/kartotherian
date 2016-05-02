@@ -49,9 +49,7 @@ LayerMixer.prototype.getTile = function(z, x, y, callback) {
                     return false;
                 } else {
                     var vtile = new core.mapnik.VectorTile(z, x, y);
-                    return vtile.setDataAsync(data).then(function () {
-                        return vtile.parseAsync();
-                    }).return(vtile);
+                    return vtile.setDataAsync(data).return(vtile);
                 }
             }).catch(function (err) {
                 if (core.isNoTileError(err)) {
