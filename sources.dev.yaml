@@ -13,10 +13,11 @@ v5:
   uri: cassandra://
   params:
     maxzoom: 16
-    keyspace: v1
+    keyspace: v4
     cp: 127.0.0.1
     repfactor: 1
     durablewrite: 0
+    createIfMissing: false
 
 # View tiles as generated directly from the database. Don't view zoom0-5
 genview:
@@ -32,6 +33,7 @@ genview:
   xmlSetParams:
     source: {ref: gen}
 
+# Filter out any small tiles without significant data on or after zoom 10
 substgen:
   public: true
   formats: [pbf]
@@ -39,11 +41,18 @@ substgen:
   params:
     source: {ref: gen}
     minzoom: 10
-    minsize: 2000
-    layers: [water]
-    debug: true
+    minsize: 500
+    layers: [water, landuse]
 
-# View tiles as generated directly from the database. Don't view zoom0-5
+# If tile has been filtered out by substgen, use overzoom to recreate it
+substgenoz:
+  public: true
+  formats: [pbf]
+  uri: overzoom://
+  params:
+    source: {ref: substgen}
+
+# View tiles from generator, without the insignificant ones (will show blank squares)
 substgenview:
   public: true
   formats: [png,json,headers,svg,jpeg]
@@ -57,6 +66,21 @@ substgenview:
   xmlSetParams:
     source: {ref: substgen}
 
+# View tiles from generator, and use overzoom for any filtered out ones
+substgenozview:
+  public: true
+  formats: [png,json,headers,svg,jpeg]
+  scales: [1.3, 1.5, 2, 2.6, 3]
+  static: true
+  maxheight: 2048
+  maxwidth: 2048
+  uri: vector://
+  xml:
+    loader: osm-bright-style
+  xmlSetParams:
+    source: {ref: substgenoz}
+
+# Filter out any tiles stored in the v5 that are not significant
 substv5:
   public: true
   formats: [pbf]
@@ -64,11 +88,18 @@ substv5:
   params:
     source: {ref: v5}
     minzoom: 10
-    minsize: 2000
-    layers: [water]
-    debug: true
+    minsize: 500
+    layers: [water, landuse]
 
-# View tiles as generated directly from the database. Don't view zoom0-5
+# Use overzoom on v5 tiles for any filtered out insignificant tiles
+substv5oz:
+  public: true
+  formats: [pbf]
+  uri: overzoom://
+  params:
+    source: {ref: substv5}
+
+# Show v5 tiles with insignificant ones showing as blank squares
 substv5view:
   public: true
   formats: [png,json,headers,svg,jpeg]
@@ -82,7 +113,21 @@ substv5view:
   xmlSetParams:
     source: {ref: substv5}
 
-# OSM PBF source
+# Show v5 tiles and use overzoom for those that have been filtered out
+substv5ozview:
+  public: true
+  formats: [png,json,headers,svg,jpeg]
+  scales: [1.3, 1.5, 2, 2.6, 3]
+  static: true
+  maxheight: 2048
+  maxwidth: 2048
+  uri: vector://
+  xml:
+    loader: osm-bright-style
+  xmlSetParams:
+    source: {ref: substv5oz}
+
+# Default OSM PBF source
 osm-pbf:
   public: true
   formats: [pbf]
