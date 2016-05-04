@@ -51,7 +51,7 @@ node server.js -c config.sample.yaml
 ```
 Browse to http://localhost:6533/
 
-The set up inside `sources.sample.yaml` does not use any storage or caching, so it will not be suitable for production. You will need to configure additional source chains and setup a proper storage to make this into a production system.
+The set up inside [`sources.sample.yaml`](sources.sample.yaml) does not use any storage or caching, so it will not be suitable for production. You will need to configure additional source chains and setup a proper storage to make this into a production system.
 
 ## Configuration
 Inside the `conf` key:
