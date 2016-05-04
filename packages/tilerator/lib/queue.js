@@ -55,7 +55,6 @@ module.exports.validateJob = function(job) {
     core.checkType(job, 'storageId', 'string', true, 1);
     core.checkType(job, 'generatorId', 'string', true, 1);
     core.checkType(job, 'zoom', 'zoom');
-    core.checkType(job, 'threads', 'integer', false, 1, 100);
     core.checkType(job, 'parts', 'integer', false, 1, 1000);
     core.checkType(job, 'deleteEmpty', 'boolean');
 

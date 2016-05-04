@@ -66,7 +66,6 @@ function onEnque(req, res) {
             }
         }).then(function() {
             var job = {
-                threads: req.query.threads,
                 storageId: req.query.storageId,
                 generatorId: req.query.generatorId,
                 zoom: req.query.zoom,

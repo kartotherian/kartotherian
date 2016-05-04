@@ -65,18 +65,10 @@ JobProcessor.prototype.runAsync = function() {
             job.idxFrom = self.stats.index;
         }
         self.retryFromIdx = job.idxFrom;
-        // Thread list is used in the generators
-        var threadList = _.range(job.threads || 1);
-        self.threadIdxState = _.map(threadList, function () {
-            return job.idxFrom;
-        });
 
         self.iterator = self.getIterator(job.idxFrom, job.idxBefore, 0);
 
-        var threads = _.map(threadList, function (threadId) {
-            return self.jobProcessorThreadAsync(threadId);
-        });
-        return BBPromise.all(threads).then(function () {
+        return self.jobProcessorAsync().then(function () {
             self.reportProgress();
             // Until progress info is exposed in the UI, do it here too
             self.job.log(JSON.stringify(self.stats, null, '  '));
@@ -208,9 +200,6 @@ JobProcessor.prototype.getExistingTilesIterator = function(idxFrom, idxBefore, f
  * Given an iterator, yield only those tiles that the iterator does NOT yield for the given zoom
  */
 JobProcessor.prototype.invertIterator = function(iterator, idxFrom, idxBefore) {
-    if (this.threadIdxState.length > 1) {
-        throw new Err('multiple threads are not supported for this job');
-    }
     var idxNext = idxFrom,
         nextValP, isDone;
     var getNextValAsync = function () {
@@ -242,9 +231,6 @@ JobProcessor.prototype.invertIterator = function(iterator, idxFrom, idxBefore) {
  * Given an iterator, find sequential ranges of indexes, and create iterator for each
  */
 JobProcessor.prototype.generateSubIterators = function(iterator, idxFrom, idxBefore, scale, filterIndex) {
-    if (this.threadIdxState.length > 1) {
-        throw new Err('multiple threads are not supported for this job');
-    }
     var self = this;
     var job = self.job.data;
     var firstIdx, lastIdx, isDone;
@@ -284,19 +270,18 @@ JobProcessor.prototype.generateSubIterators = function(iterator, idxFrom, idxBef
     return getNextValAsync;
 };
 
-JobProcessor.prototype.jobProcessorThreadAsync = function(threadId) {
+JobProcessor.prototype.jobProcessorAsync = function() {
     var self = this;
-    return this.iterator().then(function (iterValue) {
+    return this.iterator().then(function () {
         if (iterValue === undefined) {
             return;
         }
         // generate tile and repeat
         return self.generateTileAsync(iterValue).then(function () {
             self.stats.processed++;
-            self.threadIdxState[threadId] = iterValue.idx;
 
             // decide if we want to update the progress status
-            self.stats.index = _.min(self.threadIdxState);
+            self.stats.index = iterValue.idx;
             var doneCount = self.stats.index - self.idxFromOriginal;
             var progress = doneCount / self.count;
             if (!self.progress || (progress - self.progress) > 0.001 || self.isShuttingDown) {
@@ -306,7 +291,7 @@ JobProcessor.prototype.jobProcessorThreadAsync = function(threadId) {
             if (self.isShuttingDown) {
                 throw new Err('Shutting down');
             }
-            return self.jobProcessorThreadAsync(threadId);
+            return self.jobProcessorAsync();
         });
     });
 };
