@@ -1,6 +1,6 @@
 'use strict';
 
-var BBPromise = require('bluebird');
+var Promise = require('bluebird');
 var util = require('util');
 var _ = require('underscore');
 var numeral = require('numeral');
@@ -8,13 +8,15 @@ var core = require('kartotherian-core');
 var Err = core.Err;
 
 var kue = require('kue');
-BBPromise.promisifyAll(kue.Job);
-BBPromise.promisifyAll(kue.Job.prototype);
+Promise.promisifyAll(kue.Job);
+Promise.promisifyAll(kue.Job.prototype);
 
 var kueui = require('kue-ui');
 var queue;
 
 var jobName = 'generate';
+var Job = require('./Job');
+
 
 module.exports = {};
 
@@ -27,7 +29,7 @@ module.exports.init = function(app, jobHandler) {
     var opts = {};
     if (app.conf.redisPrefix) opts.prefix = app.conf.redisPrefix;
     if (app.conf.redis) opts.redis = app.conf.redis;
-    queue = BBPromise.promisifyAll(kue.createQueue(opts));
+    queue = Promise.promisifyAll(kue.createQueue(opts));
 
     if (!app.conf.daemonOnly) {
         var uiConf = {
@@ -51,112 +53,34 @@ module.exports.shutdownAsync = function(timeout) {
     return queue.shutdownAsync(timeout);
 };
 
-module.exports.validateJob = function(job) {
-    core.checkType(job, 'storageId', 'string', true, 1);
-    core.checkType(job, 'generatorId', 'string', true, 1);
-    core.checkType(job, 'zoom', 'zoom');
-    core.checkType(job, 'parts', 'integer', false, 1, 1000);
-    core.checkType(job, 'deleteEmpty', 'boolean');
-
-    var maxCount = Math.pow(4, job.zoom);
-    core.checkType(job, 'idxFrom', 'integer', 0, 0, maxCount);
-    core.checkType(job, 'idxBefore', 'integer', maxCount, job.idxFrom, maxCount);
-
-    core.checkType(job, 'sources', 'object');
-
-    if (core.checkType(job, 'filters', 'object')) {
-        if (!Array.isArray(job.filters)) {
-            job.filters = [job.filters];
-        }
-        _.each(job.filters, function(filter, ind, all) {
-            // Each filter except last must have its own zoom level. Last is optional
-            // Each next zoom level must be bigger than the one before, but less than or equal to job's zoom
-            // Special case - negative zoom implies job's zoom - N
-            if (core.checkType(filter, 'zoom', 'integer')) {
-                if (filter.zoom < 0) {
-                    filter.zoom = job.zoom + filter.zoom;
-                }
-                core.checkType(filter, 'zoom', 'zoom',
-                    ind < all.length - 1,
-                    ind === 0 ? 0 : all[ind - 1].zoom + 1,
-                    job.zoom);
-            }
-            if (core.checkType(filter, 'dateFrom', '[object Date]') &&
-                core.checkType(filter, 'dateBefore', '[object Date]') &&
-                filter.dateFrom >= filter.dateBefore
-            ) {
-                throw new Err('Invalid dates: dateFrom must be less than dateBefore');
-            }
-            core.checkType(filter, 'biggerThan', 'integer');
-            core.checkType(filter, 'smallerThan', 'integer');
-            core.checkType(filter, 'missing', 'boolean');
-            core.checkType(filter, 'sourceId', 'string', false, 1);
-        });
-    }
-};
-
 /**
  * Enque job for later processing
- * @param job object
+ * @param opts object
  * See the readme file for all available parameters
  */
-module.exports.addJobAsync = function(job) {
-    job = _.clone(job);
-    return BBPromise.try(function() {
+module.exports.addJobAsync = function(opts) {
+    return Promise.try(function() {
         if (!queue) {
             throw new Err('Still loading');
         }
-        // Convert x,y coordinates into idxdFrom & idxBefore
-        if (job.x !== undefined || job.y !== undefined ) {
-            if (job.idxFrom !== undefined || job.idxBefore !== undefined) {
-                throw new Err('idxFrom and idxBefore are not allowed when using x,y');
-            }
-            if (job.x === undefined || job.y === undefined) {
-                throw new Err('Both x and y must be given');
-            }
-            core.checkType(job, 'x', 'integer', true);
-            core.checkType(job, 'y', 'integer', true);
-            var zoom = core.strToInt(job.zoom);
-            if (!core.isValidZoom(zoom) || !core.isValidCoordinate(job.x, zoom) || !core.isValidCoordinate(job.y, zoom)) {
-                throw new Err('Invalid x,y coordinates for the given zoom');
-            }
-            job.idxFrom = core.xyToIndex(job.x, job.y);
-            job.idxBefore = job.idxFrom + 1;
-            delete job.x;
-            delete job.y;
-        }
+
+        var job = new Job(opts);
 
         // If this is a pyramid, break it into individual jobs
-        if (job.fromZoom !== undefined || job.beforeZoom !== undefined) {
+        if (job.isPyramid) {
             return module.exports.addPyramidJobsAsync(job);
         }
 
-        module.exports.validateJob(job);
-
-        // Don't check priority before because it can be both a number and a string like 'highest'
-        var priority = core.strToInt(job.priority) || 0;
-        delete job.priority;
-
-        var count = job.idxBefore - job.idxFrom;
+        var count = job.size;
         var parts = Math.min(count, job.parts || 1);
         delete job.parts;
-        if (job.layers !== undefined) {
-            if (typeof job.layers === 'string') {
-                job.layers = [job.layers];
-            } else if (!Array.isArray(job.layers) || !_.every(job.layers, function (v) {
-                    return typeof v === 'string' && v.length > 0;
-                })
-            ) {
-                throw new Err('Invalid layers value %s, must be a list of nonempty strings', job.layers);
-            }
-        }
 
         var result = [];
 
         // Break the job into parts
         var create = function () {
             if (parts < 1) {
-                return BBPromise.resolve(result);
+                return Promise.resolve(result);
             }
             var j;
             if (parts === 1) {
@@ -191,16 +115,6 @@ module.exports.addJobAsync = function(job) {
  * Given an x,y (idxFrom) of the zoom, enqueue all tiles below them, with zooms >= fromZoom and < beforeZoom
  */
 module.exports.addPyramidJobsAsync = function(options) {
-    if (options.zoom === undefined || options.fromZoom === undefined || options.beforeZoom === undefined) {
-        throw new Err('Pyramid-add requires zoom, fromZoom, and beforeZoom');
-    }
-
-    core.checkType(options, 'zoom', 'zoom');
-    core.checkType(options, 'fromZoom', 'zoom');
-    core.checkType(options, 'beforeZoom', 'zoom', true, options.fromZoom);
-    core.checkType(options, 'idxFrom', 'integer');
-    core.checkType(options, 'idxBefore', 'integer');
-
     var opts = _.clone(options);
     delete opts.fromZoom;
     delete opts.beforeZoom;
@@ -216,7 +130,7 @@ module.exports.addPyramidJobsAsync = function(options) {
             result = result.concat(res);
         }
         if (zoom >= options.beforeZoom) {
-            return BBPromise.resolve(result);
+            return Promise.resolve(result);
         }
         var z = zoom++;
         var mult = Math.pow(4, Math.abs(z - options.zoom));

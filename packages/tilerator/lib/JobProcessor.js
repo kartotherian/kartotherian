@@ -1,6 +1,6 @@
 'use strict';
 
-var BBPromise = require('bluebird');
+var Promise = require('bluebird');
 var _ = require('underscore');
 var util = require('util');
 
@@ -8,26 +8,23 @@ var core = require('kartotherian-core');
 var Err = core.Err;
 
 var promistreamus = require('promistreamus');
+var Job = require('./Job');
 
-var config = {
-    // Assume the tile needs to be saved if its compressed size is above this value
-    // Skips the Mapnik's isSolid() call
-    maxsize: 5 * 1024
-};
 
-function JobProcessor(sources, job, metrics) {
+function JobProcessor(sources, kueJob, metrics) {
     this.sources = sources;
-    this.job = job;
+    this.kueJob = kueJob;
     this.metrics = metrics;
+    this.job = new Job(kueJob.data);
 }
 
 /**
  * Do the job, resolves promise when the job is complete
- * @returns {*}
+ * @returns {Promise}
  */
 JobProcessor.prototype.runAsync = function() {
-    var self = this;
-    var job = this.job.data;
+    var self = this,
+        job = this.job;
 
     return this.sources.loadSourcesAsync(job.sources).then(function () {
         self.tileGenerator = self.sources.getHandlerById(job.generatorId);
@@ -36,13 +33,13 @@ JobProcessor.prototype.runAsync = function() {
         self.isShuttingDown = false;
         self.metricsPrefix = util.format('gen.%s.%s.z%s.', job.generatorId, job.storageId,
             job.zoom < 10 ? '0' + job.zoom : job.zoom);
-        self.idxFromOriginal = job.idxFrom;
-        self.count = job.idxBefore - self.idxFromOriginal;
-        if (!self.job.progress_data || !self.job.progress_data.index) {
+        if (!self.kueJob.progress_data || !self.kueJob.progress_data.index) {
+            job.moveNextRange();
             self.stats = {
                 itemsPerSec: 0,
                 sizeAvg: 0,
                 estimateHrs: -1,
+                range: job.currentRange,
                 index: job.idxFrom,
                 processed: 0,
                 nosave: 0,
@@ -61,39 +58,56 @@ JobProcessor.prototype.runAsync = function() {
                 largestTile: undefined
             };
         } else {
-            self.stats = self.job.progress_data;
-            job.idxFrom = self.stats.index;
+            self.stats = self.kueJob.progress_data;
+            job.moveNextRange(self.stats.range, self.stats.index);
         }
-        self.retryFromIdx = job.idxFrom;
+        self.processedAtRestart = self.stats.processed;
 
-        self.iterator = self.getIterator(job.idxFrom, job.idxBefore, 0);
+        var isFirst = true;
+        self.iterator = promistreamus.flatten(function() {
+            var hasData = isFirst ? job.isIterating() : job.moveNextRange();
+            isFirst = false;
+            self.stats.range = job.currentRange;
+            if (hasData) {
+                return self.getIterator(job.idxFrom, job.idxBefore, 0);
+            } else {
+                return false;
+            }
+        });
 
         return self.jobProcessorAsync().then(function () {
-            self.reportProgress();
+            self.reportProgress(true);
             // Until progress info is exposed in the UI, do it here too
-            self.job.log(JSON.stringify(self.stats, null, '  '));
+            self.kueJob.log(JSON.stringify(self.stats, null, '  '));
         });
     });
 };
 
-JobProcessor.prototype.reportProgress = function(doneCount) {
-    var stats = this.stats;
-    var job = this.job.data;
-    var time = (new Date() - this.start) / 1000;
-    stats.itemsPerSec = time > 0 ? Math.round((stats.index - this.retryFromIdx) / time * 10) / 10 : 0;
-    stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
-    // how long until we are done, in minutes
-    if (doneCount !== undefined) {
-        stats.estimateHrs = stats.sizeAvg > 0 ? Math.round((job.idxBefore - stats.index) / stats.itemsPerSec / 60 / 60 * 10) / 10 : 0;
-    } else {
-        delete stats.estimateHrs;
-        doneCount = this.count;
+JobProcessor.prototype.reportProgress = function reportProgress (isDone) {
+    var stats = this.stats,
+        job = this.job;
+
+    // decide if we want to update the progress status
+    var progress = stats.processed / job.size;
+    if (!this.lastProgressReport || (progress - this.lastProgressReport) > 0.001 || this.isShuttingDown) {
+
+        var time = (new Date() - this.start) / 1000;
+        stats.itemsPerSec = time > 0 ? Math.round((stats.processed - this.processedAtRestart) / time * 10) / 10 : 0;
+        stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
+
+        // how long until we are done, in minutes
+        if (!isDone) {
+            stats.estimateHrs = stats.sizeAvg > 0 ? Math.round((job.size - stats.processed) / stats.itemsPerSec / 60 / 60 * 10) / 10 : 0;
+        } else {
+            delete stats.estimateHrs;
+        }
+        this.kueJob.progress(stats.processed, job.size, stats);
+        this.lastProgressReport = progress;
     }
-    this.job.progress(doneCount, this.count, stats);
 };
 
 JobProcessor.prototype.getIterator = function(idxFrom, idxBefore, filterIndex) {
-    var job = this.job.data;
+    var job = this.job;
     if (_.isFunction(this.tileGenerator.query) && (!job.filters || filterIndex >= job.filters.length)) {
         // tile generator source is capable of iterations - we shouldn't generate one by one
         if (!job.filters) {
@@ -118,7 +132,7 @@ JobProcessor.prototype.getSimpleIterator = function(idxFrom, idxBefore) {
         if (idx < idxBefore) {
             result = {idx: idx++};
         }
-        return BBPromise.resolve(result);
+        return Promise.resolve(result);
     }
 };
 
@@ -131,10 +145,11 @@ JobProcessor.prototype.getSimpleIterator = function(idxFrom, idxBefore) {
  */
 JobProcessor.prototype.getExistingTilesIterator = function(idxFrom, idxBefore, filterIndex) {
 
-    var job = this.job.data;
-    var filter = job.filters[filterIndex];
-    var scale = filter.zoom !== undefined && filter.zoom !== job.zoom ? Math.pow(4, job.zoom - filter.zoom) : false;
-    var source = filter.sourceId ? this.sources.getHandlerById(filter.sourceId) : this.tileStore;
+    var job = this.job,
+        filter = job.filters[filterIndex],
+        scale = filter.zoom !== undefined && filter.zoom !== job.zoom ? Math.pow(4, job.zoom - filter.zoom) : false,
+        source = filter.sourceId ? this.sources.getHandlerById(filter.sourceId) : this.tileStore;
+
     if (!_.isFunction(source.query)) {
         throw new Err('Tile source %s does not support querying', filter.sourceId || job.storageId);
     }
@@ -204,7 +219,7 @@ JobProcessor.prototype.invertIterator = function(iterator, idxFrom, idxBefore) {
         nextValP, isDone;
     var getNextValAsync = function () {
         if (isDone) {
-            return BBPromise.resolve(undefined);
+            return Promise.resolve(undefined);
         } else if (!nextValP) {
             nextValP = iterator();
         }
@@ -232,12 +247,12 @@ JobProcessor.prototype.invertIterator = function(iterator, idxFrom, idxBefore) {
  */
 JobProcessor.prototype.generateSubIterators = function(iterator, idxFrom, idxBefore, scale, filterIndex) {
     var self = this;
-    var job = self.job.data;
+    var job = self.job;
     var firstIdx, lastIdx, isDone;
     scale = scale || 1;
     var getNextValAsync = function () {
         if (isDone) {
-            return BBPromise.resolve(undefined);
+            return Promise.resolve(undefined);
         }
         return iterator().then(function (iterValue) {
             var idx = iterValue === undefined ? undefined : iterValue.idx;
@@ -279,15 +294,8 @@ JobProcessor.prototype.jobProcessorAsync = function() {
         // generate tile and repeat
         return self.generateTileAsync(iterValue).then(function () {
             self.stats.processed++;
-
-            // decide if we want to update the progress status
             self.stats.index = iterValue.idx;
-            var doneCount = self.stats.index - self.idxFromOriginal;
-            var progress = doneCount / self.count;
-            if (!self.progress || (progress - self.progress) > 0.001 || self.isShuttingDown) {
-                self.reportProgress(doneCount);
-                self.progress = progress;
-            }
+            self.reportProgress();
             if (self.isShuttingDown) {
                 throw new Err('Shutting down');
             }
@@ -319,7 +327,7 @@ JobProcessor.prototype.generateTileAsync = function(iterValue) {
         idx = iterValue.idx,
         tile = iterValue.tile,
         stats = this.stats,
-        job = this.job.data,
+        job = this.job,
         xy = core.indexToXY(idx),
         x = xy[0],
         y = xy[1],
@@ -327,7 +335,7 @@ JobProcessor.prototype.generateTileAsync = function(iterValue) {
 
     // Generate tile or get it from the iterator
     if (!tile) {
-        promise = BBPromise.try(function () {
+        promise = Promise.try(function () {
             stats.tilegen++;
             return self.tileGenerator.getTileAsync(job.zoom, x, y);
         }).then(function (dataAndHeader) {
@@ -352,7 +360,7 @@ JobProcessor.prototype.generateTileAsync = function(iterValue) {
             return data;
         });
     } else {
-        promise = BBPromise.resolve(tile);
+        promise = Promise.resolve(tile);
     }
 
     return promise.then(function (data) {
