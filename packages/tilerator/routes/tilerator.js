@@ -72,6 +72,7 @@ function onEnque(req, res) {
                 priority: req.query.priority,
                 idxFrom: req.query.idxFrom,
                 idxBefore: req.query.idxBefore,
+                tiles: req.query.tiles ? JSON.parse(req.query.tiles) : undefined,
                 x: req.query.x,
                 y: req.query.y,
                 parts: req.query.parts,

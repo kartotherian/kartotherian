@@ -10,11 +10,12 @@ function Job(opts) {
     _.extendOwn(this, opts);
 
     core.checkType(this, 'fromZoom', 'zoom');
-    core.checkType(this, 'beforeZoom', 'zoom', false, this.fromZoom);
+    core.checkType(this, 'beforeZoom', 'zoom', undefined, this.fromZoom);
+    core.checkType(this, 'parts', 'integer', 1, 1, 1000);
 
-    this.isPyramid = this.fromZoom !== undefined || this.beforeZoom !== undefined;
-    if (this.isPyramid) {
-        if(this.fromZoom === undefined || this.beforeZoom === undefined) {
+    this.isComplex = this.fromZoom !== undefined || this.beforeZoom !== undefined || this.parts !== 1;
+    if (this.isComplex) {
+        if((this.fromZoom === undefined) !== (this.beforeZoom === undefined)) {
             throw new Err('When present, both fromZoom and beforeZoom must be present');
         }
     }
@@ -22,7 +23,6 @@ function Job(opts) {
     core.checkType(this, 'storageId', 'string', true, 1);
     core.checkType(this, 'generatorId', 'string', true, 1);
     core.checkType(this, 'zoom', 'zoom', true);
-    core.checkType(this, 'parts', 'integer', false, 1, 1000);
     core.checkType(this, 'deleteEmpty', 'boolean');
 
     var zoom = this.zoom,
@@ -120,7 +120,7 @@ function Job(opts) {
  */
 Job.prototype.moveNextRange = function moveNextRange (range, startIdx) {
 
-    if (this.isPyramid || this.parts !== undefined) {
+    if (this.isComplex) {
         throw new Err('Pyramid or multi-part job cannot be iterated');
     }
 
@@ -160,34 +160,54 @@ Job.prototype.isIterating = function isIterating () {
 
 function addRange(tiles, rng) {
     if (rng) {
-        tiles.push((rng[0] + 1 === rng[1]) ? rng[0] : rng);
+        var count = rng[1] - rng[0];
+        tiles.push(count === 1 ? rng[0] : rng);
+        return count;
+    } else {
+        return 0;
     }
 }
 
 /**
- * If the current job has a range of zooms (pyramid), returns a list of corresponding single zoom jobs
- * @returns {array|false}
+ * If the current job has a range of zooms (pyramid), returns a list of corresponding single zoom jobs.
+ * If the current job has multiple parts (parts !== 1 or undefined), break it into that number of parts.
+ * If nothing can be split, wraps current job in an array and returns it
+ * @returns {array}
  */
-Job.prototype.splitPyramid = function splitPyramid() {
-    if (!this.isPyramid) return false;
+Job.prototype.expandJobs = function expandJobs(opts) {
+    if (this.isIterating()) {
+        throw new Err('Cannot expand jobs while iterating');
+    }
+    var forcePartition = opts && opts.forcePartitions && opts.indexAfter;
+    if (this.isComplex && forcePartition) {
+        throw new Err('Cannot force partition a job with partitions or a pyramid');
+    } else if (!this.isComplex && !forcePartition) {
+        return [this];
+    }
 
-    return _.range(this.fromZoom, this.beforeZoom).map(function (zoom) {
+    var fromZoom = this.fromZoom === undefined ? this.zoom : this.fromZoom,
+        beforeZoom = this.beforeZoom === undefined ? this.zoom + 1 : this.beforeZoom,
+        result = [];
+
+    _.range(fromZoom, beforeZoom).map(function (zoom) {
         var mult = Math.pow(4, Math.abs(zoom - this.zoom)),
             opts = _.clone(this),
-            lastRange;
+            size = 0,
+            tiles = [],
+            lastRange = undefined;
 
         if (zoom < this.zoom) mult = 1 / mult;
 
         delete opts.fromZoom;
         delete opts.beforeZoom;
+        delete opts.parts;
         delete opts.idxFrom;
         delete opts.idxBefore;
-        delete opts.isPyramid;
+        delete opts.isComplex;
         delete opts.tiles;
         delete opts.encodedTiles;
         delete opts.size;
         opts.zoom = zoom;
-        opts.tiles = [];
 
         this.tiles.forEach(function (v) {
             var frm = Math.floor((Array.isArray(v) ? v[0] : v) * mult),
@@ -195,14 +215,45 @@ Job.prototype.splitPyramid = function splitPyramid() {
             if (lastRange && lastRange[1] >= frm) {
                 lastRange[1] = bfr;
             } else {
-                addRange(opts.tiles, lastRange);
+                size += addRange(tiles, lastRange);
                 lastRange = [frm, bfr];
             }
         });
-        addRange(opts.tiles, lastRange);
+        size += addRange(tiles, lastRange);
 
-        return new Job(opts);
+        if (this.parts > 1) {
+            // must use ceiling to exhaust all tiles before we reach the end
+            var partMaxSize = Math.ceil(size / this.parts),
+                chunkSize = 0,
+                chunkTiles = [];
+            tiles.forEach(function (v, vInd, tiles) {
+                var isLastValue = vInd + 1 === tiles.length,
+                    frm = Array.isArray(v) ? v[0] : v,
+                    bfr = Array.isArray(v) ? v[1] : v + 1;
+
+                    while (frm < bfr) {
+                        var add = Math.min(partMaxSize - chunkSize, bfr - frm);
+                        chunkTiles.push(add > 1 ? [frm, frm + add] : frm);
+                        chunkSize += add;
+                        frm += add;
+                        if (chunkSize === partMaxSize || (isLastValue && frm >= bfr)) {
+                            opts.tiles = chunkTiles;
+                            result.push(new Job(opts));
+                            chunkTiles = [];
+                            chunkSize = 0;
+                        }
+                    }
+            }, this);
+            if (chunkSize > 0) {
+                throw new Err('Logic error - chunkSize > 0');
+            }
+        } else {
+            opts.tiles = tiles;
+            result.push(new Job(opts));
+        }
     }, this);
+
+    return result;
 };
 
 
@@ -281,7 +332,7 @@ Job.prototype._encodeTileList = function _encodeTileList() {
                 var count = v[1] - v[0];
                 if (count > 0) { // skip empty ranges
                     if (count > 1) {
-                        result.push(-(count-1)); // negative of the range size - 1
+                        result.push(-(count - 1)); // negative of the range size - 1
                     }
                     result.push(v[0] - last - 1); // range start as a delta from last index
                     size += count;
