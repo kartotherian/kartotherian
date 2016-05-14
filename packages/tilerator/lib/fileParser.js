@@ -1,15 +1,16 @@
 'use strict';
 
-var BBPromise = require('bluebird');
+var Promise = require('bluebird');
 var _ = require('underscore');
 var exec = require('child_process').exec;
-var fs = BBPromise.promisifyAll(require('fs'));
-var createTempFile = BBPromise.promisify(require('tmp').file, {multiArgs: true});
+var fs = Promise.promisifyAll(require('fs'));
+var createTempFile = Promise.promisify(require('tmp').file, {multiArgs: true});
 var byline = require('byline');
 var stream = require('stream');
 
 var core = require('kartotherian-core');
 var Err = core.Err;
+var Job = require('./Job');
 
 var utf8 = {encoding: 'utf8'};
 
@@ -25,8 +26,7 @@ function parseSourceFile(srcFile, options, dstFileDescriptor) {
     var instream = fs.createReadStream(srcFile, utf8);
     var linestream = byline(instream);
     var writeStream = fs.createWriteStream(null, {fd: dstFileDescriptor});
-    var result = BBPromise.pending();
-    delete options.zoom;
+    var result = Promise.pending();
 
     var converter = new stream.Transform({objectMode: true});
     converter._transform = function (line, encoding, done) {
@@ -42,13 +42,13 @@ function parseSourceFile(srcFile, options, dstFileDescriptor) {
             }
             parts[i] = v;
         }
-        if (options.fileZoom === undefined) {
+        if (options.zoom === undefined) {
             if (!core.isValidZoom(parts[0])) {
                 throw new Err('Line #%d zoom=%d is invalid', lineInd, parts[0]);
             }
-            options.fileZoom = parts[0];
-        } else if (options.fileZoom !== parts[0]) {
-            throw new Err('Line #%d zoom=%d differs from the zoom of previous lines (%d)', lineInd, parts[0], options.fileZoom);
+            options.zoom = parts[0];
+        } else if (options.zoom !== parts[0]) {
+            throw new Err('Line #%d zoom=%d differs from the zoom of previous lines (%d)', lineInd, parts[0], options.zoom);
         }
         var index = core.xyToIndex(parts[1], parts[2], parts[0]);
         this.push(index.toString() + '\n', encoding);
@@ -72,7 +72,7 @@ function parseSourceFile(srcFile, options, dstFileDescriptor) {
 }
 
 function sortFile(filepath) {
-    var result = BBPromise.pending();
+    var result = Promise.pending();
     var arg = escapeShellArg(filepath);
     // Sort temp file as numbers (-n), in-place (-o filepath), removing duplicate lines (-u)
     exec('sort -u -n -o ' + arg + ' ' + arg,
@@ -100,96 +100,78 @@ function sortFile(filepath) {
  * @returns {*}
  */
 function addJobsFromFile(filepath, options, addJobCallback) {
-    var result = BBPromise.pending();
-    var zoom = options.fileZoom;
-    delete options.fileZoom;
-    var fromZoom = options.fromZoom !== undefined ? options.fromZoom : zoom;
-    var untilZoom = options.beforeZoom !== undefined ? options.beforeZoom - 1 : zoom;
-    // By default, allow max gap of 4 at zoom 14, 16 at zoom 15, 64 at zoom 16 etc.
-    var mergeGapsAsBigAs = options.mergeGapsAsBigAs || (Math.pow(4, Math.max(0, zoom - 13)) - 1);
-    delete options.mergeGapsAsBigAs;
+    return new Promise(function (resolve, reject) {
+        var zoom = options.zoom,
+            zoomDiff = options.fromZoom !== undefined && options.fromZoom < zoom ? zoom - options.fromZoom : 0,
+            breakOnDivider = Math.pow(4, zoomDiff),
+            tilesCountSoftLimit = 500000,
+            tilesCountHardLimit = tilesCountSoftLimit * 1.5,
+            rangeStart = false,
+            lastValue = false,
+            jobPromises = [];
 
-    // Each range array element tracks its own zoom level, starting from the original tile's zoom until the lowest
-    var ranges = [];
-    for (var i = Math.min(untilZoom, zoom); i >= Math.min(fromZoom, zoom); i--) {
-        var job = _.clone(options);
-        job.zoom = i;
-        if (i === zoom && i < untilZoom) {
-            job.fromZoom = i;
-            job.beforeZoom = untilZoom + 1;
-        } else {
-            delete job.fromZoom;
-            delete job.beforeZoom;
+        options.tiles = [];
+
+        function addRange(idx) {
+            if (rangeStart !== false) {
+                options.tiles.push(rangeStart === lastValue ? lastValue : [rangeStart, lastValue + 1]);
+            }
+            if (idx !== undefined) {
+                rangeStart = lastValue = idx;
+            }
         }
 
-        var rangeItem = {job: job, div: Math.pow(4, zoom - i), jobCount: 0, tileCount: 0};
-        rangeItem.maxGap = 1 + Math.floor(mergeGapsAsBigAs / rangeItem.div);
-        ranges.push(rangeItem);
-    }
-
-    function addRange(range) {
-        var job = range.job;
-        job.idxFrom = range.idxFrom;
-        job.idxBefore = range.lastValue + 1;
-        range.jobCount++;
-        range.tileCount += job.idxBefore - job.idxFrom;
-        addJobCallback(job);
-    }
-
-    var instream = byline(fs.createReadStream(filepath, utf8));
-    instream.on('data', function (line) {
-        var idx = parseInt(line);
-        if (idx.toString() !== line) {
-            throw new Err('Non-integer found in the sort result');
-        } else if (!core.isValidIndex(idx, zoom)) {
-            throw new Err('Bad value %d in the sort result', idx);
+        function addJob(idx) {
+            addRange(idx);
+            if (options.tiles.length > 0) {
+                jobPromises.push(addJobCallback(options));
+                options.tiles = [];
+            }
         }
-        ranges.every(function (range) {
-            var v = Math.floor(idx / range.div);
-            if (range.idxFrom === undefined) {
-                range.idxFrom = v;
-                range.lastValue = v;
-            } else if (range.lastValue === v) {
-                return false; // minor optimization - no need to check lower zooms if lastValue hasn't changed here
-            } else if (range.lastValue > v) {
-                throw new Err('Sort result is out of order - %d > %d', range.lastValue, v);
-            } else if (range.maxGap >= v - range.lastValue) {
-                range.lastValue = v;
+
+        var instream = byline(fs.createReadStream(filepath, utf8));
+        instream.on('data', function (line) {
+            var idx = parseInt(line);
+            if (idx.toString() !== line) {
+                throw new Err('Non-integer found in the sort result');
+            } else if (!core.isValidIndex(idx, zoom)) {
+                throw new Err('Bad value %d in the sort result', idx);
+            } else if (rangeStart === false) {
+                // first item
+                rangeStart = lastValue = idx;
+                return;
+            }
+
+            // Limit the size of each job to a maximum individual tiles and ranges limit
+            // After soft limit, break on an even divisor so that lower-zoom tile wouldn't generate twice
+            // After hard limit, break regardless
+
+            if (options.tiles.length > tilesCountSoftLimit &&
+                Math.floor(lastValue / breakOnDivider) < Math.floor(idx / breakOnDivider)
+            ) {
+                addJob(idx);
+            } else if (lastValue + 1 === idx) {
+                lastValue = idx;
+            } else if (options.tiles.length > tilesCountHardLimit) {
+                addJob(idx);
             } else {
-                addRange(range);
-                range.idxFrom = v;
-                range.lastValue = v;
-            }
-            return true;
-        });
-    });
-    instream.on('error', function (err) {
-        result.reject(err);
-    });
-    instream.on('finish', function () {
-        _.each(ranges, function (range) {
-            if (range.idxFrom !== undefined) {
-                addRange(range);
+                addRange(idx);
             }
         });
-        var res = {jobs_total: 0, tiles_total: 0};
-        ranges.reverse();
-        _.each(ranges, function (range) {
-            var job = range.job;
-            var from = job.fromZoom === undefined ? job.zoom : job.fromZoom;
-            var before = job.beforeZoom === undefined ? job.zoom + 1 : job.beforeZoom;
-            for (var i = from; i < before; i++) {
-                var mult = Math.pow(4, i - from);
-                res.jobs_total += range.jobCount;
-                res.tiles_total += range.tileCount * mult;
-                res['jobs_zoom_' + i] = range.jobCount;
-                res['tiles_zoom_' + i] = range.tileCount * mult;
+        instream.on('error', function (err) {
+            reject(err);
+        });
+        instream.on('finish', function () {
+            try {
+                addJob();
+                resolve(Promise.all(jobPromises).then(function (titles) {
+                    return [].concat.apply([], titles);
+                }));
+            } catch (err) {
+                reject(err);
             }
         });
-        result.resolve(res);
     });
-
-    return result.promise;
 }
 
 /**
@@ -199,24 +181,30 @@ function addJobsFromFile(filepath, options, addJobCallback) {
  * @param addJobCallback
  * @returns {*}
  */
-module.exports = function(filepath, options, addJobCallback) {
+module.exports = function fileParser(filepath, options, addJobCallback) {
     var tmpFile, tmpFileCleanupCb;
-    return BBPromise.try(function() {
-        if ((options.fromZoom === undefined) !== (options.beforeZoom === undefined)) {
-            throw new Err('either both fromZoom or beforeZoom must be present or absent');
-        } else if (options.fromZoom !== undefined) {
-            core.checkType(options, 'fromZoom', 'zoom');
-            core.checkType(options, 'beforeZoom', 'zoom', true, options.fromZoom + 1);
+    return Promise.try(function() {
+        // validate options
+        options.tiles = [];
+        if (core.checkType(options, 'fileZoomOverride', 'zoom')) {
+            options.zoom = options.fileZoomOverride;
+            options.fileZoomOverride = true;
         }
-        return createTempFile();
-    }).spread(function (path, fd, cleanupCallback) {
-        tmpFile = path;
-        tmpFileCleanupCb = cleanupCallback;
-        return BBPromise.each(filepath.split('|'), function (file) {
-            return parseSourceFile(file, options, fd);
-        });
-    }).then(function () {
-        return sortFile(tmpFile);
+        new Job(options);
+
+        if (!options.fileZoomOverride) {
+            return createTempFile().spread(function (path, fd, cleanupCallback) {
+                tmpFile = path;
+                tmpFileCleanupCb = cleanupCallback;
+                return Promise.each(filepath.split('|'), function (file) {
+                    return parseSourceFile(file, options, fd);
+                });
+            }).then(function () {
+                return sortFile(tmpFile);
+            });
+        } else {
+            tmpFile = filepath;
+        }
     }).then(function () {
         return addJobsFromFile(tmpFile, options, addJobCallback);
     }).finally(function () {

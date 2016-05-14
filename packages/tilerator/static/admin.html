@@ -28,7 +28,7 @@
     #generatorId, #storageId, #priority {
         width: 40px;
     }
-    #zoom, #fromZoom, #beforeZoom, #parts {
+    #zoom, #fromZoom, #beforeZoom, #fileZoomOverride, #parts {
         width: 18px;
     }
     #checkZoom, #sourceId, #dateBefore, #dateFrom, #biggerThan, #smallerThan, #checkZoom2, #sourceId2, #dateBefore2, #dateFrom2, #biggerThan2, #smallerThan2 {
@@ -77,6 +77,8 @@
     </table>
 
     <input id="filepath" type="text" value=""> <input type="button" value="load file" onclick="parseFile()"><br>
+    <label for="fileZoomOverride">fileZ </label><input id="fileZoomOverride" type="text" value="">
+
 
     <b><label for="sources">Sources</label></b> <input type="button" value="set" onclick="postCommand('sources')"><br>
     <textarea id="sources"></textarea>
@@ -146,7 +148,7 @@
             switch (field.type) {
                 case 'text':
                     if (field.value)
-                        value = field.value;
+                        value = field.value.trim();
                     break;
                 case 'checkbox':
                     if (field.checked)
@@ -225,10 +227,11 @@
         [
             'generatorId', 'storageId', 'fromZoom', 'beforeZoom', 'parts', 'priority',
             'checkZoom', 'sourceId', 'dateBefore', 'dateFrom', 'biggerThan', 'smallerThan', 'missing',
-            'checkZoom2', 'sourceId2', 'dateBefore2', 'dateFrom2', 'biggerThan2', 'smallerThan2', 'missing2'
+            'checkZoom2', 'sourceId2', 'dateBefore2', 'dateFrom2', 'biggerThan2', 'smallerThan2', 'missing2',
+            'fileZoomOverride'
         ].forEach(function (fld) {
-                    req = addField(req, fld);
-                });
+            req = addField(req, fld);
+        });
         return req;
     }
 

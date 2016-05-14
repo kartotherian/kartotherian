@@ -59,7 +59,7 @@
     "minimist": "0.2.*",
     "underscore": "^1.8.3",
     "numeral": "^1.5.3",
-    "promistreamus": "^0.1.6",
+    "promistreamus": "^0.1.7",
     "tmp": "git+https://github.com/nyurik/node-tmp.git",
     "byline": "^4.2.1",
 

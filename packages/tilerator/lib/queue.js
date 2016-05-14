@@ -1,9 +1,7 @@
 'use strict';
 
 var Promise = require('bluebird');
-var util = require('util');
 var _ = require('underscore');
-var numeral = require('numeral');
 var core = require('kartotherian-core');
 var Err = core.Err;
 
@@ -59,91 +57,29 @@ module.exports.shutdownAsync = function(timeout) {
  * See the readme file for all available parameters
  */
 module.exports.addJobAsync = function(opts) {
-    return Promise.try(function() {
+    return Promise.try(function () {
         if (!queue) {
             throw new Err('Still loading');
         }
 
         var job = new Job(opts);
 
-        // If this is a pyramid, break it into individual jobs
-        if (job.isPyramid) {
-            return module.exports.addPyramidJobsAsync(job);
-        }
-
-        var count = job.size;
-        var parts = Math.min(count, job.parts || 1);
-        delete job.parts;
-
-        var result = [];
-
-        // Break the job into parts
-        var create = function () {
-            if (parts < 1) {
-                return Promise.resolve(result);
-            }
-            var j;
-            if (parts === 1) {
-                j = job;
-            } else {
-                j = _.clone(job);
-                var partCount = Math.floor(count / parts);
-                j.idxBefore = j.idxFrom + partCount;
-                count -= partCount;
-                job.idxFrom += partCount;
-            }
-            parts--;
-            setJobTitle(j);
-            var kueJob = queue
-                .create(jobName, j)
-                .priority(priority)
-                .attempts(10)
-                .backoff({delay: 5 * 1000, type: 'exponential'});
+        return Promise.all(
+            _.map(job.expandJobs(), function (j) {
+                j.cleanupForQue();
+                var kueJob = queue
+                    .create(jobName, j)
+                    .priority(j.priority)
+                    .attempts(10)
+                    .backoff({delay: 5 * 1000, type: 'exponential'});
                 //.ttl(30*1000);  -- this does not work because it is based on job completion, not progress update
-            return kueJob
-                .saveAsync()
-                .then(function () {
-                    result.push(_.extend({id: kueJob.id, title: kueJob.data.title}, kueJob.data));
-                })
-                .then(create);
-        };
-        return create();
+                return kueJob
+                    .saveAsync()
+                    .then(function () {
+                        return _.extend({id: kueJob.id, title: kueJob.data.title}, kueJob.data);
+                    }).return(j.title);
+            }));
     });
-};
-
-/**
- * Given an x,y (idxFrom) of the zoom, enqueue all tiles below them, with zooms >= fromZoom and < beforeZoom
- */
-module.exports.addPyramidJobsAsync = function(options) {
-    var opts = _.clone(options);
-    delete opts.fromZoom;
-    delete opts.beforeZoom;
-    delete opts.zoom;
-    delete opts.idxFrom;
-    delete opts.idxBefore;
-
-    var zoom = options.fromZoom;
-    var result = [];
-
-    var addJob = function (res) {
-        if (res) {
-            result = result.concat(res);
-        }
-        if (zoom >= options.beforeZoom) {
-            return Promise.resolve(result);
-        }
-        var z = zoom++;
-        var mult = Math.pow(4, Math.abs(z - options.zoom));
-        if (z < options.zoom) {
-            mult = 1/mult;
-        }
-        return module.exports.addJobAsync(_.extend({
-            zoom: z,
-            idxFrom: options.idxFrom === undefined ? undefined : Math.floor(options.idxFrom * mult),
-            idxBefore: options.idxBefore === undefined ? undefined : Math.ceil(options.idxBefore * mult)
-        }, opts)).then(addJob);
-    };
-    return addJob();
 };
 
 /**
@@ -239,23 +175,3 @@ module.exports.setSources = function(job, sources) {
         _.each(allSources[id], recursiveIter);
     }
 };
-
-function setJobTitle(job) {
-    job.title = util.format('Z=%d', job.zoom);
-    var zoomMax = Math.pow(4, job.zoom);
-    if (job.idxFrom === 0 && job.idxBefore === zoomMax) {
-        job.title += util.format('; ALL (%s)', numeral(zoomMax).format('0,0'));
-    } else if (job.idxBefore - job.idxFrom === 1) {
-        var xy = core.indexToXY(job.idxFrom);
-        job.title += util.format('; 1 tile at [%d,%d] (idx=%d)', xy[0], xy[1], job.idxFrom);
-    } else {
-        var xyFrom = core.indexToXY(job.idxFrom);
-        var xyLast = core.indexToXY(job.idxBefore - 1);
-        job.title += util.format('; %s tiles (%s‒%s; [%d,%d]‒[%d,%d])',
-            numeral(job.idxBefore - job.idxFrom).format('0,0'),
-            numeral(job.idxFrom).format('0,0'),
-            numeral(job.idxBefore).format('0,0'),
-            xyFrom[0], xyFrom[1], xyLast[0], xyLast[1]);
-    }
-    job.title += util.format('; %s→%s', job.generatorId, job.storageId);
-}

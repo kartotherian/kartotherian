@@ -1,13 +1,27 @@
 'use strict';
 
 var _ = require('underscore');
+var util = require('util');
+var numeral = require('numeral');
 var core = require('kartotherian-core');
 var Err = core.Err;
 
 module.exports = Job;
 
+var allowedProps = [
+    'beforeZoom', 'currentRange', 'deleteEmpty', 'encodedTiles', 'filters', 'fromZoom', 'generatorId',
+    'idxBefore', 'idxFrom', 'isComplex', 'isIterating', 'layers', 'parts', 'priority', 'size', 'sources',
+    'storageId', 'tiles', 'title', 'x', 'y', 'zoom'
+];
+
 function Job(opts) {
-    _.extendOwn(this, opts);
+
+    var self = this;
+    _.each(allowedProps, function (prop) {
+        if (opts.hasOwnProperty(prop)) {
+            self[prop] = opts[prop];
+        }
+    });
 
     core.checkType(this, 'fromZoom', 'zoom');
     core.checkType(this, 'beforeZoom', 'zoom', undefined, this.fromZoom);
@@ -50,7 +64,7 @@ function Job(opts) {
     if (core.checkType(this, 'idxFrom', 'integer', 0, 0, maxCount) ||
         core.checkType(this, 'idxBefore', 'integer', maxCount, this.idxFrom, maxCount)
     ) {
-        if (_.has(this, 'tiles') || _.has(this, 'encodedTiles')) {
+        if (this.tiles || this.encodedTiles) {
             throw new Err('tiles and encodedTiles must not be present when used with idxFrom, idxBefore, x, y');
         }
         this.tiles = [[this.idxFrom, this.idxBefore]];
@@ -111,6 +125,7 @@ function Job(opts) {
         throw new Err('tiles parameter not set');
     }
     this.currentRange = undefined;
+    this._setJobTitle();
 }
 
 /**
@@ -120,9 +135,7 @@ function Job(opts) {
  */
 Job.prototype.moveNextRange = function moveNextRange (range, startIdx) {
 
-    if (this.isComplex) {
-        throw new Err('Pyramid or multi-part job cannot be iterated');
-    }
+    this._assertSimple();
 
     if (range !== undefined) {
         if (!core.isInteger(range) || range < 0 || range >= this.tiles.length) {
@@ -134,13 +147,8 @@ Job.prototype.moveNextRange = function moveNextRange (range, startIdx) {
     }
     if (this.currentRange < this.tiles.length) {
         var val = this.tiles[this.currentRange];
-        if (Array.isArray(val)) {
-            this.idxFrom = val[0];
-            this.idxBefore = val[1];
-        } else {
-            this.idxFrom = val;
-            this.idxBefore = val + 1;
-        }
+        this.idxFrom = groupFrom(val);
+        this.idxBefore = groupBefore(val);
         if (startIdx !== undefined) {
             if (startIdx < this.idxFrom || startIdx >= this.idxBefore) {
                 throw new Err('startIdx is outside of the range');
@@ -210,8 +218,8 @@ Job.prototype.expandJobs = function expandJobs(opts) {
         opts.zoom = zoom;
 
         this.tiles.forEach(function (v) {
-            var frm = Math.floor((Array.isArray(v) ? v[0] : v) * mult),
-                bfr = Math.ceil((Array.isArray(v) ? v[1] : v + 1) * mult);
+            var frm = Math.floor(groupFrom(v) * mult),
+                bfr = Math.ceil(groupBefore(v) * mult);
             if (lastRange && lastRange[1] >= frm) {
                 lastRange[1] = bfr;
             } else {
@@ -228,8 +236,8 @@ Job.prototype.expandJobs = function expandJobs(opts) {
                 chunkTiles = [];
             tiles.forEach(function (v, vInd, tiles) {
                 var isLastValue = vInd + 1 === tiles.length,
-                    frm = Array.isArray(v) ? v[0] : v,
-                    bfr = Array.isArray(v) ? v[1] : v + 1;
+                    frm = groupFrom(v),
+                    bfr = groupBefore(v);
 
                     while (frm < bfr) {
                         var add = Math.min(partMaxSize - chunkSize, bfr - frm);
@@ -357,4 +365,60 @@ Job.prototype._updateSize = function _updateSize(size) {
     } else if (size !== this.size) {
         throw new Err('Tile list size does not match expected size');
     }
+};
+
+Job.prototype._setJobTitle = function _setJobTitle() {
+    this.title = util.format('Z=%d', this.zoom);
+    var zoomMax = Math.pow(4, this.zoom),
+        fromIdx = groupFrom(this.tiles[0]),
+        beforeIdx = groupBefore(this.tiles[this.tiles.length - 1]);
+
+    if (this.size === 0) {
+        this.title += '; EMPTY'
+    } else if (this.size === zoomMax) {
+        this.title += util.format('; ALL (%s)', numeral(zoomMax).format('0,0'));
+    } else if (this.size === 1) {
+        var xy = core.indexToXY(fromIdx);
+        this.title += util.format('; 1 tile at [%d,%d] (idx=%d)', xy[0], xy[1], fromIdx);
+    } else {
+        var xyFrom = core.indexToXY(fromIdx);
+        var xyLast = core.indexToXY(beforeIdx - 1);
+        this.title += util.format('; %s tiles (%s%s‒%s; [%d,%d]‒[%d,%d])',
+            numeral(this.size).format('0,0'),
+            this.tiles.length > 1 ? numeral(this.tiles.length).format('0,0') + ' groups; ' : '',
+            numeral(fromIdx).format('0,0'),
+            numeral(beforeIdx).format('0,0'),
+            xyFrom[0], xyFrom[1], xyLast[0], xyLast[1]);
+    }
+    this.title += util.format('; %s→%s', this.generatorId, this.storageId);
+};
+
+function groupFrom(group) {
+    return Array.isArray(group) ? group[0] : group;
+}
+
+function groupBefore(group) {
+    return Array.isArray(group) ? group[1] : group + 1;
+}
+
+Job.prototype._assertSimple = function _assertSimple() {
+    if (this.isComplex) {
+        throw new Err('Pyramid or multi-part job is not supported');
+    }
+};
+
+Job.prototype.cleanupForQue = function cleanupForQue() {
+    this._assertSimple();
+
+    delete this.beforeZoom;
+    delete this.currentRange;
+    delete this.fromZoom;
+    delete this.idxBefore;
+    delete this.idxFrom;
+    delete this.isComplex;
+    delete this.isIterating;
+    delete this.parts;
+    delete this.tiles;
+    delete this.x;
+    delete this.y;
 };

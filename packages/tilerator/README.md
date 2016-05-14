@@ -78,7 +78,8 @@ zoom/x_coordinate/y_coordinate
 Tilerator will convert this file into a list of indexes, sort/deduplicate them, and schedule all the needed jobs.
 Use `fromZoom` and `beforeZoom` to invalidate more than just the zoom level given in the file. Note that if the zoom range is
 given, only those zooms will be regenerated. So if the zoom level in the file is not in `fromZoom <= zoom < beforeZoom`,
-that zoom level will not be regenerated.
+that zoom level will not be regenerated.  If you have a file has already been converted to the internal format of one index per line,
+and has no zoom, the zoom can be supplied via the `fileZoomOverride`.
 
  P.S. Please remember that Tilerator is an admin tool, and should not be accessible from the web
 

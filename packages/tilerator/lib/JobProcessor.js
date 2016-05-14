@@ -24,7 +24,8 @@ function JobProcessor(sources, kueJob, metrics) {
  */
 JobProcessor.prototype.runAsync = function() {
     var self = this,
-        job = this.job;
+        job = this.job,
+        skipFirstIteration = false;
 
     return this.sources.loadSourcesAsync(job.sources).then(function () {
         self.tileGenerator = self.sources.getHandlerById(job.generatorId);
@@ -34,7 +35,6 @@ JobProcessor.prototype.runAsync = function() {
         self.metricsPrefix = util.format('gen.%s.%s.z%s.', job.generatorId, job.storageId,
             job.zoom < 10 ? '0' + job.zoom : job.zoom);
         if (!self.kueJob.progress_data || !self.kueJob.progress_data.index) {
-            job.moveNextRange();
             self.stats = {
                 itemsPerSec: 0,
                 sizeAvg: 0,
@@ -60,19 +60,19 @@ JobProcessor.prototype.runAsync = function() {
         } else {
             self.stats = self.kueJob.progress_data;
             job.moveNextRange(self.stats.range, self.stats.index);
+            skipFirstIteration = true;
         }
         self.processedAtRestart = self.stats.processed;
 
-        var isFirst = true;
+        
         self.iterator = promistreamus.flatten(function() {
-            var hasData = isFirst ? job.isIterating() : job.moveNextRange();
-            isFirst = false;
-            self.stats.range = job.currentRange;
-            if (hasData) {
-                return self.getIterator(job.idxFrom, job.idxBefore, 0);
-            } else {
+            if (skipFirstIteration) {
+                skipFirstIteration = false;
+            } else if (!job.moveNextRange()){
                 return false;
             }
+            self.stats.range = job.currentRange;
+            return self.getIterator(job.idxFrom, job.idxBefore, 0);
         });
 
         return self.jobProcessorAsync().then(function () {
@@ -287,7 +287,7 @@ JobProcessor.prototype.generateSubIterators = function(iterator, idxFrom, idxBef
 
 JobProcessor.prototype.jobProcessorAsync = function() {
     var self = this;
-    return this.iterator().then(function () {
+    return this.iterator().then(function (iterValue) {
         if (iterValue === undefined) {
             return;
         }
