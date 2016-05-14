@@ -120,7 +120,7 @@ function onEnque(req, res) {
                 }
                 return fileParser(req.query.filepath, job, function(job) {
                     return queue.addJobAsync(job);
-                })
+                });
             } else {
                 return queue.addJobAsync(job);
             }

@@ -165,7 +165,7 @@ function addJobsFromFile(filepath, options, addJobCallback) {
             try {
                 addJob();
                 resolve(Promise.all(jobPromises).then(function (titles) {
-                    return [].concat.apply([], titles);
+                    return [].concat.apply([], titles).sort();
                 }));
             } catch (err) {
                 reject(err);
