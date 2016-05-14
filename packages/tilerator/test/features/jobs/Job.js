@@ -43,7 +43,7 @@ describe('Job', function() {
             assert.throws(function () {
                 newJob({
                     zoom: zoom,
-                    encodedTiles: values
+                    _encodedTiles: values
                 });
             }, msg);
         };
@@ -68,12 +68,12 @@ describe('Job', function() {
                     zoom: zoom,
                     tiles: tiles
                 });
-                assert.deepEqual(job.encodedTiles, expected, 'encoded');
+                assert.deepEqual(job._encodedTiles, expected, 'encoded');
                 assert.equal(job.size, size, 'size');
 
                 var encjob = newJob({
                     zoom: zoom,
-                    encodedTiles: job.encodedTiles
+                    _encodedTiles: job._encodedTiles
                 });
 
                 assert.equal(encjob.size, size, 'size2');

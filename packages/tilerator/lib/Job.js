@@ -9,7 +9,7 @@ var Err = core.Err;
 module.exports = Job;
 
 var allowedProps = [
-    'beforeZoom', 'currentRange', 'deleteEmpty', 'encodedTiles', 'filters', 'fromZoom', 'generatorId',
+    'beforeZoom', 'currentRange', 'deleteEmpty', '_encodedTiles', 'filters', 'fromZoom', 'generatorId',
     'idxBefore', 'idxFrom', 'isComplex', 'isIterating', 'layers', 'parts', 'priority', 'size', 'sources',
     'storageId', 'tiles', 'title', 'x', 'y', 'zoom'
 ];
@@ -64,8 +64,8 @@ function Job(opts) {
     if (core.checkType(this, 'idxFrom', 'integer', 0, 0, maxCount) ||
         core.checkType(this, 'idxBefore', 'integer', maxCount, this.idxFrom, maxCount)
     ) {
-        if (this.tiles || this.encodedTiles) {
-            throw new Err('tiles and encodedTiles must not be present when used with idxFrom, idxBefore, x, y');
+        if (this.tiles || this._encodedTiles) {
+            throw new Err('tiles and _encodedTiles must not be present when used with idxFrom, idxBefore, x, y');
         }
         this.tiles = [[this.idxFrom, this.idxBefore]];
         delete this.idxFrom;
@@ -73,7 +73,7 @@ function Job(opts) {
     }
 
     core.checkType(this, 'tiles', 'array');
-    core.checkType(this, 'encodedTiles', 'array');
+    core.checkType(this, '_encodedTiles', 'array');
 
     core.checkType(this, 'sources', 'object');
     core.checkType(this, 'layers', 'string-array');
@@ -111,15 +111,15 @@ function Job(opts) {
         }, this);
     }
 
-    if (this.encodedTiles && this.tiles) {
-        var tmp = this.encodedTiles;
+    if (this._encodedTiles && this.tiles) {
+        var tmp = this._encodedTiles;
         this._encodeTileList();
-        if (!_.isEqual(tmp, this.encodedTiles)) {
-            throw new Err('Both tiles and encodedTiles are set, and they do not match');
+        if (!_.isEqual(tmp, this._encodedTiles)) {
+            throw new Err('Both tiles and _encodedTiles are set, and they do not match');
         }
     } else if (this.tiles) {
         this._encodeTileList();
-    } else if (this.encodedTiles) {
+    } else if (this._encodedTiles) {
         this._decodeTileList();
     } else {
         throw new Err('tiles parameter not set');
@@ -213,7 +213,7 @@ Job.prototype.expandJobs = function expandJobs(opts) {
         delete opts.idxBefore;
         delete opts.isComplex;
         delete opts.tiles;
-        delete opts.encodedTiles;
+        delete opts._encodedTiles;
         delete opts.size;
         opts.zoom = zoom;
 
@@ -283,7 +283,7 @@ Job.prototype._decodeTileList = function _decodeTileList() {
         result = [],
         rangeSize = 0;
 
-    if (!_.all(this.encodedTiles, function (v) {
+    if (!_.all(this._encodedTiles, function (v) {
                 if (!core.isInteger(v)) {
                     return false;
                 }
@@ -311,7 +311,7 @@ Job.prototype._decodeTileList = function _decodeTileList() {
             }
         ) || rangeSize !== 0
     ) {
-        throw new Err('Invalid encodedTiles parameter');
+        throw new Err('Invalid _encodedTiles parameter');
     }
 
     this._updateSize(size);
@@ -356,7 +356,7 @@ Job.prototype._encodeTileList = function _encodeTileList() {
     }
 
     this._updateSize(size);
-    this.encodedTiles = result;
+    this._encodedTiles = result;
 };
 
 Job.prototype._updateSize = function _updateSize(size) {

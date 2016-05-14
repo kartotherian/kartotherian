@@ -64,7 +64,7 @@ JobProcessor.prototype.runAsync = function() {
         }
         self.processedAtRestart = self.stats.processed;
 
-        
+
         self.iterator = promistreamus.flatten(function() {
             if (skipFirstIteration) {
                 skipFirstIteration = false;
@@ -88,10 +88,14 @@ JobProcessor.prototype.reportProgress = function reportProgress (isDone) {
         job = this.job;
 
     // decide if we want to update the progress status
-    var progress = stats.processed / job.size;
-    if (!this.lastProgressReport || (progress - this.lastProgressReport) > 0.001 || this.isShuttingDown) {
+    var progress = stats.processed / job.size,
+        now = new Date();
 
-        var time = (new Date() - this.start) / 1000;
+    // Report if we haven't reported, or 5% was complete, or 15 seconds since last report, or shutting down
+    if (!this.lastProgressReport || (progress - this.lastProgressReport) > 0.05 || this.isShuttingDown ||
+        (now - this.lastProgressReportTime) / 1000 > 15) {
+
+        var time = (now - this.start) / 1000;
         stats.itemsPerSec = time > 0 ? Math.round((stats.processed - this.processedAtRestart) / time * 10) / 10 : 0;
         stats.sizeAvg = stats.save > 0 ? Math.round(stats.totalsize / stats.save * 10) / 10 : 0;
 
@@ -103,6 +107,7 @@ JobProcessor.prototype.reportProgress = function reportProgress (isDone) {
         }
         this.kueJob.progress(stats.processed, job.size, stats);
         this.lastProgressReport = progress;
+        this.lastProgressReportTime = now;
     }
 };
 
