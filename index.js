@@ -1,4 +1,4 @@
-var sm = new (require('sphericalmercator'));
+var SphericalMercator = require('sphericalmercator');
 var queue = require('queue-async');
 var blend = require('mapnik').blend;
 var crypto = require('crypto');
@@ -12,30 +12,30 @@ function abaculus(arg, callback) {
         bbox = arg.bbox || null,
         getTile = arg.getTile || null,
         format = arg.format || 'png',
-        quality = arg.quality || null;
-        limit = arg.limit || 19008;
+        quality = arg.quality || null,
+        limit = arg.limit || 19008,
+        tileSize = arg.tileSize || 256;
 
-    if (!getTile)
-        return callback(new Error('Invalid function for getting tiles'));
+    if (!getTile) return callback(new Error('Invalid function for getting tiles'));
 
     if (center) {
         // get center coordinates in px from lng,lat
-        center = abaculus.coordsFromCenter(z, s, center, limit);
+        center = abaculus.coordsFromCenter(z, s, center, limit, tileSize);
     } else if (bbox) {
         // get center coordinates in px from [w,s,e,n] bbox
-        center = abaculus.coordsFromBbox(z, s, bbox, limit);
+        center = abaculus.coordsFromBbox(z, s, bbox, limit, tileSize);
     } else {
         return callback(new Error('No coordinates provided.'));
     }
     // generate list of tile coordinates center
-    var coords = abaculus.tileList(z, s, center);
+    var coords = abaculus.tileList(z, s, center, tileSize);
 
     // get tiles based on coordinate list and stitch them together
     abaculus.stitchTiles(coords, format, quality, getTile, callback);
 }
 
-abaculus.coordsFromBbox = function(z, s, bbox, limit) {
-    sm.size = Math.round(256 * s);
+abaculus.coordsFromBbox = function(z, s, bbox, limit, tileSize) {
+    var sm = new SphericalMercator({ size: tileSize * s });
     var topRight = sm.px([bbox[2], bbox[3]], z),
         bottomLeft = sm.px([bbox[0], bbox[1]], z);
     var center = {};
@@ -44,7 +44,7 @@ abaculus.coordsFromBbox = function(z, s, bbox, limit) {
 
     if (center.w <= 0 || center.h <= 0) throw new Error('Incorrect coordinates');
 
-    var origin = [topRight[0] - center.w/2, topRight[1] + center.h/2];
+    var origin = [topRight[0] - center.w / 2, topRight[1] + center.h / 2];
     center.x = origin[0];
     center.y = origin[1];
     center.w = Math.round(center.w * s);
@@ -54,7 +54,8 @@ abaculus.coordsFromBbox = function(z, s, bbox, limit) {
     return center;
 };
 
-abaculus.coordsFromCenter = function(z, s, center, limit) {
+abaculus.coordsFromCenter = function(z, s, center, limit, tileSize) {
+    var sm = new SphericalMercator({ size: tileSize * s });
     var origin = sm.px([center.x, center.y], z);
     center.x = origin[0];
     center.y = origin[1];
@@ -67,27 +68,29 @@ abaculus.coordsFromCenter = function(z, s, center, limit) {
 
 // Generate the zxy and px/py offsets needed for each tile in a static image.
 // x, y are center coordinates in pixels
-abaculus.tileList = function(z, s, center) {
+abaculus.tileList = function(z, s, center, tileSize) {
     var x = center.x,
         y = center.y,
         w = center.w,
         h = center.h;
     var dimensions = {x: w, y: h};
-    var tileSize = Math.round(256 * s);
+    var size = tileSize || 256;
+    var ts = Math.round(size * s);
 
     var centerCoordinate = {
-            column: x / 256,
-            row: y / 256,
-            zoom: z
-        };
+        column: x / size,
+        row: y / size,
+        zoom: z
+    };
 
     function pointCoordinate(point) {
-        var coord = { column: centerCoordinate.column,
-                    row: centerCoordinate.row,
-                    zoom: centerCoordinate.zoom,
-                    };
-        coord.column += (point.x - w / 2) / tileSize;
-        coord.row += (point.y - h / 2) / tileSize;
+        var coord = {
+            column: centerCoordinate.column,
+            row: centerCoordinate.row,
+            zoom: centerCoordinate.zoom,
+        };
+        coord.column += (point.x - w / 2) / ts;
+        coord.row += (point.y - h / 2) / ts;
         return coord;
     }
 
@@ -95,17 +98,17 @@ abaculus.tileList = function(z, s, center) {
         // Return an x, y point on the map image for a given coordinate.
         if (coord.zoom != z) coord = coord.zoomTo(z);
         return {
-            x: w / 2 + tileSize * (coord.column - centerCoordinate.column),
-            y: h / 2 + tileSize * (coord.row - centerCoordinate.row)
+            x: w / 2 + ts * (coord.column - centerCoordinate.column),
+            y: h / 2 + ts * (coord.row - centerCoordinate.row)
         };
     }
 
     function floorObj(obj) {
         return {
-                row: Math.floor(obj.row),
-                column: Math.floor(obj.column),
-                zoom: Math.floor(obj.zoom)
-            };
+            row: Math.floor(obj.row),
+            column: Math.floor(obj.column),
+            zoom: Math.floor(obj.zoom)
+        };
     }
 
     var tl = floorObj(pointCoordinate({x: 0, y:0}));
@@ -116,10 +119,11 @@ abaculus.tileList = function(z, s, center) {
 
     for (var column = tl.column; column <= br.column; column++) {
         for (var row = tl.row; row <= br.row; row++) {
-            var c = { column: column,
-                    row: row,
-                    zoom: z,
-                    };
+            var c = {
+                column: column,
+                row: row,
+                zoom: z,
+            };
             var p = coordinatePoint(c);
 
             // Wrap tiles with negative coordinates.
