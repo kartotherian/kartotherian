@@ -142,6 +142,14 @@
         return '/' + document.getElementById('style').value + '/{z}/{x}/{y}' + scalex + '.png';
     }
 
+    /**
+     *
+     * @param {string|object} res
+     * @param {string} fieldId
+     * @param {*} [value]
+     * @param {boolean} [addToPath]
+     * @returns {*}
+     */
     function addField(res, fieldId, value, addToPath) {
         if (value === undefined) {
             var field = document.getElementById(fieldId);
@@ -162,12 +170,10 @@
         }
         if (value !== undefined && value !== '') {
             if (addToPath) {
-                res += '/';
-            } else {
-                if (res) res += '&';
-                res += fieldId + '=';
+                res += '/' + encodeURIComponent(value);
+            } else if (res[fieldId] === undefined) {
+                res[fieldId] = value;
             }
-            res += encodeURIComponent(value);
         } else if (addToPath) {
             throw new Error('Required value is not set: ' + fieldId);
         }
@@ -204,7 +210,15 @@
         var sources = document.getElementById('sources').value || undefined;
         var request = 'http://' + document.getElementById('host').value + '/' + command;
         if (req) {
-            request += '?' + req;
+            var query = [];
+            for(var key in req) {
+                if (req.hasOwnProperty(key)) {
+                    query.push(encodeURIComponent(key) + "=" + encodeURIComponent(req[key]));
+                }
+            }
+            if (query.length > 0) {
+                request += '?' + query.join("&");
+            }
         } else if (req !== false && !sources) {
             document.getElementById('result').innerHTML += '<br>Error: Nothing to do (sources are not set)';
             return;
@@ -230,15 +244,13 @@
             'checkZoom2', 'sourceId2', 'dateBefore2', 'dateFrom2', 'biggerThan2', 'smallerThan2', 'missing2',
             'fileZoomOverride'
         ].forEach(function (fld) {
-            req = addField(req, fld);
+            addField(req, fld);
         });
-        return req;
     }
 
     function parseFile() {
-        var req = '';
-        req = addField(req, 'filepath');
-        req = addCommonFields(req);
+        var req = addField({}, 'filepath');
+        addCommonFields(req);
         postCommand('add', req);
     }
 
@@ -266,11 +278,11 @@
 
         var zoom = parseInt(match[1]), x = parseInt(match[2]), y = parseInt(match[3]);
 
-        var req = '';
-        req = addField(req, 'zoom', zoom);
-        req = addField(req, 'x', x);
-        req = addField(req, 'y', y);
-        req = addCommonFields(req);
+        var req = {};
+        addField(req, 'zoom', zoom);
+        addField(req, 'x', x);
+        addField(req, 'y', y);
+        addCommonFields(req);
         postCommand('add', req);
     });
     </script>

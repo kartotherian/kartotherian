@@ -24,7 +24,7 @@ module.exports = {};
  * @param jobHandler if given - function(job, done), will use to run jobs
  */
 module.exports.init = function(app, jobHandler) {
-    var opts = {};
+    var opts = {jobEvents: false}; // we may have too many jobs, prevent large memory usage
     if (app.conf.redisPrefix) opts.prefix = app.conf.redisPrefix;
     if (app.conf.redis) opts.redis = app.conf.redis;
     queue = Promise.promisifyAll(kue.createQueue(opts));

@@ -189,10 +189,14 @@ module.exports = function fileParser(filepath, options, addJobCallback) {
         if (core.checkType(options, 'fileZoomOverride', 'zoom')) {
             options.zoom = options.fileZoomOverride;
             options.fileZoomOverride = true;
+        } else {
+            // Job requires valid zoom for validation, so temporarily set it
+            options.zoom = 0;
         }
         new Job(options);
 
         if (!options.fileZoomOverride) {
+            delete options.zoom;
             return createTempFile().spread(function (path, fd, cleanupCallback) {
                 tmpFile = path;
                 tmpFileCleanupCb = cleanupCallback;
