@@ -33,6 +33,8 @@ Usage and example formatting below, or see the [tests](https://github.com/mapbox
 
 `quality` (optional): when used with `jpeg` format, accepts 1-100 and defaults to 80. when used with `png` format, accepts 2-256 (# of colors to reduce the image to) and defaults to none.
 
+`tileSize` (optional, defaults to `256`): Specifies input size of tiles used in `getTile` function.
+
 `getTile`: a function that returns a tile buffer (png or otherwise) and headers given `z`, `x`, `y`, and a callback, such as from [tilelive-vector](https://github.com/mapbox/tilelive-vector/blob/master/index.js#L119-L218) or this [test function](https://github.com/mapbox/abaculus/blob/master/test/test.js#L184-L204).
 
 `limit` (optional): max width or height of generated image in pixels. Default is `19008`.
@@ -45,10 +47,11 @@ var params = {
     bbox: [{w}, {s}, {e}, {n}],
     format: {format},
     quality: {quality},
-    getTile: function(z,x,y, callback){
-    			// do something
-			    return callback(null, buffer, headers);
-			},
+	tileSize: {tileSize},
+    getTile: function(z, x, y, callback){
+		// do something
+		return callback(null, buffer, headers);
+	},
 	limit: {limit}
 };
 ```
@@ -67,19 +70,20 @@ var params = {
     },
     format: {format},
     quality: {quality},
+	tileSize: {tileSize},
     getTile: function(z,x,y, callback){
-    			// do something
-			    return callback(null, buffer, headers);
-			},
+		// do something
+		return callback(null, buffer, headers);
+	},
 	limit: {limit}
 };
 ```
 #### usage:
 ``` javascript
 abaculus(params, function(err, image, headers){
-       if (err) return err;
-       // do something with image
-	});
+	if (err) return err;
+	// do something with image
+});
 ```
 
 #### output:
