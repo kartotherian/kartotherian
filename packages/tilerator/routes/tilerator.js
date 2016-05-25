@@ -11,8 +11,10 @@ var core = require('kartotherian-core');
 var Err = core.Err;
 
 var info = require('../package.json');
-var JobProcessor = require('../lib/JobProcessor');
-var fileParser = require('../lib/fileParser');
+
+var jplib = require('tilerator-jobprocessor');
+var JobProcessor = jplib.JobProcessor;
+var fileParser = jplib.fileParser;
 
 var jobProcessor;
 

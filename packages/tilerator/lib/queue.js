@@ -13,10 +13,7 @@ var kueui = require('kue-ui');
 var queue;
 
 var jobName = 'generate';
-var Job = require('./Job');
-
-
-module.exports = {};
+var Job = require('tilerator-jobprocessor').Job;
 
 /**
  * Init job quing

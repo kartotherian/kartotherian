@@ -58,10 +58,6 @@
     ,
     "minimist": "0.2.*",
     "underscore": "^1.8.3",
-    "numeral": "^1.5.3",
-    "promistreamus": "^0.1.7",
-    "tmp": "git+https://github.com/nyurik/node-tmp.git",
-    "byline": "^4.2.1",
 
     "htcp-purge": "^0.1.2",
     "jade": "^1.11.0",
@@ -82,6 +78,7 @@
     "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
     "kartotherian-postgres": "git+https://github.com/kartotherian/kartotherian-postgres.git",
     "kartotherian-substantial": "git+https://github.com/kartotherian/kartotherian-substantial.git",
+    "tilerator-jobprocessor": "git+https://github.com/kartotherian/tilerator-jobprocessor.git",
     "osm-bright-source": "git+https://github.com/kartotherian/osm-bright.tm2source.git",
     "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git"
   },
