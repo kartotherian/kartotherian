@@ -3,6 +3,7 @@
 var _ = require('underscore');
 var assert = require('assert');
 var Job = require('../lib/Job');
+var U = undefined;
 
 describe('Job', function() {
 
@@ -148,7 +149,7 @@ describe('Job', function() {
 
     it('expand job', function() {
 
-        var test = function (msg, zoom, parts, fromZoom, beforeZoom, tiles, expected) {
+        var test = function (msg, zoom, parts, fromZoom, beforeZoom, tiles, filters, expected) {
 
                 try {
                     var job = newJob({
@@ -156,7 +157,8 @@ describe('Job', function() {
                         tiles: tiles,
                         fromZoom: fromZoom,
                         beforeZoom: beforeZoom,
-                        parts: parts
+                        parts: parts,
+                        filters: filters
                     });
 
                     var jobs = job.expandJobs();
@@ -172,6 +174,16 @@ describe('Job', function() {
                         assert.equal(jb.size, exp.s, 'size ' + i);
                         assert.equal(jb.zoom, exp.z, 'zoom ' + i);
                         assert.deepEqual(jb.tiles, exp.t, 'tiles ' + i);
+                        if (exp.f) {
+                            if (!_.isArray(exp.f)) exp.f = [exp.f];
+                            assert.notEqual(jb.filters, U, 'filter is missing');
+                            assert.equal(jb.filters.length, exp.f.length, 'filter count ' + i);
+                            exp.f.forEach(function(expFilter, i2) {
+                                assert.equal(jb.filters[i2].zoom, expFilter.z, 'filter zoom ' + i + ' filter ' + i2);
+                            })
+                        } else {
+                            assert.equal(jb.filters, U, 'filter is present');
+                        }
                     });
                 } catch (err) {
                     err.message = msg + ': ' + err.message;
@@ -179,16 +191,16 @@ describe('Job', function() {
                 }
             },
             pyramid = function (msg, zoom, fromZoom, beforeZoom, tiles, expected) {
-                return test(msg, zoom, undefined, fromZoom, beforeZoom, tiles, expected);
+                return test(msg, zoom, U, fromZoom, beforeZoom, tiles, U, expected);
             },
             parts = function (msg, parts, tiles, expected) {
                 _.each(expected, function (exp) {
                     exp.z = 2;
                 });
-                return test(msg, 2, parts, undefined, undefined, tiles, expected);
+                return test(msg, 2, parts, U, U, tiles, U, expected);
             };
 
-        pyramid('d0', 0, undefined, undefined, [0], false);
+        pyramid('d0', 0, U, U, [0],       false);
         pyramid('d1', 0, 4, 4, [0],       []);
         pyramid('d2', 0, 0, 2, [0],       [{s:1,z:0,t:[0]}, {s:4,z:1,t:[[0,4]]}]);
         pyramid('d3', 0, 1, 2, [0],       [{s:4,z:1,t:[[0,4]]}]);
@@ -211,7 +223,8 @@ describe('Job', function() {
         parts('ea', 2, [0,1,2],        [{s:2,t:[[0,2]]}, {s:1,t:[2]}]);
         parts('eb', 2, [0,1,2],        [{s:2,t:[[0,2]]}, {s:1,t:[2]}]);
 
-        test('f1', 1, 2, 0, 3, [2],    [{s:1,z:0,t:[0]},{s:1,z:1,t:[2]},{s:2,z:2,t:[[8,10]]},{s:2,z:2,t:[[10,12]]}]);
+        test('f1', 1, U, U, U, [0], [{zoom:-1}], [{s:1,z:1,t:[0],f:{z:0}}]);
+        test('f2', 1, 2, 0, 3, [2], U,           [{s:1,z:0,t:[0]},{s:1,z:1,t:[2]},{s:2,z:2,t:[[8,10]]},{s:2,z:2,t:[[10,12]]}]);
     });
 
 });
