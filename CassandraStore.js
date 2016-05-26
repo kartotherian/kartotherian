@@ -370,14 +370,20 @@ CassandraStore.prototype.query = function(options) {
 
     var ms;
     if (self.blocksize) {
-        var blockIdx = Math.floor(start / self.blocksize);
-        var toBlockIdx = Math.floor((end - 1) / self.blocksize);
-        ms = multistream.obj(function() {
-            if (blockIdx > toBlockIdx) return false;
-            var s = createStream(blockIdx * self.blocksize,
-                Math.min(maxEnd, (blockIdx + 1) * self.blocksize));
-            blockIdx++;
-            return s;
+        var blockIdx = Math.floor(start / self.blocksize),
+            toBlockIdx = Math.floor((end - 1) / self.blocksize);
+
+        ms = multistream.obj(function(cb) {
+            if (blockIdx > toBlockIdx) {
+                cb();
+            } else {
+                try {
+                    var bi = blockIdx++;
+                    cb(null, createStream(bi * self.blocksize, Math.min(maxEnd, (bi + 1) * self.blocksize)));
+                } catch (err) {
+                    cb(err);
+                }
+            }
         });
     } else {
         ms = createStream(0, maxEnd);

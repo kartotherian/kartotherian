@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-cassandra",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Cassandra tile storage for Kartotherian map tile server",
   "main": "CassandraStore.js",
   "scripts": {
@@ -23,7 +23,7 @@
   "dependencies": {
     "bluebird": "^3.3.5",
     "cassandra-driver": "^3.0.1",
-    "multistream": "^2.0.2",
+    "multistream": "^2.0.5",
     "promistreamus": "^0.1.7"
   }
 }
