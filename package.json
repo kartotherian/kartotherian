@@ -19,6 +19,6 @@
     "mapnik-reference": "8.x"
   },
   "peerDependencies": {
-    "mapnik": "~3.5.0"
+    "mapnik": "^3.5.0"
   }
 }
