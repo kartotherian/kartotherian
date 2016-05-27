@@ -1,5 +1,9 @@
 # Changes
 
+## v0.5.0 - 5/27/16
+
+* Update `tilelive-bridge` dependency to support MVT v2 spec.
+
 ## v0.4.3 - 1/18/16
 
 * Fix `getInfo` callback
