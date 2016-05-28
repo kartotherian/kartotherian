@@ -63,37 +63,44 @@
 <body>
 
 <aside>
-    <input type="button" value="set style" onclick="mapLayer.setUrl(getTileUrl())"> <input id="style" type="text"> <a href="#" onclick="return getInfo('style')">info</a><br>
-    <a href="jobs" target="_blank">jobs</a>, <a href="raw" target="_blank">data</a>, <a href="sources" target="_blank">sources</a>, <a href="variables" target="_blank">vars</a>
+    <input type="button" value="set style" onclick="mapLayer.setUrl(getTileUrl())" title="Set the style of the currently viewed tiles">
+    <input type="button" value="info" onclick="return getInfo('style')" title="Show formatted info.json for the given style">
+    <input id="style" type="text" title="style name">
+    <a href="jobs" target="_blank" title="Show jobs in the job queue">jobs</a>,
+    <a href="raw" target="_blank" title="View job queue raw data">data</a>,
+    <a href="sources" target="_blank" title="Show currently configured sources yaml">sources</a>,
+    <a href="variables" target="_blank" title="Show the list of available source variables">vars</a>
     <table>
         <tr><th>Filters</th><th>#1</th><th>#2</th></tr>
-        <tr><td><label for="checkZoom">checkZoom</label></td><td><input id="checkZoom" type="text" value=""></td><td><input id="checkZoom2" type="text" value=""></td></tr>
-        <tr><td><label for="sourceId">sourceId</label></td><td><input id="sourceId" type="text" value=""></td><td><input id="sourceId2" type="text" value=""></td></tr>
-        <tr><td><label for="missing">missing</label></td><td><input id="missing" type="checkbox"></td><td><input id="missing2" type="checkbox"></td></tr>
-        <tr><td><label for="dateBefore">dateBefore</label></td><td><input id="dateBefore" type="text" value=""></td><td><input id="dateBefore2" type="text" value=""></td></tr>
-        <tr><td><label for="dateFrom">dateFrom</label></td><td><input id="dateFrom" type="text" value=""></td><td><input id="dateFrom2" type="text" value=""></td></tr>
-        <tr><td><label for="biggerThan">biggerThan</label></td><td><input id="biggerThan" type="text" value=""></td><td><input id="biggerThan2" type="text" value=""></td></tr>
-        <tr><td><label for="smallerThan">smallerThan</label></td><td><input id="smallerThan" type="text" value=""></td><td><input id="smallerThan2" type="text" value=""></td></tr>
+        <tr><td><label for="checkZoom" title="Only generate if tiles exist in this zoom level. Negative, e.g. -1 means the one above the current">checkZoom</label></td><td><input id="checkZoom" type="text" value=""></td><td><input id="checkZoom2" type="text" value=""></td></tr>
+        <tr><td><label for="sourceId" title="Which source to check for tiles. Checks storage by default.">sourceId</label></td><td><input id="sourceId" type="text" value=""></td><td><input id="sourceId2" type="text" value=""></td></tr>
+        <tr><td><label for="missing" title="Only generate if tile does not exist in the storage">missing</label></td><td><input id="missing" type="checkbox"></td><td><input id="missing2" type="checkbox"></td></tr>
+        <tr><td><label for="dateBefore" title="Only generate if existing tile was generated before this date">dateBefore</label></td><td><input id="dateBefore" type="text" value=""></td><td><input id="dateBefore2" type="text" value=""></td></tr>
+        <tr><td><label for="dateFrom" title="Only generate if existing tile was generated on or after this date">dateFrom</label></td><td><input id="dateFrom" type="text" value=""></td><td><input id="dateFrom2" type="text" value=""></td></tr>
+        <tr><td><label for="biggerThan" title="Only generate if existing tile is bigger than this many bytes">biggerThan</label></td><td><input id="biggerThan" type="text" value=""></td><td><input id="biggerThan2" type="text" value=""></td></tr>
+        <tr><td><label for="smallerThan" title="Only generate if existing tile is smaller than this many bytes">smallerThan</label></td><td><input id="smallerThan" type="text" value=""></td><td><input id="smallerThan2" type="text" value=""></td></tr>
     </table>
 
-    <input id="filepath" type="text" value=""> <input type="button" value="load file" onclick="parseFile()"><br>
-    <label for="fileZoomOverride">fileZ </label><input id="fileZoomOverride" type="text" value="">
+    <input id="filepath" type="text" value="" title="A text file on the server that contains a list of tiles to generate. Each line must be 3 integers: zoom/x/y, or if zoom override is set, just one index integer">
+    <input type="button" value="load file" onclick="parseFile()" title="Load the list of tiles to invalidate from a file located on the server"><br>
+    <label for="fileZoomOverride" title="If set, represents the zoom for each index in the input file, one per line">fileZ </label><input id="fileZoomOverride" type="text" value="">
 
-
-    <b><label for="sources">Sources</label></b> <input type="button" value="set" onclick="postCommand('sources')"><br>
-    <textarea id="sources"></textarea>
+    <b><label for="sources">Sources</label></b>
+    <input type="button" value="set" onclick="postCommand('sources')" title="Update sources without adding any jobs"><br>
+    <textarea id="sources" title="Set the source configuration on the server. These sources will be merged with the server's current source configuration, and any new jobs created will have the updated sources. Note that this will only affect the instance that handles this request, plus the changes sources will be preserved inside the jobs created in that instance. It is recommended that you only run 1 instance of the tilerator admin UI"></textarea>
 </aside>
 
 <div id="header">
-    <label for="host">host </label><input id="host" type="text" value="localhost:6534">
-    <label for="generatorId"><a href="#" onclick="return getInfo('generatorId')">src</a> </label><input id="generatorId" type="text" value="gen">
-    <label for="storageId"><a href="#" onclick="return getInfo('storageId')">dst</a> </label><input id="storageId" type="text" value="v5">
-    <input type="button" value="copy info" onclick="copyInfo()">
-    <label for="zoom">zoom </label><input id="zoom" type="text" value="" readonly>
-    <label for="fromZoom">fromZ </label><input id="fromZoom" type="text" value="">
-    <label for="beforeZoom">beforeZ </label><input id="beforeZoom" type="text" value="">
-    <label for="parts">parts </label><input id="parts" type="text" value="">
-    <label for="priority">priority </label><input id="priority" type="text" value="">
+    <label for="host" title="Which host to use to get tiles from">host </label><input id="host" type="text" value="localhost:6534">
+    <label for="generatorId" title="Source ID that will be used to generate tiles (copy from)"><a href="#" onclick="return getInfo('generatorId')">src</a> </label><input id="generatorId" type="text" value="gen">
+    <label for="storageId" title="Source ID that will be used to store the tiles (copy to)"><a href="#" onclick="return getInfo('storageId')">dst</a> </label><input id="storageId" type="text" value="v5">
+    <input type="button" value="copy info" onclick="copyInfo()" title="Copy the info.json data from one source to another">
+    <label for="zoom">zoom </label><input id="zoom" type="text" value="" readonly title="Shows the current zoom of the view. This zoom will be used when scheduling new jobs with Ctrl+click.">
+    <label for="fromZoom">fromZ </label><input id="fromZoom" type="text" value="" title="Copy a pyramid of zooms - zooms equal or bigger than this value.">
+    <label for="beforeZoom">beforeZ </label><input id="beforeZoom" type="text" value="" title="Copy a pyramid of zooms - zooms less than this value.">
+    <label for="parts">parts </label><input id="parts" type="text" value="" title="Break each scheduled zoom level into this many jobs">
+    <label for="priority">priority </label><input id="priority" type="text" value="" title="Job que priority, e.g. low, high, ...">
+    <label for="deleteEmpty">deleteEmpty </label><input id="deleteEmpty" type="checkbox" title="If the generator source does not have a given tile, delete it in the storage">
     <br>
 </div>
 <!-- Map placeholder -->
@@ -239,7 +246,7 @@
 
     function addCommonFields(req) {
         [
-            'generatorId', 'storageId', 'fromZoom', 'beforeZoom', 'parts', 'priority',
+            'generatorId', 'storageId', 'fromZoom', 'beforeZoom', 'parts', 'priority', 'deleteEmpty',
             'checkZoom', 'sourceId', 'dateBefore', 'dateFrom', 'biggerThan', 'smallerThan', 'missing',
             'checkZoom2', 'sourceId2', 'dateBefore2', 'dateFrom2', 'biggerThan2', 'smallerThan2', 'missing2',
             'fileZoomOverride'
