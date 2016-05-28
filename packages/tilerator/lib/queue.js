@@ -55,29 +55,30 @@ module.exports.shutdownAsync = function(timeout) {
  */
 module.exports.addJobAsync = function(opts) {
     return Promise.try(function () {
-        if (!queue) {
-            throw new Err('Still loading');
-        }
-
-        var job = new Job(opts);
-
-        return Promise.all(
-            _.map(job.expandJobs(), function (j) {
-                j.cleanupForQue();
-                var kueJob = queue
-                    .create(jobName, j)
-                    .priority(j.priority)
-                    .attempts(10)
-                    .backoff({delay: 5 * 1000, type: 'exponential'});
-                //.ttl(30*1000);  -- this does not work because it is based on job completion, not progress update
-                return kueJob
-                    .saveAsync()
-                    .then(function () {
-                        return _.extend({id: kueJob.id, title: kueJob.data.title}, kueJob.data);
-                    }).return(j.title);
-            }));
+        return addJobAsyncImpl(new Job(opts));
     });
 };
+
+function addJobAsyncImpl(job) {
+    if (!queue) {
+        throw new Err('Still loading');
+    }
+    return Promise.all(
+        _.map(job.expandJobs(), function (j) {
+            j.cleanupForQue();
+            var kueJob = queue
+                .create(jobName, j)
+                .priority(j.priority)
+                .attempts(10)
+                .backoff({delay: 5 * 1000, type: 'exponential'});
+            //.ttl(30*1000);  -- this does not work because it is based on job completion, not progress update
+            return kueJob
+                .saveAsync()
+                .then(function () {
+                    return _.extend({id: kueJob.id, title: kueJob.data.title}, kueJob.data);
+                }).return(j.title);
+        }));
+}
 
 /**
  * Move all jobs in the active que to inactive if their update time is more than given time
@@ -117,26 +118,17 @@ module.exports.cleanup = function(opts) {
                     });
                 }
                 if (opts.breakIntoParts && (opts.breakIfLongerThan <= 0 || (job.progress_data && job.progress_data.estimateHrs >= opts.breakIfLongerThan))) {
-                    var from = job.progress_data ? job.progress_data.index : job.data.idxFrom;
-                    var before = job.data.idxBefore;
-                    var newBefore = Math.min(before, from + Math.max(1, Math.floor((before - from) * 0.1)));
-                    if (newBefore < before) {
-                        var newJob = _.clone(job.data);
-                        delete newJob.title;
-                        newJob.idxFrom = newBefore;
-                        newJob.parts = opts.breakIntoParts;
-
-                        job.data.idxBefore = newBefore;
-                        setJobTitle(job.data);
-
-                        return job.saveAsync().then(function () {
-                            return job.inactiveAsync();
-                        }).then(function () {
-                            return module.exports.addJobAsync(newJob);
-                        }).then(function (res) {
-                            result[id] = res;
-                        });
+                    var newJob = new Job(job.data);
+                    if (job.progress_data) {
+                        newJob.moveNextRange(job.progress_data.range, job.progress_data.index);
                     }
+                    newJob.parts = opts.breakIntoParts;
+
+                    return job.completeAsync().then(function () {
+                        return addJobAsyncImpl(newJob);
+                    }).then(function (res) {
+                        result[id] = res;
+                    });
                 }
                 return job.inactiveAsync().then(function () {
                     result[id] = 'queued';
