@@ -10,15 +10,24 @@ Promise.promisifyAll(kue.Job);
 Promise.promisifyAll(kue.Job.prototype);
 
 var kueui = require('kue-ui');
+
+/** @type Queue */
 var queue;
 
 var jobName = 'generate';
 var Job = require('tilerator-jobprocessor').Job;
 
+/** @type int */
+var jobTTL;
+
 /**
  * Init job quing
- * @param app express object
- * @param jobHandler if given - function(job, done), will use to run jobs
+ * @param {object} app express object
+ * @param {object} app.conf
+ * @param {string} [app.conf.redisPrefix]
+ * @param {boolean} [app.conf.daemonOnly]
+ * @param {int} [app.conf.jobTTL]
+ * @param {function} [jobHandler] if given - function(job, done), will use to run jobs
  */
 module.exports.init = function(app, jobHandler) {
     var opts = {jobEvents: false}; // we may have too many jobs, prevent large memory usage
@@ -38,6 +47,9 @@ module.exports.init = function(app, jobHandler) {
         app.use(uiConf.apiURL, kue.app);
         app.use(uiConf.baseURL, kueui.app);
     }
+
+    // Default: 15 minutes ought to be enough for a single tile generation
+    jobTTL = app.conf.jobTTL || 15 * 60 * 1000;
 
     if (jobHandler) {
         queue.process(jobName, jobHandler);
@@ -70,8 +82,8 @@ function addJobAsyncImpl(job) {
                 .create(jobName, j)
                 .priority(j.priority)
                 .attempts(10)
-                .backoff({delay: 5 * 1000, type: 'exponential'});
-            //.ttl(30*1000);  -- this does not work because it is based on job completion, not progress update
+                .backoff({delay: 5 * 1000, type: 'exponential'})
+                .ttl(jobTTL);
             return kueJob
                 .saveAsync()
                 .then(function () {

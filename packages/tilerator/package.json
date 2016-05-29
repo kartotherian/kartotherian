@@ -61,7 +61,7 @@
 
     "htcp-purge": "^0.1.2",
     "jade": "^1.11.0",
-    "kue": "^0.10.5",
+    "kue": "^0.11.0",
     "kue-ui": "git+https://github.com/nyurik/kue-ui.git",
 
     "mapnik": "~3.5.0",
