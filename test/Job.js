@@ -240,4 +240,34 @@ describe('Job', function() {
 
     });
 
+    it('job indexToPos', function() {
+
+        var test = function (msg, expected, index, tiles) {
+            var passed = true;
+            try {
+                var job = newJob({zoom: 2, tiles: tiles});
+                assert.equal(job.indexToPos(index), expected, msg);
+            } catch(err) {
+                passed = false;
+            }
+            assert.equal(passed, expected !== U, msg);
+        };
+
+        test('p01', U, -1, []);
+        test('p02', U, 0, []);
+        test('p03', U, 1, []);
+        test('p04', U, 1, [2]);
+        test('p05', 0, 2, [2]);
+        test('p06', U, 3, [2]);
+        test('p07', U, 0, [[1,2]]);
+        test('p08', 0, 1, [[1,2]]);
+        test('p09', U, 2, [[1,2]]);
+        test('p10', U, 0, [[1,2],[4,5]]);
+        test('p11', 0, 1, [[1,2],[4,5]]);
+        test('p12', U, 2, [[1,2],[4,5]]);
+        test('p13', U, 3, [[1,2],[4,5]]);
+        test('p14', 1, 4, [[1,2],[4,5]]);
+        test('p15', U, 5, [[1,2],[4,5]]);
+    });
+
 });
