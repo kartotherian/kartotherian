@@ -59,3 +59,19 @@ services:
       #   - if-match
       #   - user-agent
       #   - x-request-id
+      # the user agent to use when issuing requests
+      # user_agent: service-template-node
+      # the template used for contacting the MW API
+      mwapi_req:
+        method: post
+        uri: https://{{domain}}/w/api.php
+        headers:
+          user-agent: '{{user-agent}}'
+        body: '{{ default(request.query, {}) }}'
+      # the template used for contacting RESTBase
+      restbase_req:
+        method: '{{request.method}}'
+        uri: https://{{domain}}/api/rest_v1/{+path}
+        query: '{{ default(request.query, {}) }}'
+        headers: '{{request.headers}}'
+        body: '{{request.body}}'

@@ -117,8 +117,8 @@ handle any possible errors during the promise's execution.
 
 One other area where promises come in handy is making external requests. Suppose
 we want to serve the latest news about a person from
-[Wikinews](http://www.wikinews.org). The template includes the
-[preq](https://github.com/gwicke/preq) -- a module promisifying the popular
+[Wikinews](http://www.wikinews.org). The template includes
+[preq](https://github.com/wikimedia/preq) -- a module promisifying the popular
 [request](https://github.com/request/request) module -- which we can use
 right away:
 
@@ -137,6 +137,70 @@ router.get('/:name/news/:lang?', function(req, res) {
     });
 
 });
+```
+
+#### MediaWiki API Requests
+
+If one wants to issue requests to MW API, `apiUtil.mwApiGet()` can be used. For
+example, getting certain properties of a page is as easy as:
+
+```javascript
+router.get('/page/:title', function(req, res) {
+
+    // construct the query for the MW Action API
+    var apiQuery = {
+        format: 'json',
+        formatversion: 2,
+        action: 'query',
+        prop: 'pageprops',
+        titles: req.params.title
+    };
+
+    return apiUtil.mwApiGet(app, req.params.domain, apiQuery)
+    .then(function(apiRes) {
+        if(!apiRes.body || !apiRes.body.query ||
+                !Array.isArray(apiRes.body.query.pages)) {
+            throw new HTTPError({
+                status: 500,
+                title: 'Could not get properties',
+                detail: 'Could not get page properties for ' + req.params.title
+            });
+        }
+        res.status(200).type('json').end(apiRes.body.query.pages[0]);
+    })
+
+});
+```
+
+#### REST API Requests
+
+Likewise, the template supports REST API requests out of the box via the
+`apiUtil.restApiGet()` library function. To get the Parsoid HTML for a title,
+use:
+
+```javascript
+router.get('/page/:title', function(req, res) {
+
+    return apiUtil.restApiGet(app, req.params.domain,
+        'page/html/' + encodeURIComponent(req.params.title))
+    .then(function(restRes) {
+        res.status(200).type('html').end(restRes.body);
+    });
+
+});
+```
+
+Note that you can also modify any part of the request; you can supply the
+method to use (`get` by default), the query parameters, headers or body. For
+example, if you don't want the REST API to send redirects, but to retrieve the
+parsed content of the page in case of redirect pages, you can use:
+
+```javascript
+    return apiUtil.restApiGet(app, req.params.domain,
+        'page/html/' + encodeURIComponent(req.params.title),
+        {
+            query: { redirect: false }
+        })
 ```
 
 ## Error Handling

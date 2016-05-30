@@ -8,6 +8,7 @@ var compression = require('compression');
 var bodyParser = require('body-parser');
 var fs = BBPromise.promisifyAll(require('fs'));
 var sUtil = require('./lib/util');
+var apiUtil = require('./lib/api-util');
 var packageInfo = require('./package.json');
 var yaml = require('js-yaml');
 
@@ -63,6 +64,9 @@ function initApp(options) {
         return item.trim();
     }).join('|') + ')$', 'i');
 
+    // set up the request templates for the APIs
+    apiUtil.setupApiTemplates(app);
+
     // set up the spec
     if(!app.conf.spec) {
         app.conf.spec = __dirname + '/spec.yaml';
@@ -108,6 +112,9 @@ function initApp(options) {
         sUtil.initAndLogRequest(req, app);
         next();
     });
+
+    // set up the user agent header string to use for requests
+    app.conf.user_agent = app.conf.user_agent || app.info.name;
 
     // disable the X-Powered-By header
     app.set('x-powered-by', false);

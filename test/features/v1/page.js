@@ -13,7 +13,7 @@ describe('page gets', function() {
     before(function () { return server.start(); });
 
     // common URI prefix for the page
-    var uri = server.config.uri + 'en.wikipedia.org/v1/page/Mulholland%20Drive%20%28film%29/';
+    var uri = server.config.uri + 'en.wikipedia.org/v1/page/Mulholland_Drive_(film)/';
 
     it('should get the whole page body', function() {
         return preq.get({
@@ -26,7 +26,7 @@ describe('page gets', function() {
             // inspect the body
             assert.notDeepEqual(res.body, undefined, 'No body returned!');
             // this should be the right page
-            if(!/<\s*?h1.+Mulholland/.test(res.body)) {
+            if(!/mw:PageProp\/displaytitle.+Mulholland/.test(res.body)) {
                 throw new Error('Not the title I was expecting!');
             }
         });

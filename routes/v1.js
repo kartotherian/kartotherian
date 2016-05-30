@@ -5,6 +5,7 @@ var BBPromise = require('bluebird');
 var preq = require('preq');
 var domino = require('domino');
 var sUtil = require('../lib/util');
+var apiUtil = require('../lib/api-util');
 
 // shortcut
 var HTTPError = sUtil.HTTPError;
@@ -40,33 +41,18 @@ var app;
  */
 router.get('/siteinfo/:prop?', function(req, res) {
 
-    // construct the request for the MW Action API
-    var apiReq = {
-        uri: 'http://' + req.params.domain + '/w/api.php' ,
-        body: {
-            format: 'json',
-            action: 'query',
-            meta: 'siteinfo',
-            continue: ''
-        }
+    // construct the query for the MW Action API
+    var apiQuery = {
+        format: 'json',
+        action: 'query',
+        meta: 'siteinfo',
+        continue: ''
     };
 
     // send it
-    // NOTE: preq uses bluebird, so we can safely chain it with a .then() call
-    return preq.post(apiReq)
+    return apiUtil.mwApiGet(app, req.params.domain, apiQuery)
     // and then return the result to the caller
     .then(function(apiRes) {
-        // preq returns the parsed object
-        // check if the query succeeded
-        if(apiRes.status !== 200 || !apiRes.body.query) {
-            // there was an error in the MW API, propagate that
-            throw new HTTPError({
-                status: apiRes.status,
-                type: 'api_error',
-                title: 'MW API error',
-                detail: apiRes.body
-            });
-        }
         // do we have to return only one prop?
         if(req.params.prop) {
             // check it exists in the response body
@@ -98,7 +84,7 @@ router.get('/siteinfo/:prop?', function(req, res) {
  ****************************/
 
 /**
- * A helper function that obtains the HTML for a given title and
+ * A helper function that obtains the Parsoid HTML for a given title and
  * loads it into a domino DOM document instance.
  *
  * @param {String} domain the domain to contact
@@ -108,12 +94,8 @@ router.get('/siteinfo/:prop?', function(req, res) {
 function getBody(domain, title) {
 
     // get the page
-    return preq.get({
-        uri: 'http://' + domain + '/w/index.php',
-        query: {
-            title: title
-        }
-    }).then(function(callRes) {
+    return apiUtil.restApiGet(app, domain, 'page/html/' + title)
+    .then(function(callRes) {
         // and then load and parse the page
         return BBPromise.resolve(domino.createDocument(callRes.body));
     });
@@ -149,7 +131,7 @@ router.get('/page/:title/lead', function(req, res) {
     .then(function(doc) {
         var leadSec = '';
         // find all paragraphs directly under the content div
-        var ps = doc.querySelectorAll('#mw-content-text > p') || [];
+        var ps = doc.querySelectorAll('p') || [];
         for(var idx = 0; idx < ps.length; idx++) {
             var child = ps[idx];
             // find the first paragraph that is not empty
