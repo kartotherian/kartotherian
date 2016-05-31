@@ -1,0 +1,202 @@
+swagger: '2.0'
+info:
+  version: 0.0.10
+  title: Kartotherian
+  description: Renders map tiles
+  termsOfService: https://wikimediafoundation.org/wiki/Terms_of_Use
+  contact:
+    name: Yuri Astrakhan
+    url: http://mediawiki.org/wiki/Maps
+  license:
+    name: Apache2
+    url: http://www.apache.org/licenses/LICENSE-2.0
+
+paths:
+  # Tiles handler
+  /{src}/{z}/{x}/{y}.{format}:
+    get:
+      tags:
+        - kartotherian
+        - maps
+        - maptiles
+      description: Renders an image tile for the given source, zoom, and coordinates.
+      produces:
+        - image/png
+        - application/json
+        - application/x-protobuf
+      x-amples:
+        - title: get a tile in the middle of the ocean, with overzoom
+          request:
+            params:
+              src: osm-intl
+              z: 11
+              x: 828
+              y: 655
+              format: png
+          response:
+            status: 200
+            headers:
+              content-type: image/png
+  # Tiles handler with scaling
+  /{src}/{z}/{x}/{y}@{scale}x.{format}:
+    get:
+      tags:
+        - kartotherian
+        - maps
+        - maptiles
+      description: Renders an image tile for the given source, zoom, and coordinates, with scaling.
+      produces:
+        - image/png
+        - application/json
+      x-amples:
+        - title: default scaled tile
+          request:
+            params:
+              src: osm-intl
+              z: 9
+              x: 207
+              y: 163
+              scale: 1.5
+              format: png
+          response:
+            status: 200
+            headers:
+              content-type: image/png
+  # Source info
+  /{src}/info.json:
+    get:
+      tags:
+        - tileinfo
+      description: Returns json describing given tile source
+      produces:
+        - application/json
+      x-amples:
+        - title: tile service info for osm-intl
+          request:
+            params:
+              src: osm-intl
+          response:
+            status: 200
+            headers:
+              content-type: application/json
+        - title: tile service info for osm-pbf
+          request:
+            params:
+              src: osm-pbf
+          response:
+            status: 200
+            headers:
+              content-type: application/json
+  # Maki icon markers (pushpins)
+  /v4/marker/{base}-{size}-{symbol}+{color}@{scale}x.png:
+    get:
+      tags:
+        - marker
+        - maki
+      description: Renders 2x scaled pushpin marker of a given color and size with an icon.
+      produces:
+        - image/png
+      x-amples:
+        - title: scaled pushpin marker with an icon
+          request:
+            params:
+              base: pin
+              size: m
+              symbol: gas
+              color: ffffff
+              scale: 2
+          response:
+            status: 200
+            headers:
+              content-type: image/png
+  /v4/marker/{base}-{size}-{symbol}+{color}.png:
+    get:
+      description: Renders pushpin marker of a given color and size with an icon.
+      produces:
+        - image/png
+  /v4/marker/{base}-{size}+{color}.png:
+    get:
+      description: Renders a pushpin marker of a given color and size withoun an icon
+      produces:
+        - image/png
+  /v4/marker/{base}-{size}+{color}@{scale}x.png:
+    get:
+      description: Renders 2x scaled pushpin marker of a given color and size withoun an icon.
+      produces:
+        - image/png
+  # Map snapshots
+  /{src}/{z},{lat},{lon},{w}x{h}@{scale}x.{format}:
+    get:
+      tags:
+        - kartotherian
+        - maps
+        - maptiles
+      description: Renders requested map region as a scaled image
+      produces:
+        - image/png
+      x-amples:
+        - title: Small scaled map
+          request:
+            params:
+              src: osm-intl
+              z: 1
+              lat: 0.0
+              lon: 0.0
+              w: 100
+              h: 100
+              scale: 1.5
+              format: png
+          response:
+            status: 200
+            headers:
+              content-type: image/png
+  /{src}/{z},{lat},{lon},{w}x{h}.{format}:
+    get:
+      description: Renders requested map region as an image
+      produces:
+        - image/png
+
+  # from routes/root.js
+  /robots.txt:
+    get:
+      tags:
+        - Root
+        - Robots
+      description: Gets robots.txt
+  /:
+    get:
+      tags:
+        - Root
+      description: The root service end-point
+      produces:
+        - application/json
+  # from routes/info.js
+  /_info:
+    get:
+      tags:
+        - Service information
+      description: Gets information about the service
+      produces:
+        - application/json
+  /_info/name:
+    get:
+      tags:
+        - Service information
+        - Service name
+      description: Gets the name of the service
+      produces:
+        - application/json
+  /_info/version:
+    get:
+      tags:
+        - Service information
+        - Service version
+      description: Gets the running version of the service
+      produces:
+        - application/json
+  /_info/home:
+    get:
+      tags:
+        - Service information
+        - Service homepage
+      description: Redirects to the home page
