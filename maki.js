@@ -3,8 +3,6 @@
 var Promise = require('bluebird');
 var makizushi = Promise.promisify(require('makizushi'));
 
-module.exports = {};
-
 var core, Err;
 
 module.exports = function maki(coreV, router) {
