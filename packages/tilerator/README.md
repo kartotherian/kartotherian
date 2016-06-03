@@ -131,7 +131,7 @@ The original job will be shortened to the 10% of whatever was left to do.
 
 cleanup accept these parameters:
 * breakIntoParts: - number of parts to break the job into. Must be at least 2 if set. Only affect jobs that match breakIfLongerThan
-* breakIfLongerThan - if breakIntoParts is set, and if the job is estimated to run longer than this value, it will be broken into parts. Default is 0.16 hours (10 minutes)
+* breakIfLongerThan - if breakIntoParts is set, and if the job is estimated to run longer than this value (in hours), it will be broken into parts. Default is 0.16 hours (10 minutes)
 * updateSources - if true, will update the sources of all the matching jobs
 
 

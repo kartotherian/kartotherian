@@ -122,8 +122,10 @@ module.exports.cleanup = function(opts) {
 
     return jobIds.map(function (id) {
         return kue.Job.getAsync(id).then(function (job) {
-            var diffMs = Date.now() - new Date(parseInt(job.updated_at));
-            if (diffMs > (opts.minutesSinceUpdate * 60 * 1000)) {
+            // If specific job id is given, or if job has not been updated for more than minutesSinceUpdate
+            if (jobId ||
+                (Date.now() - new Date(parseInt(job.updated_at))) > (opts.minutesSinceUpdate * 60 * 1000)
+            ) {
                 if (opts.updateSources) {
                     module.exports.setSources(job.data, opts.sources);
                     return job.saveAsync().then(function () {
