@@ -227,6 +227,7 @@ module.exports = function(app) {
             router.post('/stop', onStop);
             router.post('/stop/:seconds(\\d+)', onStop);
             router.post('/cleanup', onCleanup);
+            router.post('/cleanup/:jobId(\\d+)', onCleanup);
             router.post('/cleanup/:type/:minutes(\\d+)', onCleanup);
             router.post('/setinfo/:generatorId/:storageId', onSetInfo);
             router.get('/variables', onVariables);

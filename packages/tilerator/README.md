@@ -108,6 +108,10 @@ In the future it might be possible to fix this automaticaly, but for now, there 
 http://localhost:6534/cleanup
 ```
 Which by default moves all jobs from `active` to `inactive` if they haven't been updated for the past 60 minutes.
+To process just one job, specify job ID after cleanup:
+```
+http://localhost:6534/cleanup/123
+```
 Alternativelly, the originating queue and the number of minutes can be specified as the first two value after the cleanup.
 This will move all jobs from the `failed` queue into `inactive` if they haven't been updated in the last 15 minutes:
 ```

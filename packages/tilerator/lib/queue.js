@@ -104,6 +104,7 @@ module.exports.cleanup = function(opts) {
     core.checkType(opts, 'breakIfLongerThan', 'number', 0.16);
     core.checkType(opts, 'sources', 'object', true);
     core.checkType(opts, 'updateSources', 'boolean');
+    var jobId = core.checkType(opts, 'jobId', 'integer', false, 1, Math.pow(2,50)) ? opts.jobId : false;
 
     var type = opts.type;
     switch (type) {
@@ -116,8 +117,10 @@ module.exports.cleanup = function(opts) {
         default:
             throw new Err('Unknown que type');
     }
-    var result = {};
-    return queue.stateAsync(type).map(function (id) {
+    var result = {},
+        jobIds = jobId ? Promise.resolve([jobId]) : queue.stateAsync(type);
+
+    return jobIds.map(function (id) {
         return kue.Job.getAsync(id).then(function (job) {
             var diffMs = Date.now() - new Date(parseInt(job.updated_at));
             if (diffMs > (opts.minutesSinceUpdate * 60 * 1000)) {
