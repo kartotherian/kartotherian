@@ -75,13 +75,12 @@ Queue.prototype.addJobAsync = function addJobAsync(jobs) {
         }), true);
     }), function (j) {
         j.cleanupForQue();
-        var kueJob = self._queue
+        return self._queue
             .create(jobName, j)
             .priority(j.priority)
-            .attempts(10)
-            .backoff({delay: 5 * 1000, type: 'exponential'})
-            .ttl(self.jobTTL);
-        return kueJob
+            .attempts(100)
+            .backoff({delay: 15 * 1000, type: 'fixed'})
+            .ttl(self.jobTTL)
             .saveAsync()
             .return(j.title);
     });
