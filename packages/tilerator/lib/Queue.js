@@ -11,14 +11,10 @@ Promise.promisifyAll(kue.Job.prototype);
 
 var kueui = require('kue-ui');
 
-/** @type Queue */
-var queue;
-
 var jobName = 'generate';
 var Job = require('tilerator-jobprocessor').Job;
 
-/** @type int */
-var jobTTL;
+module.exports = Queue;
 
 /**
  * Init job quing
@@ -29,11 +25,15 @@ var jobTTL;
  * @param {int} [app.conf.jobTTL]
  * @param {function} [jobHandler] if given - function(job, done), will use to run jobs
  */
-module.exports.init = function(app, jobHandler) {
+function Queue(app, jobHandler) {
     var opts = {jobEvents: false}; // we may have too many jobs, prevent large memory usage
+    this._lastInactiveCountReqTime = undefined;
     if (app.conf.redisPrefix) opts.prefix = app.conf.redisPrefix;
     if (app.conf.redis) opts.redis = app.conf.redis;
-    queue = Promise.promisifyAll(kue.createQueue(opts));
+    this._queue = Promise.promisifyAll(kue.createQueue(opts));
+
+    this._lastInactiveCountReqTime = 0;
+    this._lastInactiveCount = 0;
 
     if (!app.conf.daemonOnly) {
         var uiConf = {
@@ -49,54 +49,49 @@ module.exports.init = function(app, jobHandler) {
     }
 
     // Default: 15 minutes ought to be enough for a single tile generation
-    jobTTL = app.conf.jobTTL || 15 * 60 * 1000;
+    this.jobTTL = app.conf.jobTTL || 15 * 60 * 1000;
 
     if (jobHandler) {
-        queue.process(jobName, jobHandler);
+        this._queue.process(jobName, jobHandler);
     }
-};
+}
 
-module.exports.shutdownAsync = function(timeout) {
-    return queue.shutdownAsync(timeout);
+Queue.prototype.shutdownAsync = function shutdownAsync(timeout) {
+    return this._queue.shutdownAsync(timeout);
 };
 
 /**
  * Enque job for later processing
- * @param opts object
+ * @param {Job|Job[]} jobs object
  * See the readme file for all available parameters
+ * @returns {Promise} expanded array of added job titles
  */
-module.exports.addJobAsync = function(opts) {
-    return Promise.try(function () {
-        return addJobAsyncImpl(new Job(opts));
+Queue.prototype.addJobAsync = function addJobAsync(jobs) {
+    var self = this;
+
+    return Promise.map(Promise.try(function () {
+        return _.flatten(_.map(Array.isArray(jobs) ? jobs : [jobs], function (j) {
+            return j.expandJobs();
+        }), true);
+    }), function (j) {
+        j.cleanupForQue();
+        var kueJob = self._queue
+            .create(jobName, j)
+            .priority(j.priority)
+            .attempts(10)
+            .backoff({delay: 5 * 1000, type: 'exponential'})
+            .ttl(self.jobTTL);
+        return kueJob
+            .saveAsync()
+            .return(j.title);
     });
 };
-
-function addJobAsyncImpl(job) {
-    if (!queue) {
-        throw new Err('Still loading');
-    }
-    return Promise.all(
-        _.map(job.expandJobs(), function (j) {
-            j.cleanupForQue();
-            var kueJob = queue
-                .create(jobName, j)
-                .priority(j.priority)
-                .attempts(10)
-                .backoff({delay: 5 * 1000, type: 'exponential'})
-                .ttl(jobTTL);
-            return kueJob
-                .saveAsync()
-                .then(function () {
-                    return _.extend({id: kueJob.id, title: kueJob.data.title}, kueJob.data);
-                }).return(j.title);
-        }));
-}
 
 /**
  * Move all jobs in the active que to inactive if their update time is more than given time
  */
-module.exports.cleanup = function(opts) {
-    if (!queue) throw new Err('Not started yet');
+Queue.prototype.cleanup = function cleanup(opts) {
+    var self = this;
 
     core.checkType(opts, 'type', 'string', 'active');
     core.checkType(opts, 'minutesSinceUpdate', 'integer', 60);
@@ -118,7 +113,7 @@ module.exports.cleanup = function(opts) {
             throw new Err('Unknown que type');
     }
     var result = {},
-        jobIds = jobId ? Promise.resolve([jobId]) : queue.stateAsync(type);
+        jobIds = jobId ? Promise.resolve([jobId]) : self._queue.stateAsync(type);
 
     return jobIds.map(function (id) {
         return kue.Job.getAsync(id).then(function (job) {
@@ -127,7 +122,7 @@ module.exports.cleanup = function(opts) {
                 (Date.now() - new Date(parseInt(job.updated_at))) > (opts.minutesSinceUpdate * 60 * 1000)
             ) {
                 if (opts.updateSources) {
-                    module.exports.setSources(job.data, opts.sources);
+                    self.setSources(job.data, opts.sources);
                     return job.saveAsync().then(function () {
                         return job.inactiveAsync();
                     }).then(function () {
@@ -142,9 +137,9 @@ module.exports.cleanup = function(opts) {
                     newJob.parts = opts.breakIntoParts;
 
                     return job.completeAsync().then(function () {
-                        return addJobAsyncImpl(newJob);
-                    }).then(function (res) {
-                        result[id] = res;
+                        return self.addJobAsync(newJob);
+                    }).then(function (titles) {
+                        result[id] = titles[0];
                     });
                 }
                 return job.inactiveAsync().then(function () {
@@ -157,7 +152,7 @@ module.exports.cleanup = function(opts) {
     }, {concurrency: 50}).return(result);
 };
 
-module.exports.setSources = function(job, sources) {
+Queue.prototype.setSources = function setSources(job, sources) {
     // Add only the referenced sources to the job
     var ids =  _.unique(_.filter(_.pluck(job.filters, 'sourceId').concat([job.storageId, job.generatorId])));
     var recursiveIter = function (obj) {
@@ -179,5 +174,33 @@ module.exports.setSources = function(job, sources) {
             throw new Err('Source ID %s is not defined', id);
         job.sources[id] = allSources[id];
         _.each(allSources[id], recursiveIter);
+    }
+};
+
+Queue.prototype.getKue = function getKue() {
+    return this._queue;
+};
+
+/**
+ * Get the cached or real number of jobs in the "inactive" (pending) queue
+ * The function will not re-request the number of jobs (a fairly expensive operation)
+ * on every call. Instead it will only get it after some randomized time, where the time is
+ * less if the number of jobs is smaller, and bigger if there are many jobs pending.
+ */
+Queue.prototype.getPendingCountAsync = function getPendingCountAsync() {
+    // call count when starting or every 5 + random() minutes, where random depends on how many jobs we saw there last
+    var self = this,
+        now = new Date(),
+        minSinceLastCall = (now - self._lastInactiveCountReqTime) / 60 / 1000,
+        callCount = +minSinceLastCall > (5 + Math.random() * Math.max(self._lastInactiveCount + 1, 10));
+
+    if (callCount) {
+        self._lastInactiveCountReqTime = now;
+        return self._queue.inactiveCountAsync().then(function (count) {
+            self._lastInactiveCount = count;
+            return count;
+        });
+    } else {
+        return Promise.resolve(self._lastInactiveCount);
     }
 };

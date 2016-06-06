@@ -6,7 +6,7 @@ var _ = require('underscore');
 var express = require('express');
 var yaml = require('js-yaml');
 
-var queue = require('../lib/queue');
+var Queue = require('../lib/Queue');
 var core = require('kartotherian-core');
 var Err = core.Err;
 
@@ -15,8 +15,9 @@ var info = require('../package.json');
 var jplib = require('tilerator-jobprocessor');
 var JobProcessor = jplib.JobProcessor;
 var fileParser = jplib.fileParser;
+var Job = jplib.Job;
 
-var jobProcessor;
+var jobProcessor, queue;
 
 function onSetInfo(req, res) {
     reportAsync(res, function () {
@@ -121,10 +122,10 @@ function onEnque(req, res) {
                     job.mergeGapsAsBigAs = req.query.mergeGapsAsBigAs;
                 }
                 return fileParser(req.query.filepath, job, function(job) {
-                    return queue.addJobAsync(job);
+                    return queue.addJobAsync(new Job(job));
                 });
             } else {
-                return queue.addJobAsync(job);
+                return queue.addJobAsync(new Job(job));
             }
         });
     });
@@ -161,14 +162,23 @@ function onCleanup(req, res) {
 function reportAsync(res, task, isYaml) {
     var format, type;
     if (!isYaml) {
-        format = function(value) { return JSON.stringify(value, null, '  '); };
+        format = function (value) {
+            return JSON.stringify(value, null, '  ');
+        };
         type = 'application/json';
     } else {
-        format = function(value) { return yaml.safeDump(value, {skipInvalid: true}); };
+        format = function (value) {
+            return yaml.safeDump(value, {skipInvalid: true});
+        };
         type = 'text/plain';
     }
     return Promise
-        .try(task)
+        .try(function () {
+            if (!queue) {
+                throw new Err('Tilerator has not yet initialized');
+            }
+        })
+        .then(task)
         .then(function (val) {
             // we should have a log of all requests's responses, 'warn' is a good level for that
             core.log('warn', val);
@@ -176,7 +186,8 @@ function reportAsync(res, task, isYaml) {
         }, function (err) {
             core.log('warn', err);
             return format({error: err.message, stack: err.stack})
-        }).then(function (str) {
+        })
+        .then(function (str) {
             res.type(type).send(str);
         });
 }
@@ -207,7 +218,7 @@ module.exports = function(app) {
                     if (jobProcessor) {
                         core.log('warn', 'Another handler is already running');
                     }
-                    jobProcessor = new JobProcessor(sources, job, core.metrics);
+                    jobProcessor = new JobProcessor(sources, job, core.metrics, queue);
                     return jobProcessor.runAsync();
                 }).catch(function (err) {
                     core.metrics.increment('joberror');
@@ -217,7 +228,7 @@ module.exports = function(app) {
                 }).nodeify(callback);
             };
         }
-        queue.init(app, jobHandler);
+        queue = new Queue(app, jobHandler);
 
         if (!app.conf.daemonOnly) {
             var textParser = require('body-parser').text();
