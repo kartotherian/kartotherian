@@ -5,14 +5,39 @@ var assert = require('assert');
 var Job = require('../lib/Job');
 var U = undefined;
 
-describe('Job', function() {
+function newJob(opts) {
+    return new Job(_.extend({
+        storageId: 'sid',
+        generatorId: 'gid'
+    }, opts))
+}
 
-    function newJob(opts) {
-        return new Job(_.extend({
-            storageId: 'sid',
-            generatorId: 'gid'
-        }, opts))
-    }
+function assertJobs(jobs, expected, expZoomOverride) {
+    assert(Array.isArray(jobs), 'jobs array');
+    assert.equal(jobs.length, expected.length, 'jobs count');
+    expected.forEach(function (exp, i) {
+        var jb = jobs[i];
+        assert(_.isObject(jb), 'is object ' + i);
+        assert.equal(jb.size, exp.s, 'size ' + i);
+        assert.equal(jb.zoom, expZoomOverride === U ? exp.z : expZoomOverride, 'zoom ' + i);
+        assert.deepEqual(jb.tiles, exp.t, 'tiles ' + i);
+        assert.equal(jb.currentRange, exp.r, 'currentRange');
+        assert.equal(jb.idxFrom, exp.i, 'idxFrom');
+        assert.equal(jb.idxBefore, exp.b, 'idxBefore');
+        if (exp.f) {
+            if (!_.isArray(exp.f)) exp.f = [exp.f];
+            assert.notEqual(jb.filters, U, 'filter is missing');
+            assert.equal(jb.filters.length, exp.f.length, 'filter count ' + i);
+            exp.f.forEach(function (expFilter, i2) {
+                assert.equal(jb.filters[i2].zoom, expFilter.z, 'filter zoom ' + i + ' filter ' + i2);
+            })
+        } else {
+            assert.equal(jb.filters, U, 'filter is present');
+        }
+    });
+}
+
+describe('Job', function() {
 
     it('job ctor fail', function() {
 
@@ -153,7 +178,7 @@ describe('Job', function() {
 
     it('expand job', function() {
 
-        var test = function (msg, opts, expected) {
+        var test = function (msg, opts, expected, expZoomOverride) {
                 try {
                     var job = opts instanceof Job ? opts : newJob(opts);
 
@@ -162,25 +187,7 @@ describe('Job', function() {
                         assert.deepEqual(jobs, [job], 'already expanded');
                         return;
                     }
-                    assert(Array.isArray(jobs), 'jobs array');
-                    assert.equal(jobs.length, expected.length, 'jobs count');
-                    expected.forEach(function (exp, i) {
-                        var jb = jobs[i];
-                        assert(_.isObject(jb), 'is object ' + i);
-                        assert.equal(jb.size, exp.s, 'size ' + i);
-                        assert.equal(jb.zoom, exp.z, 'zoom ' + i);
-                        assert.deepEqual(jb.tiles, exp.t, 'tiles ' + i);
-                        if (exp.f) {
-                            if (!_.isArray(exp.f)) exp.f = [exp.f];
-                            assert.notEqual(jb.filters, U, 'filter is missing');
-                            assert.equal(jb.filters.length, exp.f.length, 'filter count ' + i);
-                            exp.f.forEach(function(expFilter, i2) {
-                                assert.equal(jb.filters[i2].zoom, expFilter.z, 'filter zoom ' + i + ' filter ' + i2);
-                            })
-                        } else {
-                            assert.equal(jb.filters, U, 'filter is present');
-                        }
-                    });
+                    assertJobs(jobs, expected, expZoomOverride);
                 } catch (err) {
                     err.message = msg + ': ' + err.message;
                     throw err;
@@ -191,18 +198,15 @@ describe('Job', function() {
                     zoom: zoom,
                     fromZoom: fromZoom,
                     beforeZoom: beforeZoom,
-                    tiles: tiles,
+                    tiles: tiles
                 }, expected);
             },
             parts = function (msg, parts, tiles, expected) {
-                _.each(expected, function (exp) {
-                    exp.z = 2;
-                });
                 return test(msg, {
                     zoom: 2,
                     parts: parts,
                     tiles: tiles
-                }, expected);
+                }, expected, 2);
             };
 
         pyramid('d01', 0, U, U, [0],       false);
@@ -268,6 +272,42 @@ describe('Job', function() {
         test('p13', U, 3, [[1,2],[4,5]]);
         test('p14', 1, 4, [[1,2],[4,5]]);
         test('p15', U, 5, [[1,2],[4,5]]);
+    });
+
+    it('splitjob', function() {
+
+        var test = function (msg, parts, tiles, range, startIdx, expected, expectedOthers) {
+                try {
+                    var job = newJob({
+                        zoom: 2,
+                        tiles: tiles
+                    });
+                    if (range !== U) {
+                        job.moveNextRange(range, startIdx);
+                    }
+                    var jobs = job.splitJob(parts);
+
+                    assertJobs([job], [expected], 2);
+                    assertJobs(jobs, expectedOthers, 2);
+                } catch (err) {
+                    err.message = msg + ': ' + err.message;
+                    throw err;
+                }
+            };
+
+        test('r01', 1, [], U, U, {s:0,t:[]}, []);
+        test('r02', 2, [1], U, U, {s:1,t:[1]}, []);
+        test('r03', 2, [1,3], U, U, {s:1,t:[1]}, [{s:1,t:[3]}]);
+        test('r04', 2, [1,3], 1, U, {s:2,t:[1,3],r:1,i:3,b:4}, []);
+        test('r05', 2, [[1,4]], U, U, {s:2,t:[[1,3]]}, [{s:1,t:[3]}]);
+        test('r06', 2, [[1,4]], 0, 1, {s:2,t:[[1,3]],r:0,i:1,b:3}, [{s:1,t:[3]}]);
+        test('r07', 2, [[1,4]], 0, 2, {s:2,t:[[1,3]],r:0,i:2,b:3}, [{s:1,t:[3]}]);
+        test('r08', 2, [[1,4]], 0, 3, {s:3,t:[[1,4]],r:0,i:3,b:4}, []);
+        test('r09', 2, [[1,4],5], U, U, {s:2,t:[[1,3]]}, [{s:2,t:[3,5]}]);
+        test('r10', 2, [[1,4],5], 0, 1, {s:2,t:[[1,3]],r:0,i:1,b:3}, [{s:2,t:[3,5]}]);
+        test('r11', 2, [[1,4],5], 0, 2, {s:3,t:[[1,4]],r:0,i:2,b:4}, [{s:1,t:[5]}]);
+        test('r12', 2, [[1,4],5], 0, 3, {s:3,t:[[1,4]],r:0,i:3,b:4}, [{s:1,t:[5]}]);
+        test('r13', 2, [[1,4],5], 1, 5, {s:4,t:[[1,4],5],r:1,i:5,b:6}, []);
     });
 
 });

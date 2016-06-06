@@ -24,7 +24,7 @@
     "byline": "^4.2.1",
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "numeral": "^1.5.3",
-    "promistreamus": "^0.1.7",
+    "promistreamus": "^0.1.11",
     "tmp": "git+https://github.com/nyurik/node-tmp.git",
     "underscore": "^1.8.3"
   },
