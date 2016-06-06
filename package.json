@@ -24,6 +24,6 @@
     "bluebird": "^3.3.5",
     "cassandra-driver": "^3.0.1",
     "multistream": "^2.0.5",
-    "promistreamus": "^0.1.7"
+    "promistreamus": "^0.1.11"
   }
 }
