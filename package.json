@@ -24,6 +24,6 @@
     "pg.js": "*",
     "pg-promise": "^3.1.6",
     "pg-query-stream": "^1.0.0",
-    "promistreamus": "^0.1.7"
+    "promistreamus": "^0.1.11"
   }
 }
