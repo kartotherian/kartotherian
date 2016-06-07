@@ -57,7 +57,7 @@ describe('JobProcessor', function() {
             jp.stats = {};
             jp.tileStore = sources.getHandlerById('d');
             jp.tileGenerator = sources.getHandlerById('s');
-            return utils.assertInOrder(msg, expectedValues, jp.getIterator()).then(function() {
+            return utils.assertInOrder(msg, expectedValues, jp.createMainIterator()).then(function() {
                 try {
                     testOnFinish.forEach(function (t) {
                         t();

@@ -5,11 +5,14 @@ var assert = require('assert');
 var Job = require('../lib/Job');
 var U = undefined;
 
-function newJob(opts) {
+function newJob(opts, lastCompleteIdx, jobIdxBefore) {
     return new Job(_.extend({
         storageId: 'sid',
         generatorId: 'gid'
-    }, opts))
+    }, opts), {
+        lastCompleteIdx: lastCompleteIdx,
+        jobIdxBefore: jobIdxBefore
+    });
 }
 
 function assertJobs(jobs, expected, expZoomOverride) {
@@ -21,14 +24,17 @@ function assertJobs(jobs, expected, expZoomOverride) {
         assert.equal(jb.size, exp.s, 'size ' + i);
         assert.equal(jb.zoom, expZoomOverride === U ? exp.z : expZoomOverride, 'zoom ' + i);
         assert.deepEqual(jb.tiles, exp.t, 'tiles ' + i);
-        assert.equal(jb.currentRange, exp.r, 'currentRange');
-        assert.equal(jb.idxFrom, exp.i, 'idxFrom');
-        assert.equal(jb.idxBefore, exp.b, 'idxBefore');
-        if (exp.f) {
-            if (!_.isArray(exp.f)) exp.f = [exp.f];
+        assert.equal(jb.stats === U ? U : jb.stats.lastCompleteIdx, exp.l, 'lastCompleteIdx');
+        if (exp.b === U) {
+            let last = exp.t[exp.t.length-1];
+            exp.b = Array.isArray(last) ? last[1] : last + 1;
+        }
+        assert.equal(jb.stats === U ? U : jb.stats.jobIdxBefore, exp.b, 'jobIdxBefore');
+        if (exp.flt) {
+            if (!_.isArray(exp.flt)) exp.flt = [exp.flt];
             assert.notEqual(jb.filters, U, 'filter is missing');
-            assert.equal(jb.filters.length, exp.f.length, 'filter count ' + i);
-            exp.f.forEach(function (expFilter, i2) {
+            assert.equal(jb.filters.length, exp.flt.length, 'filter count ' + i);
+            exp.flt.forEach(function (expFilter, i2) {
                 assert.equal(jb.filters[i2].zoom, expFilter.z, 'filter zoom ' + i + ' filter ' + i2);
             })
         } else {
@@ -140,8 +146,10 @@ describe('Job', function() {
                     zoom: zoom,
                     tiles: tiles
                 });
-                assert.deepEqual(job._encodedTiles, expected, 'encoded');
                 assert.equal(job.size, size, 'size');
+
+                job.cleanupForQue();
+                assert.deepEqual(job._encodedTiles, expected, 'encoded');
 
                 var encjob = newJob({
                     zoom: zoom,
@@ -176,7 +184,7 @@ describe('Job', function() {
         test('cb', 1, 4, [0, 1, 2, 3], [0, 0, 0, 0]);
     });
 
-    it('expand job', function() {
+    it('expandJobs()', function() {
 
         var test = function (msg, opts, expected, expZoomOverride) {
                 try {
@@ -211,14 +219,14 @@ describe('Job', function() {
 
         pyramid('d01', 0, U, U, [0],       false);
         pyramid('d02', 0, 4, 4, [0],       []);
-        pyramid('d03', 0, 0, 2, [0],       [{s:1,z:0,t:[0]}, {s:4,z:1,t:[[0,4]]}]);
+        pyramid('d03', 0, 0, 2, [0],       [{s:1,z:0,t:[0]},    {s:4,z:1,t:[[0,4]]}]);
         pyramid('d04', 0, 1, 2, [0],       [{s:4,z:1,t:[[0,4]]}]);
-        pyramid('d05', 1, 0, 3, [2],       [{s:1,z:0,t:[0]}, {s:1,z:1,t:[2]}, {s:4,z:2,t:[[8,12]]}]);
-        pyramid('d06', 1, 0, 3, [[1,3]],   [{s:1,z:0,t:[0]}, {s:2,z:1,t:[[1,3]]}, {s:8,z:2,t:[[4,12]]}]);
-        pyramid('d07', 1, 0, 3, [[1,2],2], [{s:1,z:0,t:[0]}, {s:2,z:1,t:[[1,3]]}, {s:8,z:2,t:[[4,12]]}]);
-        pyramid('d08', 1, 0, 3, [1,[2,3]], [{s:1,z:0,t:[0]}, {s:2,z:1,t:[[1,3]]}, {s:8,z:2,t:[[4,12]]}]);
-        pyramid('d09', 1, 0, 3, [[1,2],3], [{s:1,z:0,t:[0]}, {s:2,z:1,t:[1,3]}, {s:8,z:2,t:[[4,8],[12,16]]}]);
-        pyramid('d10', 1, 0, 3, [1,[3,4]], [{s:1,z:0,t:[0]}, {s:2,z:1,t:[1,3]}, {s:8,z:2,t:[[4,8],[12,16]]}]);
+        pyramid('d05', 1, 0, 3, [2],       [{s:1,z:0,t:[0]},    {s:1,z:1,t:[2]}, {s:4,z:2,t:[[8,12]]}]);
+        pyramid('d06', 1, 0, 3, [[1,3]],   [{s:1,z:0,t:[0]},    {s:2,z:1,t:[[1,3]]}, {s:8,z:2,t:[[4,12]]}]);
+        pyramid('d07', 1, 0, 3, [[1,2],2], [{s:1,z:0,t:[0]},    {s:2,z:1,t:[[1,3]]}, {s:8,z:2,t:[[4,12]]}]);
+        pyramid('d08', 1, 0, 3, [1,[2,3]], [{s:1,z:0,t:[0]},    {s:2,z:1,t:[[1,3]]}, {s:8,z:2,t:[[4,12]]}]);
+        pyramid('d09', 1, 0, 3, [[1,2],3], [{s:1,z:0,t:[0]},    {s:2,z:1,t:[1,3]}, {s:8,z:2,t:[[4,8],[12,16]]}]);
+        pyramid('d10', 1, 0, 3, [1,[3,4]], [{s:1,z:0,t:[0]},    {s:2,z:1,t:[1,3]}, {s:8,z:2,t:[[4,8],[12,16]]}]);
 
         parts('e01', 1, [0],           [{s:1,t:[0]}]);
         parts('e02', 2, [0],           [{s:1,t:[0]}]);
@@ -234,11 +242,10 @@ describe('Job', function() {
         parts('e12', 2, [0,1,2],       [{s:2,t:[[0,2]]}, {s:1,t:[2]}]);
 
 
-        test('f1', {zoom:1, tiles:[0], filters: [{zoom:-1}]}, [{s:1,z:1,t:[0],f:{z:0}}]);
+        test('f1', {zoom:1, tiles:[0], filters: [{zoom:-1}]}, [{s:1,z:1,t:[0],flt:{z:0}}]);
         test('f2', {zoom:1, parts:2, fromZoom:0, beforeZoom:3, tiles:[2]}, [{s:1,z:0,t:[0]},{s:1,z:1,t:[2]},{s:2,z:2,t:[[8,10]]},{s:2,z:2,t:[[10,12]]}]);
 
-        var jb = newJob({zoom:2}); // 0..15
-        jb.moveNextRange(0, 12);
+        var jb = newJob({zoom:2}, 11); // 0..15
         jb.parts = 3;
         test('f3', jb, [{s:2,z:2,t:[[12,14]]},{s:1,z:2,t:[14]},{s:1,z:2,t:[15]}]);
 
@@ -276,17 +283,15 @@ describe('Job', function() {
 
     it('splitjob', function() {
 
-        var test = function (msg, parts, tiles, range, startIdx, expected, expectedOthers) {
+        var test = function (msg, parts, tiles, lastCompleted, jobIdxBefore, expected, expectedOthers) {
                 try {
                     var job = newJob({
                         zoom: 2,
                         tiles: tiles
-                    });
-                    if (range !== U) {
-                        job.moveNextRange(range, startIdx);
-                    }
+                    }, lastCompleted, jobIdxBefore);
                     var jobs = job.splitJob(parts);
 
+                    expected.t = tiles;
                     assertJobs([job], [expected], 2);
                     assertJobs(jobs, expectedOthers, 2);
                 } catch (err) {
@@ -295,19 +300,17 @@ describe('Job', function() {
                 }
             };
 
-        test('r01', 1, [], U, U, {s:0,t:[]}, []);
-        test('r02', 2, [1], U, U, {s:1,t:[1]}, []);
-        test('r03', 2, [1,3], U, U, {s:1,t:[1]}, [{s:1,t:[3]}]);
-        test('r04', 2, [1,3], 1, U, {s:2,t:[1,3],r:1,i:3,b:4}, []);
-        test('r05', 2, [[1,4]], U, U, {s:2,t:[[1,3]]}, [{s:1,t:[3]}]);
-        test('r06', 2, [[1,4]], 0, 1, {s:2,t:[[1,3]],r:0,i:1,b:3}, [{s:1,t:[3]}]);
-        test('r07', 2, [[1,4]], 0, 2, {s:2,t:[[1,3]],r:0,i:2,b:3}, [{s:1,t:[3]}]);
-        test('r08', 2, [[1,4]], 0, 3, {s:3,t:[[1,4]],r:0,i:3,b:4}, []);
-        test('r09', 2, [[1,4],5], U, U, {s:2,t:[[1,3]]}, [{s:2,t:[3,5]}]);
-        test('r10', 2, [[1,4],5], 0, 1, {s:2,t:[[1,3]],r:0,i:1,b:3}, [{s:2,t:[3,5]}]);
-        test('r11', 2, [[1,4],5], 0, 2, {s:3,t:[[1,4]],r:0,i:2,b:4}, [{s:1,t:[5]}]);
-        test('r12', 2, [[1,4],5], 0, 3, {s:3,t:[[1,4]],r:0,i:3,b:4}, [{s:1,t:[5]}]);
-        test('r13', 2, [[1,4],5], 1, 5, {s:4,t:[[1,4],5],r:1,i:5,b:6}, []);
+        test('r02', 2, [1],       U, U, {s:1,l:U,b:2}, []);
+        test('r03', 2, [1,3],     U, U, {s:1,l:U,b:2}, [{s:1,t:[3]}]);
+        test('r05', 2, [[1,4]],   U, U, {s:2,l:U,b:3}, [{s:1,t:[3]}]);
+        test('r06', 2, [[1,4]],   1, U, {s:2,l:1,b:3}, [{s:1,t:[3]}]);
+        test('r07', 2, [[1,4]],   2, U, {s:3,l:2,b:4}, []);
+        test('r08', 2, [[1,4]],   3, U, {s:3,l:3,b:4}, []);
+        test('r09', 2, [[1,4],5], U, U, {s:2,l:U,b:3}, [{s:2,t:[3,5]}]);
+        test('r10', 2, [[1,4],5], 1, U, {s:3,l:1,b:4}, [{s:1,t:[5]}]);
+        test('r11', 2, [[1,4],5], 2, U, {s:3,l:2,b:4}, [{s:1,t:[5]}]);
+        test('r12', 2, [[1,4],5], 3, U, {s:4,l:3,b:6}, []);
+        test('r13', 2, [[1,4],5], 5, U, {s:4,l:5,b:6}, []);
     });
 
 });
