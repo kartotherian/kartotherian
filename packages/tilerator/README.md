@@ -2,20 +2,20 @@
 
 **Tilerator** (Russian: Тилератор, tee-LEH-ruh-tor)
 
-This code is cross-hosted at [gerrit](https://git.wikimedia.org/summary/maps%2Ftilerator)
+This code is cross-hosted at [gerrit](https://git.wikimedia.org/summary/maps%2FTilerator)
 
 Generating tiles from the SQL queries sometimes requires a considerable time, often too long for the web request. Tilerator is a multi-processor, cluster-enabled tile generator, that allows both pre-generation and dirty tile re-generation.
 
 Scheduled generation job waits in the queue ([kue](https://github.com/Automattic/kue)) until it is picked up by one of the workers. The worker will update job progress, as well as store intermediate data to allow restarts/crash recovery.
 
-Tilerator is an unprotected Admin tool, and should NOT be exposed to the web. By default, tilerator only accepts connections from the localhost. It is recommended that it is left this way, and used via a port forwarding ssh tunnel with `ssh -L 6534:localhost:6534 my.maps.server`
+Tilerator is an unprotected Admin tool, and should NOT be exposed to the web. By default, Tilerator only accepts connections from the localhost. It is recommended that it is left this way, and used via a port forwarding ssh tunnel with `ssh -L 6534:localhost:6534 my.maps.server`
 
 ## Configuration
 Inside the `conf` key:
 * `sources` - (required) Either a set of subkeys, a filename, or a list of file names.  See [core](https://github.com/kartotherian/kartotherian-core) on how to configure the sources.
 * `variables` - (optional) specify a set of variables (string key-value pairs) to be used inside sources, or it could be a filename or a list of filenames/objects.
-* `uiOnly`- (optional, boolean) runs tilerator in UI mode - does not generate tiles, but still allows access to the web-based queue management tools.
-* `daemonOnly`- (optional, boolean) runs tilerator in daemon mode - generates tiles, but does not allows access to the web-based queue management tools.
+* `uiOnly`- (optional, boolean) runs Tilerator in UI mode - does not generate tiles, but still allows access to the web-based queue management tools.
+* `daemonOnly`- (optional, boolean) runs Tilerator in daemon mode - generates tiles, but does not allows access to the web-based queue management tools.
 For the rest of the configuration parameters, see [service runner](https://github.com/wikimedia/service-runner) config info.
 * redis - (optional) configures redis server connection, e.g. redis://example.com:1234?redis_option=value&redis_option=value
 
@@ -27,10 +27,13 @@ This allows us to easily treat the whole tile space as one linear space, yet pro
 For example, by simply dividing the index by 4, we get the index of the tile that includes current tile with zoom-1.
 
 ## Monitoring Jobs
-It is highly recomended, although not mandatory, to have an extra instance of the tilerator running with the uiOnly setting in the config.
-This way if tilerator can be stopped and the pending jobs rearranged. Without the uiOnly instance, you will always be changing the queue
-while jobs are running.  To configure the uiOnly instance, make a copy of the tilerator config, set uiOnly to true and change the port number.
+It is highly recomended, although not mandatory, to have an extra instance of the Tilerator running with the uiOnly setting in the config.
+This way if Tilerator can be stopped and the pending jobs rearranged. Without the uiOnly instance, you will always be changing the queue
+while jobs are running.  To configure the uiOnly instance, make a copy of the Tilerator config, set uiOnly to true and change the port number.
 To see the currently running jobs, navigate to `http://localhost:6534/` (nicer interface) or `http://localhost:6534/raw` (internal data).
+
+## Job auto-balancing
+Tilerator will auto-rebalance jobs if it detects
 
 ## Adding jobs
 Jobs can be scheduled via a POST request. The best way is to use /static/admin.html from the Kartotherian deployment,
@@ -81,7 +84,7 @@ given, only those zooms will be regenerated. So if the zoom level in the file is
 that zoom level will not be regenerated.  If you have a file has already been converted to the internal format of one index per line,
 and has no zoom, the zoom can be supplied via the `fileZoomOverride`.
 
- P.S. Please remember that Tilerator is an admin tool, and should not be accessible from the web
+ NOTE: Please remember that Tilerator is an admin tool, and should not be accessible from the web
 
 ### Job Filters
 Sometimes you may wish to generate only those tiles that satisfy a certain condition.
@@ -117,23 +120,12 @@ This will move all jobs from the `failed` queue into `inactive` if they haven't 
 ```
 http://localhost:6534/cleanup/failed/15
 ```
-Sometimes the few jobs take too long to render, while other machines or CPU cores are not busy. Cleanup can break such jobs
-into smaller chunks. To use it, it is best to have an extra instance of Tilerator running with the `uiOnly` config option.
-Otherwise you may update an active job, without notifying the worker about it, thus causing it to continue processing.
-To use the job rebalancing, stop all the non-uiOnly Tilerator instances, and run cleanup with some extra parameter:
-```
-http://localhost:6534/cleanup/active/0?breakIntoParts=5&breakIfLongerThan=0.5
-
-```
-This tells tilerator to move all jobs from active to inactive, even if they were just updated (you did stop the workers, right?),
+This tells Tilerator to move all jobs from active to inactive, even if they were just updated (you did stop the workers, right?),
 and also to break up all jobs into 5 parts if the job's estimated completion time is more than 30 minutes (1/2 of an hour).
 The original job will be shortened to the 10% of whatever was left to do.
 
 cleanup accept these parameters:
-* breakIntoParts: - number of parts to break the job into. Must be at least 2 if set. Only affect jobs that match breakIfLongerThan
-* breakIfLongerThan - if breakIntoParts is set, and if the job is estimated to run longer than this value (in hours), it will be broken into parts. Default is 0.16 hours (10 minutes)
 * updateSources - if true, will update the sources of all the matching jobs
-
 
 
 ## Copying source info

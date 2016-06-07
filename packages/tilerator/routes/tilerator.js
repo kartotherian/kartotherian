@@ -151,8 +151,6 @@ function onCleanup(req, res) {
             type: req.params.type,
             jobId: req.params.jobId,
             minutesSinceUpdate: req.params.minutes,
-            breakIfLongerThan: req.query.breakIfLongerThan,
-            breakIntoParts: req.query.breakIntoParts,
             sources: core.getSources(),
             updateSources: req.query.updateSources
         });

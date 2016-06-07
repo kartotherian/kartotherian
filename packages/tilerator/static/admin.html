@@ -92,8 +92,8 @@
 
 <div id="header">
     <label for="host" title="Which host to use to get tiles from">host </label><input id="host" type="text" value="localhost:6534">
-    <label for="generatorId" title="Source ID that will be used to generate tiles (copy from)"><a href="#" onclick="return getInfo('generatorId')">src</a> </label><input id="generatorId" type="text" value="gen">
-    <label for="storageId" title="Source ID that will be used to store the tiles (copy to)"><a href="#" onclick="return getInfo('storageId')">dst</a> </label><input id="storageId" type="text" value="v5">
+    <label for="generatorId" title="Source ID that will be used to generate tiles (copy from)"><a href="#" onclick="return getInfo('generatorId')">src</a> </label><input id="generatorId" type="text" value="">
+    <label for="storageId" title="Source ID that will be used to store the tiles (copy to)"><a href="#" onclick="return getInfo('storageId')">dst</a> </label><input id="storageId" type="text" value="">
     <input type="button" value="copy info" onclick="copyInfo()" title="Copy the info.json data from one source to another">
     <label for="zoom">zoom </label><input id="zoom" type="text" value="" readonly title="Shows the current zoom of the view. This zoom will be used when scheduling new jobs with Ctrl+click.">
     <label for="fromZoom">fromZ </label><input id="fromZoom" type="text" value="" title="Copy a pyramid of zooms - zooms equal or bigger than this value.">

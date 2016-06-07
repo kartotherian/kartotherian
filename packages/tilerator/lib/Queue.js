@@ -78,8 +78,8 @@ Queue.prototype.addJobAsync = function addJobAsync(jobs) {
         return self._queue
             .create(jobName, j)
             .priority(j.priority)
-            .attempts(100)
-            .backoff({delay: 15 * 1000, type: 'fixed'})
+            .attempts(10)
+            .backoff({delay: 1000, type: 'exponential'})
             .ttl(self.jobTTL)
             .saveAsync()
             .return(j.title);
@@ -94,8 +94,6 @@ Queue.prototype.cleanup = function cleanup(opts) {
 
     core.checkType(opts, 'type', 'string', 'active');
     core.checkType(opts, 'minutesSinceUpdate', 'integer', 60);
-    core.checkType(opts, 'breakIntoParts', 'integer', false, 2, 100);
-    core.checkType(opts, 'breakIfLongerThan', 'number', 0.16);
     core.checkType(opts, 'sources', 'object', true);
     core.checkType(opts, 'updateSources', 'boolean');
     var jobId = core.checkType(opts, 'jobId', 'integer', false, 1, Math.pow(2,50)) ? opts.jobId : false;
@@ -126,19 +124,6 @@ Queue.prototype.cleanup = function cleanup(opts) {
                         return job.inactiveAsync();
                     }).then(function () {
                         result[id] = 'changedSrcs';
-                    });
-                }
-                if (opts.breakIntoParts && (opts.breakIfLongerThan <= 0 || (job.progress_data && job.progress_data.estimateHrs >= opts.breakIfLongerThan))) {
-                    var newJob = new Job(job.data);
-                    if (job.progress_data) {
-                        newJob.moveNextRange(job.progress_data.range, job.progress_data.index);
-                    }
-                    newJob.parts = opts.breakIntoParts;
-
-                    return job.completeAsync().then(function () {
-                        return self.addJobAsync(newJob);
-                    }).then(function (titles) {
-                        result[id] = titles[0];
                     });
                 }
                 return job.inactiveAsync().then(function () {
@@ -181,25 +166,8 @@ Queue.prototype.getKue = function getKue() {
 };
 
 /**
- * Get the cached or real number of jobs in the "inactive" (pending) queue
- * The function will not re-request the number of jobs (a fairly expensive operation)
- * on every call. Instead it will only get it after some randomized time, where the time is
- * less if the number of jobs is smaller, and bigger if there are many jobs pending.
+ * Get the number of jobs in the "inactive" (pending) queue
  */
 Queue.prototype.getPendingCountAsync = function getPendingCountAsync() {
-    // call count when starting or every 5 + random() minutes, where random depends on how many jobs we saw there last
-    var self = this,
-        now = new Date(),
-        minSinceLastCall = (now - self._lastInactiveCountReqTime) / 60 / 1000,
-        callCount = +minSinceLastCall > (5 + Math.random() * Math.max(self._lastInactiveCount + 1, 10));
-
-    if (callCount) {
-        self._lastInactiveCountReqTime = now;
-        return self._queue.inactiveCountAsync().then(function (count) {
-            self._lastInactiveCount = count;
-            return count;
-        });
-    } else {
-        return Promise.resolve(self._lastInactiveCount);
-    }
+    return self._queue.inactiveCountAsync();
 };

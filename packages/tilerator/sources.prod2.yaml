@@ -1,5 +1,5 @@
 # Generates vtiles from database
-rawgen:
+genall:
   public: true
   formats: [pbf]
   uri: bridge://
@@ -27,15 +27,15 @@ genview:
   xml:
     loader: osm-bright-style
   xmlSetParams:
-    source: {ref: rawgen}
+    source: {ref: genall}
 
-# Use this source instead of 'rawgen' to avoid saving simple tiles with just water or landuse
+# Use this source instead of 'genall' to avoid saving simple tiles with just water or landuse
 gen:
   public: true
   formats: [pbf]
   uri: substantial://
   params:
-    source: {ref: rawgen}
+    source: {ref: genall}
     minzoom: 10
     minsize: 300
     layers: [water, landuse]
