@@ -1,6 +1,6 @@
 {
   "name": "tilerator-jobprocessor",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Processes tile generation jobs",
   "main": "index.js",
   "scripts": {

@@ -192,6 +192,8 @@ describe('Job', function() {
 
                     var jobs = job.expandJobs();
                     if (expected === false) {
+                        delete jobs[0].stats.jobStart;
+                        delete job.stats.jobStart;
                         assert.deepEqual(jobs, [job], 'already expanded');
                         return;
                     }
@@ -251,33 +253,44 @@ describe('Job', function() {
 
     });
 
-    it('job indexToPos', function() {
+    it('job calculateProgress', function() {
 
         var test = function (msg, expected, index, tiles) {
-            var passed = true;
+            var error;
             try {
                 var job = newJob({zoom: 2, tiles: tiles});
-                assert.equal(job.indexToPos(index), expected, msg);
+                if (index !== U) {
+                    job.completeIndex(index);
+                }
+                assert.equal(job.calculateProgress(), expected);
             } catch(err) {
-                passed = false;
+                error = err;
             }
-            assert.equal(passed, expected !== U, msg);
+            if ((expected === U) !== !!error) {
+                if (error) {
+                    error.message = msg + ': ' + error.message;
+                    throw error;
+                } else {
+                    assert.fail(msg + ': was expected to be an error');
+                }
+            }
         };
 
-        test('p01', U, -1, []);
-        test('p02', U, 0, []);
-        test('p03', U, 1, []);
-        test('p04', U, 1, [2]);
-        test('p05', 0, 2, [2]);
+        test('p00', U, -1, []);
+        test('p01', U, 0, []);
+        test('p02', U, 1, []);
+        test('p03', U, 1, [2]);
+        test('p04', 0, U, [2]);
+        test('p05', 1, 2, [2]);
         test('p06', U, 3, [2]);
         test('p07', U, 0, [[1,2]]);
-        test('p08', 0, 1, [[1,2]]);
+        test('p08', 1, 1, [[1,2]]);
         test('p09', U, 2, [[1,2]]);
         test('p10', U, 0, [[1,2],[4,5]]);
-        test('p11', 0, 1, [[1,2],[4,5]]);
+        test('p11', 1, 1, [[1,2],[4,5]]);
         test('p12', U, 2, [[1,2],[4,5]]);
         test('p13', U, 3, [[1,2],[4,5]]);
-        test('p14', 1, 4, [[1,2],[4,5]]);
+        test('p14', 2, 4, [[1,2],[4,5]]);
         test('p15', U, 5, [[1,2],[4,5]]);
     });
 
