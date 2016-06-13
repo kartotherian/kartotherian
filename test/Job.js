@@ -296,22 +296,27 @@ describe('Job', function() {
 
     it('splitjob', function() {
 
-        var test = function (msg, parts, tiles, lastCompleted, jobIdxBefore, expected, expectedOthers) {
-                try {
-                    var job = newJob({
-                        zoom: 2,
-                        tiles: tiles
-                    }, lastCompleted, jobIdxBefore);
-                    var jobs = job.splitJob(parts);
-
-                    expected.t = tiles;
-                    assertJobs([job], [expected], 2);
-                    assertJobs(jobs, expectedOthers, 2);
-                } catch (err) {
-                    err.message = msg + ': ' + err.message;
-                    throw err;
+        var test = function (msg, parts, tiles, lastCompleted, jobIdxBefore, expected, expectedOthers, zoom) {
+            zoom = zoom === U ? 2 : zoom;
+            try {
+                var job = newJob({
+                    zoom: zoom,
+                    tiles: tiles
+                }, lastCompleted, jobIdxBefore);
+                if (lastCompleted !== U) {
+                    job.moveNextRange();
                 }
-            };
+
+                var jobs = job.splitJob(parts);
+
+                expected.t = tiles;
+                assertJobs([job], [expected], zoom);
+                assertJobs(jobs, expectedOthers, zoom);
+            } catch (err) {
+                err.message = msg + ': ' + err.message;
+                throw err;
+            }
+        };
 
         test('r02', 2, [1],       U, U, {s:1,l:U,b:2}, []);
         test('r03', 2, [1,3],     U, U, {s:1,l:U,b:2}, [{s:1,t:[3]}]);
