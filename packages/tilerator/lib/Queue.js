@@ -169,5 +169,5 @@ Queue.prototype.getKue = function getKue() {
  * Get the number of jobs in the "inactive" (pending) queue
  */
 Queue.prototype.getPendingCountAsync = function getPendingCountAsync() {
-    return self._queue.inactiveCountAsync();
+    return this._queue.inactiveCountAsync();
 };
