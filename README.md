@@ -127,7 +127,7 @@ Instead of an object, `xmlSetDataSource` can be set to an array of objects to pr
 multple change sets.
 
 ## Kartotherian-specific parameters:
-* `public` (boolean) - should this be source be accessible via `/<sourceId>/z/x/y.format` requests
+* `public` (boolean) - should this be source be accessible via `/<sourceId>/z/x/y.format` requests. You may also set configuration parameter `allSourcesPublic` to true to make all sources public (might be dangerous)
 * `minzoom` (int) - minimum allowable zoom for the public request (public requests only)
 * `maxzoom` (int) - maximum allowable zoom for the public request (public requests only)
 * `defaultHeaders` (object) - a set of extra headers that will be sent to the user unless the source provides its own. (public requests only)
