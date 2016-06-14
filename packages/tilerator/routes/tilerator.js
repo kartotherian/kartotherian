@@ -121,7 +121,10 @@ function onEnque(req, res) {
             let addJobAsync = function (job) {
                 return queue.addJobAsync(new Job(job));
             };
-            if (req.query.expdirpath && req.query.statefile && req.query.expmask) {
+            if (req.query.expdirpath || req.query.statefile || req.query.expmask) {
+                if (!req.query.expdirpath || !req.query.statefile || !req.query.expmask) {
+                    throw new Err('All three params - expdirpath, statefile, expmask must be present')
+                }
                 return processAll(req.query.expdirpath, req.query.statefile, req.query.expmask, job, addJobAsync);
             } else if (req.query.filepath) {
                 return fileParser(req.query.filepath, job, addJobAsync);
