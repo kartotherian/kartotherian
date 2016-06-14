@@ -102,7 +102,7 @@ paths:
             params:
               base: pin
               size: m
-              symbol: gas
+              symbol: fuel
               color: ffffff
               scale: 2
           response:
@@ -128,13 +128,13 @@ paths:
       produces:
         - image/png
   # Map snapshots
-  /{src}/{z},{lat},{lon},{w}x{h}@{scale}x.{format}:
+  /img/{src},{z},{lat},{lon},{w}x{h}@{scale}x.{format}:
     get:
       tags:
         - kartotherian
         - maps
         - maptiles
-      description: Renders requested map region as a scaled image
+      description: Renders requested map region as a scaled image (static map snapshot)
       produces:
         - image/png
       x-amples:
