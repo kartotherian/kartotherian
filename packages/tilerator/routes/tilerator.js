@@ -15,6 +15,7 @@ var info = require('../package.json');
 var jplib = require('tilerator-jobprocessor');
 var JobProcessor = jplib.JobProcessor;
 var fileParser = jplib.fileParser;
+var processAll = jplib.processAll;
 var Job = jplib.Job;
 
 var jobProcessor, queue;
@@ -63,11 +64,11 @@ function onVariables(req, res) {
 
 function onEnque(req, res) {
     reportAsync(res, function () {
-        return Promise.try(function() {
+        return Promise.try(function () {
             if (typeof req.body === 'string') {
                 return updateSourcesFromYaml(req.body);
             }
-        }).then(function() {
+        }).then(function () {
             var job = {
                 storageId: req.query.storageId,
                 generatorId: req.query.generatorId,
@@ -117,13 +118,13 @@ function onEnque(req, res) {
             }
             queue.setSources(job, core.getSources());
 
-            if (req.query.filepath) {
-                if (req.query.mergeGapsAsBigAs) {
-                    job.mergeGapsAsBigAs = req.query.mergeGapsAsBigAs;
-                }
-                return fileParser(req.query.filepath, job, function(job) {
-                    return queue.addJobAsync(new Job(job));
-                });
+            let addJobAsync = function (job) {
+                return queue.addJobAsync(new Job(job));
+            };
+            if (req.query.expdirpath && req.query.statefile && req.query.expmask) {
+                return processAll(req.query.expdirpath, req.query.statefile, req.query.expmask, job, addJobAsync);
+            } else if (req.query.filepath) {
+                return fileParser(req.query.filepath, job, addJobAsync);
             } else {
                 return queue.addJobAsync(new Job(job));
             }

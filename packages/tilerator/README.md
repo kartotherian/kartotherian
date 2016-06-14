@@ -71,8 +71,12 @@ This feature could be useful for the tile invalidation. For example, a user edit
 
 ### Parsing updates file
 Specifying `filepath` parameter will load that file from the localhost and append its content to the queue. The file
- must already exist on the server. File must be in the format created by osm2pgsql, and all lines must be of the same
- zoom level:
+ must already exist on the server.  Alternatively, you can specify `expdirpath`,  `statefile` and `expmask` parameters,
+ which would parse all files stored at the `expdirpath` that match regular expression `expmask`, and whose string value
+ is greater than value stored in the file `statefile` (filename only). Once parsing is complete, the last filename
+ will be stored in the statefile, overriding previous content.
+
+Eeach expiration file must be in the format created by osm2pgsql, and all lines must be of the same zoom level:
 
 ```
 zoom/x_coordinate/y_coordinate
@@ -82,7 +86,7 @@ Tilerator will convert this file into a list of indexes, sort/deduplicate them, 
 Use `fromZoom` and `beforeZoom` to invalidate more than just the zoom level given in the file. Note that if the zoom range is
 given, only those zooms will be regenerated. So if the zoom level in the file is not in `fromZoom <= zoom < beforeZoom`,
 that zoom level will not be regenerated.  If you have a file has already been converted to the internal format of one index per line,
-and has no zoom, the zoom can be supplied via the `fileZoomOverride`.
+and has no zoom, the zoom can be supplied via the `fileZoomOverride` (only works with `filepath` param).
 
  NOTE: Please remember that Tilerator is an admin tool, and should not be accessible from the web
 
@@ -120,9 +124,6 @@ This will move all jobs from the `failed` queue into `inactive` if they haven't 
 ```
 http://localhost:6534/cleanup/failed/15
 ```
-This tells Tilerator to move all jobs from active to inactive, even if they were just updated (you did stop the workers, right?),
-and also to break up all jobs into 5 parts if the job's estimated completion time is more than 30 minutes (1/2 of an hour).
-The original job will be shortened to the 10% of whatever was left to do.
 
 cleanup accept these parameters:
 * updateSources - if true, will update the sources of all the matching jobs
