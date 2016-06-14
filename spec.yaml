@@ -112,16 +112,19 @@ paths:
   /v4/marker/{base}-{size}-{symbol}+{color}.png:
     get:
       description: Renders pushpin marker of a given color and size with an icon.
+      x-monitor: false
       produces:
         - image/png
   /v4/marker/{base}-{size}+{color}.png:
     get:
       description: Renders a pushpin marker of a given color and size withoun an icon
+      x-monitor: false
       produces:
         - image/png
   /v4/marker/{base}-{size}+{color}@{scale}x.png:
     get:
       description: Renders 2x scaled pushpin marker of a given color and size withoun an icon.
+      x-monitor: false
       produces:
         - image/png
   # Map snapshots
@@ -153,6 +156,7 @@ paths:
   /{src}/{z},{lat},{lon},{w}x{h}.{format}:
     get:
       description: Renders requested map region as an image
+      x-monitor: false
       produces:
         - image/png
 
@@ -163,11 +167,13 @@ paths:
         - Root
         - Robots
       description: Gets robots.txt
+      x-monitor: false
   /:
     get:
       tags:
         - Root
       description: The root service end-point
+      x-monitor: false
       produces:
         - application/json
   # from routes/info.js
@@ -176,6 +182,7 @@ paths:
       tags:
         - Service information
       description: Gets information about the service
+      x-monitor: true
       produces:
         - application/json
   /_info/name:
@@ -184,6 +191,7 @@ paths:
         - Service information
         - Service name
       description: Gets the name of the service
+      x-monitor: false
       produces:
         - application/json
   /_info/version:
@@ -192,6 +200,7 @@ paths:
         - Service information
         - Service version
       description: Gets the running version of the service
+      x-monitor: false
       produces:
         - application/json
   /_info/home:
@@ -200,3 +209,4 @@ paths:
         - Service information
         - Service homepage
       description: Redirects to the home page
+      x-monitor: false
