@@ -25,7 +25,7 @@
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "numeral": "^1.5.3",
     "promistreamus": "^0.1.11",
-    "tmp": "git+https://github.com/nyurik/node-tmp.git",
+    "tmp-promise": "^1.0.2",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
