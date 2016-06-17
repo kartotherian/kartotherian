@@ -21,10 +21,10 @@
   "homepage": "https://github.com/kartotherian/tilerator-jobprocessor",
   "dependencies": {
     "bluebird": "^3.3.5",
-    "byline": "^4.2.1",
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "numeral": "^1.5.3",
     "promistreamus": "^0.1.11",
+    "event-stream": "^3.3.2",
     "tmp-promise": "^1.0.2",
     "underscore": "^1.8.3"
   },
