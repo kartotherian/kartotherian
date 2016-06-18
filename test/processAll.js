@@ -74,9 +74,11 @@ describe('processAll', function() {
             fs.writeFileSync(stateFile, stateData, 'utf8');
         }
         return processAllLib(expDirPath, stateFile, mask, opts, function (job) {
-            // test job's params
-            new Job(job);
-            addedJobs.push(job);
+            return Promise.try(function () {
+                // test job's params
+                new Job(job);
+                addedJobs.push(job);
+            }).delay(2);
         }).then(function () {
             debug('cleanup %j', tempFiles);
             assert.equal(fs.readFileSync(stateFile, 'utf8'), expectedState);
@@ -149,7 +151,7 @@ describe('processAll', function() {
                 tiles: [42502815, [42502822, 42502830]]
             }
         ).then(function () {
-            throw new Err('must have failed')
+            throw new core.Err('must have failed')
         }, function () {
             // expected error
         });
