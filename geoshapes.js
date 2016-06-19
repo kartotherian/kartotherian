@@ -16,37 +16,37 @@ module.exports = function geoshapes(coreV, router) {
             throw new Err("'geoshapes' parameter block is not set up in the config");
         }
         if (!params.database || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.database)) {
-            throw new Err("Uri must have a valid 'database' query parameter");
+            throw new Err("'geoshapes' parameters must specify 'database'");
         }
-        if (!params.table || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.table)) {
-            throw new Err("Optional uri 'table' param must be a valid value");
+        if (!params.table || !/^[a-zA-Z][-a-zA-Z0-9]*$/.test(params.table)) {
+            throw new Err("'geoshapes' parameters must specify 'table'");
         }
         client = postgres({
             host: params.host,
             database: params.database,
-            user: params.username,
+            user: params.user,
             password: params.password
         });
 
-        var preffix = "SELECT ST_AsGeoJSON(",
-            suffix = ") as data FROM " + self.table + " WHERE tags ? 'wikidata' and tags->'wikidata' = $1";
+        var preffix = "SELECT ST_AsGeoJSON(ST_Transform(",
+            suffix = ", 4326)) as data FROM " + params.table + " WHERE tags ? 'wikidata' and tags->'wikidata' = $1";
 
 
         let floatRe = /-?[0-9]+(\.[0-9]+)?/;
         queries = {
-            default: {sql: preffix + 'way' + from},
+            default: {sql: preffix + 'way' + suffix},
             simplify: {
-                sql: preffix + 'ST_Simplify(way, $2)' + from,
+                sql: preffix + 'ST_Simplify(way, $2)' + suffix,
                 params: ['tolerance'],
                 regex: [floatRe]
             },
             simplifysqrt: {
-                sql: preffix + 'ST_Simplify(way, $2*sqrt(ST_Area(ST_envelope(way))))' + from,
+                sql: preffix + 'ST_Simplify(way, $2*sqrt(ST_Area(ST_envelope(way))))' + suffix,
                 params: ['mult'],
                 regex: [floatRe]
             },
             removerepeat: {
-                sql: preffix + 'ST_RemoveRepeatedPoints(way, $2)' + from,
+                sql: preffix + 'ST_RemoveRepeatedPoints(way, $2)' + suffix,
                 params: ['tolerance'],
                 regex: [floatRe]
             }
