@@ -1,13 +1,14 @@
 'use strict';
 
 var util = require('util');
-var BBPromise = require('bluebird');
-var postgres = require('pg-promise')({promiseLib: BBPromise});
+var Promise = require('bluebird');
+var topojson = require('topojson');
+var postgres = require('pg-promise')({promiseLib: Promise});
 
 var core, client, Err, params, queries;
 
 module.exports = function geoshapes(coreV, router) {
-    return BBPromise.try(function () {
+    return Promise.try(function () {
         core = coreV;
         Err = core.Err;
         params = core.getConfiguration().geoshapes;
@@ -18,9 +19,6 @@ module.exports = function geoshapes(coreV, router) {
         if (!params.database || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.database)) {
             throw new Err("'geoshapes' parameters must specify 'database'");
         }
-        if (!params.table || !/^[a-zA-Z][-a-zA-Z0-9]*$/.test(params.table)) {
-            throw new Err("'geoshapes' parameters must specify 'table'");
-        }
         client = postgres({
             host: params.host,
             database: params.database,
@@ -28,35 +26,39 @@ module.exports = function geoshapes(coreV, router) {
             password: params.password
         });
 
-        var preffix = "SELECT ST_AsGeoJSON(ST_Transform(",
-            suffix = ", 4326)) as data FROM " + params.table + " WHERE tags ? 'wikidata' and tags->'wikidata' = $1";
-
+        // ST_Collect and ST_Union seem to produce the same result, but since we do topojson locally, there is no point
+        // to do the same optimization in both Postgress and Javascript, thus doing the simpler ST_Collect.
+        // We should do a/b test later to see which is overall faster
+        var preffix = "SELECT tags->'wikidata' as id, ST_AsGeoJSON(ST_Transform(ST_Collect(",
+            suffix = "), 4326)) as data FROM $1~ WHERE tags ? 'wikidata' and tags->'wikidata' IN ($2:csv) GROUP BY id";
 
         let floatRe = /-?[0-9]+(\.[0-9]+)?/;
         queries = {
-            default: {sql: preffix + 'way' + suffix},
+            default: {
+                sql: preffix + 'way' + suffix
+            },
             simplify: {
-                sql: preffix + 'ST_Simplify(way, $2)' + suffix,
+                sql: preffix + 'ST_Simplify(way, $3)' + suffix,
                 params: ['tolerance'],
                 regex: [floatRe]
             },
             simplifysqrt: {
-                sql: preffix + 'ST_Simplify(way, $2*sqrt(ST_Area(ST_envelope(way))))' + suffix,
+                sql: preffix + 'ST_Simplify(way, $3*sqrt(ST_Area(ST_envelope(way))))' + suffix,
                 params: ['mult'],
                 regex: [floatRe]
             },
             removerepeat: {
-                sql: preffix + 'ST_RemoveRepeatedPoints(way, $2)' + suffix,
+                sql: preffix + 'ST_RemoveRepeatedPoints(way, $3)' + suffix,
                 params: ['tolerance'],
                 regex: [floatRe]
             }
         };
 
-        // Check the valid structure of the table
-        return getGeoData(null);
+        // Check the valid structure of the table - use invalid id
+        return getGeoData({q: 'Q123456789'});
 
     }).then(function () {
-        router.get('/shape/:id(Q[\\d]+).geojson', handler);
+        router.get('/shape', handler);
     });
 
 };
@@ -70,41 +72,45 @@ module.exports = function geoshapes(coreV, router) {
 function handler(req, res, next) {
 
     var start = Date.now(),
-        params = req.params,
-        qparams = req.query,
         metric = ['geoshape'];
 
     return Promise.try(function () {
-        return getGeoData(params.id, qparams)
+        return getGeoData(req.query)
     }).then(function (geodata) {
         core.setResponseHeaders(res);
-        res.type('application/vnd.geo+json').send('{"type":"Feature","geometry":' + geodata + '}');
+        res.type('application/vnd.geo+json').json(geodata);
         core.metrics.endTiming(metric.join('.'), start);
-    }).catch(function(err) {
+    }).catch(function (err) {
         return core.reportRequestError(err, res);
     }).catch(next);
 }
 
-function getGeoData(wikidataId, qparams) {
-    return BBPromise.try(function() {
-        if (wikidataId !== null && !/^Q[1-9][0-9]{0,10}$/.test(wikidataId)) {
-            throw new Err('Invalid Wikidata ID');
-        }
-        var args = [wikidataId];
-        let query = qparams && queries.hasOwnProperty(qparams.sql) ? queries[qparams.sql] : queries.default;
+function getGeoData(reqParams) {
+    return Promise.try(function () {
+        if (!reqParams.q) throw new Err('Missing q parameter');
+        var wikidataIds = reqParams.q.split(',');
+        wikidataIds.forEach(function (val) {
+            if (!/^Q[1-9][0-9]{0,15}$/.test(val)) throw new Err('Invalid Wikidata ID');
+        });
+        var args = [params.table, wikidataIds];
+        let query = reqParams && queries.hasOwnProperty(reqParams.sql) ? queries[reqParams.sql] : queries.default;
         if (query.params) {
-            query.params.forEach(function(param, i) {
-                if (!qparams.hasOwnProperty(param)) throw new Err('Missing param %s', param);
-                if (!query.regex[i].test(qparams[param])) throw new Err('Invalid value for param %s', param);
-                args.push(qparams[param]);
+            query.params.forEach(function (param, i) {
+                if (!reqParams.hasOwnProperty(param)) throw new Err('Missing param %s', param);
+                if (!query.regex[i].test(reqParams[param])) throw new Err('Invalid value for param %s', param);
+                args.push(reqParams[param]);
             });
         }
-        return client.oneOrNone(queries, args);
-    }).then(function(row) {
-        if (row) {
-            return row.data;
+        return client.query(query.sql, args);
+    }).then(function (rows) {
+        if (rows) {
+            var features = rows.map(function (row) {
+                return JSON.parse('{"type":"Feature","id":"' + row.id + '","geometry":' + row.data + '}');
+            });
+            var collection = {type: "FeatureCollection", features: features};
+            return topojson.topology({collection: collection});
         } else {
             return false;
         }
-    })
+    });
 }

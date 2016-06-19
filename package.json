@@ -15,11 +15,12 @@
     "postgres"
   ],
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "bugs": "https://github.com/kartotherian/kartotherian-geoshapes/issues",
   "dependencies": {
     "bluebird": "^3.3.5",
     "pg.js": "*",
-    "pg-promise": "^3.1.6"
+    "pg-promise": "^3.1.6",
+    "topojson": "^1.6.26"
   }
 }
