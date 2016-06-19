@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-autogen",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Tile source to dynamically create tiles if its missing in the storage",
   "main": "autogen.js",
   "scripts": {
@@ -16,9 +16,7 @@
   ],
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "license": "Apache 2.0",
-  "bugs": {
-    "url": "https://github.com/kartotherian/kartotherian-autogen/issues"
-  },
+  "bugs": "https://github.com/kartotherian/kartotherian-autogen/issues",
   "dependencies": {
     "bluebird": "^3.3.5",
     "underscore": "^1.8.3"
