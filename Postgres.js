@@ -6,8 +6,8 @@
  */
 
 var util = require('util');
-var BBPromise = require('bluebird');
-var postgres = require('pg-promise')({promiseLib: BBPromise});
+var Promise = require('bluebird');
+var postgres = require('pg-promise')({promiseLib: Promise});
 var promistreamus = require('promistreamus');
 var QueryStream = require('pg-query-stream');
 var pckg = require('./package.json');
@@ -28,7 +28,7 @@ function PostgresStore(uri, callback) {
         throw err;
     };
 
-    return BBPromise.try(function () {
+    return Promise.try(function () {
         self.headers = {
             'Content-Type': 'application/x-protobuf',
             'Content-Encoding': 'gzip'
@@ -36,10 +36,10 @@ function PostgresStore(uri, callback) {
         var params = core.normalizeUri(uri).query;
         self._params = params;
 
-        if (!params.database || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.database)) {
+        if (!params.database || !/^[a-zA-Z][_a-zA-Z0-9]*$/.test(params.database)) {
             self.throwError("Uri must have a valid 'database' query parameter");
         }
-        if (params.table && !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.table)) {
+        if (params.table && !/^[a-zA-Z][_a-zA-Z0-9]*$/.test(params.table)) {
             self.throwError("Optional uri 'table' param must be a valid value");
         }
         self.createIfMissing = !!params.createIfMissing;
@@ -85,7 +85,7 @@ function PostgresStore(uri, callback) {
 
 PostgresStore.prototype.getTile = function(z, x, y, callback) {
     var self = this;
-    return BBPromise.try(function () {
+    return Promise.try(function () {
         if (z < self.minzoom || z > self.maxzoom) {
             core.throwNoTile();
         }
@@ -130,7 +130,7 @@ PostgresStore.prototype.putTile = function(z, x, y, tile, callback) {
 
 PostgresStore.prototype._storeDataAsync = function(zoom, idx, data) {
     var self = this;
-    return BBPromise.try(function () {
+    return Promise.try(function () {
         var query, params;
         if (data && data.length > 0) {
             query = self.queries.set;
@@ -170,7 +170,7 @@ PostgresStore.prototype.flush = function(callback) {
 
 PostgresStore.prototype.stopWriting = function(callback) {
     var self = this;
-    BBPromise.try(function () {
+   BPromise.try(function () {
         if (self.batchMode === 0) {
             self.throwError('stopWriting() called more times than startWriting()')
         }
@@ -185,7 +185,7 @@ PostgresStore.prototype.queryTileAsync = function(options) {
     var self = this;
     var getTile, getSize;
 
-    return BBPromise.try(function() {
+    return Promise.try(function() {
         if (options.info) {
             options.zoom = -1;
             options.idx = 0;
@@ -313,5 +313,5 @@ PostgresStore.initKartotherian = function(cor) {
     core.tilelive.protocols['postgres:'] = PostgresStore;
 };
 
-BBPromise.promisifyAll(PostgresStore.prototype);
+Promise.promisifyAll(PostgresStore.prototype);
 module.exports = PostgresStore;
