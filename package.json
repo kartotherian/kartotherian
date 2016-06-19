@@ -16,7 +16,7 @@
     "tilelive"
   ],
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "bugs": "https://github.com/kartotherian/kartotherian-overzoom/issues",
   "dependencies": {
     "bluebird": "^3.3.5"
