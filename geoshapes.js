@@ -4,7 +4,7 @@ var util = require('util');
 var BBPromise = require('bluebird');
 var postgres = require('pg-promise')({promiseLib: BBPromise});
 
-var core, client, Err, params, query;
+var core, client, Err, params, queries;
 
 module.exports = function geoshapes(coreV, router) {
     return BBPromise.try(function () {
@@ -21,17 +21,36 @@ module.exports = function geoshapes(coreV, router) {
         if (!params.table || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.table)) {
             throw new Err("Optional uri 'table' param must be a valid value");
         }
-        var clientOpts = {
+        client = postgres({
             host: params.host,
             database: params.database,
             user: params.username,
             password: params.password
+        });
+
+        var preffix = "SELECT ST_AsGeoJSON(",
+            suffix = ") as data FROM " + self.table + " WHERE tags ? 'wikidata' and tags->'wikidata' = $1";
+
+
+        let floatRe = /-?[0-9]+(\.[0-9]+)?/;
+        queries = {
+            default: {sql: preffix + 'way' + from},
+            simplify: {
+                sql: preffix + 'ST_Simplify(way, $2)' + from,
+                params: ['tolerance'],
+                regex: [floatRe]
+            },
+            simplifysqrt: {
+                sql: preffix + 'ST_Simplify(way, $2*sqrt(ST_Area(ST_envelope(way))))' + from,
+                params: ['mult'],
+                regex: [floatRe]
+            },
+            removerepeat: {
+                sql: preffix + 'ST_RemoveRepeatedPoints(way, $2)' + from,
+                params: ['tolerance'],
+                regex: [floatRe]
+            }
         };
-
-        client = postgres(clientOpts);
-
-        query = "SELECT way as data FROM " + self.table +
-            " WHERE tags ? 'wikidata' and tags->'wikidata' = $1";
 
         // Check the valid structure of the table
         return getGeoData(null);
@@ -52,25 +71,35 @@ function handler(req, res, next) {
 
     var start = Date.now(),
         params = req.params,
+        qparams = req.query,
         metric = ['geoshape'];
 
     return Promise.try(function () {
-        return getGeoData(params.id)
-    }).then(function (data) {
+        return getGeoData(params.id, qparams)
+    }).then(function (geodata) {
         core.setResponseHeaders(res);
-        res.type('application/vnd.geo+json').send(data);
+        res.type('application/vnd.geo+json').send('{"type":"Feature","geometry":' + geodata + '}');
         core.metrics.endTiming(metric.join('.'), start);
     }).catch(function(err) {
         return core.reportRequestError(err, res);
     }).catch(next);
 }
 
-function getGeoData(wikidataId) {
+function getGeoData(wikidataId, qparams) {
     return BBPromise.try(function() {
         if (wikidataId !== null && !/^Q[1-9][0-9]{0,10}$/.test(wikidataId)) {
             throw new Err('Invalid Wikidata ID');
         }
-        return client.oneOrNone(query, [wikidataId]);
+        var args = [wikidataId];
+        let query = qparams && queries.hasOwnProperty(qparams.sql) ? queries[qparams.sql] : queries.default;
+        if (query.params) {
+            query.params.forEach(function(param, i) {
+                if (!qparams.hasOwnProperty(param)) throw new Err('Missing param %s', param);
+                if (!query.regex[i].test(qparams[param])) throw new Err('Invalid value for param %s', param);
+                args.push(qparams[param]);
+            });
+        }
+        return client.oneOrNone(queries, args);
     }).then(function(row) {
         if (row) {
             return row.data;
