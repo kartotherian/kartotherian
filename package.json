@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-layermixer",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Vector tile mixing source, allowing layers from multiple vector tile to be merged into one tile ",
   "main": "LayerMixer.js",
   "scripts": {
@@ -16,9 +16,7 @@
   ],
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "license": "Apache 2.0",
-  "bugs": {
-    "url": "https://github.com/kartotherian/kartotherian-layermixer/issues"
-  },
+  "bugs": "https://github.com/kartotherian/kartotherian-layermixer/issues",
   "dependencies": {
     "bluebird": "^3.3.5",
     "underscore": "^1.8.3"
