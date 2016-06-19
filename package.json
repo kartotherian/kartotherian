@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-cassandra",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Cassandra tile storage for Kartotherian map tile server",
   "main": "CassandraStore.js",
   "scripts": {
@@ -17,9 +17,7 @@
   ],
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "license": "Apache 2.0",
-  "bugs": {
-    "url": "https://github.com/kartotherian/kartotherian-cassandra/issues"
-  },
+  "bugs": "https://github.com/kartotherian/kartotherian-cassandra/issues",
   "dependencies": {
     "bluebird": "^3.3.5",
     "cassandra-driver": "^3.0.1",
