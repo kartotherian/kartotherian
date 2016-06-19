@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-postgres",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "PostgreSQL tile storage for Kartotherian map tile server",
   "main": "Postgres.js",
   "scripts": {
@@ -16,9 +16,7 @@
   ],
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "license": "Apache 2.0",
-  "bugs": {
-    "url": "https://github.com/kartotherian/kartotherian-postgres/issues"
-  },
+  "bugs": "https://github.com/kartotherian/kartotherian-postgres/issues",
   "dependencies": {
     "bluebird": "^3.3.5",
     "pg.js": "*",
