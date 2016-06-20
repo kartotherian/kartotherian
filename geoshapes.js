@@ -59,6 +59,9 @@ module.exports = function geoshapes(coreV, router) {
 
     }).then(function () {
         router.get('/shape', handler);
+    }).catch(function (err) {
+        core.log('warn', 'geoshapes support failed to load, skipping: ' + err);
+        // still allow loading
     });
 
 };
