@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
@@ -43,7 +43,8 @@
     ],
     "requestHandlers": [
       "kartotherian-maki",
-      "kartotherian-snapshot"
+      "kartotherian-snapshot",
+      "kartotherian-geoshapes"
     ]
   },
 
@@ -69,6 +70,7 @@
     "kartotherian-autogen": "git+https://github.com/kartotherian/kartotherian-autogen.git",
     "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",
     "kartotherian-demultiplexer": "git+https://github.com/kartotherian/kartotherian-demultiplexer.git",
+    "kartotherian-geoshapes": "git+https://github.com/kartotherian/kartotherian-geoshapes.git",
     "kartotherian-layermixer": "git+https://github.com/kartotherian/kartotherian-layermixer.git",
     "kartotherian-maki": "git+https://github.com/kartotherian/kartotherian-maki.git",
     "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
