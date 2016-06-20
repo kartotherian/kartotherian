@@ -95,13 +95,13 @@ function handler(req, res, next) {
 
 function getGeoData(reqParams) {
     return Promise.try(function () {
-        if (!reqParams.q) throw new Err('Missing q parameter');
-        var wikidataIds = reqParams.q.split(',');
-        if (wikidataIds.length > params.maxidcount) throw new Err('No more than %d IDs is allowed', params.maxidcount);
-        wikidataIds.forEach(function (val) {
+        if (!reqParams.ids) throw new Err('Missing ids parameter');
+        var ids = reqParams.ids.split(',');
+        if (ids.length > params.maxidcount) throw new Err('No more than %d IDs is allowed', params.maxidcount);
+        ids.forEach(function (val) {
             if (!/^Q[1-9][0-9]{0,15}$/.test(val)) throw new Err('Invalid Wikidata ID');
         });
-        var args = [params.table, wikidataIds];
+        var args = [params.table, ids];
         let query = reqParams && queries.hasOwnProperty(reqParams.sql) ? queries[reqParams.sql] : queries.default;
         if (query.params) {
             query.params.forEach(function (param, i) {
