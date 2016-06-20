@@ -14,10 +14,10 @@ module.exports = function geoshapes(coreV, router) {
         params = core.getConfiguration().geoshapes;
 
         if (!params) {
-            throw new Err("'geoshapes' parameter block is not set up in the config");
+            throw new Err('"geoshapes" parameter block is not set up in the config');
         }
         if (!params.database || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(params.database)) {
-            throw new Err("'geoshapes' parameters must specify 'database'");
+            throw new Err('"geoshapes" parameters must specify "database"');
         }
         client = postgres({
             host: params.host,
@@ -25,6 +25,11 @@ module.exports = function geoshapes(coreV, router) {
             user: params.user,
             password: params.password
         });
+
+        params.maxidcount = params.maxidcount !== undefined ? parseInt(params.maxidcount) : 500;
+        if (params.maxidcount <= 0) {
+            throw new Err('"geoshapes.maxidcount" must be a positive integer');
+        }
 
         // ST_Collect and ST_Union seem to produce the same result, but since we do topojson locally, there is no point
         // to do the same optimization in both Postgress and Javascript, thus doing the simpler ST_Collect.
@@ -92,6 +97,7 @@ function getGeoData(reqParams) {
     return Promise.try(function () {
         if (!reqParams.q) throw new Err('Missing q parameter');
         var wikidataIds = reqParams.q.split(',');
+        if (wikidataIds.length > params.maxidcount) throw new Err('No more than %d IDs is allowed', params.maxidcount);
         wikidataIds.forEach(function (val) {
             if (!/^Q[1-9][0-9]{0,15}$/.test(val)) throw new Err('Invalid Wikidata ID');
         });

@@ -12,6 +12,8 @@ geoshapes:
   table: planet_osm_polygon
   user: ...
   password: ...
+
+  maxidcount: (int, optional, default=500)
 ```
 
 Without this config block, the service will skip its loading
