@@ -34,33 +34,47 @@ module.exports = function geoshapes(coreV, router) {
         // ST_Collect and ST_Union seem to produce the same result, but since we do topojson locally, there is no point
         // to do the same optimization in both Postgress and Javascript, thus doing the simpler ST_Collect.
         // We should do a/b test later to see which is overall faster
-        var preffix = "SELECT tags->'wikidata' as id, ST_AsGeoJSON(ST_Transform(ST_Collect(",
-            suffix = "), 4326)) as data FROM $1~ WHERE tags ? 'wikidata' and tags->'wikidata' IN ($2:csv) GROUP BY id";
+
+        var subQuery = "(SELECT tags->'wikidata' as id, ST_Collect(way) as way FROM $1~ WHERE tags ? 'wikidata' and tags->'wikidata' IN ($2:csv) GROUP BY id) subq";
 
         let floatRe = /-?[0-9]+(\.[0-9]+)?/;
         queries = {
-            default: {
-                sql: preffix + 'way' + suffix
+            direct: {
+                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(way, 4326)) as data FROM " + subQuery
             },
             simplify: {
-                sql: preffix + 'ST_Simplify(way, $3)' + suffix,
-                params: ['tolerance'],
-                regex: [floatRe]
+                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_Simplify(way, $3), 4326)) as data FROM " + subQuery,
+                params: [{
+                    name: 'arg1',
+                    default: 10000,
+                    regex: floatRe
+                }]
             },
-            simplifysqrt: {
-                sql: preffix + 'ST_Simplify(way, $3*sqrt(ST_Area(ST_envelope(way))))' + suffix,
-                params: ['mult'],
-                regex: [floatRe]
+            simplifyarea: {
+                // Convert geometry (in mercator) to a bbox, calc area, sqrt of that
+                // Proposed by @pnorman
+                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_Simplify(way, $3*sqrt(ST_Area(ST_Envelope(way)))), 4326)) as data FROM " + subQuery,
+                params: [{
+                    name: 'arg1',
+                    default: 0.01,
+                    regex: floatRe
+                }]
             },
             removerepeat: {
-                sql: preffix + 'ST_RemoveRepeatedPoints(way, $3)' + suffix,
-                params: ['tolerance'],
-                regex: [floatRe]
+                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_RemoveRepeatedPoints(way, $3), 4326)) as data FROM " + subQuery,
+                params: [{
+                    name: 'arg1',
+                    default: 10000,
+                    regex: floatRe
+                }]
             }
         };
 
+        // Which query to use by default
+        queries.default = queries.simplifyarea;
+
         // Check the valid structure of the table - use invalid id
-        return getGeoData({q: 'Q123456789'});
+        return getGeoData({ids: 'Q123456789'});
 
     }).then(function () {
         router.get('/shape', handler);
@@ -104,12 +118,18 @@ function getGeoData(reqParams) {
         var args = [params.table, ids];
         let query = reqParams && queries.hasOwnProperty(reqParams.sql) ? queries[reqParams.sql] : queries.default;
         if (query.params) {
-            query.params.forEach(function (param, i) {
-                if (!reqParams.hasOwnProperty(param)) throw new Err('Missing param %s', param);
-                if (!query.regex[i].test(reqParams[param])) throw new Err('Invalid value for param %s', param);
-                args.push(reqParams[param]);
+            query.params.forEach(function (param) {
+                let paramName = param.name;
+                if (!reqParams.hasOwnProperty(paramName)) {
+                    args.push(param.default);
+                } else {
+                    let value = reqParams[paramName];
+                    if (!param.regex.test(value)) throw new Err('Invalid value for param %s', paramName);
+                    args.push(value);
+                }
             });
         }
+        core.log('info', query.sql, args);
         return client.query(query.sql, args);
     }).then(function (rows) {
         if (rows) {
