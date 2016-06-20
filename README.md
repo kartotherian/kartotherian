@@ -13,7 +13,8 @@ geoshapes:
   user: ...
   password: ...
 
-  maxidcount: (int, optional, default=500)
+  maxidcount: (int, optional, default=500) - Maximum number of IDs to allow per request
+  allowUserQueries: (bool, optional, default=false) - If true, allow sql parameter + args to specify which SQL to use
 ```
 
 Without this config block, the service will skip its loading

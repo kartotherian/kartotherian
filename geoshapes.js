@@ -71,7 +71,19 @@ module.exports = function geoshapes(coreV, router) {
         };
 
         // Which query to use by default
-        queries.default = queries.simplifyarea;
+        let defaultQ = queries.simplifyarea;
+
+        if (params.allowUserQueries) {
+            queries.default = defaultQ;
+        } else {
+            // Delete all queries except the default one, and remove parameter names to prevent user parameters
+            queries = {default: defaultQ};
+            if (defaultQ.params) {
+                defaultQ.params.forEach(function (param) {
+                    delete param.name;
+                });
+            }
+        }
 
         // Check the valid structure of the table - use invalid id
         return getGeoData({ids: 'Q123456789'});
@@ -120,7 +132,8 @@ function getGeoData(reqParams) {
         if (query.params) {
             query.params.forEach(function (param) {
                 let paramName = param.name;
-                if (!reqParams.hasOwnProperty(paramName)) {
+                if (!paramName || !reqParams.hasOwnProperty(paramName)) {
+                    // If param name is NOT defined, we always use default, without allowing user to customize it
                     args.push(param.default);
                 } else {
                     let value = reqParams[paramName];
@@ -129,7 +142,6 @@ function getGeoData(reqParams) {
                 }
             });
         }
-        core.log('info', query.sql, args);
         return client.query(query.sql, args);
     }).then(function (rows) {
         if (rows) {
