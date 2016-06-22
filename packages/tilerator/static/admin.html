@@ -101,6 +101,7 @@
     <label for="parts">parts </label><input id="parts" type="text" value="" title="Break each scheduled zoom level into this many jobs">
     <label for="priority">priority </label><input id="priority" type="text" value="" title="Job que priority, e.g. low, high, ...">
     <label for="deleteEmpty">deleteEmpty </label><input id="deleteEmpty" type="checkbox" title="If the generator source does not have a given tile, delete it in the storage">
+    <label for="keepJob">keepJob </label><input id="keepJob" type="checkbox" title="If set, the job will not be automatically removed from the que once it successfully completes">
     <br>
 </div>
 <!-- Map placeholder -->
@@ -246,7 +247,7 @@
 
     function addCommonFields(req) {
         [
-            'generatorId', 'storageId', 'fromZoom', 'beforeZoom', 'parts', 'priority', 'deleteEmpty',
+            'generatorId', 'storageId', 'fromZoom', 'beforeZoom', 'parts', 'priority', 'deleteEmpty', 'keepJob',
             'checkZoom', 'sourceId', 'dateBefore', 'dateFrom', 'biggerThan', 'smallerThan', 'missing',
             'checkZoom2', 'sourceId2', 'dateBefore2', 'dateFrom2', 'biggerThan2', 'smallerThan2', 'missing2',
             'fileZoomOverride'

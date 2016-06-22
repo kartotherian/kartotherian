@@ -81,6 +81,7 @@ Queue.prototype.addJobAsync = function addJobAsync(jobs) {
             .attempts(10)
             .backoff({delay: 1000, type: 'exponential'})
             .ttl(self.jobTTL)
+            .removeOnComplete( !j.keepJob )
             .saveAsync()
             .return(j.title);
     });

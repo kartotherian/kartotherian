@@ -83,7 +83,8 @@ function onEnque(req, res) {
                 deleteEmpty: req.query.deleteEmpty,
                 fromZoom: req.query.fromZoom,
                 beforeZoom: req.query.beforeZoom,
-                fileZoomOverride: req.query.fileZoomOverride
+                fileZoomOverride: req.query.fileZoomOverride,
+                keepJob: req.query.keepJob
             };
 
             var filter1 = {
