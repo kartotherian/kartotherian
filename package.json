@@ -91,7 +91,9 @@
     "node": "4.3.0",
     "target": "debian",
     "dependencies": {
-      "_all": []
+      "_all": ["libcairo2-dev", "libgif-dev", "libpango1.0-dev"],
+      "ubuntu": ["libjpeg62-dev"],
+      "debian": ["libjpeg62-turbo-dev"]
     }
   }
 }
