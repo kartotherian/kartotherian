@@ -2,4 +2,4 @@
 
 The job processing components of the Tilerator maps tile generation service
 
-See [Kartotherian](https://github.com/kartotherian/kartotherian)
+See [Kartotherian](https://github.com/kartotherian/kartotherian) and [Tilerator](https://github.com/kartotherian/tilerator)
