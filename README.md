@@ -1,4 +1,4 @@
-# kartotherian-maki
+# kartotherian-snapshot
 
 Kartotherian maps tile service components to create static snapshots of a map region
  with optional geojson overlays based on mapdata stored in mediawiki.
