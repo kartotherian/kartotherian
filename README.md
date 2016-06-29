@@ -15,6 +15,7 @@ geoshapes:
 
   maxidcount: (int, optional, default=500) - Maximum number of IDs to allow per request
   allowUserQueries: (bool, optional, default=false) - If true, allow sql parameter + args to specify which SQL to use
+  wikidataQueryService: (string, optional, default=https://query.wikidata.org/bigdata/namespace/wdq/sparql) - Lets user get a list of WikidataIDs from an external Wikidata Query Service. if false, disables.
 ```
 
 Without this config block, the service will skip its loading
@@ -28,3 +29,6 @@ CREATE INDEX planet_osm_polygon_wikidata
 
 Service will return topojson to the queries such as `/shape?ids=Q1384,Q1166`  (get New York and Michigan state shapes).
 Save result as a file and upload to http://www.mapshaper.org/ to visualize.
+
+Additionally, the service allows `query=...` parameter to get the Wikidata IDs from the http://query.wikidata.org service. It calls the service to execute
+a query, extracts IDs, and matches them with the shapes in the OSM database. All other values are returned as topojson object properties.
