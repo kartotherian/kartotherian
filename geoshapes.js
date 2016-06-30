@@ -261,6 +261,15 @@ function parseProperties(wd, idCol) {
                                 property[key] = val.value;
                             }
                             break;
+                        case 'http://www.opengis.net/ont/geosparql#wktLiteral':
+                            // Point(-64.2 -36.620)  -- (longitude latitude)
+                            let parsed = /^Point\(([-0-9.]+) ([-0-9.]+)\)$/.exec(val.value);
+                            if (parsed) {
+                                property[key] = [parseFloat(parsed[1]), parseFloat(parsed[2])];
+                            } else {
+                                property[key] = val.value;
+                            }
+                            break;
                         default:
                             property[key] = val.value;
                             break;
