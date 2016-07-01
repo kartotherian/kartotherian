@@ -1,10 +1,11 @@
 'use strict';
 
-var info = require('./package.json');
-var Promise = require('bluebird');
-var topojson = require('topojson');
-var postgres = require('pg-promise')({promiseLib: Promise});
-var preq = require('preq');
+var info = require('./package.json'),
+    Promise = require('bluebird'),
+    topojson = require('topojson'),
+    postgres = require('pg-promise')({promiseLib: Promise}),
+    preq = require('preq'),
+    parseWikidataValue = require('wd-type-parser');
 
 var core, client, Err, params, queries, sparqlHeaders;
 
@@ -126,6 +127,14 @@ function handler(req, res, next) {
     }).catch(next);
 }
 
+/**
+ * @param {object} reqParams
+ * @param {string=} reqParams.ids
+ * @param {string=} reqParams.query
+ * @param {string=} reqParams.idcolumn
+ * @param {string=} reqParams.sql
+ * @return {*}
+ */
 function getGeoData(reqParams) {
     var ids = [], wdResult, idCol;
     return Promise.try(function () {
@@ -169,8 +178,9 @@ function getGeoData(reqParams) {
                             ' Use idcolumn argument to specify column name, or change the query to return "id" column.'),
                         idCol);
                 }
-                let id = extractWikidataId(wd[idCol]);
-                if (!id) {
+                let value = wd[idCol],
+                    id = parseWikidataValue(value, true);
+                if (!id || value.type !== 'uri') {
                     throw new Err('SPARQL query result id column %j is expected to be a valid Wikidata ID', idCol);
                 }
                 if (id in wdResult) {
@@ -204,8 +214,15 @@ function getGeoData(reqParams) {
             var features = rows.map(function (row) {
                 let feature = JSON.parse('{"type":"Feature","id":"' + row.id + '","geometry":' + row.data + '}');
                 if (wdResult) {
-                    let prop = parseProperties(wdResult[row.id], idCol);
-                    if (prop) feature.properties = prop;
+                    let wd = wdResult[row.id];
+                    if (wd) {
+                        for (let key in wd) {
+                            if (key !== idCol && wd.hasOwnProperty(key)) {
+                                if (feature.properties === undefined) feature.properties = {};
+                                feature.properties[key] = parseWikidataValue(wd[key]);
+                            }
+                        }
+                    }
                 }
                 return feature;
             });
@@ -220,66 +237,4 @@ function getGeoData(reqParams) {
             return false;
         }
     });
-}
-
-const wikidataValuePrefix = 'http://www.wikidata.org/entity/Q';
-
-function extractWikidataId(value) {
-    return (value.type === 'uri' && typeof value.value === 'string' && value.value.startsWith(wikidataValuePrefix))
-        ? value.value.substr(wikidataValuePrefix.length - 1) // include the letter 'Q'
-        : undefined;
-}
-
-function parseProperties(wd, idCol) {
-    if (!wd) return;
-    let property;
-    for (let key in wd) {
-        if (key !== idCol && wd.hasOwnProperty(key)) {
-            if (property === undefined) property = {};
-            let val = wd[key];
-            switch (val.type) {
-                case 'literal':
-                    switch (val.datatype) {
-                        case 'http://www.w3.org/2001/XMLSchema#double':
-                        case 'http://www.w3.org/2001/XMLSchema#float':
-                        case 'http://www.w3.org/2001/XMLSchema#decimal':
-                        case 'http://www.w3.org/2001/XMLSchema#integer':
-                        case 'http://www.w3.org/2001/XMLSchema#long':
-                        case 'http://www.w3.org/2001/XMLSchema#int':
-                        case 'http://www.w3.org/2001/XMLSchema#short':
-                        case 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger':
-                        case 'http://www.w3.org/2001/XMLSchema#positiveInteger':
-                        case 'http://www.w3.org/2001/XMLSchema#unsignedLong':
-                        case 'http://www.w3.org/2001/XMLSchema#unsignedInt':
-                        case 'http://www.w3.org/2001/XMLSchema#unsignedShort':
-                        case 'http://www.w3.org/2001/XMLSchema#nonPositiveInteger':
-                        case 'http://www.w3.org/2001/XMLSchema#negativeInteger':
-                            property[key] = parseFloat(val.value);
-                            if (property[key].toString() !== val.value) {
-                                // if value is not fully round-tripable back to string, keep the original
-                                // TBD: this might be overcautios, and would cause more problems than solve
-                                property[key] = val.value;
-                            }
-                            break;
-                        case 'http://www.opengis.net/ont/geosparql#wktLiteral':
-                            // Point(-64.2 -36.620)  -- (longitude latitude)
-                            let parsed = /^Point\(([-0-9.]+) ([-0-9.]+)\)$/.exec(val.value);
-                            if (parsed) {
-                                property[key] = [parseFloat(parsed[1]), parseFloat(parsed[2])];
-                            } else {
-                                property[key] = val.value;
-                            }
-                            break;
-                        default:
-                            property[key] = val.value;
-                            break;
-                    }
-                    break;
-                case 'uri':
-                    property[key] = extractWikidataId(val) || val.value;
-                    break;
-            }
-        }
-    }
-    return property;
 }
