@@ -72,7 +72,7 @@ This feature could be useful for the tile invalidation. For example, a user edit
 
 ### Parsing updates file
 Specifying `filepath` parameter will load that file from the localhost and append its content to the queue. The file
- must already exist on the server.  Alternatively, you can specify `expdirpath`,  `statefile` and `expmask` parameters,
+ must already exist on the server.  Alternatively, you can specify `expdirpath`, `statefile` and `expmask` parameters,
  which would parse all files stored at the `expdirpath` that match regular expression `expmask`, and whose string value
  is greater than value stored in the file `statefile` (filename only). Once parsing is complete, the last filename
  will be stored in the statefile, overriding previous content.
