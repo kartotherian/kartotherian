@@ -27,7 +27,7 @@ CREATE INDEX planet_osm_polygon_wikidata
   WHERE tags ? 'wikidata';
 ```
 
-Service will return topojson to the queries such as `/shape?ids=Q1384,Q1166`  (get New York and Michigan state shapes).
+Service will return topojson to the queries such as `/geoshape?ids=Q1384,Q1166`  (get New York and Michigan state shapes).
 Save result as a file and upload to http://www.mapshaper.org/ to visualize.
 
 Additionally, the service allows `query=...` parameter to get the Wikidata IDs from the http://query.wikidata.org service. It calls the service to execute

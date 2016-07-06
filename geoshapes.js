@@ -99,7 +99,8 @@ module.exports = function geoshapes(coreV, router) {
         return getGeoData({ids: 'Q123456789'});
 
     }).then(function () {
-        router.get('/shape', handler);
+        router.get('/shape', handler); // obsolete
+        router.get('/geoshape', handler);
     }).catch(function (err) {
         core.log('warn', 'geoshapes support failed to load, skipping: ' + err);
         // still allow loading
@@ -210,8 +211,9 @@ function getGeoData(reqParams) {
         }
         return client.query(query.sql, args);
     }).then(function (rows) {
+        let features;
         if (rows) {
-            var features = rows.map(function (row) {
+            features = rows.map(function (row) {
                 let feature = JSON.parse('{"type":"Feature","id":"' + row.id + '","geometry":' + row.data + '}');
                 if (wdResult) {
                     let wd = wdResult[row.id];
@@ -226,15 +228,17 @@ function getGeoData(reqParams) {
                 }
                 return feature;
             });
-            var collection = {type: "FeatureCollection", features: features};
-            return topojson.topology({collection: collection}, {
-                "property-transform": function (feature) {
-                    // preserve all properties
-                    return feature.properties;
-                }
-            });
         } else {
-            return false;
+            // Return an empty resultset - which greatly simplifies processing
+            features = [];
         }
+        return topojson.topology({
+            data: {type: "FeatureCollection", features: features}
+        }, {
+            "property-transform": function (feature) {
+                // preserve all properties
+                return feature.properties;
+            }
+        });
     });
 }
