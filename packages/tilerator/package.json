@@ -91,7 +91,7 @@
     "swagger-router": "^0.4.2"
   },
   "deploy": {
-    "node": "4.3.0",
+    "node": "4.4.6",
     "target": "debian",
     "dependencies": {
       "_all": []
