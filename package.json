@@ -37,7 +37,7 @@
     "express": "^4.13.4",
     "js-yaml": "^3.6.1",
     "preq": "^0.4.9",
-    "service-runner": "^1.3.0",
+    "service-runner": "^2.0.3",
     "swagger-router": "^0.4.5"
   },
   "devDependencies": {
