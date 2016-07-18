@@ -49,7 +49,7 @@
   },
   "deploy": {
     "target": "debian",
-    "node": "4.3.0",
+    "node": "4.4.6",
     "dependencies": {
       "_all": []
     }
