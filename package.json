@@ -5,7 +5,7 @@
   "main": "./app.js",
   "scripts": {
     "start": "service-runner",
-    "test": "mocha",
+    "test": "mocha && nsp check",
     "docker-start": "service-runner docker-start",
     "docker-test": "service-runner docker-test",
     "coverage": "istanbul cover _mocha -- -R spec"
@@ -45,7 +45,8 @@
     "istanbul": "^0.4.4",
     "mocha": "^2.5.3",
     "mocha-jshint": "^2.3.1",
-    "mocha-lcov-reporter": "^1.2.0"
+    "mocha-lcov-reporter": "^1.2.0",
+    "nsp": "^2.6.1"
   },
   "deploy": {
     "target": "debian",
