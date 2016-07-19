@@ -1,6 +1,8 @@
 'use strict';
 
 
+require('core-js/shim');
+
 var http = require('http');
 var BBPromise = require('bluebird');
 var express = require('express');
@@ -197,7 +199,7 @@ function createServer(app) {
         );
     }).then(function () {
         app.logger.log('info',
-            'Worker ' + process.pid + ' listening on ' + app.conf.interface + ':' + app.conf.port);
+            'Worker ' + process.pid + ' listening on ' + (app.conf.interface || '*') + ':' + app.conf.port);
         return server;
     });
 

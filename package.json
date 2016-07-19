@@ -33,11 +33,12 @@
     "bunyan": "^1.8.1",
     "cassandra-uuid": "^0.0.2",
     "compression": "^1.6.2",
+    "core-js": "^2.4.1",
     "domino": "^1.0.25",
     "express": "^4.14.0",
     "js-yaml": "^3.6.1",
     "preq": "^0.4.10",
-    "service-runner": "^2.0.3",
+    "service-runner": "^2.0.4",
     "swagger-router": "^0.4.6"
   },
   "devDependencies": {
