@@ -1,6 +1,6 @@
 {
   "name": "service-template-node",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "A blueprint for MediaWiki REST API services",
   "main": "./app.js",
   "scripts": {
