@@ -24,7 +24,7 @@ You are now ready to get to work!
 * Inspect/modify/configure `app.js`
 * Add routes by placing files in `routes/` (look at the files there for examples)
 
-You can also read [the documentation](doc/).
+You can also read [the documentation](https://www.mediawiki.org/wiki/ServiceTemplateNode).
 
 ### Running the examples
 
