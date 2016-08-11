@@ -22,7 +22,7 @@ v2:
   params:
     maxzoom: 16
     keyspace: v2
-    cp: [maps-test2001.codfw.wmnet, maps-test2002.codfw.wmnet, maps-test2003.codfw.wmnet, maps-test2004.codfw.wmnet]
+    cp: {var: cassandra-servers}
     username: {var: cassandra-user}
     password: {var: cassandra-pswd}
     # repfactor: 4
@@ -65,7 +65,7 @@ v5:
   params:
     maxzoom: 16
     keyspace: v5
-    cp: [maps-test2001.codfw.wmnet, maps-test2002.codfw.wmnet, maps-test2003.codfw.wmnet, maps-test2004.codfw.wmnet]
+    cp: {var: cassandra-servers}
     username: {var: cassandra-user}
     password: {var: cassandra-pswd}
 #    repfactor: 4
