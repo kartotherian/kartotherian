@@ -25,9 +25,9 @@ v2:
     cp: {var: cassandra-servers}
     username: {var: cassandra-user}
     password: {var: cassandra-pswd}
-    # repfactor: 4
-    # durablewrite: 0
-    # createIfMissing: false
+    repfactor: 4
+    durablewrite: 0
+    createIfMissing: true
 
 # View tiles as generated directly from the database. Don't view zoom0-5
 v2view:
@@ -68,9 +68,9 @@ v5:
     cp: {var: cassandra-servers}
     username: {var: cassandra-user}
     password: {var: cassandra-pswd}
-#    repfactor: 4
-#    durablewrite: 0
-#    createIfMissing: false
+    repfactor: 4
+    durablewrite: 0
+    createIfMissing: true
 
 # OSM PBF source
 osm-pbf:
