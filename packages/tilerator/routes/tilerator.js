@@ -250,7 +250,7 @@ module.exports = function(app) {
 
             // Init kartotherian web server
             app.use('/', express.static(pathLib.resolve(__dirname, '../static'), {index: 'admin.html'}));
-            require('kartotherian-server').init({
+            return require('kartotherian-server').init({
                 core: core,
                 app: app
             });
