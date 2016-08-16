@@ -151,14 +151,17 @@ Queue.prototype.setSources = function setSources(job, sources) {
     };
 
     var i = 0;
-    var allSources = sources.getSources();
+    var allSources = sources.getSourceConfigs();
     job.sources = {};
     while (i < ids.length) {
         var id = ids[i++];
-        if (!allSources[id])
+        let source = allSources[id];
+        if (!source)
             throw new Err('Source ID %s is not defined', id);
-        job.sources[id] = allSources[id];
-        _.each(allSources[id], recursiveIter);
+        if (source.isDisabled)
+            throw new Err('Source ID %s is disabled', id);
+        job.sources[id] = source;
+        _.each(source, recursiveIter);
     }
 };
 

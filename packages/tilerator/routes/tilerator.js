@@ -52,7 +52,7 @@ function onSources(req, res) {
             }
             return updateSourcesFromYaml(req.body);
         }
-        return core.getSources().getSources();
+        return core.getSources().getSourceConfigs();
     }, true);
 }
 
