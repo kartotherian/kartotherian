@@ -3,12 +3,12 @@
 The core components of the Kartotherian maps tile service
 
 ## Sources
-Sources is a way to set up data processing pipelines for Kartotherian and Tilerator.
-Sources could be either stored in a set of standalone files, or be embedded in the
+Sources is a way to set up data processing pipelines for Kartotherian and Tilerator. Any source based on  [tilelive.js](https://github.com/mapbox/tilelive#tilelivejs) specification may be used.
+Source configuration could be located in standalone files, or be embedded in the
 main configuration file, or a mix of both. The sources value in the config file
 could be a string (file), an object defining the source, or an array of strings and objects.
 
-`uri` is the only mandatory field, and it specifies how [tilelive.js](https://github.com/mapbox/tilelive.js)
+`uri` is the only mandatory field, and it specifies how [tilelive.js](https://github.com/mapbox/tilelive#tilelivejs)
 will locate and initialize the new source. The protocol determines which tile provider will be used.
 
 Since sometimes not everything can be added as query parameters to the Uri, there is a set of additional keys to help.
