@@ -20,6 +20,8 @@ var Job = jplib.Job;
 
 var jobProcessor, queue;
 
+module.exports = startup;
+
 function onSetInfo(req, res) {
     reportAsync(res, function () {
         var sources = core.getSources(),
@@ -69,66 +71,19 @@ function onEnque(req, res) {
                 return updateSourcesFromYaml(req.body);
             }
         }).then(function () {
-            var job = {
-                storageId: req.query.storageId,
-                generatorId: req.query.generatorId,
-                zoom: req.query.zoom,
-                priority: req.query.priority,
-                idxFrom: req.query.idxFrom,
-                idxBefore: req.query.idxBefore,
-                tiles: req.query.tiles ? JSON.parse(req.query.tiles) : undefined,
-                x: req.query.x,
-                y: req.query.y,
-                parts: req.query.parts,
-                deleteEmpty: req.query.deleteEmpty,
-                fromZoom: req.query.fromZoom,
-                beforeZoom: req.query.beforeZoom,
-                fileZoomOverride: req.query.fileZoomOverride,
-                keepJob: req.query.keepJob
-            };
-
-            var filter1 = {
-                sourceId: req.query.sourceId,
-                dateBefore: req.query.dateBefore,
-                dateFrom: req.query.dateFrom,
-                biggerThan: req.query.biggerThan,
-                smallerThan: req.query.smallerThan,
-                missing: req.query.missing ? true : undefined,
-                zoom: req.query.checkZoom
-            };
-            filter1 = _.any(filter1) ? filter1 : false;
-
-            var filter2 = {
-                sourceId: req.query.sourceId2,
-                dateBefore: req.query.dateBefore2,
-                dateFrom: req.query.dateFrom2,
-                biggerThan: req.query.biggerThan2,
-                smallerThan: req.query.smallerThan2,
-                missing: req.query.missing2 ? true : undefined,
-                zoom: req.query.checkZoom2
-            };
-            filter2 = _.any(filter2) ? filter2 : false;
-
-            if (filter2 && !filter1) {
-                throw new Err('Cannot set second filter unless the first filter is also set');
-            }
-            if (filter1 && filter2) {
-                job.filters = [filter1, filter2];
-            } else if (filter1) {
-                job.filters = filter1;
-            }
-            queue.setSources(job, core.getSources());
+            let params = req.query;
+            let job = queue.paramsToJob(params);
 
             let addJobAsync = function (job) {
                 return queue.addJobAsync(new Job(job));
             };
-            if (req.query.expdirpath || req.query.statefile || req.query.expmask) {
-                if (!req.query.expdirpath || !req.query.statefile || !req.query.expmask) {
+            if (params.expdirpath || params.statefile || params.expmask) {
+                if (!params.expdirpath || !params.statefile || !params.expmask) {
                     throw new Err('All three params - expdirpath, statefile, expmask must be present')
                 }
-                return processAll(req.query.expdirpath, req.query.statefile, req.query.expmask, job, addJobAsync);
-            } else if (req.query.filepath) {
-                return fileParser(req.query.filepath, job, addJobAsync);
+                return processAll(params.expdirpath, params.statefile, params.expmask, job, addJobAsync);
+            } else if (params.filepath) {
+                return fileParser(params.filepath, job, addJobAsync);
             } else {
                 return queue.addJobAsync(new Job(job));
             }
@@ -195,22 +150,14 @@ function reportAsync(res, task, isYaml) {
         });
 }
 
-module.exports = function(app) {
+function startup(app) {
 
-    return Promise.try(function () {
-        core.init(app, info.kartotherian, require('path').resolve(__dirname, '..'),
-            function (module) {
-                return require(module);
-            },
-            function (module) {
-                return require.resolve(module);
-            }
-        );
+    return startup.bootstrap(app).then(function() {
         if (app.conf.daemonOnly && app.conf.uiOnly) {
             throw new Err('daemonOnly and uiOnly config params may not be both true');
         }
         core.metrics.increment('init');
-        var sources = new core.Sources(app);
+        var sources = new core.Sources();
         return sources.init(app.conf.variables, app.conf.sources);
     }).then(function (sources) {
         core.setSources(sources);
@@ -260,4 +207,17 @@ module.exports = function(app) {
         process.exit(1);
     }).return(); // avoid app.js's default route initialization
 
+}
+
+startup.bootstrap = function bootstrap(app) {
+    return Promise.try(function () {
+        core.init(app, info.kartotherian, pathLib.resolve(__dirname, '..'),
+            function (module) {
+                return require(module);
+            },
+            function (module) {
+                return require.resolve(module);
+            }
+        );
+    });
 };
