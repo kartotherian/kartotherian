@@ -2,7 +2,7 @@
 
 /*
 
- CassandraStore is a Cassandra tile storage.
+ CassandraStore is a Cassandra tile storage source for Kartotherian
  */
 
 var util = require('util');
