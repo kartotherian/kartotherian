@@ -7,6 +7,7 @@ var express = require('express');
 var yaml = require('js-yaml');
 
 var Queue = require('../lib/Queue');
+var common = require('../lib/common');
 var core = require('kartotherian-core');
 var Err = core.Err;
 
@@ -72,21 +73,8 @@ function onEnque(req, res) {
             }
         }).then(function () {
             let params = req.query;
-            let job = queue.paramsToJob(params);
-
-            let addJobAsync = function (job) {
-                return queue.addJobAsync(new Job(job));
-            };
-            if (params.expdirpath || params.statefile || params.expmask) {
-                if (!params.expdirpath || !params.statefile || !params.expmask) {
-                    throw new Err('All three params - expdirpath, statefile, expmask must be present')
-                }
-                return processAll(params.expdirpath, params.statefile, params.expmask, job, addJobAsync);
-            } else if (params.filepath) {
-                return fileParser(params.filepath, job, addJobAsync);
-            } else {
-                return queue.addJobAsync(new Job(job));
-            }
+            let job = common.paramsToJob(params, core.getSources());
+            return common.enqueJob(queue, job, params);
         });
     });
 }

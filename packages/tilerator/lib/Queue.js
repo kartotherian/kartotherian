@@ -4,6 +4,7 @@ var Promise = require('bluebird');
 var _ = require('underscore');
 var core = require('kartotherian-core');
 var Err = core.Err;
+var common = require('../lib/common');
 
 var kue = require('kue');
 Promise.promisifyAll(kue.Job);
@@ -120,7 +121,7 @@ Queue.prototype.cleanup = function cleanup(opts) {
                 (Date.now() - new Date(parseInt(job.updated_at))) > (opts.minutesSinceUpdate * 60 * 1000)
             ) {
                 if (opts.updateSources) {
-                    self.setSources(job.data, opts.sources);
+                    common.setSources(job.data, opts.sources);
                     return job.saveAsync().then(function () {
                         return job.inactiveAsync();
                     }).then(function () {
@@ -137,34 +138,6 @@ Queue.prototype.cleanup = function cleanup(opts) {
     }, {concurrency: 50}).return(result);
 };
 
-Queue.prototype.setSources = function setSources(job, sources) {
-    // Add only the referenced sources to the job
-    var ids =  _.unique(_.filter(_.pluck(job.filters, 'sourceId').concat([job.storageId, job.generatorId])));
-    var recursiveIter = function (obj) {
-        if (_.isObject(obj)) {
-            if (Object.keys(obj).length === 1 && typeof obj.ref === 'string' && !_.contains(ids, obj.ref)) {
-                ids.push(obj.ref);
-            } else {
-                _.each(obj, recursiveIter);
-            }
-        }
-    };
-
-    var i = 0;
-    var allSources = sources.getSourceConfigs();
-    job.sources = {};
-    while (i < ids.length) {
-        var id = ids[i++];
-        let source = allSources[id];
-        if (!source)
-            throw new Err('Source ID %s is not defined', id);
-        if (source.isDisabled)
-            throw new Err('Source ID %s is disabled', id);
-        job.sources[id] = source;
-        _.each(source, recursiveIter);
-    }
-};
-
 Queue.prototype.getKue = function getKue() {
     return this._queue;
 };
@@ -174,55 +147,4 @@ Queue.prototype.getKue = function getKue() {
  */
 Queue.prototype.getPendingCountAsync = function getPendingCountAsync() {
     return this._queue.inactiveCountAsync();
-};
-
-Queue.prototype.paramsToJob = function paramsToJob(params) {
-    let job = {
-        storageId: params.storageId,
-        generatorId: params.generatorId,
-        zoom: params.zoom,
-        priority: params.priority,
-        idxFrom: params.idxFrom,
-        idxBefore: params.idxBefore,
-        tiles: params.tiles ? JSON.parse(params.tiles) : undefined,
-        x: params.x,
-        y: params.y,
-        parts: params.parts,
-        deleteEmpty: params.deleteEmpty,
-        fromZoom: params.fromZoom,
-        beforeZoom: params.beforeZoom,
-        fileZoomOverride: params.fileZoomOverride,
-        keepJob: params.keepJob
-    }, filter1 = {
-        sourceId: params.sourceId,
-        dateBefore: params.dateBefore,
-        dateFrom: params.dateFrom,
-        biggerThan: params.biggerThan,
-        smallerThan: params.smallerThan,
-        missing: params.missing ? true : undefined,
-        zoom: params.checkZoom
-    }, filter2 = {
-        sourceId: params.sourceId2,
-        dateBefore: params.dateBefore2,
-        dateFrom: params.dateFrom2,
-        biggerThan: params.biggerThan2,
-        smallerThan: params.smallerThan2,
-        missing: params.missing2 ? true : undefined,
-        zoom: params.checkZoom2
-    };
-
-    filter1 = _.any(filter1) ? filter1 : false;
-    filter2 = _.any(filter2) ? filter2 : false;
-
-    if (filter2 && !filter1) {
-        throw new Err('Cannot set second filter unless the first filter is also set');
-    }
-    if (filter1 && filter2) {
-        job.filters = [filter1, filter2];
-    } else if (filter1) {
-        job.filters = filter1;
-    }
-    this.setSources(job, core.getSources());
-
-    return job;
 };
