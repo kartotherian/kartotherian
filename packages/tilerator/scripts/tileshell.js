@@ -139,7 +139,6 @@ if (args.dumptiles) {
 // console.log(JSON.stringify(app.conf, null, '\t'));
 
 return tilerator.bootstrap(app).then(function() {
-    core.registerTileliveModule(require('tilelive-file'));
     var sources = new core.Sources();
     return sources.init(app.conf.variables, app.conf.sources);
 }).then(function (sources) {
