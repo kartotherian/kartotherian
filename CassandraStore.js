@@ -236,7 +236,7 @@ CassandraStore.prototype.stopWriting = function(callback) {
 };
 
 /**
- * Iterate all tiles that match the given parameters
+ * Get tile data and metada. This function is a more capable getTile()
  * @param {object} options
  * @param {number} options.idx Index of the tile
  * @param {number} options.zoom
