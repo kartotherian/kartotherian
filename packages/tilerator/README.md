@@ -10,6 +10,8 @@ Scheduled generation job waits in the queue ([kue](https://github.com/Automattic
 
 Tilerator is an unprotected Admin tool, and should NOT be exposed to the web. By default, Tilerator only accepts connections from the localhost. It is recommended that it is left this way, and used via a port forwarding ssh tunnel with `ssh -L 6534:localhost:6534 my.maps.server`
 
+Tilerator also has a `tileshell` script to perform some of the admin tasks without using the http protocol.
+
 ## Configuration
 Inside the `conf` key:
 * `sources` - (required) Either a set of subkeys, a filename, or a list of file names.  See [core](https://github.com/kartotherian/kartotherian-core) on how to configure the sources.
@@ -156,3 +158,15 @@ Note that the operation will add sources to the existing ones, overriding the on
 http://localhost:6534/variables
 ```
 This URL will show the list of defined variables
+
+## Using the `tileshell` shell script
+Running `script/tileshell.js` is similar to making a single POST request to the tilerator admin interface.
+A new job can be added by supplying `-j.jobparam value` parameters:
+```
+node scripts/tileshell.js --config config.yaml -j.fromZoom 0 -j.beforeZoom 5 -j.generatorId gen -j.storageId v5 -j.deleteEmpty
+```
+
+The tool may also be used to export a list of tiles that would be generated. This way one may export existing tiles, or tiles that match a certain filtering criteria:
+```
+node scripts/tileshell.js --config config.yaml -j.generatorId v5 -j.zoom 3 --dumptiles listOfZoom3TilesInV5.txt
+```
