@@ -58,8 +58,7 @@ var args = yargs
         },
         dumptiles: {
             describe: 'output tile indexes to this file',
-            type: 'string',
-            coerce: normalizePath
+            type: 'string'
         },
         dumprawidx: {
             describe: 'forces file output to a single zoom, index only format',
@@ -159,12 +158,17 @@ return tilerator.bootstrap(app).then(function() {
 
         return common.enqueJob(queue, job, args.j);
     }
+}).catch(function(err) {
+    console.log(err);
+    console.log(err.stack);
+    process.exit(-2);
 }).then(function() {
     console.log('done');
     setTimeout(function () {
-        // logs out active handles that are keeping node running
+        // TODO: some code is not doing proper cleanup, so force-quit
         require('why-is-node-running')();
-    }, 200)
+        process.exit(0);
+    }, 500)
 });
 
 

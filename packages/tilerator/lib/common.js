@@ -4,6 +4,11 @@ var _ = require('underscore');
 var core = require('kartotherian-core');
 var Err = core.Err;
 
+var jplib = require('tilerator-jobprocessor');
+var fileParser = jplib.fileParser;
+var processAll = jplib.processAll;
+var Job = jplib.Job;
+
 module.exports = {
     paramsToJob: paramsToJob,
     setSources: setSources,
@@ -104,6 +109,6 @@ function enqueJob (queue, job, params) {
     } else if (params.filepath) {
         return fileParser(params.filepath, job, addJobAsync);
     } else {
-        return queue.addJobAsync(new Job(job));
+        return addJobAsync(job);
     }
 }

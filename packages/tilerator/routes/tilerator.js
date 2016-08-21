@@ -12,12 +12,7 @@ var core = require('kartotherian-core');
 var Err = core.Err;
 
 var info = require('../package.json');
-
-var jplib = require('tilerator-jobprocessor');
-var JobProcessor = jplib.JobProcessor;
-var fileParser = jplib.fileParser;
-var processAll = jplib.processAll;
-var Job = jplib.Job;
+var JobProcessor = require('tilerator-jobprocessor').JobProcessor;
 
 var jobProcessor, queue;
 
