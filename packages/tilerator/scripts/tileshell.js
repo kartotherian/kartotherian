@@ -93,10 +93,6 @@ if (args.j && (!_.isObject(args.j) || _.isEmpty(args.j))) {
     exit('-j must be used with job parameter name, e.g.   -j.paramname value');
 }
 
-
-// console.log(JSON.stringify(args, null, '\t'));
-
-
 let app = {
     logger: {
         log: function (level, msg) {
@@ -135,9 +131,6 @@ if (args.dumptiles) {
     }
 }
 
-// console.log(JSON.stringify(args, null, '\t'));
-// console.log(JSON.stringify(app.conf, null, '\t'));
-
 return tilerator.bootstrap(app).then(function() {
     var sources = new core.Sources();
     return sources.init(app.conf.variables, app.conf.sources);
@@ -168,6 +161,10 @@ return tilerator.bootstrap(app).then(function() {
     }
 }).then(function() {
     console.log('done');
+    setTimeout(function () {
+        // logs out active handles that are keeping node running
+        require('why-is-node-running')();
+    }, 200)
 });
 
 

@@ -59,6 +59,7 @@
     "minimist": "0.2.*",
     "yargs": "^5.0.0",
     "underscore": "^1.8.3",
+    "why-is-node-running": "^1.2.2",
 
     "htcp-purge": "^0.1.2",
     "jade": "^1.11.0",
