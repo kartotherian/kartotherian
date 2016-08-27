@@ -62,7 +62,7 @@ var args = yargs
         },
         dumprawidx: {
             describe: 'forces file output to a single zoom, index only format',
-            type: 'number',
+            type: 'boolean',
             implies: 'dumptiles',
             check: core.isValidZoom
         },
@@ -146,8 +146,8 @@ return tilerator.bootstrap(app).then(function() {
             jp.initSources();
             let iterator = jp.createMainIterator();
 
-            let opt = {iterator:iterator, outputStream:outputStream, zoom: job.zoom, rawidx: args.dumprawidx};
-            return dumpTiles(opt).then(function() {
+            let opt = {iterator: iterator, outputStream: outputStream, zoom: job.zoom, rawidx: args.dumprawidx};
+            return dumpTiles(opt).then(function () {
                 return outputStream.endAsync();
             });
         }
