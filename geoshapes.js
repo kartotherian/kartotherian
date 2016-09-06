@@ -59,7 +59,7 @@ module.exports = function geoshapes(coreV, router) {
                 sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_Simplify(way, $3*sqrt(ST_Area(ST_Envelope(way)))), 4326)) as data FROM " + subQuery,
                 params: [{
                     name: 'arg1',
-                    default: 0.01,
+                    default: 0.001,
                     regex: floatRe
                 }]
             },
