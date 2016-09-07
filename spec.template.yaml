@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.2.1
+  version: 0.4.0
   title: WMF Node.JS Service Template
   description: A template for creating Node.JS services
   termsOfService: https://wikimediafoundation.org/wiki/Terms_of_Use

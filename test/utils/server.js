@@ -35,7 +35,7 @@ config.conf.logging = {
 // make a deep copy of it for later reference
 var origConfig = extend(true, {}, config);
 
-var stop = function () {};
+var stop = function() { return BBPromise.resolve(); };
 var options = null;
 var runner = new ServiceRunner();
 
@@ -46,20 +46,21 @@ function start(_options) {
 
     if (!assert.isDeepEqual(options, _options)) {
         console.log('server options changed; restarting');
-        stop();
-        options = _options;
-        // set up the config
-        config = extend(true, {}, origConfig);
-        extend(true, config.conf.services[myServiceIdx].conf, options);
-        return runner.run(config.conf)
-        .then(function(servers) {
-            var server = servers[0];
-            stop = function () {
-                console.log('stopping test server');
-                server.close();
-                stop = function () {};
-            };
-            return true;
+        return stop().then(function() {
+            options = _options;
+            // set up the config
+            config = extend(true, {}, origConfig);
+            extend(true, config.conf.services[myServiceIdx].conf, options);
+            return runner.start(config.conf)
+            .then(function() {
+                stop = function () {
+                    console.log('stopping test server');
+                    return runner.stop().then(function() {
+                        stop = function() { return BBPromise.resolve(); };
+                    });
+                };
+                return true;
+            });
         });
     } else {
         return BBPromise.resolve();

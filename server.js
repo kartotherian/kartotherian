@@ -9,4 +9,4 @@
 // module(s) specified in the config 'services' section (app.js in this
 // example).
 var ServiceRunner = require('service-runner');
-return new ServiceRunner().run();
+new ServiceRunner().start();
