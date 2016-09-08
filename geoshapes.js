@@ -169,6 +169,7 @@ function GeoShapes(reqParams) {
     this.sparqlQuery = reqParams.query;
     this.isDefaultIdColumn = !reqParams.idcolumn;
     this.idColumn = reqParams.idcolumn || 'id';
+    this.useGeoJson = !!reqParams.getgeojson;
     this.rawProperties = {};
     this.cleanProperties = {};
     this.reqParams = reqParams;
@@ -335,7 +336,7 @@ GeoShapes.prototype.expandProperties = function expandProperties () {
 };
 
 /**
- * @return {Promise}
+ * @return {Object}
  */
 GeoShapes.prototype.wrapResult = function wrapResult () {
     let self = this;
@@ -355,12 +356,17 @@ GeoShapes.prototype.wrapResult = function wrapResult () {
         });
     }
 
-    return topojson.topology({
-        data: {type: "FeatureCollection", features: features}
-    }, {
-        "property-transform": function (feature) {
-            // preserve all properties
-            return feature.properties;
-        }
-    });
+    let result = {
+        type: "FeatureCollection",
+        features: features
+    };
+    if (!self.useGeoJson) {
+        return topojson.topology({data: result}, {
+            "property-transform": function (feature) {
+                // preserve all properties
+                return feature.properties;
+            }
+        });
+    }
+    return result;
 };

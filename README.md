@@ -32,3 +32,5 @@ Save result as a file and upload to http://www.mapshaper.org/ to visualize.
 
 Additionally, the service allows `query=...` parameter to get the Wikidata IDs from the http://query.wikidata.org service. It calls the service to execute
 a query, extracts IDs, and matches them with the shapes in the OSM database. All other values are returned as topojson object properties.
+
+Optional truthy parameter `getgeojson=1` will force the result to be returned as geojson rather than topojson.
