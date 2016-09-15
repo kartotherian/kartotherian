@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.9.4
+
+- Update to node-tilejson@1.x
+- Add testing for Node 6
+
 ## 3.9.3
 
 - Add an `upgrade` option to source constructor to request that Mapnik upgrade tiles to latest
