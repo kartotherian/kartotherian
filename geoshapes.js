@@ -51,7 +51,16 @@ module.exports = function geoshapes(coreV, router) {
         // to do the same optimization in both Postgress and Javascript, thus doing the simpler ST_Collect.
         // We should do a/b test later to see which is overall faster
 
-        var subQuery = "(SELECT tags->'wikidata' as id, ST_Collect(way) as way FROM $1~ WHERE tags ? 'wikidata' and tags->'wikidata' IN ($2:csv) GROUP BY id) subq";
+        var subQuery = `(
+  SELECT id, ST_Multi(ST_Collect(way)) AS way FROM
+    (
+        SELECT tags->'wikidata' AS id, (ST_Dump(way)).geom AS way
+        FROM $1~ WHERE tags ? 'wikidata' AND tags->'wikidata' IN ($3:csv)
+      UNION ALL
+        SELECT tags->'wikidata' AS id, (ST_Dump(way)).geom AS way
+        FROM $2~ WHERE tags ? 'wikidata' AND tags->'wikidata' IN ($3:csv)
+    ) combq
+  GROUP BY id ) subq`;
 
         let floatRe = /-?[0-9]+(\.[0-9]+)?/;
         config.queries = {
@@ -59,7 +68,7 @@ module.exports = function geoshapes(coreV, router) {
                 sql: "SELECT id, ST_AsGeoJSON(ST_Transform(way, 4326)) as data FROM " + subQuery
             },
             simplify: {
-                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_Simplify(way, $3), 4326)) as data FROM " + subQuery,
+                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_Simplify(way, $4), 4326)) as data FROM " + subQuery,
                 params: [{
                     name: 'arg1',
                     default: 10000,
@@ -69,7 +78,7 @@ module.exports = function geoshapes(coreV, router) {
             simplifyarea: {
                 // Convert geometry (in mercator) to a bbox, calc area, sqrt of that
                 // Proposed by @pnorman
-                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_Simplify(way, $3*sqrt(ST_Area(ST_Envelope(way)))), 4326)) as data FROM " + subQuery,
+                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_Simplify(way, $4*sqrt(ST_Area(ST_Envelope(way)))), 4326)) as data FROM " + subQuery,
                 params: [{
                     name: 'arg1',
                     default: 0.001,
@@ -77,7 +86,7 @@ module.exports = function geoshapes(coreV, router) {
                 }]
             },
             removerepeat: {
-                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_RemoveRepeatedPoints(way, $3), 4326)) as data FROM " + subQuery,
+                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_RemoveRepeatedPoints(way, $4), 4326)) as data FROM " + subQuery,
                 params: [{
                     name: 'arg1',
                     default: 10000,
@@ -252,7 +261,7 @@ GeoShapes.prototype.runSqlQuery = function runSqlQuery () {
     let self = this;
     if (self.ids.length === 0) return;
 
-    var args = [config.table, self.ids];
+    var args = [config.polygonTable, config.lineTable, self.ids];
     let query = config.queries.hasOwnProperty(self.reqParams.sql)
         ? config.queries[self.reqParams.sql]
         : config.queries.default;
@@ -286,8 +295,8 @@ GeoShapes.prototype.expandProperties = function expandProperties () {
     // {
     //     "type": "Feature",
     //     "id": "...",
-    //     "geometry": {"type": "Point", "coordinates": [0,0]},
-    //     "properties": {...}
+    //     "properties": {...},
+    //     "geometry": {"type": "Point", "coordinates": [0,0]}
     // }
     let self = this,
         props = [];
@@ -303,8 +312,8 @@ GeoShapes.prototype.expandProperties = function expandProperties () {
             props.push({
                 "type": "Feature",
                 "id": id,
-                "geometry": {"type": "Point", "coordinates": [0, 0]},
-                "properties": prop
+                "properties": prop,
+                "geometry": {"type": "Point", "coordinates": [0, 0]}
             });
         }
     }
@@ -345,7 +354,7 @@ GeoShapes.prototype.wrapResult = function wrapResult () {
     let features = [];
     if (self.geoRows) {
         features = self.geoRows.map(function (row) {
-            let feature = JSON.parse('{"type":"Feature","id":"' + row.id + '","geometry":' + row.data + '}');
+            let feature = JSON.parse('{"type":"Feature","id":"' + row.id + '","properties":{},"geometry":' + row.data + '}');
             if (self.cleanProperties) {
                 let wd = self.cleanProperties[row.id];
                 if (wd) {
