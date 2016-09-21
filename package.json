@@ -60,6 +60,8 @@
     "preq": "^0.4.9",
     "service-runner": "^1.2.2"
     ,
+    "heapdump": "*",
+
     "mapnik": "~3.5.0",
     "tilelive": "~5.12.2",
     "tilelive-bridge": "~2.3.1",
