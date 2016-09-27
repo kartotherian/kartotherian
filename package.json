@@ -1,10 +1,10 @@
 {
   "name": "kartotherian-core",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "The core components of the Kartotherian maps tile service",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,8 @@
     "js-yaml": "^3.5.2",
     "underscore": "^1.8.3",
     "xmldoc": "git+https://github.com/nyurik/xmldoc.git"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5"
   }
 }
