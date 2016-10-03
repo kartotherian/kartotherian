@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-core",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "The core components of the Kartotherian maps tile service",
   "main": "index.js",
   "scripts": {
