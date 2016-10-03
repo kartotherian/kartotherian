@@ -704,9 +704,9 @@
       }
     },
     "kartotherian-core": {
-      "version": "0.0.15",
+      "version": "0.0.16",
       "from": "git+https://github.com/kartotherian/kartotherian-core.git",
-      "resolved": "git+https://github.com/kartotherian/kartotherian-core.git#d34c982d512708ffa19d8e65b863f9c1609a1867",
+      "resolved": "git+https://github.com/kartotherian/kartotherian-core.git#2c1c40dc9e61483ddb53b9d023ae38f17b43078e",
       "dependencies": {
         "underscore": {
           "version": "1.8.3",
@@ -1483,9 +1483,9 @@
                       "resolved": "https://registry.npmjs.org/async/-/async-2.0.1.tgz",
                       "dependencies": {
                         "lodash": {
-                          "version": "4.16.2",
+                          "version": "4.16.3",
                           "from": "lodash@>=4.8.0 <5.0.0",
-                          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.16.2.tgz"
+                          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.16.3.tgz"
                         }
                       }
                     }
@@ -3616,7 +3616,7 @@
                     },
                     "inherits": {
                       "version": "2.0.3",
-                      "from": "inherits@>=2.0.0 <3.0.0",
+                      "from": "inherits@>=2.0.1 <2.1.0",
                       "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.3.tgz"
                     }
                   }
@@ -3709,13 +3709,13 @@
                   "resolved": "https://registry.npmjs.org/base64-js/-/base64-js-1.2.0.tgz"
                 },
                 "ieee754": {
-                  "version": "1.1.6",
+                  "version": "1.1.8",
                   "from": "ieee754@>=1.1.4 <2.0.0",
-                  "resolved": "https://registry.npmjs.org/ieee754/-/ieee754-1.1.6.tgz"
+                  "resolved": "https://registry.npmjs.org/ieee754/-/ieee754-1.1.8.tgz"
                 },
                 "isarray": {
                   "version": "1.0.0",
-                  "from": "isarray@>=1.0.0 <1.1.0",
+                  "from": "isarray@>=1.0.0 <2.0.0",
                   "resolved": "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz"
                 }
               }
@@ -3976,9 +3976,9 @@
                   "resolved": "https://registry.npmjs.org/async/-/async-2.0.1.tgz",
                   "dependencies": {
                     "lodash": {
-                      "version": "4.16.2",
+                      "version": "4.16.3",
                       "from": "lodash@>=4.8.0 <5.0.0",
-                      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.16.2.tgz"
+                      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.16.3.tgz"
                     }
                   }
                 }
