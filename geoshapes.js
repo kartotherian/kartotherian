@@ -10,7 +10,7 @@ var info = require('./package.json'),
 var core, client, Err, config;
 
 module.exports = function geoshapes(coreV, router) {
-    return Promise.try(function () {
+    return Promise.try(() => {
         core = coreV;
         Err = core.Err;
         config = core.getConfiguration().geoshapes;
@@ -51,16 +51,16 @@ module.exports = function geoshapes(coreV, router) {
         // to do the same optimization in both Postgress and Javascript, thus doing the simpler ST_Collect.
         // We should do a/b test later to see which is overall faster
 
-        var subQuery = `(
-  SELECT id, ST_Multi(ST_Collect(way)) AS way FROM
-    (
-        SELECT tags->'wikidata' AS id, (ST_Dump(way)).geom AS way
-        FROM $1~ WHERE tags ? 'wikidata' AND tags->'wikidata' IN ($3:csv)
-      UNION ALL
-        SELECT tags->'wikidata' AS id, (ST_Dump(way)).geom AS way
-        FROM $2~ WHERE tags ? 'wikidata' AND tags->'wikidata' IN ($3:csv)
-    ) combq
-  GROUP BY id ) subq`;
+        var subQuery =
+`(
+SELECT id, ST_Multi(ST_Union(way)) AS way
+FROM (
+  SELECT tags->'wikidata' AS id, (ST_Dump(way)).geom AS way
+  FROM planet_osm_line
+  WHERE tags ? 'wikidata' AND tags->'wikidata' IN ('Q44803','Q44754')
+  ) combq
+GROUP BY id
+) subq`;
 
         let floatRe = /-?[0-9]+(\.[0-9]+)?/;
         config.queries = {
@@ -68,7 +68,7 @@ module.exports = function geoshapes(coreV, router) {
                 sql: "SELECT id, ST_AsGeoJSON(ST_Transform(way, 4326)) as data FROM " + subQuery
             },
             simplify: {
-                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_Simplify(way, $4), 4326)) as data FROM " + subQuery,
+                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_Simplify(way, $3), 4326)) as data FROM " + subQuery,
                 params: [{
                     name: 'arg1',
                     default: 10000,
@@ -78,7 +78,7 @@ module.exports = function geoshapes(coreV, router) {
             simplifyarea: {
                 // Convert geometry (in mercator) to a bbox, calc area, sqrt of that
                 // Proposed by @pnorman
-                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_Simplify(way, $4*sqrt(ST_Area(ST_Envelope(way)))), 4326)) as data FROM " + subQuery,
+                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_Simplify(way, $3*sqrt(ST_Area(ST_Envelope(way)))), 4326)) as data FROM " + subQuery,
                 params: [{
                     name: 'arg1',
                     default: 0.001,
@@ -86,7 +86,7 @@ module.exports = function geoshapes(coreV, router) {
                 }]
             },
             removerepeat: {
-                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_RemoveRepeatedPoints(way, $4), 4326)) as data FROM " + subQuery,
+                sql: "SELECT id, ST_AsGeoJSON(ST_Transform(ST_RemoveRepeatedPoints(way, $3), 4326)) as data FROM " + subQuery,
                 params: [{
                     name: 'arg1',
                     default: 10000,
@@ -104,7 +104,7 @@ module.exports = function geoshapes(coreV, router) {
             // Delete all queries except the default one, and remove parameter names to prevent user parameters
             config.queries = {default: defaultQ};
             if (defaultQ.params) {
-                defaultQ.params.forEach(function (param) {
+                defaultQ.params.forEach(param => {
                     delete param.name;
                 });
             }
@@ -112,19 +112,24 @@ module.exports = function geoshapes(coreV, router) {
 
         client = postgres({
             host: config.host,
+            port: config.port,
             database: config.database,
             user: config.user,
             password: config.password
         });
 
         // Check the valid structure of the table - use invalid id
-        return new GeoShapes({ids: 'Q123456789'}).execute();
+        return Promise.all([
+            new GeoShapes('geoshape', {ids: 'Q123456789'}).execute(),
+            new GeoShapes('geoline', {ids: 'Q123456789'}).execute()
+        ]);
 
-    }).then(function () {
-        router.get('/shape', handler); // obsolete
-        router.get('/geoshape', handler);
-    }).catch(function (err) {
-        core.log('warn', 'geoshapes support failed to load, skipping: ' + err);
+    }).then(() => {
+        router.get('/shape', (req, res, next) => handler('geoshape', req, res, next)); // obsolete
+        router.get('/geoshape', (req, res, next) => handler('geoshape', req, res, next));
+        router.get('/geoline', (req, res, next) => handler('geoline', req, res, next));
+    }).catch(err => {
+        core.log('error', 'geoshapes support failed to load, skipping: ' + err + '\n' + err.stack);
         // still allow loading
     });
 
@@ -132,49 +137,55 @@ module.exports = function geoshapes(coreV, router) {
 
 /**
  * Web server (express) route handler to get geoshapes
- * @param req request object
- * @param res response object
- * @param next will be called if request is not handled
+ * @param {string} type
+ * @param {object} req request object
+ * @param {object} req.query request object's query
+ * @param {object} res response object
+ * @param {Function} next will be called if request is not handled
  */
-function handler(req, res, next) {
+function handler(type, req, res, next) {
 
     var start = Date.now(),
-        metric = ['geoshape'];
+        geoshape;
 
-    return Promise.try(function () {
-        return new GeoShapes(req.query).execute();
-    }).then(function (geodata) {
+    return Promise.try(
+        () => {
+            geoshape = new GeoShapes(type, req.query);
+            return geoshape.execute();
+        }
+    ).then(geodata => {
         core.setResponseHeaders(res);
         res.type('application/vnd.geo+json').json(geodata);
-        core.metrics.endTiming(metric.join('.'), start);
-    }).catch(function (err) {
-        return core.reportRequestError(err, res);
-    }).catch(next);
+        core.metrics.endTiming(geoshape.metric, start);
+    }).catch(
+        err => core.reportRequestError(err, res)
+    ).catch(next);
 }
 
 
 /**
+ * @param {string} type
  * @param {object} reqParams
  * @param {string=} reqParams.ids
  * @param {string=} reqParams.query
  * @param {string=} reqParams.idcolumn
  * @param {string=} reqParams.sql
  */
-function GeoShapes(reqParams) {
+function GeoShapes(type, reqParams) {
     if (!reqParams.ids && !reqParams.query) throw new Err('"ids" or "query" parameter must be given');
     if (reqParams.query && !config.wikidataQueryService) throw new Err('"query" parameter is not enabled');
 
     if (reqParams.ids) {
-        this.ids = reqParams.ids.split(',').filter(function (id) {
-            return id !== '';
-        });
+        this.ids = reqParams.ids.split(',').filter(id => id !== '');
         if (this.ids.length > config.maxidcount) throw new Err('No more than %d IDs is allowed', config.maxidcount);
-        this.ids.forEach(function (val) {
+        this.ids.forEach(val => {
             if (!/^Q[1-9][0-9]{0,15}$/.test(val)) throw new Err('Invalid Wikidata ID');
         });
     } else {
         this.ids = [];
     }
+    this.type = type;
+    this.metric = type + (reqParams.query ? '.wdqs' : '.ids');
     this.sparqlQuery = reqParams.query;
     this.isDefaultIdColumn = !reqParams.idcolumn;
     this.idColumn = reqParams.idcolumn || 'id';
@@ -186,20 +197,18 @@ function GeoShapes(reqParams) {
 
 
 /**
- *
+ * Main execution method
  * @return {Promise}
  */
 GeoShapes.prototype.execute = function execute () {
-    return Promise.bind(this).then(function () {
-        return this.runWikidataQuery();
-    }).then(function () {
-        return Promise.all([
-            this.runSqlQuery(),
-            this.expandProperties()
-        ]);
-    }).then(function () {
-        return this.wrapResult();
-    });
+    var self = this;
+    return Promise.try(
+        () => self.runWikidataQuery()
+    ).then(
+        () => Promise.all([self.runSqlQuery(), self.expandProperties()])
+    ).then(
+        () => self.wrapResult()
+    );
 };
 
 /**
@@ -218,7 +227,7 @@ GeoShapes.prototype.runWikidataQuery = function runWikidataQuery () {
             query: self.sparqlQuery
         },
         headers: config.sparqlHeaders
-    }).then(function (queryResult) {
+    }).then(queryResult => {
         if (queryResult.headers['content-type'] !== 'application/sparql-results+json') {
             throw new Err('Unexpected content type %s', queryResult.headers['content-type']);
         }
@@ -229,7 +238,7 @@ GeoShapes.prototype.runWikidataQuery = function runWikidataQuery () {
             throw new Err('SPARQL query result does not have "results.bindings"');
         }
 
-        data.results.bindings.forEach(function (wd) {
+        data.results.bindings.forEach(wd => {
             if (!(self.idColumn in wd)) {
                 let errMsg = 'SPARQL query result does not contain %j column.';
                 if (self.isDefaultIdColumn) {
@@ -261,13 +270,13 @@ GeoShapes.prototype.runSqlQuery = function runSqlQuery () {
     let self = this;
     if (self.ids.length === 0) return;
 
-    var args = [config.polygonTable, config.lineTable, self.ids];
+    var args = [self.type === 'geoshape' ? config.polygonTable : config.lineTable, self.ids];
     let query = config.queries.hasOwnProperty(self.reqParams.sql)
         ? config.queries[self.reqParams.sql]
         : config.queries.default;
 
     if (query.params) {
-        query.params.forEach(function (param) {
+        query.params.forEach(param => {
             let paramName = param.name;
             if (!paramName || !self.reqParams.hasOwnProperty(paramName)) {
                 // If param name is NOT defined, we always use default, without allowing user to customize it
@@ -280,7 +289,7 @@ GeoShapes.prototype.runSqlQuery = function runSqlQuery () {
         });
     }
 
-    return client.query(query.sql, args).then(function (rows) {
+    return client.query(query.sql, args).then(rows => {
         self.geoRows = rows;
         return self;
     });
@@ -329,7 +338,7 @@ GeoShapes.prototype.expandProperties = function expandProperties () {
             text: JSON.stringify(props)
         },
         headers: config.mwapiHeaders
-    }).then(function (apiResult) {
+    }).then(apiResult => {
         if (apiResult.error) throw new Err(apiResult.error);
         if (!apiResult.body || !apiResult.body['sanitize-mapdata'] || !apiResult.body['sanitize-mapdata'].sanitized) {
             throw new Err('Unexpected api action=sanitize-mapdata results');
@@ -353,7 +362,7 @@ GeoShapes.prototype.wrapResult = function wrapResult () {
     // If no result, return an empty result set - which greatly simplifies processing
     let features = [];
     if (self.geoRows) {
-        features = self.geoRows.map(function (row) {
+        features = self.geoRows.map(row => {
             let feature = JSON.parse('{"type":"Feature","id":"' + row.id + '","properties":{},"geometry":' + row.data + '}');
             if (self.cleanProperties) {
                 let wd = self.cleanProperties[row.id];
@@ -365,16 +374,17 @@ GeoShapes.prototype.wrapResult = function wrapResult () {
         });
     }
 
+    // TODO: Would be good to somehow monitor the average/min/max number of features
+    // core.metrics.count(geoshape.metric, features.length);
+
     let result = {
         type: "FeatureCollection",
         features: features
     };
     if (!self.useGeoJson) {
         return topojson.topology({data: result}, {
-            "property-transform": function (feature) {
-                // preserve all properties
-                return feature.properties;
-            }
+            // preserve all properties
+            "property-transform": feature => feature.properties
         });
     }
     return result;
