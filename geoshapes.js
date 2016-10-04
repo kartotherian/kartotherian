@@ -9,6 +9,15 @@ var info = require('./package.json'),
 
 var core, client, Err, config;
 
+var simpleStyleProperties = {
+    'fill_opacity': 'fill-opacity',
+    'marker_color': 'marker-color',
+    'marker_size': 'marker-size',
+    'marker_symbol': 'marker-symbol',
+    'stroke_opacity': 'stroke-opacity',
+    'stroke_width': 'stroke-width',
+};
+
 module.exports = function geoshapes(coreV, router) {
     return Promise.try(() => {
         core = coreV;
@@ -56,8 +65,8 @@ module.exports = function geoshapes(coreV, router) {
 SELECT id, ST_Multi(ST_Union(way)) AS way
 FROM (
   SELECT tags->'wikidata' AS id, (ST_Dump(way)).geom AS way
-  FROM planet_osm_line
-  WHERE tags ? 'wikidata' AND tags->'wikidata' IN ('Q44803','Q44754')
+  FROM $1~
+  WHERE tags ? 'wikidata' AND tags->'wikidata' IN ($2:csv)
   ) combq
 GROUP BY id
 ) subq`;
@@ -315,7 +324,17 @@ GeoShapes.prototype.expandProperties = function expandProperties () {
             let prop = self.rawProperties[id];
             for (let key in prop) {
                 if (prop.hasOwnProperty(key)) {
-                    prop[key] = parseWikidataValue(prop[key]);
+                    // If this is a simplestyle property with a '_' in the name instead of '-',
+                    // convert it to the proper syntax.
+                    // SPARQL is unable to produce columns with a '-' in the name.
+                    let newKey = simpleStyleProperties[key];
+                    let value = parseWikidataValue(prop[key]);
+                    if (newKey) {
+                        prop[newKey] = value;
+                        delete prop[key];
+                    } else {
+                        prop[key] = value;
+                    }
                 }
             }
             props.push({
@@ -339,11 +358,16 @@ GeoShapes.prototype.expandProperties = function expandProperties () {
         },
         headers: config.mwapiHeaders
     }).then(apiResult => {
-        if (apiResult.error) throw new Err(apiResult.error);
-        if (!apiResult.body || !apiResult.body['sanitize-mapdata'] || !apiResult.body['sanitize-mapdata'].sanitized) {
+        if (apiResult.body.error) throw new Err(apiResult.body.error);
+        if (!apiResult.body['sanitize-mapdata']) {
             throw new Err('Unexpected api action=sanitize-mapdata results');
         }
-        let sanitized = JSON.parse(apiResult.body['sanitize-mapdata'].sanitized);
+        let body = apiResult.body['sanitize-mapdata'];
+        if (body.error) throw new Err(body.error);
+        if (!body.sanitized) {
+            throw new Err('Unexpected api action=sanitize-mapdata results');
+        }
+        let sanitized = JSON.parse(body.sanitized);
         if (!sanitized || !Array.isArray(sanitized)) {
             throw new Err('Unexpected api action=sanitize-mapdata sanitized value results');
         }
