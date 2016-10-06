@@ -5,12 +5,12 @@
  PostgresStore is a Postgres tile storage.
  */
 
-var util = require('util');
-var Promise = require('bluebird');
-var postgres = require('pg-promise')({promiseLib: Promise});
-var promistreamus = require('promistreamus');
-var QueryStream = require('pg-query-stream');
-var pckg = require('./package.json');
+var util = require('util'),
+    Promise = require('bluebird'),
+    postgres = require('pg-promise')({promiseLib: Promise}),
+    promistreamus = require('promistreamus'),
+    QueryStream = require('pg-query-stream'),
+    pckg = require('./package.json');
 
 var core, Err;
 
@@ -85,9 +85,12 @@ END$$;';
         }
         return self.client.none(sql, [self._params.table, self._params.database]);
     }).then(function () {
+        let table = self._params.table;
         self.queries = {
-            getTile: 'SELECT tile FROM $1~ WHERE zoom = $2 AND idx = $3;',
-            getTileSize: 'SELECT length(tile) AS len FROM $1~ WHERE zoom = $2 AND idx = $3;',
+            // We could have used $1~ syntax for table name parameter in getTile and getTileSize,
+            // but that is not allowed for prepared statement queries
+            getTile: 'SELECT tile FROM ' + table + ' WHERE zoom = $1 AND idx = $2;',
+            getTileSize: 'SELECT length(tile) AS len FROM ' + table + ' WHERE zoom = $1 AND idx = $2;',
             set: 'UPDATE $1~ SET tile=$4 WHERE zoom = $2 AND idx = $3;' +
             'INSERT INTO $1~ (zoom, idx, tile) SELECT $2, $3, $4 ' +
             'WHERE NOT EXISTS (SELECT 1 FROM $1~ WHERE zoom = $2 AND idx = $3);',
@@ -208,7 +211,7 @@ PostgresStore.prototype.queryTileAsync = function(options) {
                 self.throwError('Options must contain integer zoom parameter. Opts=%j', options);
             if (!core.isInteger(options.idx))
                 self.throwError('Options must contain an integer idx parameter. Opts=%j', options);
-            var maxEnd = Math.pow(4, options.zoom);
+            let maxEnd = Math.pow(4, options.zoom);
             if (options.idx < 0 || options.idx >= maxEnd)
                 self.throwError('Options must satisfy: 0 <= idx < %d. Opts=%j', maxEnd, options);
         }
@@ -216,8 +219,12 @@ PostgresStore.prototype.queryTileAsync = function(options) {
             self.throwError('getWriteTime is not implemented by Postgres source. Opts=%j', options);
         getTile = typeof options.getTile === 'undefined' ? true : options.getTile;
         getSize = typeof options.getSize === 'undefined' ? false : options.getSize;
-        var query = getTile ? self.queries.getTile : self.queries.getSize;
-        return self.client.oneOrNone(query, [self._params.table, options.zoom, options.idx]);
+
+        return self.client.oneOrNone({
+            name: getTile ? 'getTile' : 'getTileSize',
+            text: getTile ? self.queries.getTile : self.queries.getTileSize,
+            values: [options.zoom, options.idx]
+        });
     }).then(row => {
         if (row) {
             var resp = {};
@@ -261,18 +268,20 @@ PostgresStore.prototype.query = function(options) {
         self.throwError('Options may contain a biggerThan numeric parameter. Opts=%j', options);
     if ((typeof options.smallerThan !== 'undefined' && typeof options.smallerThan !== 'number') || options.smallerThan <= 0)
         self.throwError('Options may contain a smallerThan numeric parameter that is bigger than 0. Opts=%j', options);
-    var maxEnd = Math.pow(4, options.zoom);
-    var start = options.idxFrom || 0;
-    var end = options.idxBefore || maxEnd;
+
+    let maxEnd = Math.pow(4, options.zoom),
+        start = options.idxFrom || 0,
+        end = options.idxBefore || maxEnd;
     if (start > end || end > maxEnd)
         self.throwError('Options must satisfy: idxFrom <= idxBefore <= %d. Opts=%j', maxEnd, options);
     if (options.dateFrom >= options.dateBefore)
         self.throwError('Options must satisfy: dateFrom < dateBefore. Opts=%j', options);
+
     dateFrom = options.dateFrom ? options.dateFrom.valueOf() * 1000 : false;
     dateBefore = options.dateBefore ? options.dateBefore.valueOf() * 1000 : false;
 
-    var fields = 'idx';
-    var conds = 'zoom = $2', params = [self._params.table, options.zoom];
+    let fields = 'idx',
+        conds = 'zoom = $2', params = [self._params.table, options.zoom];
 
     if (options.getTiles) {
         fields += ', tile';
