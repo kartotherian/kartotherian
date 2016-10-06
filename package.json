@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-postgres",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "PostgreSQL tile storage for Kartotherian map tile server",
   "main": "Postgres.js",
   "scripts": {

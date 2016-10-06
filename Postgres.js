@@ -36,19 +36,24 @@ function PostgresStore(uri, callback) {
         var params = core.normalizeUri(uri).query;
         self._params = params;
 
+        core.checkType(params, 'database', 'string', true);
+        core.checkType(params, 'port', 'integer');
+        core.checkType(params, 'table', 'string', 'tiles');
+        core.checkType(params, 'createIfMissing', 'boolean');
+        core.checkType(params, 'minzoom', 'zoom', 0);
+        core.checkType(params, 'maxzoom', 'zoom', 14);
+        core.checkType(params, 'maxBatchSize', 'integer');
+
         if (!params.database || !/^[a-zA-Z][_a-zA-Z0-9]*$/.test(params.database)) {
             self.throwError("Uri must have a valid 'database' query parameter");
         }
         if (params.table && !/^[a-zA-Z][_a-zA-Z0-9]*$/.test(params.table)) {
             self.throwError("Optional uri 'table' param must be a valid value");
         }
-        self.createIfMissing = !!params.createIfMissing;
-        self.table = params.table || 'tiles';
-        self.minzoom = typeof params.minzoom === 'undefined' ? 0 : parseInt(params.minzoom);
-        self.maxzoom = typeof params.maxzoom === 'undefined' ? 22 : parseInt(params.maxzoom);
-        self.maxBatchSize = typeof params.maxBatchSize === 'undefined' ? undefined : parseInt(params.maxBatchSize);
+
         var clientOpts = {
             host: params.host,
+            port: params.port,
             database: params.database,
             user: params.username,
             password: params.password
@@ -59,24 +64,34 @@ function PostgresStore(uri, callback) {
         self.client = postgres(clientOpts);
 
         var sql;
-        if (self.createIfMissing) {
+        if (params.createIfMissing) {
             // Create table and ensure that tile is stored in an uncompressed form to prevent double compression
             // TODO: instead of "IF NOT EXISTS", use a session and a conditional table creation + column alteration
-            sql = 'CREATE TABLE IF NOT EXISTS ' + self.table + ' (zoom smallint, idx bigint, tile bytea, PRIMARY KEY (zoom, idx));' +
-                'ALTER TABLE ' + self.table + ' ALTER COLUMN tile SET STORAGE EXTERNAL;';
+            // sql = 'CREATE TABLE IF NOT EXISTS $1~ (zoom smallint, idx bigint, tile bytea, PRIMARY KEY (zoom, idx));' +
+            //     'ALTER TABLE $1~ ALTER COLUMN tile SET STORAGE EXTERNAL;';
+            sql = '\
+DO $$BEGIN \
+  IF NOT EXISTS ( \
+    SELECT 1 FROM information_schema.tables \
+    WHERE table_catalog = $2 AND table_name = $1 \
+  ) THEN \
+    CREATE TABLE $1~ (zoom smallint, idx bigint, tile bytea, PRIMARY KEY (zoom, idx)); \
+    ALTER TABLE $1~ ALTER COLUMN tile SET STORAGE EXTERNAL; \
+  END IF; \
+END$$;';
         } else {
             // Check the valid structure of the table - must not return any results
-            sql = 'SELECT zoom, idx, tile FROM ' + self.table + ' WHERE zoom IS NULL AND idx IS NULL';
+            sql = 'SELECT zoom, idx, tile FROM $1~ WHERE zoom IS NULL AND idx IS NULL;';
         }
-        return self.client.none(sql);
+        return self.client.none(sql, [self._params.table, self._params.database]);
     }).then(function () {
         self.queries = {
-            getTile: 'SELECT tile FROM ' + self.table + ' WHERE zoom = $1 AND idx = $2',
-            getTileSize: 'SELECT length(tile) AS len FROM ' + self.table + ' WHERE zoom = $1 AND idx = $2',
-            set: 'UPDATE ' + self.table + ' SET tile=$3 WHERE zoom = $1 AND idx = $2;' +
-            'INSERT INTO ' + self.table + ' (zoom, idx, tile) SELECT $1, $2, $3 ' +
-            'WHERE NOT EXISTS (SELECT 1 FROM ' + self.table + ' WHERE zoom = $1 AND idx = $2);',
-            delete: 'DELETE FROM ' + self.table + ' WHERE zoom = $1 AND idx = $2'
+            getTile: 'SELECT tile FROM $1~ WHERE zoom = $2 AND idx = $3;',
+            getTileSize: 'SELECT length(tile) AS len FROM $1~ WHERE zoom = $2 AND idx = $3;',
+            set: 'UPDATE $1~ SET tile=$4 WHERE zoom = $2 AND idx = $3;' +
+            'INSERT INTO $1~ (zoom, idx, tile) SELECT $2, $3, $4 ' +
+            'WHERE NOT EXISTS (SELECT 1 FROM $1~ WHERE zoom = $2 AND idx = $3);',
+            delete: 'DELETE FROM $1~ WHERE zoom = $2 AND idx = $3;'
         };
 
         return self;
@@ -86,7 +101,7 @@ function PostgresStore(uri, callback) {
 PostgresStore.prototype.getTile = function(z, x, y, callback) {
     var self = this;
     return Promise.try(function () {
-        if (z < self.minzoom || z > self.maxzoom) {
+        if (z < self._params.minzoom || z > self._params.maxzoom) {
             core.throwNoTile();
         }
         return self.queryTileAsync({zoom: z, idx: core.xyToIndex(x, y, z)});
@@ -113,17 +128,17 @@ PostgresStore.prototype.getInfo = function(callback) {
                 'tilejson': '2.1.0',
                 'name': 'PostgresStore ' + pckg.version,
                 'bounds': '-180,-85.0511,180,85.0511',
-                'minzoom': self.minzoom,
-                'maxzoom': self.maxzoom
+                'minzoom': self._params.minzoom,
+                'maxzoom': self._params.maxzoom
             };
         }
     }).catch(this.attachUri).nodeify(callback);
 };
 
 PostgresStore.prototype.putTile = function(z, x, y, tile, callback) {
-    if (z < this.minzoom || z > this.maxzoom) {
+    if (z < this._params.minzoom || z > this._params.maxzoom) {
         this.throwError('This PostgresStore source cannot save zoom %d, because its configured for zooms %d..%d',
-            z, this.minzoom, this.maxzoom);
+            z, this._params.minzoom, this._params.maxzoom);
     }
     return this._storeDataAsync(z, core.xyToIndex(x, y, z), tile).nodeify(callback);
 };
@@ -134,16 +149,16 @@ PostgresStore.prototype._storeDataAsync = function(zoom, idx, data) {
         var query, params;
         if (data && data.length > 0) {
             query = self.queries.set;
-            params = [zoom, idx, data];
+            params = [self._params.table, zoom, idx, data];
         } else {
             query = self.queries.delete;
-            params = [zoom, idx];
+            params = [self._params.table, zoom, idx];
         }
-        if (!self.batchMode || !self.maxBatchSize) {
+        if (!self.batchMode || !self._params.maxBatchSize) {
             return self.client.none(query, params);
         } else {
             self.batch.push({query: query, params: params});
-            if (Object.keys(self.batch).length > self.maxBatchSize) {
+            if (Object.keys(self.batch).length > self._params.maxBatchSize) {
                 return self.flushAsync();
             }
         }
@@ -156,28 +171,27 @@ PostgresStore.prototype.startWriting = function(callback) {
 };
 
 PostgresStore.prototype.flush = function(callback) {
-    var batch = this.batch;
-    if (Object.keys(batch).length > 0) {
-        this.batch = [];
-        this.client
-            .batchAsync(batch)
-            .catch(this.attachUri)
-            .nodeify(callback);
-    } else {
-        callback();
-    }
+    var self = this;
+    Promise.try(()=> {
+        var batch = self.batch;
+        if (Object.keys(batch).length > 0) {
+            self.batch = [];
+            return self.client
+                .batchAsync(batch)
+                .catch(self.attachUri)
+        }
+    }).nodeify(callback);
 };
 
 PostgresStore.prototype.stopWriting = function(callback) {
     var self = this;
-   BPromise.try(function () {
+    Promise.try(() => {
         if (self.batchMode === 0) {
             self.throwError('stopWriting() called more times than startWriting()')
         }
         self.batchMode--;
         return self.flushAsync();
-    })
-        .catch(this.attachUri)
+    }).catch(this.attachUri)
         .nodeify(callback);
 };
 
@@ -185,7 +199,7 @@ PostgresStore.prototype.queryTileAsync = function(options) {
     var self = this;
     var getTile, getSize;
 
-    return Promise.try(function() {
+    return Promise.try(() => {
         if (options.info) {
             options.zoom = -1;
             options.idx = 0;
@@ -203,8 +217,8 @@ PostgresStore.prototype.queryTileAsync = function(options) {
         getTile = typeof options.getTile === 'undefined' ? true : options.getTile;
         getSize = typeof options.getSize === 'undefined' ? false : options.getSize;
         var query = getTile ? self.queries.getTile : self.queries.getSize;
-        return self.client.oneOrNone(query, [options.zoom, options.idx]);
-    }).then(function(row) {
+        return self.client.oneOrNone(query, [self._params.table, options.zoom, options.idx]);
+    }).then(row => {
         if (row) {
             var resp = {};
             if (getTile) resp.tile = row.tile;
@@ -258,7 +272,7 @@ PostgresStore.prototype.query = function(options) {
     dateBefore = options.dateBefore ? options.dateBefore.valueOf() * 1000 : false;
 
     var fields = 'idx';
-    var conds = 'zoom = $1', params = [options.zoom];
+    var conds = 'zoom = $2', params = [self._params.table, options.zoom];
 
     if (options.getTiles) {
         fields += ', tile';
@@ -284,7 +298,7 @@ PostgresStore.prototype.query = function(options) {
     }
 
     // delayed promistreamus initialization
-    var iterator = promistreamus(undefined, function(value) {
+    var iterator = promistreamus(undefined, value => {
         var res = {
             zoom: options.zoom,
             idx: parseInt(value.idx)
@@ -296,11 +310,15 @@ PostgresStore.prototype.query = function(options) {
         return res;
     });
 
-    var query = new QueryStream('SELECT ' + fields + ' FROM ' + self.table + ' WHERE ' + conds, params);
-    self.client.stream(query, function(stream) {
-        iterator.init(stream);
-    }).then(function(v) {console.log('done ' + JSON.stringify(v))},
-        function(v) {console.log('err ' + JSON.stringify(v)); self.err=v;}
+    var query = new QueryStream('SELECT ' + fields + ' FROM $1~ WHERE ' + conds, params);
+    self.client.stream(query,
+        stream => iterator.init(stream)
+    ).then(
+        v => console.log('done ' + JSON.stringify(v)),
+        v => {
+            console.log('err ' + JSON.stringify(v));
+            self.err = v;
+        }
     );
 
     return iterator;
