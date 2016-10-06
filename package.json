@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
@@ -72,7 +72,7 @@
     "kartotherian-server": "git+https://github.com/kartotherian/kartotherian-server.git",
     "kartotherian-autogen": "git+https://github.com/kartotherian/kartotherian-autogen.git",
     "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",
-    "kartotherian-postgress": "git+https://github.com/kartotherian/kartotherian-postgress.git",
+    "kartotherian-postgres": "git+https://github.com/kartotherian/kartotherian-postgres.git",
     "kartotherian-demultiplexer": "git+https://github.com/kartotherian/kartotherian-demultiplexer.git",
     "kartotherian-geoshapes": "git+https://github.com/kartotherian/kartotherian-geoshapes.git",
     "kartotherian-layermixer": "git+https://github.com/kartotherian/kartotherian-layermixer.git",
