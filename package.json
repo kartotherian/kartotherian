@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-snapshot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Serves Kartotherian snapshot images",
   "main": "lib/snapshot.js",
   "scripts": {
@@ -23,13 +23,13 @@
     "abaculus": "git+https://github.com/kartotherian/abaculus.git",
     "bluebird": "^3.3.5",
     "domain-validator": "^0.0.3",
-    "mwapi": "git+https://github.com/nyurik/mwapi.git",
+    "mwapi": "^0.0.5",
     "underscore": "^1.8.3",
     "geojson-mapnikify": "~0.7.1",
-    "tilelive-overlay": "^0.7.0"
+    "tilelive-overlay": "^0.7.0",
+    "wikimedia-mapdata": "github:nyurik/wikimedia-mapdata"
   },
   "optionalDependencies": {
-    "geojson-mapnikify": "~0.7.0",
     "sphericalmercator": "1.0.x"
   }
 }
