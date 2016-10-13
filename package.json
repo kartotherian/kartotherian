@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
@@ -84,7 +84,7 @@
     "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git"
   },
   "optionalDependencies": {
-    "bunyan-prettystream": "*",
+    "bunyan-prettystream": "*"
   },
   "devDependencies": {
     "extend": "^3.0.0",
