@@ -1,6 +1,6 @@
 {
   "name": "tilerator",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Map tiles pre-generation service",
   "main": "./app.js",
   "scripts": {
@@ -85,6 +85,9 @@
     "tilerator-jobprocessor": "git+https://github.com/kartotherian/tilerator-jobprocessor.git",
     "osm-bright-source": "git+https://github.com/kartotherian/osm-bright.tm2source.git",
     "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git"
+  },
+  "optionalDependencies": {
+    "bunyan-prettystream": "*"
   },
   "devDependencies": {
     "extend": "^3.0.0",
