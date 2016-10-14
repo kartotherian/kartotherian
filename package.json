@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-snapshot",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Serves Kartotherian snapshot images",
   "main": "lib/snapshot.js",
   "scripts": {
@@ -23,7 +23,7 @@
     "abaculus": "git+https://github.com/kartotherian/abaculus.git",
     "bluebird": "^3.3.5",
     "domain-validator": "^0.0.3",
-    "mwapi": "^0.0.7",
+    "mwapi": "^0.0.8",
     "underscore": "^1.8.3",
     "geojson-mapnikify": "~0.7.1",
     "tilelive-overlay": "^0.7.0",
