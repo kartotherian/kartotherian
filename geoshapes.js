@@ -240,9 +240,7 @@ GeoShapes.prototype.runWikidataQuery = function runWikidataQuery () {
         if (queryResult.headers['content-type'] !== 'application/sparql-results+json') {
             throw new Err('Unexpected content type %s', queryResult.headers['content-type']);
         }
-
-        // Body arrives as a buffer, need to decode and parse
-        let data = JSON.parse(queryResult.body.toString());
+        let data = queryResult.body;
         if (!data.results || !Array.isArray(data.results.bindings)) {
             throw new Err('SPARQL query result does not have "results.bindings"');
         }
