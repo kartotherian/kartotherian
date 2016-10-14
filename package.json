@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
@@ -58,7 +58,7 @@
     "domino": "^1.0.24",
     "express": "^4.13.4",
     "js-yaml": "^3.6.0",
-    "preq": "^0.4.9",
+    "preq": "^0.4.11",
     "service-runner": "^1.2.2"
     ,
     "heapdump": "*",
