@@ -1,8 +1,11 @@
 {
   "name": "abaculus",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "stitches map tiles together for high-res exporting from tm2",
   "main": "index.js",
+  "contributors": [
+    "Yuri Astrakhan <yurik@wikimedia.org>"
+  ],
   "scripts": {
     "test": "mocha -R spec"
   },
@@ -16,6 +19,6 @@
     "d3-queue": "^2.0.2"
   },
   "devDependencies": {
-    "mocha": "1.x"
+    "mocha": "2.x"
   }
 }

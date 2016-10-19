@@ -6,7 +6,7 @@ var crypto = require('crypto');
 module.exports = abaculus;
 
 function abaculus(arg, callback) {
-    var z = arg.zoom || 1,
+    var z = arg.zoom || 0,
         s = arg.scale || 1,
         center = arg.center || null,
         bbox = arg.bbox || null,
@@ -107,15 +107,15 @@ abaculus.tileList = function(z, s, center, tileSize) {
         return {
             row: Math.floor(obj.row),
             column: Math.floor(obj.column),
-            zoom: Math.floor(obj.zoom)
+            zoom: obj.zoom
         };
     }
 
+    var maxTilesInRow = Math.pow(2, z);
     var tl = floorObj(pointCoordinate({x: 0, y:0}));
     var br = floorObj(pointCoordinate(dimensions));
     var coords = {};
     coords.tiles = [];
-    var tileCount = (br.column - tl.column + 1) * (br.row - tl.row + 1);
 
     for (var column = tl.column; column <= br.column; column++) {
         for (var row = tl.row; row <= br.row; row++) {
@@ -127,11 +127,10 @@ abaculus.tileList = function(z, s, center, tileSize) {
             var p = coordinatePoint(c);
 
             // Wrap tiles with negative coordinates.
-            c.column = c.column < 0 ?
-                Math.pow(2,c.zoom) + c.column :
-                c.column % Math.pow(2,c.zoom);
+            c.column = c.column % maxTilesInRow;
+            if (c.column < 0) c.column = maxTilesInRow + c.column;
 
-            if (c.row < 0) continue;
+            if (c.row < 0 || c.row >= maxTilesInRow) continue;
             coords.tiles.push({
                 z: c.zoom,
                 x: c.column,
@@ -151,7 +150,6 @@ abaculus.tileList = function(z, s, center, tileSize) {
 abaculus.stitchTiles = function(coords, format, quality, getTile, callback) {
     if (!coords) return callback(new Error('No coords object.'));
     var tileQueue = queue(32);
-    var dat = [];
     var w = coords.dimensions.x,
         h = coords.dimensions.y,
         s = coords.scale,
@@ -168,7 +166,7 @@ abaculus.stitchTiles = function(coords, format, quality, getTile, callback) {
                     y: py,
                     reencode: true
                 })
-            }
+            };
             cb.scale = s;
             cb.format = format;
             // getTile is a function that returns
@@ -181,7 +179,7 @@ abaculus.stitchTiles = function(coords, format, quality, getTile, callback) {
         if (err) return callback(err);
         if (!data) return callback(new Error('No tiles to stitch.'));
         var headers = [];
-        data.forEach(function(d, i) {
+        data.forEach(function(d) {
             headers.push(d.headers);
         });
 
