@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
@@ -95,7 +95,7 @@
     "swagger-router": "^0.4.2"
   },
   "deploy": {
-    "node": "4.4.6",
+    "node": "4.6.0",
     "target": "debian",
     "dependencies": {
       "_all": ["libcairo2-dev", "libgif-dev", "libpango1.0-dev"],
