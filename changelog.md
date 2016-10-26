@@ -1,3 +1,7 @@
+# v2.0.3
+
+* Fixes a series of small bugs 
+
 # v2.0.0
 
 * Removes support for Node version `v0.12.x`
