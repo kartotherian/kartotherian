@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-overzoom",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Overzoom tile source for Kartotherian map tile server",
   "main": "overzoomer.js",
   "scripts": {

@@ -1,9 +1,8 @@
 'use strict';
 
 /*
-
-OverZoomer is a storage wrapper. Given a tile source, it will retrieve requested tile from it,
-or if missing, will zoom out until it finds a tile, and extract needed portion of it.
+ OverZoomer is a storage wrapper. Given a tile source, it will retrieve requested tile from it,
+ or if missing, will zoom out until it finds a tile, and extract needed portion of it.
  */
 
 let Promise = require('bluebird'),
@@ -34,10 +33,17 @@ OverZoomer.prototype.getTile = function getTile(z, x, y, callback) {
         by = y;
 
     return getSubTile().spread((pbfz, headers) => {
-        if (bz !== z) {
-            headers.OverzoomFrom = bz;
+        if (bz === z || !pbfz || pbfz.length === 0) {
+            // this is exactly what we were asked for initially
+            return [pbfz, headers];
         }
-        return [pbfz, headers];
+        // Extract portion of the higher zoom tile as a new tile
+        headers.OverzoomFrom = bz;
+        return core.uncompressAsync(pbfz).then(
+            pbf => core.extractSubTileAsync(pbf, z, x, y, bz, bx, by)
+        ).then(
+            pbf => core.compressPbfAsync2(pbf, headers)
+        );
     }).nodeify(callback, {spread: true});
 
     function getSubTile() {
