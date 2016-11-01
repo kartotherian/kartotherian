@@ -41,17 +41,19 @@ At this point, only "pin" is supported for the base. The color is a 3 digit or 6
 ```
 git clone https://github.com/kartotherian/kartotherian.git  # Clone the repository
 cd kartotherian
-npm install                                                 # install npm dependencies
 ```
 
-Set up a database as described in [osm-bright.tm2source](https://github.com/kartotherian/osm-bright.tm2source), which is installed in `node_modules/osm-bright-source`.
+Edit `package.json`
+* Add `"tilelive-http": "git+https://github.com/kartotherian/tilelive-http.git",` line to the "dependencies" section.
+* Add `"tilelive-http",` to the "registerSourceLibs" section
 
 ```
-node server.js -c config.sample.yaml
+npm install
+node server.js -c config.external.yaml
 ```
 Browse to http://localhost:6533/
+The set up inside [`sources.external.yaml`](sources.external.yaml) does not use any storage or caching, so it will not be suitable for production. You will need to to set up your own local database as described in [osm-bright.tm2source](https://github.com/kartotherian/osm-bright.tm2source), which is installed in `node_modules/osm-bright-source`, and configure additional source chains and setup a proper storage to make this into a production system.
 
-The set up inside [`sources.sample.yaml`](sources.sample.yaml) does not use any storage or caching, so it will not be suitable for production. You will need to configure additional source chains and setup a proper storage to make this into a production system.
 
 ## Configuration
 Inside the `conf` key:
