@@ -26,25 +26,17 @@ module.exports = function maki(coreV, router) {
 function markerHandler(req, res, next) {
 
     var start = Date.now(),
-        params = req.params,
-        metric = ['marker'];
+        params = req.params;
 
     return Promise.try(function () {
-
-        metric.push(params.base);
-        metric.push(params.size);
-        metric.push(params.symbol ? params.symbol : '-');
 
         if (params.color.length !== 3 && params.color.length !== 6) {
             throw new Err('Bad color').metrics('err.marker.color');
         }
-        metric.push(params.color);
-
         var isRetina;
         if (params.scale === undefined) {
             isRetina = false;
         } else if (params.scale === '2') {
-            metric.push(params.scale);
             isRetina = true;
         } else {
             throw new Err('Only retina @2x scaling is allowed for marks').metrics('err.marker.scale');
@@ -60,7 +52,7 @@ function markerHandler(req, res, next) {
     }).then(function (data) {
         core.setResponseHeaders(res);
         res.type('png').send(data);
-        core.metrics.endTiming(metric.join('.'), start);
+        core.metrics.endTiming('marker', start);
     }).catch(function(err) {
         return core.reportRequestError(err, res);
     }).catch(next);
