@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
@@ -59,8 +59,8 @@
     "express": "^4.13.4",
     "js-yaml": "^3.6.0",
     "preq": "^0.4.11",
-    "service-runner": "git+https://github.com/nyurik/service-runner.git"
-    ,
+    "service-runner": "^2.1.8"
+  ,
     "heapdump": "*",
     "node-pre-gyp": "~0.6.25",
 
