@@ -62,6 +62,7 @@
     "service-runner": "^2.1.8"
   ,
     "heapdump": "*",
+    "node-pre-gyp": "~0.6.25",
 
     "mapnik": "~3.5.0",
     "tilelive": "~5.12.2",
