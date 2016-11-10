@@ -27,7 +27,7 @@
     "underscore": "^1.8.3",
     "geojson-mapnikify": "~0.7.1",
     "tilelive-overlay": "^0.7.0",
-    "wikimedia-mapdata": "git+https://github.com/juliengirault/wikimedia-mapdata.git"
+    "wikimedia-mapdata": "git+https://gerrit.wikimedia.org/r/mapdata#497bccd38c9a440ab32d0d64ec90f44ca8ea8d32"
   },
   "optionalDependencies": {
     "sphericalmercator": "1.0.x"
