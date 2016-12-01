@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
@@ -96,7 +96,7 @@
     "swagger-router": "^0.4.2"
   },
   "deploy": {
-    "node": "6.9.1",
+    "node": "4.6.0",
     "target": "debian",
     "install_opts": [
       "--fallback-to-build=false",
