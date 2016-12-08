@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
@@ -98,20 +98,10 @@
   "deploy": {
     "node": "4.6.0",
     "target": "debian",
-    "install_opts": [
-      "--fallback-to-build=false",
-      "--build-from-source=mapnik"
-    ],
     "dependencies": {
       "_all": ["libcairo2-dev", "libgif-dev", "libpango1.0-dev"],
       "ubuntu": ["libjpeg62-dev"],
-      "debian": [
-        "libjpeg62-turbo-dev fonts-dejavu libboost-filesystem-dev libboost-program-options-dev libboost-regex-dev libboost-system-dev libboost-thread-dev libgdal-dev libicu-dev libpq-dev libcurl4-gnutls-dev libproj-dev libtiff-dev libwebp5",
-        { "uri": "https://people.wikimedia.org/~faidon/mapnik/libmapbox-variant-dev_1.1.3-1~bpo8+1_all.deb" },
-        { "uri": "https://people.wikimedia.org/~faidon/mapnik/libmapnik3.0_3.0.12+ds-2~bpo8+1_amd64.deb" },
-        { "uri": "https://people.wikimedia.org/~faidon/mapnik/libmapnik-dev_3.0.12+ds-2~bpo8+1_amd64.deb" },
-        { "uri": "https://people.wikimedia.org/~faidon/mapnik/mapnik-utils_3.0.12+ds-2~bpo8+1_amd64.deb" }
-      ]
+      "debian": ["libjpeg62-turbo-dev"]
     }
   }
 }
