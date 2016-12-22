@@ -1,5 +1,5 @@
 {
-  "name": "abaculus",
+  "name": "@mapbox/abaculus",
   "version": "2.0.3",
   "description": "stitches map tiles together for high-res exporting from tm2",
   "main": "index.js",
