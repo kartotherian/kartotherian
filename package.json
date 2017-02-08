@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-snapshot",
-  "version": "0.2.10",
+  "version": "0.3.0",
   "description": "Serves Kartotherian snapshot images",
   "main": "lib/snapshot.js",
   "scripts": {
@@ -23,10 +23,11 @@
     "abaculus": "^2.0.3",
     "bluebird": "^3.3.5",
     "domain-validator": "^0.0.3",
-    "mwapi": "^0.0.8",
-    "underscore": "^1.8.3",
     "geojson-mapnikify": "~0.7.1",
+    "leaflet-headless": "^0.2.4",
+    "mwapi": "^0.0.8",
     "tilelive-overlay": "^0.7.0",
+    "underscore": "^1.8.3",
     "wikimedia-mapdata": "git+https://gerrit.wikimedia.org/r/mapdata#ee3a9e5dcfb89cffc28acb24e2cc281931ceaf08"
   },
   "optionalDependencies": {
