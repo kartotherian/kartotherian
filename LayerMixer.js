@@ -1,15 +1,14 @@
 'use strict';
 
-var BBPromise = require('bluebird');
-var _ = require('underscore');
-var zlib = require('zlib');
-var core, Err;
+let Promise = require('bluebird'),
+    _ = require('underscore'),
+    core, Err;
 
 
 function LayerMixer(uri, callback) {
-    var self = this;
-    BBPromise.try(function () {
-        var query = core.normalizeUri(uri).query;
+    let self = this;
+    Promise.try(function () {
+        let query = core.normalizeUri(uri).query;
         core.checkType(query, 'sources', 'string-array', true, 1);
         // This is a list of layers that should be removed from the first tile
         // Ensures that when overriding a layer, it will be removed from the result if it is not present
@@ -19,7 +18,7 @@ function LayerMixer(uri, callback) {
 
         self.sources = [];
         return core.mapSequentialAsync(query.sources, function (srcUri) {
-            var src = {};
+            let src = {};
             return core.loadSource(srcUri).then(function (handler) {
                 src.handler = handler;
                 return handler.getInfoAsync();
@@ -32,9 +31,9 @@ function LayerMixer(uri, callback) {
 }
 
 LayerMixer.prototype.getTile = function(z, x, y, callback) {
-    var self = this;
-    var headers;
-    BBPromise.all(_.map(self.sources, function (src, srcIdx) {
+    let self = this,
+        headers;
+    Promise.all(_.map(self.sources, function (src, srcIdx) {
         return src.handler
             .getTileAsync(z, x, y)
             .spread(function (data, hdr) {
@@ -48,7 +47,7 @@ LayerMixer.prototype.getTile = function(z, x, y, callback) {
                 } else if (data.length === 0 ) {
                     return false;
                 } else {
-                    var vtile = new core.mapnik.VectorTile(z, x, y);
+                    let vtile = new core.mapnik.VectorTile(z, x, y);
                     return vtile.setDataAsync(data).return(vtile);
                 }
             }).catch(function (err) {
@@ -64,11 +63,11 @@ LayerMixer.prototype.getTile = function(z, x, y, callback) {
             })) {
             core.throwNoTile();
         }
-        var layers = {};
-        var maxLayerIdx = 0;
+        let layers = {},
+            maxLayerIdx = 0;
         _.each(tiles, function (tile, sourceIdx) {
             if (tile) {
-                var layerNames = self.sources[sourceIdx].isRaster ? ['_image'] : tile.names();
+                let layerNames = self.sources[sourceIdx].isRaster ? ['_image'] : tile.names();
                 _.each(layerNames, function (layer, layerIdx) {
                     if (layer in layers) {
                         layers[layer].sourceIdx = sourceIdx;
@@ -81,10 +80,10 @@ LayerMixer.prototype.getTile = function(z, x, y, callback) {
         });
         // Merge all the layers by exporting it to GeoJSON, and re-importing it into the new tile
         // TODO: Obviously innefficient, hope mapnik would allow direct layer export/import
-        var orderedLayers = _.sortBy(layers, function (layer) {
+        let orderedLayers = _.sortBy(layers, function (layer) {
             return layer.order;
         });
-        return BBPromise.map(orderedLayers, function (layer, name) {
+        return Promise.map(orderedLayers, function (layer, name) {
             if (layer.sourceIdx !== 0 || !self.removeInFirst || !(name in self.removeInFirst)) {
                 if (self.sources[layer.sourceIdx].isRaster) {
                     return tiles[layer.sourceIdx];
@@ -95,7 +94,7 @@ LayerMixer.prototype.getTile = function(z, x, y, callback) {
                 return false;
             }
         }).then(function (jsonLayers) {
-            var vtile = new core.mapnik.VectorTile(z, x, y);
+            let vtile = new core.mapnik.VectorTile(z, x, y);
             _.each(jsonLayers, function (data, idx) {
                 if (data !== false) {
                     if (typeof data === 'string') {
