@@ -280,7 +280,7 @@
     map.on('click', function(e) {
         if (!e.originalEvent.ctrlKey && !e.originalEvent.altKey) return;
         // path = "http://localhost:6533/osm-intl/4/4/4@1.3x.png"
-        var tileRE = /^https?:\/\/[^\/]+\/[^\/]+\/([0-9]+)\/([0-9]+)\/([0-9]+)(@[0-9]+\.[0-9]*x)?\.[a-z]+$/g;
+        var tileRE = /^https?:\/\/[^\/]+\/[^\/]+\/([0-9]+)\/([0-9]+)\/([0-9]+)(@[0-9]+(\.[0-9]+)?x)?\.[a-z]+$/g;
         var match = tileRE.exec(e.originalEvent.target.currentSrc);
         if (!match) return;
 
