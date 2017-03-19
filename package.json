@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-snapshot",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Serves Kartotherian snapshot images",
   "main": "lib/snapshot.js",
   "scripts": {
@@ -28,6 +28,7 @@
     "mwapi": "^0.0.8",
     "tilelive-overlay": "^0.7.0",
     "underscore": "^1.8.3",
+    "kartotherian-err": "^0.0.1",
     "wikimedia-mapdata": "git+https://gerrit.wikimedia.org/r/mapdata#ee3a9e5dcfb89cffc28acb24e2cc281931ceaf08"
   },
   "optionalDependencies": {
