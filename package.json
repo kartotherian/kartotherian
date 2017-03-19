@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-server",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Serves Kartotherian maps",
   "main": "lib/server.js",
   "scripts": {
@@ -23,6 +23,7 @@
     "bluebird": "^3.3.5",
     "express": "^4.13.4",
     "underscore": "^1.8.3",
+    "kartotherian-err": "^0.0.1",
 
     "leaflet": "0.7.7"
   }
