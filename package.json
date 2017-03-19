@@ -1,6 +1,6 @@
 {
   "name": "tilerator-jobprocessor",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Processes tile generation jobs",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
   "homepage": "https://github.com/kartotherian/tilerator-jobprocessor",
   "dependencies": {
     "bluebird": "^3.3.5",
+    "kartotherian-err": "^0.0.1",
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "numeral": "^1.5.3",
     "promistreamus": "^0.1.11",

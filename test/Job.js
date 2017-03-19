@@ -1,9 +1,9 @@
 'use strict';
 
-var _ = require('underscore');
-var assert = require('assert');
-var Job = require('../lib/Job');
-var U = undefined;
+let _ = require('underscore'),
+    assert = require('assert'),
+    Job = require('../lib/Job'),
+    U = undefined;
 
 function newJob(opts, lastCompleteIdx, jobIdxBefore) {
     return new Job(_.extend({
@@ -18,8 +18,8 @@ function newJob(opts, lastCompleteIdx, jobIdxBefore) {
 function assertJobs(jobs, expected, expZoomOverride) {
     assert(Array.isArray(jobs), 'jobs array');
     assert.equal(jobs.length, expected.length, 'jobs count');
-    expected.forEach(function (exp, i) {
-        var jb = jobs[i];
+    expected.forEach((exp, i) => {
+        let jb = jobs[i];
         assert(_.isObject(jb), 'is object ' + i);
         assert.equal(jb.size, exp.s, 'size ' + i);
         assert.equal(jb.zoom, expZoomOverride === U ? exp.z : expZoomOverride, 'zoom ' + i);
@@ -34,7 +34,7 @@ function assertJobs(jobs, expected, expZoomOverride) {
             if (!_.isArray(exp.flt)) exp.flt = [exp.flt];
             assert.notEqual(jb.filters, U, 'filter is missing');
             assert.equal(jb.filters.length, exp.flt.length, 'filter count ' + i);
-            exp.flt.forEach(function (expFilter, i2) {
+            exp.flt.forEach((expFilter, i2) => {
                 assert.equal(jb.filters[i2].zoom, expFilter.z, 'filter zoom ' + i + ' filter ' + i2);
             })
         } else {
@@ -43,12 +43,12 @@ function assertJobs(jobs, expected, expZoomOverride) {
     });
 }
 
-describe('Job', function() {
+describe('Job', () => {
 
-    it('job ctor fail', function() {
+    it('job ctor fail', () => {
 
-        var test = function (msg, opts) {
-            var passed = true;
+        let test = (msg, opts) => {
+            let passed = true;
             try {
                 new Job(opts);
             } catch(err) {
@@ -64,12 +64,12 @@ describe('Job', function() {
         test('j3', {storageId: 's', generatorId: 'g'});
     });
 
-    it('job ctor ok', function() {
+    it('job ctor ok', () => {
 
-        var test = function (msg, opts, expected) {
+        let test = (msg, opts, expected) => {
             try {
-                var j = new Job(opts);
-                _.each(expected, function(v, k) {
+                let j = new Job(opts);
+                _.each(expected, (v, k) => {
                     assert(j.hasOwnProperty(k), 'expected key ' + k);
                     assert.equal(j[k], v, 'expected value for key ' + k);
                 });
@@ -79,9 +79,7 @@ describe('Job', function() {
             }
         };
 
-        var ext = function (opts) {
-            return _.extend({storageId: 's', generatorId: 'g', zoom: 2}, opts);
-        };
+        let ext = opts => _.extend({storageId: 's', generatorId: 'g', zoom: 2}, opts);
 
         test('k0', ext({zoom: 0, tiles: []}), {size: 0});
         test('k1', ext({zoom: 0, tiles: [0]}), {size: 1});
@@ -91,11 +89,11 @@ describe('Job', function() {
         test('k5', ext({zoom: 2}), {size: 16});
     });
 
-    it('decodeTileList errors', function() {
+    it('decodeTileList errors', () => {
 
-        var test = function (msg, zoom, values) {
+        let test = (msg, zoom, values) => {
             values = Array.prototype.slice.call(arguments, 2);
-            assert.throws(function () {
+            assert.throws(() => {
                 newJob({
                     zoom: zoom,
                     tiles: values
@@ -114,11 +112,11 @@ describe('Job', function() {
         test('a9', 1, 0, 0, 0, 0, 0);
     });
 
-    it('encodeTileList errors', function() {
+    it('encodeTileList errors', () => {
 
-        var test = function (msg, zoom, values) {
+        let test = (msg, zoom, values) => {
             values = Array.prototype.slice.call(arguments, 2);
-            assert.throws(function () {
+            assert.throws(() => {
                 newJob({
                     zoom: zoom,
                     _encodedTiles: values
@@ -137,12 +135,12 @@ describe('Job', function() {
         test('b9', 1, 0, 0, 0, 0, 0);
     });
 
-    it('encode-decode roundtrip', function() {
+    it('encode-decode roundtrip', () => {
 
-        var test = function (msg, zoom, size, tiles, expected) {
+        let test = (msg, zoom, size, tiles, expected) => {
 
             try {
-                var job = newJob({
+                let job = newJob({
                     zoom: zoom,
                     tiles: tiles
                 });
@@ -151,19 +149,15 @@ describe('Job', function() {
                 job.cleanupForQue();
                 assert.deepEqual(job._encodedTiles, expected, 'encoded');
 
-                var encjob = newJob({
+                let encjob = newJob({
                     zoom: zoom,
                     _encodedTiles: job._encodedTiles
                 });
 
                 assert.equal(encjob.size, size, 'size2');
-                var expectedDecoded = _.reject(tiles, function (v) {
-                    return Array.isArray(v) && v[0] === v[1];
-                });
+                let expectedDecoded = _.reject(tiles, v => Array.isArray(v) && v[0] === v[1]);
                 // Remove empty ranges
-                expectedDecoded = _.map(expectedDecoded, function (v) {
-                    return Array.isArray(v) && v[0] === v[1] + 1 ? v[0] : v;
-                });
+                expectedDecoded = _.map(expectedDecoded, v => Array.isArray(v) && v[0] === v[1] + 1 ? v[0] : v);
                 assert.deepEqual(encjob.tiles, expectedDecoded, 'roundtrip');
             } catch(err) {
                 err.message = msg + ': ' + err.message;
@@ -184,13 +178,13 @@ describe('Job', function() {
         test('cb', 1, 4, [0, 1, 2, 3], [0, 0, 0, 0]);
     });
 
-    it('expandJobs()', function() {
+    it('expandJobs()', () => {
 
-        var test = function (msg, opts, expected, expZoomOverride) {
+        let test = (msg, opts, expected, expZoomOverride) => {
                 try {
-                    var job = opts instanceof Job ? opts : newJob(opts);
+                    let job = opts instanceof Job ? opts : newJob(opts),
+                        jobs = job.expandJobs();
 
-                    var jobs = job.expandJobs();
                     if (expected === false) {
                         delete jobs[0].stats.jobStart;
                         delete job.stats.jobStart;
@@ -203,21 +197,17 @@ describe('Job', function() {
                     throw err;
                 }
             },
-            pyramid = function (msg, zoom, fromZoom, beforeZoom, tiles, expected) {
-                return test(msg, {
-                    zoom: zoom,
-                    fromZoom: fromZoom,
-                    beforeZoom: beforeZoom,
-                    tiles: tiles
-                }, expected);
-            },
-            parts = function (msg, parts, tiles, expected) {
-                return test(msg, {
-                    zoom: 2,
-                    parts: parts,
-                    tiles: tiles
-                }, expected, 2);
-            };
+            pyramid = (msg, zoom, fromZoom, beforeZoom, tiles, expected) => test(msg, {
+                zoom: zoom,
+                fromZoom: fromZoom,
+                beforeZoom: beforeZoom,
+                tiles: tiles
+            }, expected),
+            parts = (msg, parts, tiles, expected) => test(msg, {
+                zoom: 2,
+                parts: parts,
+                tiles: tiles
+            }, expected, 2);
 
         pyramid('d01', 0, U, U, [0],       false);
         pyramid('d02', 0, 4, 4, [0],       []);
@@ -247,18 +237,18 @@ describe('Job', function() {
         test('f1', {zoom:1, tiles:[0], filters: [{zoom:-1}]}, [{s:1,z:1,t:[0],flt:{z:0}}]);
         test('f2', {zoom:1, parts:2, fromZoom:0, beforeZoom:3, tiles:[2]}, [{s:1,z:0,t:[0]},{s:1,z:1,t:[2]},{s:2,z:2,t:[[8,10]]},{s:2,z:2,t:[[10,12]]}]);
 
-        var jb = newJob({zoom:2}, 11); // 0..15
+        let jb = newJob({zoom:2}, 11); // 0..15
         jb.parts = 3;
         test('f3', jb, [{s:2,z:2,t:[[12,14]]},{s:1,z:2,t:[14]},{s:1,z:2,t:[15]}]);
 
     });
 
-    it('job calculateProgress', function() {
+    it('job calculateProgress', () => {
 
-        var test = function (msg, expected, index, tiles) {
-            var error;
+        let test = (msg, expected, index, tiles) => {
+            let error;
             try {
-                var job = newJob({zoom: 2, tiles: tiles});
+                let job = newJob({zoom: 2, tiles: tiles});
                 if (index !== U) {
                     job.completeIndex(index);
                 }
@@ -294,12 +284,12 @@ describe('Job', function() {
         test('p15', U, 5, [[1,2],[4,5]]);
     });
 
-    it('splitjob', function() {
+    it('splitjob', () => {
 
-        var test = function (msg, parts, tiles, lastCompleted, jobIdxBefore, expected, expectedOthers, zoom) {
+        let test = (msg, parts, tiles, lastCompleted, jobIdxBefore, expected, expectedOthers, zoom) => {
             zoom = zoom === U ? 2 : zoom;
             try {
-                var job = newJob({
+                let job = newJob({
                     zoom: zoom,
                     tiles: tiles
                 }, lastCompleted, jobIdxBefore);
@@ -307,7 +297,7 @@ describe('Job', function() {
                     job.moveNextRange();
                 }
 
-                var jobs = job.splitJob(parts);
+                let jobs = job.splitJob(parts);
 
                 expected.t = tiles;
                 assertJobs([job], [expected], zoom);
