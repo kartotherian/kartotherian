@@ -2,7 +2,7 @@
 
 let Promise = require('bluebird'),
     _ = require('underscore'),
-    core, Err;
+    core;
 
 
 function LayerMixer(uri, callback) {
@@ -117,7 +117,6 @@ LayerMixer.prototype.getInfo = function(callback) {
 
 LayerMixer.initKartotherian = function(cor) {
     core = cor;
-    Err = core.Err;
     core.tilelive.protocols['layermixer:'] = LayerMixer;
 };
 

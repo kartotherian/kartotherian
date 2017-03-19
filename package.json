@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-layermixer",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Vector tile mixing source, allowing layers from multiple vector tile to be merged into one tile ",
   "main": "LayerMixer.js",
   "scripts": {
