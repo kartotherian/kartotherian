@@ -7,16 +7,17 @@ and check if the tile has enough useful information in it to save it, rather tha
 let kartotherian use overzooming later.
  */
 
-var Promise = require('bluebird');
-var zlib = require('zlib');
-var _ = require('underscore');
-var core, Err;
+let Promise = require('bluebird'),
+    zlib = require('zlib'),
+    Err = require('kartotherian-err'),
+    _ = require('underscore'),
+    core;
 
 
 function Substantial(uri, callback) {
-    var self = this;
-    return Promise.try(function () {
-        var params = core.normalizeUri(uri).query;
+    let self = this;
+    return Promise.try(() => {
+        let params = core.normalizeUri(uri).query;
         if (!params.source) {
             throw new Err("Uri must include 'source' query parameter: %j", uri);
         }
@@ -28,14 +29,14 @@ function Substantial(uri, callback) {
         core.checkType(params, 'debug', 'boolean', false);
         self.params = params;
         return core.loadSource(params.source);
-    }).then(function (handler) {
+    }).then(handler => {
         self.source = handler;
         if (handler.query) {
             self.query = query;
         }
         if (self.params.debug) {
             // in debug mode, return a predefined tile instead
-            return self.source.getTileAsync(9, 156, 190).then(function(dh){
+            return self.source.getTileAsync(9, 156, 190).then(dh => {
                 self.params.debug = dh;
             });
         }
@@ -43,15 +44,15 @@ function Substantial(uri, callback) {
 }
 
 Substantial.prototype.getTile = function(z, x, y, callback) {
-    var self = this;
-    return self.source.getTileAsync(z, x, y).then(function (dh) {
+    let self = this;
+    return self.source.getTileAsync(z, x, y).then(dh => {
         if (z < self.params.minzoom || z > self.params.maxzoom) {
             return dh;
         }
-        var p = self._testTile(z, x, y, dh[0]).return(dh);
+        let p = self._testTile(z, x, y, dh[0]).return(dh);
         if (self.params.debug) {
             // For debug mode, return predefined tile when no tile error would be thrown otherwise
-            p = p.catch(function (err) {
+            p = p.catch(err => {
                 if (core.isNoTileError(err)) {
                     return self.params.debug;
                 } else {
@@ -75,21 +76,19 @@ Substantial.prototype.getInfo = function(callback) {
  */
 Substantial.prototype._testTile = function _testTile(zoom, x, y, data) {
     // this must be set to the source
-    var self = this;
+    let self = this;
     if (!data) {
         core.throwNoTile();
     }
     if (data.length >= self.params.maxsize) {
         return; // generated tile is too big, save
     }
-    var vt = new core.mapnik.VectorTile(zoom, x, y);
-    return core.uncompressAsync(data).then(function (uncompressed) {
-        return vt.setDataAsync(uncompressed);
-    }).then(function () {
+    let vt = new core.mapnik.VectorTile(zoom, x, y);
+    return core.uncompressAsync(data).then(uncompressed => vt.setDataAsync(uncompressed)).then(() => {
         if (vt.empty()) {
             core.throwNoTile();
         } else {
-            var layers = vt.names();
+            let layers = vt.names();
             if (layers.length === 0 ||
                 (layers.length === 1 && _.contains(self.params.layers, layers[0]))
             ) {
@@ -102,7 +101,7 @@ Substantial.prototype._testTile = function _testTile(zoom, x, y, data) {
 };
 
 function query(options) {
-    var self = this,
+    let self = this,
         applyFilter = options.zoom >= self.params.minzoom && options.zoom <= self.params.maxzoom,
         iterator = this.source.query(applyFilter ? _.extend(options, {getTiles: true}) : options),
         isDone = false;
@@ -110,17 +109,17 @@ function query(options) {
     if (!applyFilter) {
         return iterator;
     }
-    var getNextValAsync = function () {
+    let getNextValAsync = () => {
         if (isDone) {
             return Promise.resolve(undefined);
         }
-        return iterator().then(function (iterValue) {
+        return iterator().then(iterValue => {
             if (iterValue !== undefined) {
-                var xy = core.indexToXY(iterValue.idx);
+                let xy = core.indexToXY(iterValue.idx);
                 return self._testTile(iterValue.zoom, xy[0], xy[1], iterValue.tile).return(iterValue);
             }
             isDone = true;
-        }).catch(function(err) {
+        }).catch(err => {
             if (core.isNoTileError(err)) {
                 return getNextValAsync();
             } else {
@@ -134,7 +133,6 @@ function query(options) {
 
 Substantial.initKartotherian = function(cor) {
     core = cor;
-    Err = core.Err;
     core.tilelive.protocols['substantial:'] = Substantial;
 };
 
