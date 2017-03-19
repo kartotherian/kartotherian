@@ -5,35 +5,36 @@
  PostgresStore is a Postgres tile storage.
  */
 
-var util = require('util'),
+let util = require('util'),
     Promise = require('bluebird'),
+    Err = require('kartotherian-err'),
     postgres = require('pg-promise')({promiseLib: Promise}),
     promistreamus = require('promistreamus'),
     QueryStream = require('pg-query-stream'),
     pckg = require('./package.json');
 
-var core, Err;
+let core;
 
 function PostgresStore(uri, callback) {
-    var self = this;
+    let self = this;
     this.batchMode = 0;
     this.batch = [];
 
-    this.throwError = function (msg) {
+    this.throwError = msg => {
         throw new Error(util.format.apply(null, arguments) + JSON.stringify(uri));
     };
 
-    this.attachUri = function (err) {
+    this.attachUri = err => {
         err.moduleUri = JSON.stringify(self._params);
         throw err;
     };
 
-    return Promise.try(function () {
+    return Promise.try(() => {
         self.headers = {
             'Content-Type': 'application/x-protobuf',
             'Content-Encoding': 'gzip'
         };
-        var params = core.normalizeUri(uri).query;
+        let params = core.normalizeUri(uri).query;
         self._params = params;
 
         core.checkType(params, 'database', 'string', true);
@@ -51,7 +52,7 @@ function PostgresStore(uri, callback) {
             self.throwError("Optional uri 'table' param must be a valid value");
         }
 
-        var clientOpts = {
+        let clientOpts = {
             host: params.host,
             port: params.port,
             database: params.database,
@@ -63,7 +64,7 @@ function PostgresStore(uri, callback) {
 
         self.client = postgres(clientOpts);
 
-        var sql;
+        let sql;
         if (params.createIfMissing) {
             // Create table and ensure that tile is stored in an uncompressed form to prevent double compression
             // TODO: instead of "IF NOT EXISTS", use a session and a conditional table creation + column alteration
@@ -84,7 +85,7 @@ END$$;';
             sql = 'SELECT zoom, idx, tile FROM $1~ WHERE zoom IS NULL AND idx IS NULL;';
         }
         return self.client.none(sql, [self._params.table, self._params.database]);
-    }).then(function () {
+    }).then(() => {
         let table = self._params.table;
         self.queries = {
             // We could have used $1~ syntax for table name parameter in getTile and getTileSize,
@@ -102,13 +103,13 @@ END$$;';
 }
 
 PostgresStore.prototype.getTile = function(z, x, y, callback) {
-    var self = this;
-    return Promise.try(function () {
+    let self = this;
+    return Promise.try(() => {
         if (z < self._params.minzoom || z > self._params.maxzoom) {
             core.throwNoTile();
         }
         return self.queryTileAsync({zoom: z, idx: core.xyToIndex(x, y, z)});
-    }).then(function (row) {
+    }).then(row => {
         if (!row) {
             core.throwNoTile();
         }
@@ -122,8 +123,8 @@ PostgresStore.prototype.putInfo = function(data, callback) {
 };
 
 PostgresStore.prototype.getInfo = function(callback) {
-    var self = this;
-    return this.queryTileAsync({info: true}).then(function (row) {
+    let self = this;
+    return this.queryTileAsync({info: true}).then(row => {
         if (row) {
             return JSON.parse(row.tile.toString());
         } else {
@@ -147,9 +148,9 @@ PostgresStore.prototype.putTile = function(z, x, y, tile, callback) {
 };
 
 PostgresStore.prototype._storeDataAsync = function(zoom, idx, data) {
-    var self = this;
-    return Promise.try(function () {
-        var query, params;
+    let self = this;
+    return Promise.try(() => {
+        let query, params;
         if (data && data.length > 0) {
             query = self.queries.set;
             params = [self._params.table, zoom, idx, data];
@@ -174,9 +175,9 @@ PostgresStore.prototype.startWriting = function(callback) {
 };
 
 PostgresStore.prototype.flush = function(callback) {
-    var self = this;
+    let self = this;
     Promise.try(()=> {
-        var batch = self.batch;
+        let batch = self.batch;
         if (Object.keys(batch).length > 0) {
             self.batch = [];
             return self.client
@@ -187,7 +188,7 @@ PostgresStore.prototype.flush = function(callback) {
 };
 
 PostgresStore.prototype.stopWriting = function(callback) {
-    var self = this;
+    let self = this;
     Promise.try(() => {
         if (self.batchMode === 0) {
             self.throwError('stopWriting() called more times than startWriting()')
@@ -199,8 +200,8 @@ PostgresStore.prototype.stopWriting = function(callback) {
 };
 
 PostgresStore.prototype.queryTileAsync = function(options) {
-    var self = this;
-    var getTile, getSize;
+    let self = this;
+    let getTile, getSize;
 
     return Promise.try(() => {
         if (options.info) {
@@ -227,7 +228,7 @@ PostgresStore.prototype.queryTileAsync = function(options) {
         });
     }).then(row => {
         if (row) {
-            var resp = {};
+            let resp = {};
             if (getTile) resp.tile = row.tile;
             if (getSize) resp.size = getTile ? row.tile.length : row.len;
             return resp;
@@ -251,7 +252,7 @@ PostgresStore.prototype.queryTileAsync = function(options) {
  * in the stream.
  */
 PostgresStore.prototype.query = function(options) {
-    var self = this,
+    let self = this,
         dateBefore, dateFrom;
 
     if (!core.isInteger(options.zoom))
@@ -307,8 +308,8 @@ PostgresStore.prototype.query = function(options) {
     }
 
     // delayed promistreamus initialization
-    var iterator = promistreamus(undefined, value => {
-        var res = {
+    let iterator = promistreamus(undefined, value => {
+        let res = {
             zoom: options.zoom,
             idx: parseInt(value.idx)
         };
@@ -319,7 +320,7 @@ PostgresStore.prototype.query = function(options) {
         return res;
     });
 
-    var query = new QueryStream('SELECT ' + fields + ' FROM $1~ WHERE ' + conds, params);
+    let query = new QueryStream('SELECT ' + fields + ' FROM $1~ WHERE ' + conds, params);
     self.client.stream(query,
         stream => iterator.init(stream)
     ).then(
@@ -336,7 +337,6 @@ PostgresStore.prototype.query = function(options) {
 
 PostgresStore.initKartotherian = function(cor) {
     core = cor;
-    Err = core.Err;
     core.tilelive.protocols['postgres:'] = PostgresStore;
 };
 

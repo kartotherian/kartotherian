@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-postgres",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "PostgreSQL tile storage for Kartotherian map tile server",
   "main": "Postgres.js",
   "scripts": {
@@ -22,6 +22,7 @@
     "pg.js": "*",
     "pg-promise": "^3.1.6",
     "pg-query-stream": "^1.0.0",
+    "kartotherian-err": "^0.0.1",
     "promistreamus": "^0.1.11"
   }
 }
