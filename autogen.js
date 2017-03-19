@@ -1,12 +1,11 @@
 'use strict';
 
-var BBPromise = require('bluebird');
-var _ = require('underscore');
-var core, Err;
+let BBPromise = require('bluebird'),
+    core;
 
 function Autogen(uri, callback) {
-    var self = this;
-    var query;
+    let self = this,
+        query;
     BBPromise.try(function () {
         query = core.normalizeUri(uri).query;
         core.checkType(query, 'mingen', 'zoom');
@@ -29,7 +28,7 @@ function Autogen(uri, callback) {
 }
 
 Autogen.prototype.getTile = function(z, x, y, callback) {
-    var self = this;
+    let self = this;
     return self.storage
         .getTileAsync(z, x, y)
         .catch(function (err) {
@@ -39,7 +38,7 @@ Autogen.prototype.getTile = function(z, x, y, callback) {
             ) {
                 throw err;
             }
-            var p = self.generator.getTileAsync(z, x, y);
+            let p = self.generator.getTileAsync(z, x, y);
             if ((self.minstore === undefined || z >= self.minstore) && (self.maxstore === undefined || z <= self.maxstore)) {
                 p = p.spread(function (tile, headers) {
                     return self.storage.putTileAsync(z, x, y, tile)
@@ -59,7 +58,6 @@ Autogen.prototype.getInfo = function(callback) {
 
 Autogen.initKartotherian = function(cor) {
     core = cor;
-    Err = core.Err;
     core.tilelive.protocols['autogen:'] = Autogen;
 };
 
