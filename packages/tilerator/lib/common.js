@@ -1,13 +1,12 @@
 'use strict';
 
-var _ = require('underscore');
-var core = require('kartotherian-core');
-var Err = core.Err;
-
-var jplib = require('tilerator-jobprocessor');
-var fileParser = jplib.fileParser;
-var processAll = jplib.processAll;
-var Job = jplib.Job;
+let _ = require('underscore'),
+    Err = require('kartotherian-err'),
+    core = require('kartotherian-core'),
+    jplib = require('tilerator-jobprocessor'),
+    fileParser = jplib.fileParser,
+    processAll = jplib.processAll,
+    Job = jplib.Job;
 
 module.exports = {
     paramsToJob: paramsToJob,
@@ -70,23 +69,23 @@ function paramsToJob(params, sources) {
  * Add only the referenced sources to the job
  */
 function setSources(job, sources) {
-    var ids =  _.unique(_.filter(_.pluck(job.filters, 'sourceId').concat([job.storageId, job.generatorId])));
-    var recursiveIter = function (obj) {
-        if (_.isObject(obj)) {
-            if (Object.keys(obj).length === 1 && typeof obj.ref === 'string' && !_.contains(ids, obj.ref)) {
-                ids.push(obj.ref);
-            } else {
-                _.each(obj, recursiveIter);
+    let ids =  _.unique(_.filter(_.pluck(job.filters, 'sourceId').concat([job.storageId, job.generatorId]))),
+        recursiveIter = obj => {
+            if (_.isObject(obj)) {
+                if (Object.keys(obj).length === 1 && typeof obj.ref === 'string' && !_.contains(ids, obj.ref)) {
+                    ids.push(obj.ref);
+                } else {
+                    _.each(obj, recursiveIter);
+                }
             }
-        }
-    };
+        },
+        i = 0,
+        allSources = sources.getSourceConfigs();
 
-    var i = 0;
-    var allSources = sources.getSourceConfigs();
     job.sources = {};
     while (i < ids.length) {
-        var id = ids[i++];
-        let source = allSources[id];
+        let id = ids[i++],
+            source = allSources[id];
         if (!source)
             throw new Err('Source ID %s is not defined', id);
         if (source.isDisabled)
@@ -98,9 +97,7 @@ function setSources(job, sources) {
 
 
 function enqueJob (queue, job, params) {
-    let addJobAsync = function (job) {
-        return queue.addJobAsync(new Job(job));
-    };
+    let addJobAsync = job => queue.addJobAsync(new Job(job));
     if (params.expdirpath || params.statefile || params.expmask) {
         if (!params.expdirpath || !params.statefile || !params.expmask) {
             throw new Err('All three params - expdirpath, statefile, expmask must be present')

@@ -2,7 +2,7 @@
 
 'use strict';
 
-var whyNodeIsRunning = require('why-is-node-running'), // Should be the first require
+let whyNodeIsRunning = require('why-is-node-running'), // Should be the first require
     yaml = require('js-yaml'),
     pathLib = require('path'),
     Promise = require('bluebird'),
@@ -16,7 +16,7 @@ var whyNodeIsRunning = require('why-is-node-running'), // Should be the first re
     Queue = require('../lib/Queue'),
     common = require('../lib/common');
 
-var args = yargs
+let args = yargs
     .usage('Usage: $0 [options]')
     .options({
         config: {
@@ -132,7 +132,7 @@ if (args.dumptiles) {
 }
 
 return tilerator.bootstrap(app).then(function() {
-    var sources = new core.Sources();
+    let sources = new core.Sources();
     return sources.init(app.conf.variables, app.conf.sources);
 }).then(function (sources) {
     core.setSources(sources);
@@ -140,7 +140,7 @@ return tilerator.bootstrap(app).then(function() {
         let job = common.paramsToJob(args.j, sources);
 
         if (args.dumptiles) {
-            var jp = new JobProcessor(sources, {data: job}, app.metrics);
+            let jp = new JobProcessor(sources, {data: job}, app.metrics);
 
             let outputStream = fs.createWriteStream(args.dumptiles, {flags: args.dumpoverride ? 'w' : 'wx'});
 
@@ -155,7 +155,7 @@ return tilerator.bootstrap(app).then(function() {
 
         // Make sure not to start the kueui
         app.conf.daemonOnly = true;
-        var queue = new Queue(app);
+        let queue = new Queue(app);
 
         return common.enqueJob(queue, job, args.j);
     }

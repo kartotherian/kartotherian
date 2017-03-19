@@ -1,6 +1,6 @@
 {
   "name": "tilerator",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Map tiles pre-generation service",
   "main": "./app.js",
   "scripts": {
@@ -73,6 +73,7 @@
     "tilelive-bridge": "~2.3.1",
     "tilelive-vector": "~3.9.3",
 
+    "kartotherian-err": "^0.0.1",
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "kartotherian-server": "git+https://github.com/kartotherian/kartotherian-server.git",
     "kartotherian-autogen": "git+https://github.com/kartotherian/kartotherian-autogen.git",
