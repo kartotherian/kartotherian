@@ -5,38 +5,39 @@
  CassandraStore is a Cassandra tile storage source for Kartotherian
  */
 
-var util = require('util');
-var Promise = require('bluebird');
-var cassandra = require('cassandra-driver');
-var multistream = require('multistream');
-var promistreamus = require('promistreamus');
-var pckg = require('./package.json');
+let util = require('util'),
+    Promise = require('bluebird'),
+    cassandra = require('cassandra-driver'),
+    multistream = require('multistream'),
+    promistreamus = require('promistreamus'),
+    Err = require('kartotherian-err'),
+    pckg = require('./package.json');
 
-var core, Err;
-var prepared = {prepare: true};
+let core,
+    prepared = {prepare: true};
 
 Promise.promisifyAll(cassandra.Client.prototype);
 
 function CassandraStore(uri, callback) {
-    var self = this;
+    let self = this;
     this.batchMode = 0;
     this.batch = [];
 
-    this.throwError = function (msg) {
+    this.throwError = msg => {
         throw new Error(util.format.apply(null, arguments) + JSON.stringify(uri));
     };
 
-    this.attachUri = function (err) {
+    this.attachUri = err => {
         err.moduleUri = JSON.stringify(self._params);
         throw err;
     };
 
-    return Promise.try(function () {
+    return Promise.try(() => {
         self.headers = {
             'Content-Type': 'application/x-protobuf',
             'Content-Encoding': 'gzip'
         };
-        var params = core.normalizeUri(uri).query;
+        let params = core.normalizeUri(uri).query;
         self._params = params;
 
         if (!params.cp) {
@@ -60,13 +61,13 @@ function CassandraStore(uri, callback) {
         self.table = params.table || 'tiles';
         self.repclass = params.repclass || 'SimpleStrategy';
         self.repfactor = typeof params.repfactor === 'undefined' ? 3 : parseInt(params.repfactor);
-        var dw = params.durablewrite;
+        let dw = params.durablewrite;
         self.durablewrite = (typeof dw === 'undefined' || (dw && dw !== 'false' && dw !== '0')) ? 'true' : 'false';
         self.minzoom = typeof params.minzoom === 'undefined' ? 0 : parseInt(params.minzoom);
         self.maxzoom = typeof params.maxzoom === 'undefined' ? 22 : parseInt(params.maxzoom);
         self.blocksize = typeof params.blocksize === 'undefined' ? 32768 : parseInt(params.blocksize);
         self.maxBatchSize = typeof params.maxBatchSize === 'undefined' ? undefined : parseInt(params.maxBatchSize);
-        var clientOpts = {contactPoints: self.contactPoints};
+        let clientOpts = {contactPoints: self.contactPoints};
         if (params.username || params.password) {
             clientOpts.authProvider = new cassandra.auth.PlainTextAuthProvider(params.username, params.password);
             // make sure not to expose it in the error reporting
@@ -74,7 +75,7 @@ function CassandraStore(uri, callback) {
         }
         self.client = new cassandra.Client(clientOpts);
         return self.client.connectAsync();
-    }).then(function () {
+    }).then(() => {
         if (!self.createIfMissing) {
             return true;
         }
@@ -83,13 +84,13 @@ function CassandraStore(uri, callback) {
             " WITH REPLICATION = {'class': '" + self.repclass + "'," +
             " 'replication_factor': " + self.repfactor + "}" +
             " AND DURABLE_WRITES = " + self.durablewrite);
-    }).then(function () {
-        return self.client.executeAsync("USE " + self.keyspace);
-    }).then(function () {
+    }).then(
+        () => self.client.executeAsync("USE " + self.keyspace)
+    ).then(() => {
         if (!self.createIfMissing) {
             return true;
         }
-        var createTableSql = "CREATE TABLE IF NOT EXISTS " + self.table + " (" +
+        let createTableSql = "CREATE TABLE IF NOT EXISTS " + self.table + " (" +
             " zoom int," +
             (self.blocksize ? " block int," : "") +
             " idx bigint," +
@@ -99,12 +100,10 @@ function CassandraStore(uri, callback) {
                 : " PRIMARY KEY (zoom, idx)") +
             ")";
         return self.client.executeAsync(createTableSql);
-    }).catch(function (err) {
-        return self.closeAsync().finally(function () {
-            throw err;
-        });
-    }).then(function () {
-        var whereClause = ' WHERE zoom = ? AND idx = ?';
+    }).catch(
+        err => self.closeAsync().finally(() => { throw err; })
+    ).then(() => {
+        let whereClause = ' WHERE zoom = ? AND idx = ?';
         if (self.blocksize)
             whereClause += ' AND block = ?';
         self.queries = {
@@ -120,16 +119,12 @@ function CassandraStore(uri, callback) {
 }
 
 CassandraStore.prototype.getTile = function(z, x, y, callback) {
-    var self = this;
-    return Promise.try(function () {
-        if (z < self.minzoom || z > self.maxzoom) {
-            core.throwNoTile();
-        }
+    let self = this;
+    return Promise.try(() => {
+        if (z < self.minzoom || z > self.maxzoom) core.throwNoTile();
         return self.queryTileAsync({zoom: z, idx: core.xyToIndex(x, y, z)});
-    }).then(function (row) {
-        if (!row) {
-            core.throwNoTile();
-        }
+    }).then(row => {
+        if (!row) core.throwNoTile();
         return [row.tile, self.headers];
     }).nodeify(callback, {spread: true});
 };
@@ -140,8 +135,8 @@ CassandraStore.prototype.putInfo = function(data, callback) {
 };
 
 CassandraStore.prototype.getInfo = function(callback) {
-    var self = this;
-    return this.queryTileAsync({info: true}).then(function (row) {
+    let self = this;
+    return this.queryTileAsync({info: true}).then(row => {
         if (row) {
             return JSON.parse(row.tile.toString());
         } else {
@@ -165,9 +160,9 @@ CassandraStore.prototype.putTile = function(z, x, y, tile, callback) {
 };
 
 CassandraStore.prototype._storeDataAsync = function(zoom, idx, data) {
-    var self = this;
-    return Promise.try(function () {
-        var query, params;
+    let self = this;
+    return Promise.try(() => {
+        let query, params;
         if (data && data.length > 0) {
             query = self.queries.set;
             params = [data, zoom, idx];
@@ -189,14 +184,14 @@ CassandraStore.prototype._storeDataAsync = function(zoom, idx, data) {
 };
 
 CassandraStore.prototype.close = function(callback) {
-    var cl = this.client;
+    let cl = this.client;
     if (!cl) {
         callback(null);
     } else {
-        var self = this;
-       BPromise.try(function () {
-            return (self.batchMode && self.maxBatchSize) ? self.flushAsync() : true;
-        }).then(function () {
+        let self = this;
+       Promise.try(
+           () => (self.batchMode && self.maxBatchSize) ? self.flushAsync() : true
+       ).then(() => {
             delete self.client;
             self.batchMode = 0;
             return cl.shutdownAsync();
@@ -210,7 +205,7 @@ CassandraStore.prototype.startWriting = function(callback) {
 };
 
 CassandraStore.prototype.flush = function(callback) {
-    var batch = this.batch;
+    let batch = this.batch;
     if (Object.keys(batch).length > 0) {
         this.batch = [];
         this.client
@@ -223,8 +218,8 @@ CassandraStore.prototype.flush = function(callback) {
 };
 
 CassandraStore.prototype.stopWriting = function(callback) {
-    var self = this;
-   BPromise.try(function () {
+    let self = this;
+    Promise.try(() => {
         if (self.batchMode === 0) {
             self.throwError('stopWriting() called more times than startWriting()')
         }
@@ -247,9 +242,9 @@ CassandraStore.prototype.stopWriting = function(callback) {
  * @returns {*}
  */
 CassandraStore.prototype.queryTileAsync = function(options) {
-    var self = this, getTile, getWriteTime, getSize;
+    let self = this, getTile, getWriteTime, getSize;
 
-    return Promise.try(function() {
+    return Promise.try(() => {
         if (options.info) {
             options.zoom = -1;
             options.idx = 0;
@@ -258,14 +253,14 @@ CassandraStore.prototype.queryTileAsync = function(options) {
                 self.throwError('Options must contain integer zoom parameter. Opts=%j', options);
             if (!core.isInteger(options.idx))
                 self.throwError('Options must contain an integer idx parameter. Opts=%j', options);
-            var maxEnd = Math.pow(4, options.zoom);
+            let maxEnd = Math.pow(4, options.zoom);
             if (options.idx < 0 || options.idx >= maxEnd)
                 self.throwError('Options must satisfy: 0 <= idx < %d. Opts=%j', maxEnd, options);
         }
         getTile = typeof options.getTile === 'undefined' ? true : options.getTile;
         getWriteTime = typeof options.getWriteTime === 'undefined' ? false : options.getWriteTime;
         getSize = typeof options.getSize === 'undefined' ? false : options.getSize;
-        var query;
+        let query;
         if (getWriteTime && (getTile || getSize))
             query = self.queries.getTileAndWt;
         else if (getTile || getSize)
@@ -274,14 +269,14 @@ CassandraStore.prototype.queryTileAsync = function(options) {
             query = self.queries.getWriteTime;
         else
             self.throwError('Either getTile or getWriteTime or both must be requested. Opts=%j', options);
-        var params = [options.zoom, options.idx];
+        let params = [options.zoom, options.idx];
         if (self.blocksize)
             params.push(Math.floor(options.idx / self.blocksize));
         return self.client.executeAsync(query, params, prepared);
-    }).then(function(res) {
+    }).then(res => {
         if ('rows' in res && res.rows.length === 1) {
-            var row = res.rows[0];
-            var resp = {};
+            let row = res.rows[0],
+                resp = {};
             if (getTile) resp.tile = row.tile;
             if (getSize) resp.size = row.tile.length; // TODO: Use UDF in the next Cassandra ver
             if (getWriteTime) resp.writeTime = new Date(row.wt / 1000);
@@ -310,7 +305,7 @@ CassandraStore.prototype.queryTileAsync = function(options) {
  *  {object} headers if options.getTiles is set, get tile header
  */
 CassandraStore.prototype.query = function(options) {
-    var self = this,
+    let self = this,
         dateBefore, dateFrom;
 
     if (!core.isInteger(options.zoom))
@@ -327,17 +322,19 @@ CassandraStore.prototype.query = function(options) {
         self.throwError('Options may contain a biggerThan numeric parameter. Opts=%j', options);
     if ((typeof options.smallerThan !== 'undefined' && typeof options.smallerThan !== 'number') || options.smallerThan <= 0)
         self.throwError('Options may contain a smallerThan numeric parameter that is bigger than 0. Opts=%j', options);
-    var maxEnd = Math.pow(4, options.zoom);
-    var start = options.idxFrom || 0;
-    var end = options.idxBefore || maxEnd;
+
+    let maxEnd = Math.pow(4, options.zoom),
+        start = options.idxFrom || 0,
+        end = options.idxBefore || maxEnd;
     if (start > end || end > maxEnd)
         self.throwError('Options must satisfy: idxFrom <= idxBefore <= %d. Opts=%j', maxEnd, options);
     if (options.dateFrom >= options.dateBefore)
         self.throwError('Options must satisfy: dateFrom < dateBefore. Opts=%j', options);
+
     dateFrom = options.dateFrom ? options.dateFrom.valueOf() * 1000 : false;
     dateBefore = options.dateBefore ? options.dateBefore.valueOf() * 1000 : false;
 
-    var fields = 'idx';
+    let fields = 'idx';
     if (options.getTiles || options.smallerThan || options.biggerThan) {
         // If tile size check is requested, we have to get the whole tile at this point...
         // TODO: in the next Cassandra, UDFs should help with this
@@ -348,8 +345,8 @@ CassandraStore.prototype.query = function(options) {
         fields += ', WRITETIME(tile) AS wt';
     }
 
-    var createStream = function(blockStart, blockEnd) {
-        var conds = 'zoom = ?',
+    let createStream = (blockStart, blockEnd) => {
+        let conds = 'zoom = ?',
             params = [options.zoom];
         if (self.blocksize) {
             conds += ' AND block = ?';
@@ -364,21 +361,21 @@ CassandraStore.prototype.query = function(options) {
             conds += ' AND idx < ?';
             params.push(end);
         }
-        var query = 'SELECT ' + fields + ' FROM ' + self.table + ' WHERE ' + conds;
+        let query = 'SELECT ' + fields + ' FROM ' + self.table + ' WHERE ' + conds;
         return self.client.stream(query, params, {prepare: true, autoPage: true});
     };
 
-    var ms;
+    let ms;
     if (self.blocksize) {
-        var blockIdx = Math.floor(start / self.blocksize),
+        let blockIdx = Math.floor(start / self.blocksize),
             toBlockIdx = Math.floor((end - 1) / self.blocksize);
 
-        ms = multistream.obj(function(cb) {
+        ms = multistream.obj(cb => {
             if (blockIdx > toBlockIdx) {
                 cb();
             } else {
                 try {
-                    var bi = blockIdx++;
+                    let bi = blockIdx++;
                     cb(null, createStream(bi * self.blocksize, Math.min(maxEnd, (bi + 1) * self.blocksize)));
                 } catch (err) {
                     cb(err);
@@ -389,7 +386,7 @@ CassandraStore.prototype.query = function(options) {
         ms = createStream(0, maxEnd);
     }
 
-    return promistreamus(ms, function(value) {
+    return promistreamus(ms, value => {
         if ((dateBefore !== false && value.wt >= dateBefore) ||
             (dateFrom !== false && value.wt < dateFrom) ||
             (options.smallerThan && value.tile.length >= options.smallerThan) ||
@@ -397,7 +394,7 @@ CassandraStore.prototype.query = function(options) {
         ) {
             return undefined;
         }
-        var res = {
+        let res = {
             zoom: options.zoom,
             idx: (typeof value.idx === 'number' ? value.idx : value.idx.toNumber())
         };
@@ -410,9 +407,8 @@ CassandraStore.prototype.query = function(options) {
 };
 
 
-CassandraStore.initKartotherian = function(cor) {
+CassandraStore.initKartotherian = cor => {
     core = cor;
-    Err = core.Err;
     core.tilelive.protocols['cassandra:'] = CassandraStore;
 };
 
