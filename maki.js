@@ -1,13 +1,13 @@
 'use strict';
 
-var Promise = require('bluebird');
-var makizushi = Promise.promisify(require('makizushi'));
+let Promise = require('bluebird'),
+    makizushi = Promise.promisify(require('makizushi')),
+    Err = require('kartotherian-err');
 
-var core, Err;
+let core;
 
-module.exports = function maki(coreV, router) {
-    core = coreV;
-    Err = core.Err;
+module.exports = (cor, router) => {
+    core = cor;
 
     // marker icon generator  (base, size, symbol, color, scale), with the symbol being optional
     // /v4/marker/pin-m-cafe+7e7e7e@2x.png -- the format matches that of mapbox to simplify their library usage
@@ -25,15 +25,15 @@ module.exports = function maki(coreV, router) {
  */
 function markerHandler(req, res, next) {
 
-    var start = Date.now(),
+    let start = Date.now(),
         params = req.params;
 
-    return Promise.try(function () {
+    return Promise.try(() => {
 
         if (params.color.length !== 3 && params.color.length !== 6) {
             throw new Err('Bad color').metrics('err.marker.color');
         }
-        var isRetina;
+        let isRetina;
         if (params.scale === undefined) {
             isRetina = false;
         } else if (params.scale === '2') {
@@ -49,11 +49,9 @@ function markerHandler(req, res, next) {
             tint: params.color, // in hex - "abc" or "aabbcc"
             retina: isRetina // true|false
         });
-    }).then(function (data) {
+    }).then(data => {
         core.setResponseHeaders(res);
         res.type('png').send(data);
         core.metrics.endTiming('marker', start);
-    }).catch(function(err) {
-        return core.reportRequestError(err, res);
-    }).catch(next);
+    }).catch(err => core.reportRequestError(err, res)).catch(next);
 }
