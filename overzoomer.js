@@ -7,7 +7,8 @@
 
 let Promise = require('bluebird'),
     zlib = require('zlib'),
-    core, Err;
+    Err = require('kartotherian-err'),
+    core;
 
 
 function OverZoomer(uri, callback) {
@@ -73,7 +74,6 @@ OverZoomer.prototype.getInfo = function getInfo(callback) {
 
 OverZoomer.initKartotherian = function initKartotherian(cor) {
     core = cor;
-    Err = core.Err;
     core.tilelive.protocols['overzoom:'] = OverZoomer;
 };
 
