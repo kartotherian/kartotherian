@@ -1,7 +1,7 @@
 'use strict';
 
 let assert = require('assert'),
-    Err = require('../Err');
+    Err = require('..');
 
 describe('Err', function() {
     it('basic', function () {
