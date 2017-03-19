@@ -1,15 +1,15 @@
 'use strict';
 
-var info = require('./package.json'),
+let info = require('./package.json'),
     Promise = require('bluebird'),
     topojson = require('topojson'),
     postgres = require('pg-promise')({promiseLib: Promise}),
     preq = require('preq'),
+    Err = require('kartotherian-err'),
     parseWikidataValue = require('wd-type-parser');
 
-var core, client, Err, config;
-
-var simpleStyleProperties = {
+let core, client, config,
+    simpleStyleProperties = {
     'fill_opacity': 'fill-opacity',
     'marker_color': 'marker-color',
     'marker_size': 'marker-size',
@@ -21,7 +21,6 @@ var simpleStyleProperties = {
 module.exports = function geoshapes(coreV, router) {
     return Promise.try(() => {
         core = coreV;
-        Err = core.Err;
         config = core.getConfiguration().geoshapes;
 
         let userAgent = info.name + '/' + info.version + ' (https://mediawiki.org/Maps)';
@@ -60,7 +59,7 @@ module.exports = function geoshapes(coreV, router) {
         // to do the same optimization in both Postgress and Javascript, thus doing the simpler ST_Collect.
         // We should do a/b test later to see which is overall faster
 
-        var subQuery =
+        let subQuery =
 `(
 SELECT id, ST_Multi(ST_Union(way)) AS way
 FROM (
@@ -154,7 +153,7 @@ GROUP BY id
  */
 function handler(type, req, res, next) {
 
-    var start = Date.now(),
+    let start = Date.now(),
         geoshape;
 
     return Promise.try(
@@ -210,7 +209,7 @@ function GeoShapes(type, reqParams) {
  * @return {Promise}
  */
 GeoShapes.prototype.execute = function execute () {
-    var self = this;
+    let self = this;
     return Promise.try(
         () => self.runWikidataQuery()
     ).then(
@@ -277,7 +276,7 @@ GeoShapes.prototype.runSqlQuery = function runSqlQuery () {
     let self = this;
     if (self.ids.length === 0) return;
 
-    var args = [self.type === 'geoshape' ? config.polygonTable : config.lineTable, self.ids];
+    let args = [self.type === 'geoshape' ? config.polygonTable : config.lineTable, self.ids];
     let query = config.queries.hasOwnProperty(self.reqParams.sql)
         ? config.queries[self.reqParams.sql]
         : config.queries.default;
