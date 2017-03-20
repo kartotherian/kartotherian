@@ -9,7 +9,9 @@ let kartotherian use overzooming later.
 
 let Promise = require('bluebird'),
     zlib = require('zlib'),
+    qidx = require('quadtile-index'),
     Err = require('kartotherian-err'),
+    checkType = require('kartotherian-input-validator'),
     _ = require('underscore'),
     core;
 
@@ -17,16 +19,16 @@ let Promise = require('bluebird'),
 function Substantial(uri, callback) {
     let self = this;
     return Promise.try(() => {
-        let params = core.normalizeUri(uri).query;
+        let params = checkType.normalizeUrl(uri).query;
         if (!params.source) {
             throw new Err("Uri must include 'source' query parameter: %j", uri);
         }
-        core.checkType(params, 'minzoom', 'integer', 0, 0, 22);
-        core.checkType(params, 'maxzoom', 'integer', 22, params.minzoom + 1, 22);
-        core.checkType(params, 'minsize', 'integer', 0, 0);
-        core.checkType(params, 'layers', 'string-array', true, 1);
-        core.checkType(params, 'minsize', 'integer', 0, 0);
-        core.checkType(params, 'debug', 'boolean', false);
+        checkType(params, 'minzoom', 'integer', 0, 0, 22);
+        checkType(params, 'maxzoom', 'integer', 22, params.minzoom + 1, 22);
+        checkType(params, 'minsize', 'integer', 0, 0);
+        checkType(params, 'layers', 'string-array', true, 1);
+        checkType(params, 'minsize', 'integer', 0, 0);
+        checkType(params, 'debug', 'boolean', false);
         self.params = params;
         return core.loadSource(params.source);
     }).then(handler => {
@@ -115,7 +117,7 @@ function query(options) {
         }
         return iterator().then(iterValue => {
             if (iterValue !== undefined) {
-                let xy = core.indexToXY(iterValue.idx);
+                let xy = qidx.indexToXY(iterValue.idx);
                 return self._testTile(iterValue.zoom, xy[0], xy[1], iterValue.tile).return(iterValue);
             }
             isDone = true;
