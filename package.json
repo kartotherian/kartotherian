@@ -22,7 +22,7 @@
   "dependencies": {
     "bluebird": "^3.3.5",
     "quadtile-index": "^0.0.3",
-    "kartotherian-input-validator": "^0.0.1",
+    "kartotherian-input-validator": "^0.0.3",
     "kartotherian-err": "^0.0.1",
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "numeral": "^1.5.3",
