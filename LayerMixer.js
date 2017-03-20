@@ -2,18 +2,19 @@
 
 let Promise = require('bluebird'),
     _ = require('underscore'),
+    checkType = require('kartotherian-input-validator'),
     core;
 
 
 function LayerMixer(uri, callback) {
     let self = this;
     Promise.try(function () {
-        let query = core.normalizeUri(uri).query;
-        core.checkType(query, 'sources', 'string-array', true, 1);
+        let query = checkType.normalizeUrl(uri).query;
+        checkType(query, 'sources', 'string-array', true, 1);
         // This is a list of layers that should be removed from the first tile
         // Ensures that when overriding a layer, it will be removed from the result if it is not present
         // in the updating sources (e.g. given 3 sources to merge, these layers must be present in the 2nd or 3rd)
-        core.checkType(query, 'removeInFirst', 'string-array');
+        checkType(query, 'removeInFirst', 'string-array');
         self.removeInFirst = query.removeInFirst ? _.invert(query.removeInFirst) : false;
 
         self.sources = [];

@@ -19,6 +19,7 @@
   "bugs": "https://github.com/kartotherian/kartotherian-layermixer/issues",
   "dependencies": {
     "bluebird": "^3.3.5",
+    "kartotherian-input-validator": "^0.0.3",
     "underscore": "^1.8.3"
   }
 }
