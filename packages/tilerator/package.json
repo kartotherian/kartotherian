@@ -73,7 +73,9 @@
     "tilelive-bridge": "~2.3.1",
     "tilelive-vector": "~3.9.3",
 
+    "quadtile-index": "^0.0.3",
     "kartotherian-err": "^0.0.1",
+    "kartotherian-input-validator": "^0.0.3",
     "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
     "kartotherian-server": "git+https://github.com/kartotherian/kartotherian-server.git",
     "kartotherian-autogen": "git+https://github.com/kartotherian/kartotherian-autogen.git",

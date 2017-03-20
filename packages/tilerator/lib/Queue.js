@@ -3,6 +3,7 @@
 let Promise = require('bluebird'),
     _ = require('underscore'),
     Err = require('kartotherian-err'),
+    checkType = require('kartotherian-input-validator'),
     core = require('kartotherian-core'),
     common = require('../lib/common'),
     kue = require('kue'),
@@ -93,11 +94,11 @@ Queue.prototype.addJobAsync = function addJobAsync(jobs) {
 Queue.prototype.cleanup = function cleanup(opts) {
     let self = this;
 
-    core.checkType(opts, 'type', 'string', 'active');
-    core.checkType(opts, 'minutesSinceUpdate', 'integer', 60);
-    core.checkType(opts, 'sources', 'object', true);
-    core.checkType(opts, 'updateSources', 'boolean');
-    let jobId = core.checkType(opts, 'jobId', 'integer', false, 1, Math.pow(2, 50)) ? opts.jobId : false;
+    checkType(opts, 'type', 'string', 'active');
+    checkType(opts, 'minutesSinceUpdate', 'integer', 60);
+    checkType(opts, 'sources', 'object', true);
+    checkType(opts, 'updateSources', 'boolean');
+    let jobId = checkType(opts, 'jobId', 'integer', false, 1, Math.pow(2, 50)) ? opts.jobId : false;
 
     let type = opts.type;
     switch (type) {

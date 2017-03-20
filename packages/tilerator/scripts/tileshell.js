@@ -8,8 +8,10 @@ let whyNodeIsRunning = require('why-is-node-running'), // Should be the first re
     Promise = require('bluebird'),
     fs = Promise.promisifyAll(require("fs")),
     _ = require('underscore'),
+    qidx = require('quadtile-index'),
     core = require('kartotherian-core'),
     yargs = require('yargs'),
+    checkType = require('kartotherian-input-validator'),
     jplib = require('tilerator-jobprocessor'),
     JobProcessor = jplib.JobProcessor,
     tilerator = require('../routes/tilerator'),
@@ -39,7 +41,7 @@ let args = yargs
             describe: 'Source URL',
             type: 'string',
             nargs: 1,
-            coerce: core.normalizeUri
+            coerce: checkType.normalizeUrl
         },
         v: {
             describe: 'Additional variable in YAML form. Use -v.varname value',
@@ -65,7 +67,7 @@ let args = yargs
             describe: 'forces file output to a single zoom, index only format',
             type: 'boolean',
             implies: 'dumptiles',
-            check: core.isValidZoom
+            check: qidx.isValidZoom
         },
         dumpoverride: {
             default: false,
@@ -181,7 +183,7 @@ function dumpTiles(opt) {
             if (opt.rawidx) {
                 val = iterValue.idx.toString();
             } else {
-                let xy = core.indexToXY(iterValue.idx);
+                let xy = qidx.indexToXY(iterValue.idx);
                 val = opt.zoom + '/' + xy[0] + '/' + xy[1];
             }
             opt.outputStream.write(val);

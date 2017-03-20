@@ -7,6 +7,7 @@ let pathLib = require('path'),
     yaml = require('js-yaml'),
     Queue = require('../lib/Queue'),
     common = require('../lib/common'),
+    checkType = require('kartotherian-input-validator'),
     Err = require('kartotherian-err'),
     core = require('kartotherian-core'),
     info = require('../package.json'),
@@ -21,7 +22,7 @@ function onSetInfo(req, res) {
         let sources = core.getSources(),
             generator = sources.getHandlerById(req.params.generatorId),
             storage = sources.getHandlerById(req.params.storageId);
-        core.checkType(req.query, 'tiles', 'string-array');
+        checkType(req.query, 'tiles', 'string-array');
 
         return generator.getInfoAsync().then(info => {
             if (req.query.tiles) {
