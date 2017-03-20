@@ -6,10 +6,18 @@ let assert = require('assert'),
 
 describe('qidx', () => {
 
-    function pass(expResult, expValue, obj, field, expType, mustHave, min, max) {
-        assert.strictEqual(validator(obj, field, expType, mustHave, min, max), expResult);
+    function pass(expValue, obj, field, expType, mustHave, min, max) {
+        assert.strictEqual(validator(obj, field, expType, mustHave, min, max), true);
         if (_.isObject(obj)) {
-            assert.strictEqual(obj[field], expValue);
+            assert.deepStrictEqual(obj[field], expValue);
+        }
+    }
+
+    function dflt(expValue, field, expType, mustHave, min, max) {
+        let obj = {};
+        assert.strictEqual(validator(obj, field, expType, mustHave, min, max), false);
+        if (_.isObject(obj)) {
+            assert.deepStrictEqual(obj[field], expValue);
         }
     }
 
@@ -20,11 +28,15 @@ describe('qidx', () => {
         } catch (err) {}
     }
 
-    it('default param', () => pass(false, 10, {}, 'fld', 'number', 10));
-    it('number', () => pass(true, 10, {fld: 10}, 'fld', 'number', true));
-    it('number min max', () => pass(true, 10, {fld: 10}, 'fld', 'number', true, 1, 20));
+    it('default param', () => dflt(10, 'fld', 'number', 10));
+    it('number', () => pass(10, {fld: 10}, 'fld', 'number', true));
+    it('number min max', () => pass(10, {fld: 10}, 'fld', 'number', true, 1, 20));
     it('fail number min max', () => fail({fld: 10}, 'fld', 'number', true, 1, 5));
     it('fail not number', () => fail({fld: 'a'}, 'fld', 'number'));
-    it('zoom', () => fail({fld: 10}, 'fld', 'zoom'));
+    it('zoom', () => pass(10, {fld: 10}, 'fld', 'zoom'));
     it('!zoom', () => fail({fld: 27}, 'fld', 'zoom'));
+    it('string', () => pass('a', {fld: 'a'}, 'fld', 'string'));
+    it('string, min=1', () => pass('a', {fld: 'a'}, 'fld', 'string', 1));
+    it('!string, min=1', () => fail({fld: ''}, 'fld', 'string', 1));
+    it('string-array', () => pass(['a'], {fld: 'a'}, 'fld', 'string-array'));
 });
