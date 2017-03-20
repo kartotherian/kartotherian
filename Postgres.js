@@ -7,7 +7,9 @@
 
 let util = require('util'),
     Promise = require('bluebird'),
+    qidx = require('quadtile-index'),
     Err = require('kartotherian-err'),
+    checkType = require('kartotherian-input-validator'),
     postgres = require('pg-promise')({promiseLib: Promise}),
     promistreamus = require('promistreamus'),
     QueryStream = require('pg-query-stream'),
@@ -34,16 +36,16 @@ function PostgresStore(uri, callback) {
             'Content-Type': 'application/x-protobuf',
             'Content-Encoding': 'gzip'
         };
-        let params = core.normalizeUri(uri).query;
+        let params = checkType.normalizeUrl(uri).query;
         self._params = params;
 
-        core.checkType(params, 'database', 'string', true);
-        core.checkType(params, 'port', 'integer');
-        core.checkType(params, 'table', 'string', 'tiles');
-        core.checkType(params, 'createIfMissing', 'boolean');
-        core.checkType(params, 'minzoom', 'zoom', 0);
-        core.checkType(params, 'maxzoom', 'zoom', 14);
-        core.checkType(params, 'maxBatchSize', 'integer');
+        checkType(params, 'database', 'string', true);
+        checkType(params, 'port', 'integer');
+        checkType(params, 'table', 'string', 'tiles');
+        checkType(params, 'createIfMissing', 'boolean');
+        checkType(params, 'minzoom', 'zoom', 0);
+        checkType(params, 'maxzoom', 'zoom', 14);
+        checkType(params, 'maxBatchSize', 'integer');
 
         if (!params.database || !/^[a-zA-Z][_a-zA-Z0-9]*$/.test(params.database)) {
             self.throwError("Uri must have a valid 'database' query parameter");
@@ -108,7 +110,7 @@ PostgresStore.prototype.getTile = function(z, x, y, callback) {
         if (z < self._params.minzoom || z > self._params.maxzoom) {
             core.throwNoTile();
         }
-        return self.queryTileAsync({zoom: z, idx: core.xyToIndex(x, y, z)});
+        return self.queryTileAsync({zoom: z, idx: qidx.xyToIndex(x, y, z)});
     }).then(row => {
         if (!row) {
             core.throwNoTile();
@@ -144,7 +146,7 @@ PostgresStore.prototype.putTile = function(z, x, y, tile, callback) {
         this.throwError('This PostgresStore source cannot save zoom %d, because its configured for zooms %d..%d',
             z, this._params.minzoom, this._params.maxzoom);
     }
-    return this._storeDataAsync(z, core.xyToIndex(x, y, z), tile).nodeify(callback);
+    return this._storeDataAsync(z, qidx.xyToIndex(x, y, z), tile).nodeify(callback);
 };
 
 PostgresStore.prototype._storeDataAsync = function(zoom, idx, data) {
@@ -208,9 +210,9 @@ PostgresStore.prototype.queryTileAsync = function(options) {
             options.zoom = -1;
             options.idx = 0;
         } else {
-            if (!core.isInteger(options.zoom))
+            if (!Number.isInteger(options.zoom))
                 self.throwError('Options must contain integer zoom parameter. Opts=%j', options);
-            if (!core.isInteger(options.idx))
+            if (!Number.isInteger(options.idx))
                 self.throwError('Options must contain an integer idx parameter. Opts=%j', options);
             let maxEnd = Math.pow(4, options.zoom);
             if (options.idx < 0 || options.idx >= maxEnd)
@@ -255,11 +257,11 @@ PostgresStore.prototype.query = function(options) {
     let self = this,
         dateBefore, dateFrom;
 
-    if (!core.isInteger(options.zoom))
+    if (!Number.isInteger(options.zoom))
         self.throwError('Options must contain integer zoom parameter. Opts=%j', options);
-    if (typeof options.idxFrom !== 'undefined' && !core.isInteger(options.idxFrom))
+    if (typeof options.idxFrom !== 'undefined' && !Number.isInteger(options.idxFrom))
         self.throwError('Options may contain an integer idxFrom parameter. Opts=%j', options);
-    if (typeof options.idxBefore !== 'undefined' && !core.isInteger(options.idxBefore))
+    if (typeof options.idxBefore !== 'undefined' && !Number.isInteger(options.idxBefore))
         self.throwError('Options may contain an integer idxBefore parameter. Opts=%j', options);
     if (typeof options.dateBefore !== 'undefined' && Object.prototype.toString.call(options.dateBefore) !== '[object Date]')
         self.throwError('Options may contain a Date dateBefore parameter. Opts=%j', options);

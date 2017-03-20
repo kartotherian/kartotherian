@@ -22,7 +22,9 @@
     "pg.js": "*",
     "pg-promise": "^3.1.6",
     "pg-query-stream": "^1.0.0",
+    "quadtile-index": "^0.0.3",
     "kartotherian-err": "^0.0.1",
+    "kartotherian-input-validator": "^0.0.3",
     "promistreamus": "^0.1.11"
   }
 }
