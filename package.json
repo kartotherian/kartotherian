@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-input-validator",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Functions to assert input correctness for Kartotherian",
   "keywords": [
     "kartotherian", "input", "validation"

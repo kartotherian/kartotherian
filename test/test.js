@@ -67,10 +67,10 @@ describe('strToFloat', () => {
     it('letter', test('a', 'a'));
 });
 
-describe('normalizeUri', () => {
+describe('normalizeUrl', () => {
     let test = function (value, protocol, host, query) {
         return () => {
-            let uri = checkType.normalizeUri(value);
+            let uri = checkType.normalizeUrl(value);
             assert.strictEqual(uri.protocol, protocol);
             assert.strictEqual(uri.host, host);
             assert.deepEqual(uri.query, query);

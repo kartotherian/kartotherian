@@ -193,7 +193,7 @@ checkType.strToInt = function strToInt(value) {
  * @param uri
  * @returns {*}
  */
-checkType.normalizeUri = function normalizeUri(uri) {
+checkType.normalizeUrl = function normalizeUrl(uri) {
     if (typeof uri === 'string') {
         uri = urllib.parse(uri, true);
     } else if (typeof uri.query === 'string') {
