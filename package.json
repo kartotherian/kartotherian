@@ -23,8 +23,9 @@
     "bluebird": "^3.3.5",
     "express": "^4.13.4",
     "underscore": "^1.8.3",
+    "quadtile-index": "^0.0.3",
     "kartotherian-err": "^0.0.1",
-
+    "kartotherian-input-validator": "^0.0.3",
     "leaflet": "0.7.7"
   }
 }
