@@ -8,7 +8,7 @@ function Autogen(uri, callback) {
     let self = this,
         query;
     BBPromise.try(function () {
-        query = core.normalizeUri(uri).query;
+        query = checkType.normalizeUrl(uri).query;
         checkType(query, 'mingen', 'zoom');
         self.mingen = query.mingen;
         checkType(query, 'maxgen', 'zoom');
