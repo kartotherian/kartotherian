@@ -2,6 +2,8 @@
 
 let _ = require('underscore'),
     qidx = require('quadtile-index'),
+    qs = require('querystring'),
+    urllib = require('url'),
     Err = require('kartotherian-err');
 
 module.exports = checkType;
@@ -184,4 +186,19 @@ checkType.strToInt = function strToInt(value) {
         return parseInt(value);
     }
     return value;
+};
+
+/**
+ * Parse and normalize URI, ensuring it returns an object with query object field
+ * @param uri
+ * @returns {*}
+ */
+checkType.normalizeUri = function normalizeUri(uri) {
+    if (typeof uri === 'string') {
+        uri = urllib.parse(uri, true);
+    } else if (typeof uri.query === 'string') {
+        uri.query = qs.parse(uri.query);
+    }
+    uri.query = uri.query || {};
+    return uri;
 };

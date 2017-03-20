@@ -2,12 +2,12 @@
 
 let assert = require('assert'),
     _ = require('underscore'),
-    validator = require('..');
+    checkType = require('..');
 
-describe('qidx', () => {
+describe('checkType', () => {
 
     function pass(expValue, obj, field, expType, mustHave, min, max) {
-        assert.strictEqual(validator(obj, field, expType, mustHave, min, max), true);
+        assert.strictEqual(checkType(obj, field, expType, mustHave, min, max), true);
         if (_.isObject(obj)) {
             assert.deepStrictEqual(obj[field], expValue);
         }
@@ -15,7 +15,7 @@ describe('qidx', () => {
 
     function dflt(expValue, field, expType, mustHave, min, max) {
         let obj = {};
-        assert.strictEqual(validator(obj, field, expType, mustHave, min, max), false);
+        assert.strictEqual(checkType(obj, field, expType, mustHave, min, max), false);
         if (_.isObject(obj)) {
             assert.deepStrictEqual(obj[field], expValue);
         }
@@ -23,7 +23,7 @@ describe('qidx', () => {
 
     function fail(obj, field, expType, mustHave, min, max) {
         try {
-            validator(obj, field, expType, mustHave, min, max);
+            checkType(obj, field, expType, mustHave, min, max);
             assert(false);
         } catch (err) {}
     }
@@ -39,4 +39,46 @@ describe('qidx', () => {
     it('string, min=1', () => pass('a', {fld: 'a'}, 'fld', 'string', 1));
     it('!string, min=1', () => fail({fld: ''}, 'fld', 'string', 1));
     it('string-array', () => pass(['a'], {fld: 'a'}, 'fld', 'string-array'));
+});
+
+describe('strToInt', () => {
+    let test = function (value, expected) {
+        return () => assert.strictEqual(checkType.strToInt(value), expected);
+    };
+
+    it('int', test(0, 0));
+    it('strint', test('1', 1));
+    it('neg strint', test('-1', -1));
+    it('float', test('1.1', '1.1'));
+    it('empty', test('', ''));
+    it('letter', test('a', 'a'));
+});
+
+describe('strToFloat', () => {
+    let test = function (value, expected) {
+        return () => assert.strictEqual(checkType.strToFloat(value), expected);
+    };
+
+    it('int', test(0, 0));
+    it('strint', test('1', 1));
+    it('neg strint', test('-1', -1));
+    it('strfloat', test('1.1', 1.1));
+    it('empty', test('', ''));
+    it('letter', test('a', 'a'));
+});
+
+describe('normalizeUri', () => {
+    let test = function (value, protocol, host, query) {
+        return () => {
+            let uri = checkType.normalizeUri(value);
+            assert.strictEqual(uri.protocol, protocol);
+            assert.strictEqual(uri.host, host);
+            assert.deepEqual(uri.query, query);
+        }
+    };
+
+    it('str no query', test('prot://hst', 'prot:', 'hst', {}));
+    it('str w query', test('prot://hst?a=b', 'prot:', 'hst', {a: 'b'}));
+    it('obj w query str', test({query: 'a=b'}, undefined, undefined, {a: 'b'}));
+    it('obj w query obj', test({query: {a: 'b'}}, undefined, undefined, {a: 'b'}));
 });
