@@ -10,6 +10,7 @@ let util = require('util'),
     cassandra = require('cassandra-driver'),
     multistream = require('multistream'),
     promistreamus = require('promistreamus'),
+    qidx = require('quadtile-index'),
     Err = require('kartotherian-err'),
     pckg = require('./package.json');
 
@@ -122,7 +123,7 @@ CassandraStore.prototype.getTile = function(z, x, y, callback) {
     let self = this;
     return Promise.try(() => {
         if (z < self.minzoom || z > self.maxzoom) core.throwNoTile();
-        return self.queryTileAsync({zoom: z, idx: core.xyToIndex(x, y, z)});
+        return self.queryTileAsync({zoom: z, idx: qidx.xyToIndex(x, y, z)});
     }).then(row => {
         if (!row) core.throwNoTile();
         return [row.tile, self.headers];
@@ -156,7 +157,7 @@ CassandraStore.prototype.putTile = function(z, x, y, tile, callback) {
         throw new Err('This CassandraStore source cannot save zoom %d, because its configured for zooms %d..%d',
             z, this.minzoom, this.maxzoom);
     }
-    return this._storeDataAsync(z, core.xyToIndex(x, y, z), tile).nodeify(callback);
+    return this._storeDataAsync(z, qidx.xyToIndex(x, y, z), tile).nodeify(callback);
 };
 
 CassandraStore.prototype._storeDataAsync = function(zoom, idx, data) {
@@ -249,9 +250,9 @@ CassandraStore.prototype.queryTileAsync = function(options) {
             options.zoom = -1;
             options.idx = 0;
         } else {
-            if (!core.isInteger(options.zoom))
+            if (!Number.isInteger(options.zoom))
                 self.throwError('Options must contain integer zoom parameter. Opts=%j', options);
-            if (!core.isInteger(options.idx))
+            if (!Number.isInteger(options.idx))
                 self.throwError('Options must contain an integer idx parameter. Opts=%j', options);
             let maxEnd = Math.pow(4, options.zoom);
             if (options.idx < 0 || options.idx >= maxEnd)
@@ -308,11 +309,11 @@ CassandraStore.prototype.query = function(options) {
     let self = this,
         dateBefore, dateFrom;
 
-    if (!core.isInteger(options.zoom))
+    if (!Number.isInteger(options.zoom))
         self.throwError('Options must contain integer zoom parameter. Opts=%j', options);
-    if (typeof options.idxFrom !== 'undefined' && !core.isInteger(options.idxFrom))
+    if (typeof options.idxFrom !== 'undefined' && !Number.isInteger(options.idxFrom))
         self.throwError('Options may contain an integer idxFrom parameter. Opts=%j', options);
-    if (typeof options.idxBefore !== 'undefined' && !core.isInteger(options.idxBefore))
+    if (typeof options.idxBefore !== 'undefined' && !Number.isInteger(options.idxBefore))
         self.throwError('Options may contain an integer idxBefore parameter. Opts=%j', options);
     if (typeof options.dateBefore !== 'undefined' && Object.prototype.toString.call(options.dateBefore) !== '[object Date]')
         self.throwError('Options may contain a Date dateBefore parameter. Opts=%j', options);
