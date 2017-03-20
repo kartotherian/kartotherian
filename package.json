@@ -23,6 +23,7 @@
     "cassandra-driver": "3.0.2",
     "multistream": "^2.0.5",
     "quadtile-index": "^0.0.3",
+    "kartotherian-input-validator": "^0.0.3",
     "kartotherian-err": "^0.0.1",
     "promistreamus": "^0.1.11"
   }

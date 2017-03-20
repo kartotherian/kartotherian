@@ -11,6 +11,7 @@ let util = require('util'),
     multistream = require('multistream'),
     promistreamus = require('promistreamus'),
     qidx = require('quadtile-index'),
+    checkType = require('kartotherian-input-validator'),
     Err = require('kartotherian-err'),
     pckg = require('./package.json');
 
@@ -38,7 +39,7 @@ function CassandraStore(uri, callback) {
             'Content-Type': 'application/x-protobuf',
             'Content-Encoding': 'gzip'
         };
-        let params = core.normalizeUri(uri).query;
+        let params = checkType.normalizeUrl(uri).query;
         self._params = params;
 
         if (!params.cp) {
