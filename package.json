@@ -19,6 +19,7 @@
   "bugs": "https://github.com/kartotherian/kartotherian-autogen/issues",
   "dependencies": {
     "bluebird": "^3.3.5",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "kartotherian-input-validator": "^0.0.1"
   }
 }

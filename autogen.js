@@ -1,6 +1,7 @@
 'use strict';
 
 let BBPromise = require('bluebird'),
+    checkType = require('kartotherian-input-validator'),
     core;
 
 function Autogen(uri, callback) {
@@ -8,16 +9,16 @@ function Autogen(uri, callback) {
         query;
     BBPromise.try(function () {
         query = core.normalizeUri(uri).query;
-        core.checkType(query, 'mingen', 'zoom');
+        checkType(query, 'mingen', 'zoom');
         self.mingen = query.mingen;
-        core.checkType(query, 'maxgen', 'zoom');
+        checkType(query, 'maxgen', 'zoom');
         self.maxgen = query.maxgen;
-        core.checkType(query, 'minstore', 'zoom');
+        checkType(query, 'minstore', 'zoom');
         self.minstore = query.minstore;
-        core.checkType(query, 'maxstore', 'zoom');
+        checkType(query, 'maxstore', 'zoom');
         self.maxstore = query.maxstore;
-        core.checkType(query, 'storage', 'string', true);
-        core.checkType(query, 'generator', 'string', true);
+        checkType(query, 'storage', 'string', true);
+        checkType(query, 'generator', 'string', true);
         return core.loadSource(query.storage);
     }).then(function (storage) {
         self.storage = storage;
