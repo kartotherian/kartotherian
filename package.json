@@ -20,6 +20,7 @@
   "bugs": "https://github.com/kartotherian/kartotherian-overzoom/issues",
   "dependencies": {
     "bluebird": "^3.3.5",
+    "kartotherian-input-validator": "^0.0.3",
     "kartotherian-err": "^0.0.1"
   }
 }

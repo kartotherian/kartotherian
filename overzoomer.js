@@ -8,13 +8,14 @@
 let Promise = require('bluebird'),
     zlib = require('zlib'),
     Err = require('kartotherian-err'),
+    checkType = require('kartotherian-input-validator'),
     core;
 
 
 function OverZoomer(uri, callback) {
     let self = this;
     return Promise.try(() => {
-        let params = core.normalizeUri(uri).query;
+        let params = checkType.normalizeUrl(uri).query;
         if (!params.source) {
             throw new Err("Uri must include 'source' query parameter: %j", uri);
         }
