@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-module-loader",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Kartotherian loader that instantiates tilelive and Kartotherian modules",
   "keywords": [
     "kartotherian", "tilelive", "loader"
