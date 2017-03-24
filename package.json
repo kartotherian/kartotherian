@@ -1,5 +1,5 @@
 {
-  "name": "kartotherian-err",
+  "name": "@kartotherian/err",
   "version": "0.0.1",
   "description": "A generic exception with parameter formatting and an optional metrics param",
   "main": "Err.js",
