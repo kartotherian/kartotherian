@@ -2,4 +2,6 @@
 
 module.exports = require('./lib/core');
 module.exports.Sources = require('./lib/sources');
-module.exports.Err = require('./lib/Err');
+
+// Obsolete, should be removed
+module.exports.Err = require('kartotherian-err');

@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/kartotherian/kartotherian-core.svg?branch=master)](https://travis-ci.org/kartotherian/kartotherian-core)
 # kartotherian-core
 
 The core components of the Kartotherian maps tile service

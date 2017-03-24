@@ -1,6 +1,6 @@
 {
   "name": "kartotherian-core",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "The core components of the Kartotherian maps tile service",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,10 @@
     "bluebird": "^3.3.5",
     "js-yaml": "^3.5.2",
     "underscore": "^1.8.3",
-    "xmldoc": "git+https://github.com/nyurik/xmldoc.git"
+    "quadtile-index": "^0.0.3",
+    "kartotherian-input-validator": "^0.0.3",
+    "kartotherian-err": "^0.0.1",
+    "kartotherian-module-loader": "^0.0.1"
   },
   "devDependencies": {
     "mocha": "^2.4.5"
