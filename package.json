@@ -24,7 +24,7 @@
     "quadtile-index": "^0.0.3",
     "kartotherian-input-validator": "^0.0.3",
     "kartotherian-err": "^0.0.1",
-    "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
+    "kartotherian-core": "^0.0.19",
     "numeral": "^1.5.3",
     "promistreamus": "^0.1.11",
     "event-stream": "^3.3.3",
