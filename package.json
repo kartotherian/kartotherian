@@ -23,6 +23,6 @@
   "dependencies": {
     "bluebird": "^3.3.5",
     "@kartotherian/err": "^0.0.1",
-    "makizushi": "^1.3.0"
+    "@mapbox/makizushi": "^1.3.0"
   }
 }
