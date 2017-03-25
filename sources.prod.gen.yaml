@@ -25,7 +25,7 @@ genview:
   maxwidth: 2048
   uri: vector://
   xml:
-    loader: @kartotherian/osm-bright-style
+    loader: "@kartotherian/osm-bright-style"
   xmlSetParams:
     source: {ref: gen}
 
@@ -58,7 +58,7 @@ substgenview:
   maxwidth: 2048
   uri: vector://
   xml:
-    loader: @kartotherian/osm-bright-style
+    loader: "@kartotherian/osm-bright-style"
   xmlSetParams:
     source: {ref: substgen}
 
@@ -72,6 +72,6 @@ substgenozview:
   maxwidth: 2048
   uri: vector://
   xml:
-    loader: @kartotherian/osm-bright-style
+    loader: "@kartotherian/osm-bright-style"
   xmlSetParams:
     source: {ref: substgenoz}
