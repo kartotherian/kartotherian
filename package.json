@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/substantial",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Filtering tile source to save only tiles that should be saved rather than overzoomed",
   "main": "substantial.js",
   "scripts": {
