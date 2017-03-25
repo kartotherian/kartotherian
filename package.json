@@ -4,7 +4,8 @@
   "description": "A generic exception with parameter formatting and an optional metrics param",
   "main": "Err.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "preversion": "npm test"
   },
   "repository": "kartotherian/err",
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
