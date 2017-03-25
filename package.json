@@ -6,13 +6,13 @@
   "scripts": {
     "test": "mocha"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kartotherian/kartotherian-err.git"
-  },
+  "repository": "kartotherian/err",
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "license": "MIT",
-  "bugs": "https://github.com/kartotherian/kartotherian-err/issues",
+  "bugs": "https://github.com/kartotherian/err/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
   },
   "devDependencies": {
