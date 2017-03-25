@@ -11,8 +11,8 @@ let util = require('util'),
     multistream = require('multistream'),
     promistreamus = require('promistreamus'),
     qidx = require('quadtile-index'),
-    checkType = require('kartotherian-input-validator'),
-    Err = require('kartotherian-err'),
+    checkType = require('@kartotherian/input-validator'),
+    Err = require('@kartotherian/err'),
     pckg = require('./package.json');
 
 let core,

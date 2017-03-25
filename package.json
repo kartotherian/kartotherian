@@ -1,15 +1,12 @@
 {
-  "name": "kartotherian-cassandra",
+  "name": "@kartotherian/cassandra",
   "version": "0.0.9",
   "description": "Cassandra tile storage for Kartotherian map tile server",
   "main": "CassandraStore.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kartotherian/kartotherian-cassandra.git"
-  },
+  "repository": "kartotherian/cassandra",
   "keywords": [
     "kartotherian",
     "cassandra",
@@ -17,14 +14,17 @@
   ],
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "license": "Apache-2.0",
-  "bugs": "https://github.com/kartotherian/kartotherian-cassandra/issues",
+  "bugs": "https://github.com/kartotherian/cassandra/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "bluebird": "^3.3.5",
     "cassandra-driver": "3.0.2",
     "multistream": "^2.0.5",
-    "quadtile-index": "^0.0.3",
-    "kartotherian-input-validator": "^0.0.3",
-    "kartotherian-err": "^0.0.1",
-    "promistreamus": "^0.1.11"
+    "promistreamus": "^0.1.12",
+    "quadtile-index": "^0.0.5",
+    "@kartotherian/err": "^0.0.2",
+    "@kartotherian/input-validator": "^0.0.4"
   }
 }
