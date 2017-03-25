@@ -6,6 +6,6 @@ let assert = require('assert'),
 
 describe('basic test', () => {
 
-    assert(false, 'Test Not Implemented');
+    assert(false, 'Not Implemented');
 
 });
