@@ -1,20 +1,20 @@
 'use strict';
 
-var pathLib = require('path');
-var Promise = require('bluebird');
-var core = require('kartotherian-core');
-var info = require('../package.json');
+let pathLib = require('path'),
+    Promise = require('bluebird'),
+    core = require('@kartotherian/core'),
+    info = require('../package.json');
 
 module.exports = startup;
 
 function startup(app) {
 
     return startup.bootstrap(app).then(function() {
-        var sources = new core.Sources();
+        let sources = new core.Sources();
         return sources.init(app.conf.variables, app.conf.sources);
     }).then(function (sources) {
         core.setSources(sources);
-        return require('kartotherian-server').init({
+        return require('@kartotherian/server').init({
             core: core,
             app: app,
             requestHandlers: core.loadNpmModules('requestHandlers')

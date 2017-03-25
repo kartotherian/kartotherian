@@ -10,21 +10,21 @@
     "docker-test": "service-runner docker-test",
     "coverage": "istanbul cover _mocha -- -R spec"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/kartotherian/kartotherian.git"
-  },
+  "repository": "kartotherian/kartotherian",
   "keywords": [
     "REST",
     "API",
     "service template",
     "MediaWiki"
   ],
-  "author": "Yuri Astrakhan <yurik@wikimedia.org>",
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "contributors": [
     "Max Semenik <msemenik@wikimedia.org>"
   ],
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "bugs": {
     "url": "https://phabricator.wikimedia.org/tag/maps/"
   },
@@ -34,18 +34,21 @@
     "registerSourceLibs": [
       "tilelive-bridge",
       "tilelive-vector",
-      "kartotherian-autogen",
-      "kartotherian-cassandra",
-      "kartotherian-postgres",
-      "kartotherian-demultiplexer",
-      "kartotherian-layermixer",
-      "kartotherian-overzoom",
-      "kartotherian-substantial"
+      "@kartotherian/autogen",
+      "@kartotherian/babel",
+      "@kartotherian/cassandra",
+      "@kartotherian/demultiplexer",
+      "@kartotherian/layermixer",
+      "@kartotherian/overzoom",
+      "@kartotherian/postgres",
+      "@kartotherian/substantial",
+      "tilejson",
+      "tilelive-http"
     ],
     "requestHandlers": [
-      "kartotherian-geoshapes",
-      "kartotherian-maki",
-      "kartotherian-snapshot"
+      "@kartotherian/geoshapes",
+      "@kartotherian/maki",
+      "@kartotherian/snapshot"
     ]
   },
 
@@ -66,21 +69,27 @@
     "tilelive": "~5.12.2",
     "tilelive-bridge": "~2.3.1",
     "tilelive-vector": "~3.9.3",
+    "tilejson": "*",
+    "tilelive-http": "git+https://github.com/kartotherian/tilelive-http.git",
 
-    "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
-    "kartotherian-server": "git+https://github.com/kartotherian/kartotherian-server.git",
-    "kartotherian-autogen": "git+https://github.com/kartotherian/kartotherian-autogen.git",
-    "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",
-    "kartotherian-postgres": "git+https://github.com/kartotherian/kartotherian-postgres.git",
-    "kartotherian-demultiplexer": "git+https://github.com/kartotherian/kartotherian-demultiplexer.git",
-    "kartotherian-geoshapes": "git+https://github.com/kartotherian/kartotherian-geoshapes.git",
-    "kartotherian-layermixer": "git+https://github.com/kartotherian/kartotherian-layermixer.git",
-    "kartotherian-maki": "git+https://github.com/kartotherian/kartotherian-maki.git",
-    "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
-    "kartotherian-snapshot": "git+https://github.com/kartotherian/kartotherian-snapshot.git",
-    "kartotherian-substantial": "git+https://github.com/kartotherian/kartotherian-substantial.git",
-    "osm-bright-source": "git+https://github.com/kartotherian/osm-bright.tm2source.git",
-    "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git"
+    "@kartotherian/core": "^0.0.20",
+    "@kartotherian/server": "^0.0.12",
+
+    "@kartotherian/autogen": "^0.0.8",
+    "@kartotherian/babel": "^0.0.3",
+    "@kartotherian/cassandra": "^0.0.11",
+    "@kartotherian/postgres": "^0.0.9",
+    "@kartotherian/demultiplexer": "^0.0.9",
+    "@kartotherian/layermixer": "^0.0.7",
+    "@kartotherian/overzoom": "^0.0.9",
+    "@kartotherian/substantial": "^0.0.7",
+
+    "@kartotherian/osm-bright-source": "^0.0.4",
+    "@kartotherian/osm-bright-style": "^2.1.3",
+
+    "@kartotherian/geoshapes": "^0.0.12",
+    "@kartotherian/maki": "^0.0.7",
+    "@kartotherian/snapshot": "^0.3.3"
   },
   "optionalDependencies": {
     "bunyan-prettystream": "*"

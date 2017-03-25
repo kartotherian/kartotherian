@@ -10,7 +10,7 @@ Kartotherian can serve vector and raster tiles in multiple formats and optional 
     http://.../{source}/{zoom}/{x}/{y}[@{scale}x].{format}
 
 * The sources are configured with the
-[source config file](https://github.com/kartotherian/kartotherian-core). Sources configuration supports different methods of tile storage, such as Cassandra or files, generation from postgress db, overzoom to extract the tile from lower zooms if missing, layer extraction, mixing multiple sources together, etc.
+[source config file](https://github.com/kartotherian/core). Sources configuration supports different methods of tile storage, such as Cassandra or files, generation from postgress db, overzoom to extract the tile from lower zooms if missing, layer extraction, mixing multiple sources together, etc.
 * Optional scalling can render larger images for high resolution screens (only those enabled in the source, e.g. `[1.5, 2]`)
 * Supported formats include PNG ang JPEG, SVG, PBF vectors, and JSON (with `nogeo` and `summary` debug options)
 
@@ -66,7 +66,7 @@ The set up inside [`sources.external.yaml`](sources.external.yaml) does not use 
 
 ## Configuration
 Inside the `conf` key:
-* `sources` - (required) Either a set of subkeys, a filename, or a list of file names.  See [core](https://github.com/kartotherian/kartotherian-core) on how to configure the sources.
+* `sources` - (required) Either a set of subkeys, a filename, or a list of file names.  See [core](https://github.com/kartotherian/core) on how to configure the sources.
 * `variables` (optional) - specify a set of variables (string key-value pairs) to be used inside sources, or it could be a filename or a list of filenames/objects.
 * `defaultHeaders` (optional, object) - a set of extra headers that will be sent to the user unless the source provides its own. (public requests only)
 * `headers` (optional, object) - a set of extra headers that will be sent to the user instead of the headers returned by the source. (public requests only)
@@ -79,19 +79,19 @@ Also, see [Tilerator](https://github.com/kartotherian/tilerator), an optional st
 Tilerator is separate from Kartotherian, but it reuses most of the same components.
 
 ### Components by Wikimedia Foundation
-* [kartotherian-core](https://github.com/kartotherian/kartotherian-core) - Loads and configures tile sources, and provides some common utility functions
-* [kartotherian-server](https://github.com/kartotherian/kartotherian-server) - Handles user requests for tiles and source info, as well as registers additional data type handlers like maki markers and image snapshots.
-* [kartotherian-maki](https://github.com/kartotherian/kartotherian-maki) - Request handler for maki markers - generates PNG marker images that can be used from geojson.
-* [kartotherian-snapshot](https://github.com/kartotherian/kartotherian-snapshot) - Request handler for static images by combining multiple tiles into one snapshot image of a requested size.
+* [kartotherian-core](https://github.com/kartotherian/core) - Loads and configures tile sources, and provides some common utility functions
+* [kartotherian-server](https://github.com/kartotherian/server) - Handles user requests for tiles and source info, as well as registers additional data type handlers like maki markers and image snapshots.
+* [kartotherian-maki](https://github.com/kartotherian/maki) - Request handler for maki markers - generates PNG marker images that can be used from geojson.
+* [kartotherian-snapshot](https://github.com/kartotherian/snapshot) - Request handler for static images by combining multiple tiles into one snapshot image of a requested size.
 
 #### Tile sources
-* [kartotherian-autogen](https://github.com/kartotherian/kartotherian-autogen) - Tile source that checks "storage" source for a tile, and if not found, gets it from the "generator" source and saves it into the "storage"
-* [kartotherian-cassandra](https://github.com/kartotherian/kartotherian-cassandra) - Tile source that stores tiles in the Cassandra database
-* [kartotherian-demultiplexer](https://github.com/kartotherian/kartotherian-demultiplexer) - Tile source that combines multiple sources by zoom level
-* [kartotherian-layermixer](https://github.com/kartotherian/kartotherian-layermixer) - Tile source capable of mixing different vector layers from multiple tile sources
-* [kartotherian-overzoom](https://github.com/kartotherian/kartotherian-overzoom) - Tile source that will zoom out if the requested tile does not exist, and extracts the needed portion from the lower-zoom tile it finds.
-* [kartotherian-postgres](https://github.com/kartotherian/kartotherian-postgres) - Tile source that stores tiles in the Postgres database
-* [kartotherian-substantial](https://github.com/kartotherian/kartotherian-substantial) - Tile source that filters out tiles that are not significant - e.g. nothing but water or land.
+* [kartotherian-autogen](https://github.com/kartotherian/autogen) - Tile source that checks "storage" source for a tile, and if not found, gets it from the "generator" source and saves it into the "storage"
+* [kartotherian-cassandra](https://github.com/kartotherian/cassandra) - Tile source that stores tiles in the Cassandra database
+* [kartotherian-demultiplexer](https://github.com/kartotherian/demultiplexer) - Tile source that combines multiple sources by zoom level
+* [kartotherian-layermixer](https://github.com/kartotherian/layermixer) - Tile source capable of mixing different vector layers from multiple tile sources
+* [kartotherian-overzoom](https://github.com/kartotherian/overzoom) - Tile source that will zoom out if the requested tile does not exist, and extracts the needed portion from the lower-zoom tile it finds.
+* [kartotherian-postgres](https://github.com/kartotherian/postgres) - Tile source that stores tiles in the Postgres database
+* [kartotherian-substantial](https://github.com/kartotherian/substantial) - Tile source that filters out tiles that are not significant - e.g. nothing but water or land.
 
 #### Data and Styling
 * [osm-bright-source](https://github.com/kartotherian/osm-bright.tm2source) - SQL queries used by the `tilelive-bridge` to generate a vector tile from Postgres Database
