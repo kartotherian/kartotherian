@@ -1,35 +1,33 @@
 {
-  "name": "kartotherian-snapshot",
+  "name": "@kartotherian/snapshot",
   "version": "0.3.2",
   "description": "Serves Kartotherian snapshot images",
   "main": "lib/snapshot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kartotherian/kartotherian-snapshot.git"
-  },
+  "repository": "kartotherian/snapshot",
   "keywords": [
     "kartotherian"
   ],
-  "author": "Yuri Astrakhan <yurik@wikimedia.org>",
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://phabricator.wikimedia.org/tag/maps/"
+  "bugs": "https://github.com/kartotherian/snapshot/issues",
+  "publishConfig": {
+    "access": "public"
   },
-  "homepage": "https://github.com/kartotherian/kartotherian-snapshot",
+  "homepage": "https://github.com/kartotherian/snapshot",
   "dependencies": {
     "abaculus": "^2.0.3",
     "bluebird": "^3.3.5",
-    "domain-validator": "^0.0.3",
+    "domain-validator": "^0.0.4",
     "geojson-mapnikify": "~0.7.1",
     "leaflet-headless": "^0.2.4",
     "mwapi": "^0.0.8",
     "tilelive-overlay": "^0.7.0",
     "underscore": "^1.8.3",
-    "kartotherian-err": "^0.0.1",
-    "kartotherian-input-validator": "^0.0.3",
+    "@kartotherian/err": "^0.0.2",
+    "@kartotherian/input-validator": "^0.0.5",
     "wikimedia-mapdata": "git+https://gerrit.wikimedia.org/r/mapdata#ee3a9e5dcfb89cffc28acb24e2cc281931ceaf08"
   },
   "optionalDependencies": {
