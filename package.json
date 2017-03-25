@@ -1,30 +1,30 @@
 {
-  "name": "kartotherian-postgres",
+  "name": "@kartotherian/postgres",
   "version": "0.0.8",
   "description": "PostgreSQL tile storage for Kartotherian map tile server",
-  "main": "Postgres.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kartotherian/kartotherian-postgres.git"
-  },
   "keywords": [
     "kartotherian",
     "postgres"
   ],
+  "main": "Postgres.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "kartotherian/postgres",
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "license": "Apache-2.0",
-  "bugs": "https://github.com/kartotherian/kartotherian-postgres/issues",
+  "bugs": "https://github.com/kartotherian/postgres/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "bluebird": "^3.3.5",
     "pg.js": "*",
     "pg-promise": "^3.1.6",
     "pg-query-stream": "^1.0.0",
-    "quadtile-index": "^0.0.3",
-    "kartotherian-err": "^0.0.1",
-    "kartotherian-input-validator": "^0.0.3",
-    "promistreamus": "^0.1.11"
+    "promistreamus": "^0.1.12",
+    "quadtile-index": "^0.0.5",
+    "@kartotherian/err": "^0.0.2",
+    "@kartotherian/input-validator": "^0.0.5"
   }
 }
