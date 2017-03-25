@@ -1,5 +1,6 @@
-[![Build Status](https://travis-ci.org/kartotherian/kartotherian-autogen.svg?branch=master)](https://travis-ci.org/kartotherian/kartotherian-autogen)
-# kartotherian-autogen
+[![Build Status](https://travis-ci.org/kartotherian/autogen.svg?branch=master)](https://travis-ci.org/kartotherian/autogen)
+
+# @kartotherian/autogen
 Tile source to dynamically create tiles if its missing in the storage
 
 ## Usage examples
