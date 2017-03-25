@@ -2,7 +2,7 @@
 
 let Promise = require('bluebird'),
     _ = require('underscore'),
-    checkType = require('kartotherian-input-validator'),
+    checkType = require('@kartotherian/input-validator'),
     core;
 
 

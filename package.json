@@ -1,25 +1,25 @@
 {
-  "name": "kartotherian-layermixer",
+  "name": "@kartotherian/layermixer",
   "version": "0.0.6",
   "description": "Vector tile mixing source, allowing layers from multiple vector tile to be merged into one tile ",
   "main": "LayerMixer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kartotherian/kartotherian-layermixer.git"
-  },
+  "repository": "kartotherian/layermixer",
   "keywords": [
     "kartotherian",
     "tilelive"
   ],
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "license": "Apache-2.0",
-  "bugs": "https://github.com/kartotherian/kartotherian-layermixer/issues",
+  "bugs": "https://github.com/kartotherian/layermixer/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "bluebird": "^3.3.5",
-    "kartotherian-input-validator": "^0.0.3",
+    "@kartotherian/input-validator": "^0.0.5",
     "underscore": "^1.8.3"
   }
 }
