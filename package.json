@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/err",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A generic exception with parameter formatting and an optional metrics param",
   "main": "Err.js",
   "scripts": {
@@ -14,8 +14,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "mocha": "^2.4.5"
   }
