@@ -1,25 +1,28 @@
 {
-  "name": "kartotherian-input-validator",
+  "name": "@kartotherian/input-validator",
   "version": "0.0.3",
   "description": "Functions to assert input correctness for Kartotherian",
-  "keywords": [
-    "kartotherian", "input", "validation"
-  ],
   "main": "validator.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "preversion": "npm test"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kartotherian/kartotherian-input-validator.git"
-  },
+  "repository": "kartotherian/input-validator",
+  "keywords": [
+    "kartotherian",
+    "input",
+    "validation"
+  ],
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "license": "MIT",
-  "bugs": "https://github.com/kartotherian/kartotherian-input-validator/issues",
+  "bugs": "https://github.com/kartotherian/input-validator/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "underscore": "^1.8.3",
     "quadtile-index": "^0.0.3",
-    "kartotherian-err": "^0.0.1"
+    "@kartotherian/err": "^0.0.2"
   },
   "devDependencies": {
     "mocha": "^2.4.5"

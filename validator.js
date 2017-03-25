@@ -4,7 +4,7 @@ let _ = require('underscore'),
     qidx = require('quadtile-index'),
     qs = require('querystring'),
     urllib = require('url'),
-    Err = require('kartotherian-err');
+    Err = require('@kartotherian/err');
 
 module.exports = checkType;
 
