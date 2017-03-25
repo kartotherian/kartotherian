@@ -5,7 +5,7 @@ let info = require('./package.json'),
     topojson = require('topojson'),
     postgres = require('pg-promise')({promiseLib: Promise}),
     preq = require('preq'),
-    Err = require('kartotherian-err'),
+    Err = require('@kartotherian/err'),
     parseWikidataValue = require('wd-type-parser');
 
 let core, client, config,
