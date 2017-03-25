@@ -20,6 +20,6 @@
   "dependencies": {
     "bluebird": "^3.3.5",
     "underscore": "^1.8.3",
-    "@kartotherian/input-validator": "^0.0.4"
+    "@kartotherian/input-validator": "^0.0.5"
   }
 }

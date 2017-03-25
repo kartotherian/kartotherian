@@ -1,13 +1,13 @@
 'use strict';
 
-let BBPromise = require('bluebird'),
+let Promise = require('bluebird'),
     checkType = require('@kartotherian/input-validator'),
     core;
 
 function Autogen(uri, callback) {
     let self = this,
         query;
-    BBPromise.try(() => {
+    Promise.try(() => {
         query = checkType.normalizeUrl(uri).query;
         checkType(query, 'mingen', 'zoom');
         self.mingen = query.mingen;
