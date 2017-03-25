@@ -1,26 +1,27 @@
 {
-  "name": "kartotherian-core",
+  "name": "@kartotherian/core",
   "version": "0.0.19",
   "description": "The core components of the Kartotherian maps tile service",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "preversion": "npm test"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kartotherian/kartotherian-core.git"
-  },
+  "repository": "kartotherian/core",
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "license": "Apache-2.0",
-  "bugs": "https://github.com/kartotherian/kartotherian-core/issues",
+  "bugs": "https://github.com/kartotherian/core/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "bluebird": "^3.3.5",
     "js-yaml": "^3.5.2",
     "underscore": "^1.8.3",
-    "quadtile-index": "^0.0.3",
-    "kartotherian-input-validator": "^0.0.3",
-    "kartotherian-err": "^0.0.1",
-    "kartotherian-module-loader": "^0.0.1"
+    "quadtile-index": "^0.0.5",
+    "@kartotherian/err": "^0.0.2",
+    "@kartotherian/input-validator": "^0.0.5",
+    "@kartotherian/module-loader": "^0.0.3"
   },
   "devDependencies": {
     "mocha": "^2.4.5"
