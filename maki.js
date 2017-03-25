@@ -2,7 +2,7 @@
 
 let Promise = require('bluebird'),
     makizushi = Promise.promisify(require('makizushi')),
-    Err = require('kartotherian-err');
+    Err = require('@kartotherian/err');
 
 let core;
 
