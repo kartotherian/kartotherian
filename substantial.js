@@ -10,8 +10,8 @@ let kartotherian use overzooming later.
 let Promise = require('bluebird'),
     zlib = require('zlib'),
     qidx = require('quadtile-index'),
-    Err = require('kartotherian-err'),
-    checkType = require('kartotherian-input-validator'),
+    Err = require('@kartotherian/err'),
+    checkType = require('@kartotherian/input-validator'),
     _ = require('underscore'),
     core;
 
