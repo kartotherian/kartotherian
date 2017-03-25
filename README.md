@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/kartotherian/kartotherian-err.svg?branch=master)](https://travis-ci.org/kartotherian/kartotherian-err)
+[![Build Status](https://travis-ci.org/kartotherian/err.svg?branch=master)](https://travis-ci.org/kartotherian/err)
 # kartotherian-err
 A generic exception with parameter formatting and an optional metrics param
 
