@@ -1,9 +1,8 @@
 {
   "name": "@kartotherian/babel",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Tile source to support multilingual maps",
   "main": "lib/Babel.js",
-
   "scripts": {
     "test": "mocha"
   },
