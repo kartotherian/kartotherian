@@ -7,8 +7,8 @@
 
 let Promise = require('bluebird'),
     zlib = require('zlib'),
-    Err = require('kartotherian-err'),
-    checkType = require('kartotherian-input-validator'),
+    Err = require('@kartotherian/err'),
+    checkType = require('@kartotherian/input-validator'),
     core;
 
 
