@@ -34,7 +34,7 @@ osm-intl:
   maxwidth: 2048
   uri: vector://
   xml:
-    loader: osm-bright-style
+    loader: @kartotherian/osm-bright-style
   xmlSetParams:
     source: {ref: osm-pbf}
   overrideInfo:
@@ -52,7 +52,7 @@ osm:
   maxwidth: 2048
   uri: vector://
   xml:
-    loader: osm-bright-style
+    loader: @kartotherian/osm-bright-style
   xmlSetParams:
     source: {ref: osm-pbf}
   xmlExceptLayers: ['country_label', 'place_label', 'poi_label']

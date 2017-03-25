@@ -1,6 +1,25 @@
 # Download tiles on the fly from wiki maps service
 gen:
-  uri: https://maps.wikimedia.org/osm-pbf/{z}/{x}/{y}.pbf
+  uri: https://shorter.wmflabs.org/meddo/tile/{z}/{x}/{y}.pbf
+#  uri: https://maps.wikimedia.org/osm-pbf/{z}/{x}/{y}.pbf
+  overrideInfo:
+    attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+    tiles: ["https://shorter.wmflabs.org/meddo/tile/{z}/{x}/{y}.pbf"]
+
+
+json2tags:
+  uri: json2tags://
+  params:
+    source: {ref: gen}
+    tag: name
+
+
+babel:
+  uri: babel://
+  params:
+    source: {ref: json2tags}
+    languages: [ru, fr, zh]
+
 
 # View tiles as generated directly from the database. Don't view zoom0-5
 osm-intl:
@@ -11,7 +30,6 @@ osm-intl:
   maxheight: 2048
   maxwidth: 2048
   uri: vector://
-  xml:
-    loader: osm-bright-style
+  xml: /home/yurik/dev/kartotherian/brighmed.tm2/brighmed.xml
   xmlSetParams:
-    source: {ref: gen}
+    source: {ref: babel}

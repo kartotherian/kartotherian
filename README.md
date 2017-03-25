@@ -47,11 +47,11 @@ Edit `package.json`
 * **Add** these lines to the `dependencies` section:
 ```
     "tilejson": "*",
-    "tilelive-http": "git+https://github.com/kartotherian/tilelive-http.git",
+    "@kartotherian/tilelive-http": "^0.12.1",
 ```
 * **Add** this line to the `registerSourceLibs` section:
 ```
-    "tilelive-http",
+    "@kartotherian/tilelive-http",
 ```
 * **Remove** `kartotherian-geoshapes` line from `requestHandlers` section.
 
