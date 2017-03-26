@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/kartotherian/maki",
   "dependencies": {
-    "bluebird": "^3.3.5",
-    "@kartotherian/err": "^0.0.2",
-    "@mapbox/makizushi": "^1.3.0"
+    "bluebird": "^3.5.0",
+    "@kartotherian/err": "^0.0.3",
+    "@mapbox/makizushi": "^1.4.0"
   }
 }
