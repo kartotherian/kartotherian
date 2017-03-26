@@ -21,10 +21,10 @@
   },
   "dependencies": {
     "underscore": "^1.8.3",
-    "quadtile-index": "^0.0.5",
-    "@kartotherian/err": "^0.0.2"
+    "quadtile-index": "^0.0.6",
+    "@kartotherian/err": "^0.0.3"
   },
   "devDependencies": {
-    "mocha": "^2.4.5"
+    "mocha": "^3.2.0"
   }
 }
