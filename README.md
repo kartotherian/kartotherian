@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/kartotherian/babel.svg?branch=master)](https://travis-ci.org/kartotherian/babel)
-[![Coverage Status](https://coveralls.io/repos/kartotherian/babel/badge.svg)](https://coveralls.io/r/kartotherian/babel)
+[![Coverage Status](https://coveralls.io/repos/github/kartotherian/babel/badge.svg)](https://coveralls.io/github/kartotherian/babel)
 
 # @kartotherian/babel
 Tile source to restructure vector PBFs for multilingual usecases, such as convert a single JSON object into multiple key/values, or to replace all language key/value names with a single one.  
