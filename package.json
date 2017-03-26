@@ -4,7 +4,8 @@
   "description": "Tile source to support multilingual maps",
   "main": "lib/Babel.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "preversion": "npm test"
   },
   "repository": "kartotherian/babel",
   "keywords": [
