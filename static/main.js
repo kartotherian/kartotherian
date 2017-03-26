@@ -5,6 +5,7 @@ var style = (match && match[1]) || 'osm-intl';
 
 // Create a map
 var map = L.map('map').setView([40.75, -73.96], 4);
+map.attributionControl.setPrefix('');
 
 function bracketDevicePixelRatio() {
     var brackets = [1, 1.3, 1.5, 2, 2.6, 3],
