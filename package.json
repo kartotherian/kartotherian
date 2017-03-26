@@ -18,8 +18,8 @@
     "access": "public"
   },
   "dependencies": {
-    "bluebird": "^3.3.5",
+    "bluebird": "^3.5.0",
     "underscore": "^1.8.3",
-    "@kartotherian/input-validator": "^0.0.5"
+    "@kartotherian/input-validator": "^0.0.6"
   }
 }
