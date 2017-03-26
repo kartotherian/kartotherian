@@ -18,12 +18,12 @@
     "access": "public"
   },
   "dependencies": {
-    "bluebird": "^3.3.5",
-    "pg.js": "*",
-    "pg-promise": "^3.1.6",
-    "preq": "^0.4.11",
-    "topojson": "^1.6.26",
-    "wd-type-parser": "^0.0.2",
-    "@kartotherian/err": "^0.0.2"
+    "bluebird": "^3.5.0",
+    "pg.js": "^4.1.1",
+    "pg-promise": "^5.6.4",
+    "preq": "^0.5.2",
+    "topojson": "^2.2.0",
+    "wd-type-parser": "^0.0.3",
+    "@kartotherian/err": "^0.0.3"
   }
 }
