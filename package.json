@@ -20,14 +20,14 @@
     "access": "public"
   },
   "dependencies": {
-    "bluebird": "^3.3.5",
-    "js-yaml": "^3.5.2",
+    "bluebird": "^3.5.0",
+    "js-yaml": "^3.8.2",
     "underscore": "^1.8.3",
     "xmldoc": "git+https://github.com/nyurik/xmldoc.git",
-    "@kartotherian/err": "^0.0.2",
-    "@kartotherian/input-validator": "^0.0.5"
+    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/input-validator": "^0.0.6"
   },
   "devDependencies": {
-    "mocha": "^2.4.5"
+    "mocha": "^3.2.0"
   }
 }
