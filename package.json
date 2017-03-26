@@ -19,8 +19,8 @@
     "access": "public"
   },
   "dependencies": {
-    "bluebird": "^3.3.5",
-    "@kartotherian/err": "^0.0.2",
-    "@kartotherian/input-validator": "^0.0.5"
+    "bluebird": "^3.5.0",
+    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/input-validator": "^0.0.6"
   }
 }
