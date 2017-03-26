@@ -18,16 +18,19 @@ function LayerMixer(uri, callback) {
         self.removeInFirst = query.removeInFirst ? _.invert(query.removeInFirst) : false;
 
         self.sources = [];
-        return core.mapSequentialAsync(query.sources, function (srcUri) {
-            let src = {};
-            return core.loadSource(srcUri).then(function (handler) {
-                src.handler = handler;
-                return handler.getInfoAsync();
-            }).then(function (info) {
-                src.isRaster = info.format === 'webp';
-                self.sources.push(src);
-            })
-        });
+        return Promise.each(
+            Object.keys(query.sources),
+            key => {
+                let srcUri = query.sources[key],
+                    src = {};
+                return core.loadSource(srcUri).then(handler => {
+                    src.handler = handler;
+                    return handler.getInfoAsync();
+                }).then(info => {
+                    src.isRaster = info.format === 'webp';
+                    self.sources.push(src);
+                })
+            });
     }).return(this).nodeify(callback);
 }
 
