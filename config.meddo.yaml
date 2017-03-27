@@ -1,0 +1,122 @@
+# Number of worker processes to spawn.
+# Set to 0 to run everything in a single process without clustering.
+# Use 'ncpu' to run as many workers as there are CPU units
+num_workers: 0
+
+# Log error messages and gracefully restart a worker if v8 reports that it
+# uses more heap (note: not RSS) than this many mb.
+worker_heap_limit_mb: 250
+
+# Logger info
+logging:
+  level: trace
+  streams:
+    - type: debug
+
+services:
+  - name: kartotherian
+    # a relative path or the name of an npm package, if different from name
+    module: ./app.js
+    # optionally, a version constraint of the npm package
+    # version: ^0.4.0
+    # per-service config
+    conf:
+      port: 6533
+      # interface: localhost # uncomment to only listen on localhost
+      # more per-service config settings
+      # the location of the spec, defaults to spec.yaml if not specified
+      spec: ./spec.template.yaml
+      # allow cross-domain requests to the API (default '*')
+      cors: '*'
+      # to disable use:
+      # cors: false
+      # to restrict to a particular domain, use:
+      # cors: restricted.domain.org
+      # content for the CSP headers
+      # csp: false  # uncomment this line to disable sending them
+      # URL of the outbound proxy to use (complete with protocol)
+      # proxy: http://my.proxy.org:8080
+      # the list of domains for which not to use the proxy defined above
+      # no_proxy_list:
+      #   - domain1.com
+      #   - domain2.org
+      # the list of incoming request headers that can be logged; if left empty,
+      # the following headers are allowed: cache-control, content-length,
+      # content-type, if-match, user-agent, x-request-id
+      # log_header_whitelist:
+      #   - cache-control
+      #   - content-length
+      #   - content-type
+      #   - if-match
+      #   - user-agent
+      #   - x-request-id
+      # Uncomment to restrict connections to localhost only
+      # interface: localhost
+
+      # Kartotherian variables and sources
+      variables: {}
+      sources:
+        remote:
+          uri: https://shorter.wmflabs.org/meddo/tile/{z}/{x}/{y}.pbf
+        #  uri: https://maps.wikimedia.org/osm-pbf/{z}/{x}/{y}.pbf
+          overrideInfo:
+            attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+            tiles: ["https://shorter.wmflabs.org/meddo/tile/{z}/{x}/{y}.pbf"]
+        gen:
+          uri: bridge://
+          public: true
+          formats: [pbf]
+          xml: /mnt/tiles/meddo/meddo.xml
+#          xmlSetDataSource:
+#            if:
+#              dbname: ct
+#              host: ''
+#              type: postgis
+#            set:
+#              host: localhost
+#              user: {var: osmdb-user}
+#              password: {var: osmdb-pswd}
+        json2tags:
+          uri: json2tags://
+          public: true
+          formats: [pbf]
+          params:
+            source: {ref: gen}
+            tag: name
+        babel:
+          uri: babel://
+          public: true
+          formats: [pbf]
+          params:
+            source: {ref: json2tags}
+            languages: [ru, fr, zh]
+        osm-intl:
+          public: true
+          formats: [png,json,headers,svg,jpeg]
+          scales: [1.3, 1.5, 2, 2.6, 3]
+          static: true
+          maxheight: 2048
+          maxwidth: 2048
+          uri: vector://
+          xml: /home/yurik/dev/kartotherian/brighmed.tm2/brighmed.xml
+          xmlSetParams:
+            source: {ref: babel}
+
+      # allowedDomains:
+      #   http:
+      #     - localhost:8080
+      #     - 127.0.0.1:8080
+      #     - wmflabs.org
+      #   https:
+      #     - mediawiki.org
+      #     - wikibooks.org
+      #     - wikidata.org
+      #     - wikimedia.org
+      #     - wikimediafoundation.org
+      #     - wikinews.org
+      #     - wikipedia.org
+      #     - wikiquote.org
+      #     - wikisource.org
+      #     - wikiversity.org
+      #     - wikivoyage.org
+      #     - wiktionary.org
