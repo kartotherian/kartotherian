@@ -18,6 +18,7 @@
     "js-yaml": "^3.8.2",
     "underscore": "^1.8.3",
     "quadtile-index": "^0.0.6",
+    "typedarray-to-buffer": "^3.1.2",
     "@kartotherian/err": "^0.0.3",
     "@kartotherian/input-validator": "^0.0.6",
     "@kartotherian/module-loader": "^0.0.4"
