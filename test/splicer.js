@@ -5,13 +5,8 @@ let assert = require('assert'),
     pathLib = require('path'),
     fs = Promise.promisifyAll(require('fs')),
     tileCodec = require('../lib/tileCodec'),
-    PbfSplicer = require('../lib/PbfSplicer');
-
-// Enhance debugging
-Promise.config({
-    warnings: true,
-    longStackTraces: true
-});
+    PbfSplicer = require('../lib/PbfSplicer'),
+    _ = require('underscore');
 
 describe('Tag recombination', () => {
     function test(file, languages, expected) {
@@ -24,7 +19,7 @@ describe('Tag recombination', () => {
             // Binary compare with the stored file
             expected = fs.readFileSync(pathLib.resolve(__dirname, 'data', expected + '.pbf'));
             assert.deepStrictEqual(result, expected);
-        } else {
+        } else if (expected !== undefined) {
             // Object compare with the provided JSON
             let dec = tileCodec.decodeTile(result);
             assert.deepStrictEqual(dec, expected);
@@ -176,5 +171,4 @@ describe('Tag recombination', () => {
             }
         ]
     }));
-
 });
