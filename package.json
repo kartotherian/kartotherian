@@ -66,7 +66,7 @@
     "tilelive-bridge": "~2.3.1",
     "tilelive-vector": "~3.9.4",
     "tilejson": "^1.0.3",
-    "@kartotherian/core": "^0.0.21",
+    "@kartotherian/core": "^0.0.22",
     "@kartotherian/server": "^0.0.14",
     "@kartotherian/autogen": "^0.0.10",
     "@kartotherian/babel": "^0.0.6",
