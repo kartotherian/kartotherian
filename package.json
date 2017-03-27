@@ -69,7 +69,7 @@
     "@kartotherian/core": "^0.0.23",
     "@kartotherian/server": "^0.0.14",
     "@kartotherian/autogen": "^0.0.10",
-    "@kartotherian/babel": "^0.0.6",
+    "@kartotherian/babel": "^0.0.7",
     "@kartotherian/cassandra": "^0.0.12",
     "@kartotherian/postgres": "^0.0.10",
     "@kartotherian/demultiplexer": "^0.0.10",
