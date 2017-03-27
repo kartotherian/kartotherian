@@ -2,8 +2,7 @@
 
 'use strict';
 
-let whyNodeIsRunning = require('why-is-node-running'), // Should be the first require
-    yaml = require('js-yaml'),
+let yaml = require('js-yaml'),
     pathLib = require('path'),
     Promise = require('bluebird'),
     fs = Promise.promisifyAll(require("fs")),
@@ -167,12 +166,6 @@ return tilerator.bootstrap(app).then(function() {
     process.exit(-2);
 }).then(function() {
     console.log('done');
-    setTimeout(function () {
-        // TODO: some code is not doing proper cleanup, so force-quit
-        console.log('Suspected tileshell.js hangup, attempting to dump reasons for not exiting');
-        whyNodeIsRunning();
-        process.exit(0);
-    }, 500)
 });
 
 
