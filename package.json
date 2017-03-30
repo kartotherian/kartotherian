@@ -20,6 +20,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "express": "^4.15.2",
+    "compression": "^1.6.2",
     "underscore": "^1.8.3",
     "quadtile-index": "^0.0.6",
     "@kartotherian/err": "^0.0.3",
