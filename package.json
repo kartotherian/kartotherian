@@ -19,11 +19,12 @@
     "access": "public"
   },
   "dependencies": {
+    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/input-validator": "^0.0.6",
     "bluebird": "^3.5.0",
     "pbf": "^3.0.5",
-    "underscore": "^1.8.3",
-    "@kartotherian/err": "^0.0.3",
-    "@kartotherian/input-validator": "^0.0.6"
+    "tilelive-promise": "^1.0.1",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "mocha": "^3.2.0",
