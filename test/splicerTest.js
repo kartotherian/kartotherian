@@ -12,36 +12,35 @@ let assert = require('assert'),
     _ = require('underscore');
 
 let fauxSource = function () {};
-fauxSource.getAsync = o => Promise.resolve({tile: o.t, headers: o.h});
+fauxSource.getAsync = o => Promise.resolve({type: o.type, tile: o.t, headers: o.h});
 
 let fauxCore = {
     tilelive: {
         protocols: {}
     },
     loadSource: v => fauxSource,
-    uncompressAsync: v => Promise.resolve(v),
-    compressPbfAsync2: (v,h) => Promise.resolve([v,h])
 };
 
 babel.initKartotherian(fauxCore);
 
 
 describe('Tag recombination', () => {
-    function test(file, languages, expected, compressed) {
+    function test(file, opts, expected) {
         const path = pathLib.resolve(__dirname, 'data', file + '.pbf');
         let pbfData = fs.readFileSync(path);
 
         return babel({
-            protocol: languages ? 'babel:' : 'json2tags:',
-            query: {nameTag: 'name', languages: languages, source: 'a'}
+            protocol: opts.lng ? 'babel:' : 'json2tags:',
+            query: {nameTag: 'name', languages: opts.lng, source: 'a'}
         }).then(
             bbl => {
                 let headers = {xyz: 'abc'};
-                if (compressed) {
+                if (opts.gzip) {
                     headers['Content-Encoding'] = 'gzip';
                     pbfData = zlib.gzipSync(pbfData);
                 }
-                return bbl.getAsync({t: pbfData, h: headers});
+                let getParams = {type: opts.type, t: pbfData, h: headers};
+                return bbl.getAsync(getParams);
             }
         ).then(result => {
             assert.deepStrictEqual(result.headers, {xyz: 'abc'});
@@ -98,11 +97,11 @@ describe('Tag recombination', () => {
         ]
     };
 
-    it('json to tags', () => test('02-multilingual', false, expected_02_multilingual));
-    it('json to tags (gzip)', () => test('02-multilingual', false, expected_02_multilingual, true));
+    it('json to tags', () => test('02-multilingual', {}, expected_02_multilingual));
+    it('json to tags (gzip)', () => test('02-multilingual', {gzip: 1}, expected_02_multilingual));
 
-    it('json to tags bin', () => test('02-multilingual', false, '02-multilingual-alltags'));
-    it('json to tags bin (gzip)', () => test('02-multilingual', false, '02-multilingual-alltags', true));
+    it('json to tags bin', () => test('02-multilingual', {}, '02-multilingual-alltags'));
+    it('json to tags bin (gzip)', () => test('02-multilingual', {gzip: 1}, '02-multilingual-alltags'));
 
     const expected_pick_en = {
         "layers": [
@@ -129,10 +128,10 @@ describe('Tag recombination', () => {
             }
         ]
     };
-    it('pick en', () => test('02-multilingual-alltags', ['en'], expected_pick_en));
-    it('pick en (gzip)', () => test('02-multilingual-alltags', ['en'], expected_pick_en, true));
+    it('pick en', () => test('02-multilingual-alltags', {lng: ['en']}, expected_pick_en));
+    it('pick en (gzip)', () => test('02-multilingual-alltags', {lng: ['en'], gzip: 1}, expected_pick_en));
 
-    it('pick ru', () => test('02-multilingual-alltags', ['ru'], {
+    it('pick ru', () => test('02-multilingual-alltags', {lng: ['ru']}, {
         "layers": [
             {
                 "features": [
@@ -158,7 +157,7 @@ describe('Tag recombination', () => {
         ]
     }));
 
-    it('pick using fallback', () => test('02-multilingual-alltags', ['es', 'fr', 'ru'], {
+    it('pick using fallback', () => test('02-multilingual-alltags', {lng: ['es', 'fr', 'ru']}, {
         "layers": [
             {
                 "features": [
@@ -184,7 +183,7 @@ describe('Tag recombination', () => {
         ]
     }));
 
-    it('pick missing', () => test('02-multilingual-alltags', ['es', 'fr'], {
+    it('pick missing', () => test('02-multilingual-alltags', {lng: ['es', 'fr']}, {
         "layers": [
             {
                 "features": [
@@ -209,4 +208,6 @@ describe('Tag recombination', () => {
             }
         ]
     }));
+
+    it('getGrid', () => test('02-multilingual-alltags', {type:'grid'}));
 });
