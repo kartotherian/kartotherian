@@ -28,11 +28,13 @@ filestore:
     pathname: ./vectors
 ```
 The value does not have to be given in the source, but instead could be dynamically generated.
-For example, the `var` generator pulls the value from the variable store.
+For example, the `env` uses an environment variable, and the `var` generator pulls the value from the variable store.
 The variables are defined in a separate file(s), similar to sources.
 ```
 filestore:
     uri: file://
+    pathname: {env: KARTOTHERIAN_PATH}  # Uses an environment variable
+      # or
     pathname: {var: tilepath}  # Uses a variable named tilepath
 ```
 
@@ -51,8 +53,9 @@ oz:
 ## Value substitutions
 
 In general, these value substitutions are available:
-* `{var:varname}` - the value becomes the value of the variable `varname` from the variables file / variables conf section of the main config file. This might be useful if you want to make all the settings public except for the passwords that are stored in a secure location.
-* `{ref:sourceId}` - the value becomes a reference to another source. Some sources function as filters/converters, pulling data internally from other sources and converting the result on the fly. For example, the [overzoom](https://github.com/kartotherian/overzoom) source pulls data from another source, and if it's not available, tries to find a lower-zoom tile above the given one, and extract a portion of it. Internally, it uses a forwarding sourceref: source.
+* `{env: envVarName}` - the value becomes the value of the environment variable `envVarName`. This might be useful if you want to make all the settings public except for the passwords that are stored in a secure location.
+* `{var: varName}` - the value becomes the value of the variable `varName` from the variables file / variables conf section of the main config file. This might be useful if you want to make all the settings public except for the passwords that are stored in a secure location.
+* `{ref: sourceId}` - the value becomes a reference to another source. Some sources function as filters/converters, pulling data internally from other sources and converting the result on the fly. For example, the [overzoom](https://github.com/kartotherian/overzoom) source pulls data from another source, and if it's not available, tries to find a lower-zoom tile above the given one, and extract a portion of it. Internally, it uses a forwarding sourceref: source.
 * `{npmloader: npm-module-name}` or `{npmloader: ['npm-module-name', 'arg1', 'arg2', ...]}` - if npm module supports loading customization, it should be loaded via the npmloader. Npmloader is only available inside the source's `xml` key.
 * `{npmpath: ['npm-module-name', 'subdir', 'subdir', 'filename']}` - some files may be located inside the NPM modules added to the Kartotherian project, i.e. [osm-bright-source](https://github.com/kartotherian/osm-bright.tm2source). To reference a file inside npm, set npm's value to an array, with the first value being the name of the npm module (resolves to the root of the npm module), and all subsequent strings being subdirs and lastly - the name of the file. Subdirs may be omitted. `npmpath: ["osm-bright-source", "data.xml"]` would resolve to a rooted path `/.../node_modules/osm-bright-source/data.xml`
 

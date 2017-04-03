@@ -19,6 +19,7 @@
     "underscore": "^1.8.3",
     "quadtile-index": "^0.0.6",
     "typedarray-to-buffer": "^3.1.2",
+    "tilelive-promise": "^1.0.5",
     "@kartotherian/err": "^0.0.3",
     "@kartotherian/input-validator": "^0.0.6",
     "@kartotherian/module-loader": "^0.0.4"
