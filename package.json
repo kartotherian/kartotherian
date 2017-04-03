@@ -1,5 +1,5 @@
 {
-  "name": "@mapbox/tilelive-vector",
+  "name": "@kartotherian/tilelive-vector",
   "version": "3.9.4",
   "main": "./index.js",
   "description": "Vector tile => raster tile backend for tilelive",
