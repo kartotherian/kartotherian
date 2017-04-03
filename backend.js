@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var mapnik = require('mapnik');
 var util = require('util');
 var sm = new (require('sphericalmercator'))();
+var uptile = require('tilelive-promise');
 
 module.exports = Backend;
 
@@ -35,64 +36,114 @@ function Backend(opts, callback) {
         backend._fillzoom = 'fillzoom' in info && !isNaN(parseInt(info.fillzoom, 10)) ?
             parseInt(info.fillzoom, 10) :
             undefined;
-        backend._source = source;
+        backend._source = uptile(source);
         if (callback) callback(null, backend);
     }
 };
 
+Backend.prototype.getAsync = function(opts) {
+    let self = this;
+    return new Promise((accept, reject) => {
+        try {
+            if (!self._source) {
+                throw new Error('Tilesource not loaded');
+            }
+            let result;
+            switch (opts.type) {
+                case undefined:
+                case 'tile':
+                    result = _getTile.call(self, opts);
+                    break;
+                default:
+                    result = self._source.getAsync(opts);
+                    break;
+            }
+            accept(result);
+        } catch (err) {
+            reject(err);
+        }
+    });
+};
+
 Backend.prototype.getInfo = function(callback) {
-    if (!this._source) return callback(new Error('Tilesource not loaded'));
-    this._source.getInfo(callback);
+    this.getAsync({type: 'info'}).then(res => {
+        callback(undefined, res.info);
+    }, err => {
+        callback(err);
+    });
+};
+
+// handle additional parameters attached to callback
+Backend.prototype.getTile = function(z, x, y, callback) {
+    this.getAsync({
+        z: z,
+        x: x,
+        y: y,
+        legacy: callback.legacy,
+        scale: callback.scale,
+        upgrade: callback.upgrade,
+        setSrcData: callback.setSrcData
+    }).then(res => {
+        callback(undefined, res.tile, res.headers);
+    }, err => {
+        callback(err);
+    });
 };
 
 // Wrapper around backend.getTile that implements a "locking" cache.
-Backend.prototype.getTile = function(z, x, y, callback) {
-    if (!this._source) return callback(new Error('Tilesource not loaded'));
-    if (z < 0 || x < 0 || y < 0 || x >= Math.pow(2,z) || y >= Math.pow(2,z)) {
-        return callback(new Error('Tile does not exist'));
-    }
+function _getTile(opts) {
     var backend = this;
+
+    return new Promise((accept, reject) => {
+    var z = opts.z, x = opts.x, y = opts.y;
+    if (z < 0 || x < 0 || y < 0 || x >= Math.pow(2,z) || y >= Math.pow(2,z)) {
+        return reject(new Error('Tile does not exist'));
+    }
     var source = backend._source;
     var now = +new Date;
-    var legacy = callback.legacy || false;
-    var scale = callback.scale || backend._scale;
-    var upgrade = callback.upgrade || false;
+    var legacy = opts.legacy || false;
+    var scale = opts.scale || backend._scale;
+    var upgrade = opts.upgrade || false;
 
     // If scale > 1 adjusts source data zoom level inversely.
     // scale 2x => z-1, scale 4x => z-2, scale 8x => z-3, etc.
     if (legacy && z >= backend._minzoom) {
         var d = Math.round(Math.log(scale)/Math.log(2));
-        var bz = (z - d) > backend._minzoom ? z - d : backend._minzoom;
-        var bx = Math.floor(x / Math.pow(2, z - bz));
-        var by = Math.floor(y / Math.pow(2, z - bz));
+        opts.z = (z - d) > backend._minzoom ? z - d : backend._minzoom;
+        opts.x = Math.floor(x / Math.pow(2, z - opts.z));
+        opts.y = Math.floor(y / Math.pow(2, z - opts.z));
     } else {
-        var bz = z | 0;
-        var bx = x | 0;
-        var by = y | 0;
+        opts.z = z | 0;
+        opts.x = x | 0;
+        opts.y = y | 0;
     }
 
     var size = 0;
     var headers = {};
 
     // Overzooming support.
-    if (bz > backend._maxzoom) {
-        bz = backend._maxzoom;
-        bx = Math.floor(x / Math.pow(2, z - bz));
-        by = Math.floor(y / Math.pow(2, z - bz));
+    if (opts.z > backend._maxzoom) {
+        opts.z = backend._maxzoom;
+        opts.x = Math.floor(x / Math.pow(2, z - opts.z));
+        opts.y = Math.floor(y / Math.pow(2, z - opts.z));
         headers['x-vector-backend-object'] = 'overzoom';
     }
 
-    source.getTile(bz, bx, by, function sourceGet(err, body, head) {
+    source.getAsync(opts).catch(function onGetTileError(err) {
         if (typeof backend._fillzoom === 'number' &&
             err && err.message === 'Tile does not exist' &&
-            bz > backend._fillzoom) {
-            bz = backend._fillzoom;
-            bx = Math.floor(x / Math.pow(2, z - bz));
-            by = Math.floor(y / Math.pow(2, z - bz));
+            opts.z > backend._fillzoom) {
+            opts.z = backend._fillzoom;
+            opts.x = Math.floor(x / Math.pow(2, z - opts.z));
+            opts.y = Math.floor(y / Math.pow(2, z - opts.z));
             headers['x-vector-backend-object'] = 'fillzoom';
-            return source.getTile(bz, bx, by, sourceGet);
+            return source.getAsync(opts).catch(onGetTileError);
         }
-        if (err && err.message !== 'Tile does not exist') return callback(err);
+        if (err.message !== 'Tile does not exist') throw err;
+        return {};
+    }).then(result => {
+        var body = result.tile;
+        var head = result.headers;
 
         if (body instanceof mapnik.VectorTile) {
             size = body._srcbytes;
@@ -115,7 +166,7 @@ Backend.prototype.getTile = function(z, x, y, callback) {
             headers = head || {};
             return makevtile(body, 'pbf');
         // Image sources do not allow overzooming (yet).
-        } else if (bz < z && headers['x-vector-backend-object'] !== 'fillzoom') {
+        } else if (opts.z < z && headers['x-vector-backend-object'] !== 'fillzoom') {
             headers['x-vector-backend-object'] = 'empty';
             return makevtile();
         } else {
@@ -141,34 +192,34 @@ Backend.prototype.getTile = function(z, x, y, callback) {
         headers['x-vector-backend-object'] = headers['x-vector-backend-object'] || 'default';
 
         // Pass-thru of an upstream mapnik vector tile (not pbf) source.
-        if (data instanceof mapnik.VectorTile) return callback(null, data, headers);
+        if (data instanceof mapnik.VectorTile) return accept({tile: data, headers: headers});
 
-        var vtile = new mapnik.VectorTile(bz, bx, by);
+        var vtile = new mapnik.VectorTile(opts.z, opts.x, opts.y);
         vtile._srcbytes = size;
-        if (callback.setSrcData) vtile._srcdata = data;
+        if (opts.setSrcData) vtile._srcdata = data;
 
         // null/zero length data is a solid tile be painted.
-        if (!data || !data.length) return callback(null, vtile, headers);
+        if (!data || !data.length) return accept({tile: vtile, headers: headers});
 
         try {
             if (type === 'pbf') {
                 // We use addData here over setData because we know it was just created
                 // and is empty so skips a clear call internally in mapnik.
                 vtile.addData(data,{upgrade:upgrade},function(err) {
-                    if (err) return callback(err);
-                    return callback(null, vtile, headers);
+                    if (err) return reject(err);
+                    return accept({tile: vtile, headers: headers});
                 });
             } else {
                 vtile.addImageBuffer(data, backend._layer, function(err) {
-                    if (err) return callback(err);
-                    return callback(null, vtile, headers);
+                    if (err) return reject(err);
+                    return accept({tile: vtile, headers: headers});
                 });
             }
         } catch (err) {
-            return callback(err);
+            return reject(err);
         }
     };
-};
+})};
 
 // Proxies mapnik vtile.query method with the added convienice of
 // letting the tilelive-vector backend do the hard work of finding
