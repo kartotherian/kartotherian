@@ -1,7 +1,7 @@
 // Allow user to change style via the ?s=xxx URL parameter
 // Uses "osm-intl" as the default style
-var match = location.search.match(/s=([^&\/]*)/);
-var style = (match && match[1]) || 'osm-intl';
+var matchStyle = location.search.match(/s=([^&\/]*)/);
+var style = (matchStyle && matchStyle[1]) || 'osm-intl';
 
 // Create a map
 var map = L.map('map').setView([40.75, -73.96], 4);
@@ -19,7 +19,8 @@ function bracketDevicePixelRatio() {
     return brackets[brackets.length - 1];
 }
 
-var scale = bracketDevicePixelRatio();
+var matchScale = location.search.match(/scale=([.0-9]*)/);
+var scale = (matchScale && parseFloat(matchScale[1])) || bracketDevicePixelRatio();
 var scalex = (scale === 1) ? '' : ('@' + scale + 'x');
 
 // Add a map layer
