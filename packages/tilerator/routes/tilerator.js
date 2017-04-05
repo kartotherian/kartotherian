@@ -7,11 +7,12 @@ let pathLib = require('path'),
     yaml = require('js-yaml'),
     Queue = require('../lib/Queue'),
     common = require('../lib/common'),
-    checkType = require('kartotherian-input-validator'),
-    Err = require('kartotherian-err'),
-    core = require('kartotherian-core'),
+    checkType = require('@kartotherian/input-validator'),
+    Err = require('@kartotherian/err'),
+    core = require('@kartotherian/core'),
+    server = require('@kartotherian/server'),
     info = require('../package.json'),
-    JobProcessor = require('tilerator-jobprocessor').JobProcessor;
+    JobProcessor = require('@kartotherian/jobprocessor').JobProcessor;
 
 let jobProcessor, queue;
 
@@ -169,7 +170,7 @@ function startup(app) {
 
             // Init kartotherian web server
             app.use('/', express.static(pathLib.resolve(__dirname, '../static'), {index: 'admin.html'}));
-            return require('kartotherian-server').init({
+            return server.init({
                 core: core,
                 app: app
             });

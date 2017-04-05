@@ -2,13 +2,13 @@
 
 let Promise = require('bluebird'),
     _ = require('underscore'),
-    Err = require('kartotherian-err'),
-    checkType = require('kartotherian-input-validator'),
-    core = require('kartotherian-core'),
+    Err = require('@kartotherian/err'),
+    checkType = require('@kartotherian/input-validator'),
+    core = require('@kartotherian/core'),
     common = require('../lib/common'),
     kue = require('kue'),
     kueui = require('kue-ui'),
-    Job = require('tilerator-jobprocessor').Job;
+    Job = require('@kartotherian/jobprocessor').Job;
 
 Promise.promisifyAll(kue.Job);
 Promise.promisifyAll(kue.Job.prototype);

@@ -1,9 +1,9 @@
 'use strict';
 
 let _ = require('underscore'),
-    Err = require('kartotherian-err'),
-    core = require('kartotherian-core'),
-    jplib = require('tilerator-jobprocessor'),
+    Err = require('@kartotherian/err'),
+    core = require('@kartotherian/core'),
+    jplib = require('@kartotherian/jobprocessor'),
     fileParser = jplib.fileParser,
     processAll = jplib.processAll,
     Job = jplib.Job;

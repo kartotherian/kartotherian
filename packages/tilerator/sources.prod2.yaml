@@ -4,7 +4,7 @@ genall:
   formats: [pbf]
   uri: bridge://
   xml:
-    npm: ["osm-bright-source", "data.xml"]
+    npm: ["@kartotherian/osm-bright-source", "data.xml"]
   xmlSetDataSource:
     if:
       dbname: gis
@@ -25,7 +25,7 @@ genview:
   maxwidth: 2048
   uri: vector://
   xml:
-    loader: osm-bright-style
+    loader: "@kartotherian/osm-bright-style"
   xmlSetParams:
     source: {ref: genall}
 
@@ -65,7 +65,7 @@ v3view:
   maxwidth: 2048
   uri: vector://
   xml:
-    loader: osm-bright-style
+    loader: "@kartotherian/osm-bright-style"
   xmlSetParams:
     source: {ref: v3}
 
@@ -92,7 +92,7 @@ osm-intl:
   maxwidth: 2048
   uri: vector://
   xml:
-    loader: osm-bright-style
+    loader: "@kartotherian/osm-bright-style"
   xmlSetParams:
     source: {ref: osm-pbf}
   overrideInfo:
@@ -110,7 +110,7 @@ osm:
   maxwidth: 2048
   uri: vector://
   xml:
-    loader: osm-bright-style
+    loader: "@kartotherian/osm-bright-style"
   xmlSetParams:
     source: {ref: osm-pbf}
   xmlExceptLayers: ['country_label', 'place_label', 'poi_label']

@@ -14,7 +14,7 @@ Tilerator also has a `tileshell` script to perform some of the admin tasks witho
 
 ## Configuration
 Inside the `conf` key:
-* `sources` - (required) Either a set of subkeys, a filename, or a list of file names.  See [core](https://github.com/kartotherian/kartotherian-core) on how to configure the sources.
+* `sources` - (required) Either a set of subkeys, a filename, or a list of file names.  See [core](https://github.com/kartotherian/core) on how to configure the sources.
 * `variables` - (optional) specify a set of variables (string key-value pairs) to be used inside sources, or it could be a filename or a list of filenames/objects.
 * `uiOnly`- (optional, boolean) runs Tilerator in UI mode - does not generate tiles, but still allows access to the web-based queue management tools.
 * `daemonOnly`- (optional, boolean) runs Tilerator in daemon mode - generates tiles, but does not allows access to the web-based queue management tools.

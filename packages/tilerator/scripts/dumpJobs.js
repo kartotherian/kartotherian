@@ -7,20 +7,20 @@
 
 'use strict';
 
-var BBPromise = require('bluebird');
+var Promise = require('bluebird');
 var util = require('util');
 var _ = require('underscore');
 
 var kue = require('kue');
-BBPromise.promisifyAll(kue.Job);
-BBPromise.promisifyAll(kue.Job.prototype);
+Promise.promisifyAll(kue.Job);
+Promise.promisifyAll(kue.Job.prototype);
 
 var argv = require('minimist')(process.argv.slice(2));
 
 var opts = {};
 if (argv.redisPrefix) opts.prefix = argv.redisPrefix;
 if (argv.redis) opts.redis = argv.redis;
-var queue = BBPromise.promisifyAll(kue.createQueue(opts));
+var queue = Promise.promisifyAll(kue.createQueue(opts));
 
 var headers = {};
 
@@ -35,11 +35,11 @@ function setVal(res, key, val) {
 }
 
 
-BBPromise.map(['inactive', 'active', 'failed', 'complete', 'delayed'], function (state) {
+Promise.map(['inactive', 'active', 'failed', 'complete', 'delayed'], function (state) {
     return queue
         .stateAsync(state)
         .then(function (ids) {
-            return BBPromise.map(ids, function (id) {
+            return Promise.map(ids, function (id) {
                 return kue.Job
                     .getAsync(id)
                     .then(function (job) {

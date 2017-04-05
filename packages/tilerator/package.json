@@ -1,6 +1,6 @@
 {
   "name": "tilerator",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "Map tiles pre-generation service",
   "main": "./app.js",
   "scripts": {
@@ -10,50 +10,45 @@
     "docker-test": "service-runner docker-test",
     "coverage": "istanbul cover _mocha -- -R spec"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/kartotherian/tilerator.git"
-  },
+  "repository": "kartotherian/tilerator",
   "keywords": [
     "REST",
     "API",
     "service template",
     "MediaWiki"
   ],
-  "author": "Yuri Astrakhan <yurik@wikimedia.org>",
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
   "contributors": [
     "Max Semenik <msemenik@wikimedia.org>"
   ],
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://phabricator.wikimedia.org/tag/maps/"
-  },
+  "bugs": "https://github.com/kartotherian/tilerator/issues",
   "homepage": "https://github.com/kartotherian/tilerator",
 
   "kartotherian": {
     "registerSourceLibs": [
       "tilelive-bridge",
       "tilelive-vector",
-      "kartotherian-autogen",
-      "kartotherian-cassandra",
-      "kartotherian-demultiplexer",
-      "kartotherian-layermixer",
-      "kartotherian-overzoom",
-      "kartotherian-postgres",
-      "kartotherian-substantial"
+      "@kartotherian/autogen",
+      "@kartotherian/cassandra",
+      "@kartotherian/demultiplexer",
+      "@kartotherian/layermixer",
+      "@kartotherian/overzoom",
+      "@kartotherian/postgres",
+      "@kartotherian/substantial"
     ]
   },
 
   "dependencies": {
-    "bluebird": "^3.3.5",
+    "bluebird": "^3.5.0",
     "body-parser": "^1.15.0",
     "bunyan": "^1.8.1",
     "cassandra-uuid": "^0.0.2",
     "compression": "^1.6.1",
     "domino": "^1.0.24",
     "express": "^4.13.4",
-    "js-yaml": "^3.6.0",
-    "preq": "^0.4.11",
+    "js-yaml": "^3.8.2",
+    "preq": "^0.5.2",
     "service-runner": "^2.2.5"
     ,
     "heapdump": "*",
@@ -73,21 +68,26 @@
     "tilelive-bridge": "~2.3.1",
     "tilelive-vector": "~3.9.3",
 
-    "quadtile-index": "^0.0.3",
-    "kartotherian-err": "^0.0.1",
-    "kartotherian-input-validator": "^0.0.3",
-    "kartotherian-core": "git+https://github.com/kartotherian/kartotherian-core.git",
-    "kartotherian-server": "git+https://github.com/kartotherian/kartotherian-server.git",
-    "kartotherian-autogen": "git+https://github.com/kartotherian/kartotherian-autogen.git",
-    "kartotherian-cassandra": "git+https://github.com/kartotherian/kartotherian-cassandra.git",
-    "kartotherian-demultiplexer": "git+https://github.com/kartotherian/kartotherian-demultiplexer.git",
-    "kartotherian-layermixer": "git+https://github.com/kartotherian/kartotherian-layermixer.git",
-    "kartotherian-overzoom": "git+https://github.com/kartotherian/kartotherian-overzoom.git",
-    "kartotherian-postgres": "git+https://github.com/kartotherian/kartotherian-postgres.git",
-    "kartotherian-substantial": "git+https://github.com/kartotherian/kartotherian-substantial.git",
-    "tilerator-jobprocessor": "git+https://github.com/kartotherian/tilerator-jobprocessor.git",
-    "osm-bright-source": "git+https://github.com/kartotherian/osm-bright.tm2source.git",
-    "osm-bright-style": "git+https://github.com/kartotherian/osm-bright.tm2.git"
+    "quadtile-index": "^0.0.6",
+    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/input-validator": "^0.0.6",
+
+    "@kartotherian/core": "^0.0.21",
+    "@kartotherian/server": "^0.0.16",
+
+    "@kartotherian/autogen": "^0.0.10",
+    "@kartotherian/babel": "^0.0.7",
+    "@kartotherian/cassandra": "^0.0.12",
+    "@kartotherian/postgres": "^0.0.10",
+    "@kartotherian/demultiplexer": "^0.0.10",
+    "@kartotherian/layermixer": "^0.0.8",
+    "@kartotherian/overzoom": "^0.0.10",
+    "@kartotherian/substantial": "^0.0.8",
+
+    "@kartotherian/osm-bright-source": "^0.0.4",
+    "@kartotherian/osm-bright-style": "^2.1.3",
+
+    "@kartotherian/jobprocessor": "^0.0.15"
   },
   "optionalDependencies": {
     "bunyan-prettystream": "*"
@@ -95,7 +95,7 @@
   "devDependencies": {
     "extend": "^3.0.0",
     "istanbul": "^0.4.3",
-    "mocha": "^2.4.5",
+    "mocha": "^3.2.0",
     "mocha-jshint": "^2.3.1",
     "mocha-lcov-reporter": "^1.2.0",
     "swagger-router": "^0.4.2"
