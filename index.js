@@ -122,30 +122,94 @@ Vector.prototype.update = function(opts, callback) {
     return;
 };
 
+Vector.prototype.getAsync = function(opts) {
+    let self = this;
+    return new Promise((accept, reject) => {
+        try {
+            if (!self._map) {
+                throw new Error('Tilesource not loaded');
+            }
+            let result;
+            switch (opts.type) {
+                case undefined:
+                case 'tile':
+                    result = _getTileAsync.call(self, opts);
+                    break;
+                case 'grid':
+                    if (!self._map.parameters.interactivity_layer) {
+                        throw new Error('Tilesource has no interactivity_layer');
+                    }
+                    if (!self._map.parameters.interactivity_fields) {
+                        throw new Error('Tilesource has no interactivity_fields');
+                    }
+                    result = _getTileAsync.call(self, opts).then(v => {
+                        // _getTile returns all responses in the "tile" property, rename it to grid
+                        v.grid = v.tile;
+                        delete v.tile;
+                        return v;
+                    });
+                    break;
+                case 'info':
+                    result = _getInfoAsync.call(self);
+                    break;
+                default:
+                    throw new Error(`Unknown type ${opts.type}`);
+            }
+            accept(result);
+        } catch (err) {
+            reject(err);
+        }
+    });
+};
+
+function getAsyncParameters(z, x, y, callback) {
+    return {
+        z: z,
+        x: x,
+        y: y,
+        format: callback.format,
+        scale: callback.scale,
+        profile: callback.profile,
+        legacy: callback.legacy,
+        upgrade: callback.upgrade,
+        renderer: callback.renderer
+    };
+};
+
 Vector.prototype.getTile = function(z, x, y, callback) {
-    if (!this._map) return callback(new Error('Tilesource not loaded'));
-    if (z < 0 || x < 0 || y < 0 || x >= Math.pow(2,z) || y >= Math.pow(2,z)) {
-        return callback(new Error('Tile does not exist'));
-    }
     // Hack around tilelive API - allow params to be passed per request
     // as attributes of the callback function.
-    var format = callback.format || this._format;
-    var scale = callback.scale || this._scale;
-    var profile = callback.profile || false;
-    var legacy = callback.legacy || false;
-    var upgrade = callback.upgrade || false;
+    this.getAsync(getAsyncParameters(z, x, y, callback)).then(res => {
+        callback(undefined, res.tile, res.headers);
+    }, err => {
+        callback(err);
+    });
+};
+
+function _getTileAsync(options) {
+    var source = this;
+    return new Promise((accept, reject) => {
+
+    var z = options.z, x = options.x, y = options.y;
+    if (z < 0 || x < 0 || y < 0 || x >= Math.pow(2,z) || y >= Math.pow(2,z)) {
+        return reject(new Error('Tile does not exist'));
+    }
+    var format = options.format || source._format;
+    var scale = options.scale || source._scale;
+    var profile = options.profile || false;
+    var legacy = options.legacy || false;
+    var upgrade = options.upgrade || false;
     var width = !legacy ? scale * 256 | 0 || 256 : 256;
     var height = !legacy ? scale * 256 | 0 || 256 : 256;
 
-    var source = this;
     var drawtime;
     var loadtime = +new Date;
     var cb = function(err, vtile, head) {
         if (err && err.message !== 'Tile does not exist')
-            return callback(err);
+            return reject(err);
 
         // For xray styles use srcdata tile format.
-        if (!callback.format && source._xray && vtile._srcdata) {
+        if (!options.format && source._xray && vtile._srcdata) {
             var type = tiletype.type(vtile._srcdata);
             format = type === 'jpg' ? 'jpeg' :
                 type === 'webp' ? 'webp' :
@@ -184,22 +248,22 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         headers['x-vector-backend-object'] = head['x-vector-backend-object'];
 
         // Return headers for 'headers' format.
-        if (format === 'headers') return callback(null, headers, headers);
+        if (format === 'headers') return accept({tile:headers, headers:headers});
 
         loadtime = (+new Date) - loadtime;
         drawtime = +new Date;
         var opts = {z:z, x:x, y:y, scale:scale, buffer_size:256 * scale};
         if (format === 'json') {
-            try { return callback(null, vtile.toJSON(), headers); }
-            catch(err) { return callback(err); }
+            try { return accept({tile: vtile.toJSON(), headers:headers}); }
+            catch(err) { return reject(err); }
         } else if (format === 'utf') {
             var surface = new mapnik.Grid(width,height);
             opts.layer = source._map.parameters.interactivity_layer;
             opts.fields = source._map.parameters.interactivity_fields.split(',');
         } else if (format === 'svg') {
             var surface = new mapnik.CairoSurface('svg',width,height);
-            if (callback.renderer || this._renderer) {
-                opts.renderer = callback.renderer || this._renderer;
+            if (options.renderer || source._renderer) {
+                opts.renderer = options.renderer || source._renderer;
             }
         } else {
             var surface = new mapnik.Image(width,height);
@@ -207,19 +271,19 @@ Vector.prototype.getTile = function(z, x, y, callback) {
         vtile.render(source._map, surface, opts, function(err, image) {
             if (err) {
                 err.code = 'EMAPNIK';
-                return callback(err);
+                return reject(err);
             }
             if (format == 'svg') {
                 headers['Content-Type'] = 'image/svg+xml';
-                return callback(null, image.getData(), headers);
+                return accept({tile: image.getData(), headers: headers});
             } else if (format === 'utf') {
                 image.encode({}, function(err, buffer) {
-                    if (err) return callback(err);
-                    return callback(null, buffer, headers);
+                    if (err) return reject(err);
+                    return accept({tile: buffer, headers: headers});
                 });
             } else {
                 image.encode(format, {}, function(err, buffer) {
-                    if (err) return callback(err);
+                    if (err) return reject(err);
 
                     buffer._loadtime = loadtime;
                     buffer._drawtime = (+new Date) - drawtime;
@@ -227,12 +291,12 @@ Vector.prototype.getTile = function(z, x, y, callback) {
 
                     if (profile) buffer._layerInfo = profiler.layerInfo(vtile);
 
-                    return callback(null, buffer, headers);
+                    return accept({tile: buffer, headers: headers});
                 });
             }
         });
     };
-    if (!callback.format && source._xray) {
+    if (!options.format && source._xray) {
         cb.setSrcData = true;
     }
     cb.format = format;
@@ -240,14 +304,18 @@ Vector.prototype.getTile = function(z, x, y, callback) {
     cb.legacy = legacy;
     cb.upgrade = upgrade;
     source._backend.getTile(z, x, y, cb);
+});
 };
 
 Vector.prototype.getGrid = function(z, x, y, callback) {
-    if (!this._map) return callback(new Error('Tilesource not loaded'));
-    if (!this._map.parameters.interactivity_layer) return callback(new Error('Tilesource has no interactivity_layer'));
-    if (!this._map.parameters.interactivity_fields) return callback(new Error('Tilesource has no interactivity_fields'));
     callback.format = 'utf';
-    return this.getTile(z, x, y, callback);
+    var params = getAsyncParameters(z, x, y, callback);
+    params.type = 'grid';
+    this.getAsync(params).then(res => {
+        callback(undefined, res.grid, res.headers);
+    }, err => {
+        callback(err);
+    });
 };
 
 Vector.prototype.getHeaders = function(z, x, y, callback) {
@@ -256,11 +324,21 @@ Vector.prototype.getHeaders = function(z, x, y, callback) {
 };
 
 Vector.prototype.getInfo = function(callback) {
-    if (!this._map) return callback(new Error('Tilesource not loaded'));
-    if (this._info) return callback(null, this._info);
+    this.getAsync({type: 'info'}).then(res => {
+        callback(undefined, res.info);
+    }, err => {
+        callback(err);
+    });
+};
 
-    var params = this._map.parameters;
-    this._info = Object.keys(params).reduce(function(memo, key) {
+function _getInfoAsync() {
+    var source = this;
+    return new Promise((accept, reject) => {
+
+    if (source._info) return accept({info: source._info});
+
+    var params = source._map.parameters;
+    source._info = Object.keys(params).reduce(function(memo, key) {
         switch (key) {
         // The special "json" key/value pair allows JSON to be serialized
         // and merged into the metadata of a mapnik XML based source. This
@@ -268,7 +346,7 @@ Vector.prototype.getInfo = function(callback) {
         // captured by mapnik XML.
         case 'json':
             try { var jsondata = JSON.parse(params[key]); }
-            catch (err) { return callback(err); }
+            catch (err) { return reject(err); }
             Object.keys(jsondata).reduce(function(memo, key) {
                 memo[key] = memo[key] || jsondata[key];
                 return memo;
@@ -287,8 +365,8 @@ Vector.prototype.getInfo = function(callback) {
         }
         return memo;
     }, {});
-    return callback(null, this._info);
-};
+    return accept({info: source._info});
+})};
 
 // Proxies mapnik vtile.query method with the added convienice of
 // letting the tilelive-vector backend do the hard work of finding
@@ -405,7 +483,7 @@ function tm2z(uri, callback) {
     if (typeof uri === 'string') {
         uri = url.parse(uri, true);
         uri.pathname = qs.unescape(uri.pathname);
-    }    
+    }
 
     var maxsize = {
         file: uri.filesize || 750 * 1024,
