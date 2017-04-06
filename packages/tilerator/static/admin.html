@@ -279,17 +279,13 @@
 
     map.on('click', function(e) {
         if (!e.originalEvent.ctrlKey && !e.originalEvent.altKey) return;
-        // path = "http://localhost:6533/osm-intl/4/4/4@1.3x.png"
-        var tileRE = /^https?:\/\/[^\/]+\/[^\/]+\/([0-9]+)\/([0-9]+)\/([0-9]+)(@[0-9]+(\.[0-9]+)?x)?\.[a-z]+$/g;
-        var match = tileRE.exec(e.originalEvent.target.currentSrc);
-        if (!match) return;
+        if (!e.latlng) return;
 
-        var zoom = parseInt(match[1]), x = parseInt(match[2]), y = parseInt(match[3]);
-
+        var tile = map.project(e.latlng).divideBy(256).floor();
         var req = {};
-        addField(req, 'zoom', zoom);
-        addField(req, 'x', x);
-        addField(req, 'y', y);
+        addField(req, 'zoom', map.getZoom());
+        addField(req, 'x', tile.x);
+        addField(req, 'y', tile.y);
         addCommonFields(req);
         postCommand('add', req);
     });
