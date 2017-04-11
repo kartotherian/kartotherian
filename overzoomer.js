@@ -47,21 +47,12 @@ OverZoomer.prototype.getAsync = Promise.method(function(opts) {
                 return res;
             }
 
-            // Extract portion of the higher zoom tile as a new tile
-            let resultP;
             if (!res.headers) {
                 res.headers = {};
             }
-            const contentEnc = res.headers['Content-Encoding'];
-            if (contentEnc && contentEnc === 'gzip') {
-                // Re-compression should be done by the final layer
-                delete res.headers['Content-Encoding'];
-                resultP = zlib.gunzipAsync(res.tile);
-            } else {
-                resultP = Promise.resolve(res.tile);
-            }
 
-            return resultP.then(
+            // Extract portion of the higher zoom tile as a new tile
+            return core.uncompressAsync(res.tile, res.headers).then(
                 pbf => core.extractSubTileAsync(v, opts.z, opts.x, opts.y, opts2.z, opts2.x, opts2.y)
             ).then(pbf => {
                 res.tile = pbf;
