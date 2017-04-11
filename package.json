@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/overzoom",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Overzoom tile source for Kartotherian map tile server",
   "keywords": [
     "kartotherian",
