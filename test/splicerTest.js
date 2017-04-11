@@ -1,15 +1,15 @@
 'use strict';
 
-let assert = require('assert'),
-    Promise = require('bluebird'),
-    pathLib = require('path'),
-    fs = Promise.promisifyAll(require('fs')),
-    zlib = require('zlib'),
-    babel = Promise.promisify(require('..')),
-    uptile = require('tilelive-promise'),
-    tileCodec = require('../lib/tileCodec'),
-    PbfSplicer = require('../lib/PbfSplicer'),
-    _ = require('underscore');
+const assert = require('assert');
+const Promise = require('bluebird');
+const pathLib = require('path');
+const fs = Promise.promisifyAll(require('fs'));
+const zlib = require('zlib');
+const babel = Promise.promisify(require('..'));
+const uptile = require('tilelive-promise');
+const tileCodec = require('../lib/tileCodec');
+const PbfSplicer = require('../lib/PbfSplicer');
+const _ = require('underscore');
 
 let fauxSource = function () {};
 fauxSource.getAsync = o => Promise.resolve({type: o.type, tile: o.t, headers: o.h});
@@ -30,8 +30,8 @@ describe('Tag recombination', () => {
         let pbfData = fs.readFileSync(path);
 
         return babel({
-            protocol: opts.lng ? 'babel:' : 'json2tags:',
-            query: {nameTag: 'name', languages: opts.lng, source: 'a'}
+            protocol: opts.lng !== undefined ? 'babel:' : 'json2tags:',
+            query: {nameTag: 'name', defaultLanguage: opts.lng || undefined, languageMap: opts.map, source: 'a'}
         }).then(
             bbl => {
                 let headers = {xyz: 'abc'};
@@ -39,7 +39,7 @@ describe('Tag recombination', () => {
                     headers['Content-Encoding'] = 'gzip';
                     pbfData = zlib.gzipSync(pbfData);
                 }
-                let getParams = {type: opts.type, t: pbfData, h: headers};
+                let getParams = {type: opts.type, t: pbfData, h: headers, lang: opts.rlang};
                 return bbl.getAsync(getParams);
             }
         ).then(result => {
@@ -128,26 +128,28 @@ describe('Tag recombination', () => {
             }
         ]
     };
-    it('pick en', () => test('02-multilingual-alltags', {lng: ['en']}, expected_pick_en));
-    it('pick en (gzip)', () => test('02-multilingual-alltags', {lng: ['en'], gzip: 1}, expected_pick_en));
+    it('pick en', () => test('02-multilingual-alltags', {lng: 'en'}, expected_pick_en));
+    it('pick en (gzip)', () => test('02-multilingual-alltags', {lng: 'en', gzip: 1}, expected_pick_en));
 
-    it('pick ru', () => test('02-multilingual-alltags', {lng: ['ru']}, {
+    it('pick ru', () => test('02-multilingual-alltags', {lng: 'ru'}, {
         "layers": [
             {
                 "features": [
                     {
                         "type": 1,
                         "id": 5,
-                        "tags": [0, 0, 1, 1],
+                        "tags": [0, 0, 1, 1, 2, 2],
                         "geometry": [9, 1599, 4288]
                     }
                 ],
                 "keys": [
                     "class",
-                    "name"
+                    "name",
+                    "name_"
                 ],
                 "values": [
                     {"tag": 1, "value": "city"},
+                    {"tag": 1, "value": "Vancouver"},
                     {"tag": 1, "value": "Ванкувер"}
                 ],
                 "version": 2,
@@ -157,23 +159,25 @@ describe('Tag recombination', () => {
         ]
     }));
 
-    it('pick using fallback', () => test('02-multilingual-alltags', {lng: ['es', 'fr', 'ru']}, {
+    it('pick ru dyn', () => test('02-multilingual-alltags', {lng: false, rlang: 'ru'}, {
         "layers": [
             {
                 "features": [
                     {
                         "type": 1,
                         "id": 5,
-                        "tags": [0, 0, 1, 1],
+                        "tags": [0, 0, 1, 1, 2, 2],
                         "geometry": [9, 1599, 4288]
                     }
                 ],
                 "keys": [
                     "class",
-                    "name"
+                    "name",
+                    "name_"
                 ],
                 "values": [
                     {"tag": 1, "value": "city"},
+                    {"tag": 1, "value": "Vancouver"},
                     {"tag": 1, "value": "Ванкувер"}
                 ],
                 "version": 2,
@@ -183,7 +187,35 @@ describe('Tag recombination', () => {
         ]
     }));
 
-    it('pick missing', () => test('02-multilingual-alltags', {lng: ['es', 'fr']}, {
+    it('pick using fallback', () => test('02-multilingual-alltags', {lng: 'es', map: {'es': ['fr', 'ru']}}, {
+        "layers": [
+            {
+                "features": [
+                    {
+                        "type": 1,
+                        "id": 5,
+                        "tags": [0, 0, 1, 1, 2, 2],
+                        "geometry": [9, 1599, 4288]
+                    }
+                ],
+                "keys": [
+                    "class",
+                    "name",
+                    "name_"
+                ],
+                "values": [
+                    {"tag": 1, "value": "city"},
+                    {"tag": 1, "value": "Vancouver"},
+                    {"tag": 1, "value": "Ванкувер"}
+                ],
+                "version": 2,
+                "name": "place",
+                "extent": 4096
+            }
+        ]
+    }));
+
+    it('pick missing', () => test('02-multilingual-alltags', {lng: 'es', map: {'es': ['fr']}}, {
         "layers": [
             {
                 "features": [

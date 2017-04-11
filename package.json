@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/babel",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Tile source to support multilingual maps",
   "main": "lib/Babel.js",
   "scripts": {
@@ -21,6 +21,7 @@
   "dependencies": {
     "@kartotherian/err": "^0.0.3",
     "@kartotherian/input-validator": "^0.0.6",
+    "language-scripts": "^1.0.2",
     "bluebird": "^3.5.0",
     "pbf": "^3.0.5",
     "tilelive-promise": "^1.0.1",
