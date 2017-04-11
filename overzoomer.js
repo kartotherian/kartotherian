@@ -90,7 +90,7 @@ OverZoomer.prototype.getInfo = function getInfo(callback) {
 
 OverZoomer.initKartotherian = function initKartotherian(cor) {
     core = cor;
-    core.datalive.protocols['overzoom:'] = OverZoomer;
+    core.tilelive.protocols['overzoom:'] = OverZoomer;
 };
 
 module.exports = OverZoomer;
