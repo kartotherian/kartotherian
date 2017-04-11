@@ -10,18 +10,17 @@ const uptile = require('tilelive-promise');
 const tileCodec = require('../lib/tileCodec');
 const PbfSplicer = require('../lib/PbfSplicer');
 const _ = require('underscore');
+const core = require('@kartotherian/core');
 
 let fauxSource = function () {};
 fauxSource.getAsync = o => Promise.resolve({type: o.type, tile: o.t, headers: o.h});
 
-let fauxCore = {
-    tilelive: {
-        protocols: {}
-    },
-    loadSource: v => fauxSource,
+core.tilelive = {
+    protocols: {}
 };
+core.loadSource = v => fauxSource
 
-babel.initKartotherian(fauxCore);
+babel.initKartotherian(core);
 
 
 describe('Tag recombination', () => {
@@ -31,7 +30,13 @@ describe('Tag recombination', () => {
 
         return babel({
             protocol: opts.lng !== undefined ? 'babel:' : 'json2tags:',
-            query: {nameTag: 'name', defaultLanguage: opts.lng || undefined, languageMap: opts.map, source: 'a'}
+            query: {
+                nameTag: 'name',
+                defaultLanguage: opts.lng || undefined,
+                languageMap: opts.map,
+                source: 'a',
+                combineName: opts.comb
+            }
         }).then(
             bbl => {
                 let headers = {xyz: 'abc'};
@@ -151,6 +156,32 @@ describe('Tag recombination', () => {
                     {"tag": 1, "value": "city"},
                     {"tag": 1, "value": "Vancouver"},
                     {"tag": 1, "value": "Ванкувер"}
+                ],
+                "version": 2,
+                "name": "place",
+                "extent": 4096
+            }
+        ]
+    }));
+
+    it('pick ru combine', () => test('02-multilingual-alltags', {lng: 'ru', comb: true}, {
+        "layers": [
+            {
+                "features": [
+                    {
+                        "type": 1,
+                        "id": 5,
+                        "tags": [0, 0, 1, 1],
+                        "geometry": [9, 1599, 4288]
+                    }
+                ],
+                "keys": [
+                    "class",
+                    "name"
+                ],
+                "values": [
+                    {"tag": 1, "value": "city"},
+                    {"tag": 1, "value": "Ванкувер (Vancouver)"}
                 ],
                 "version": 2,
                 "name": "place",
