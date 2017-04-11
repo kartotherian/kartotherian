@@ -23,8 +23,15 @@ var matchScale = location.search.match(/scale=([.0-9]*)/);
 var scale = (matchScale && parseFloat(matchScale[1])) || bracketDevicePixelRatio();
 var scalex = (scale === 1) ? '' : ('@' + scale + 'x');
 
+var query = '';
+
+var matchLang = location.search.match(/lang=([-_a-zA-Z]+)/);
+if (matchLang) {
+    query = '?lang=' + matchLang[1];
+}
+
 // Add a map layer
-L.tileLayer(style + '/{z}/{x}/{y}' + scalex + '.png', {
+L.tileLayer(style + '/{z}/{x}/{y}' + scalex + '.png' + query, {
     maxZoom: 18,
     attribution: 'Map data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
     id: 'map-01'
