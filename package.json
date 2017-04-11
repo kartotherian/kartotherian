@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
+    "tilelive-promise": "^1.0.5",
     "@kartotherian/err": "^0.0.3",
     "@kartotherian/input-validator": "^0.0.6"
   }
