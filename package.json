@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/server",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Serves Kartotherian maps",
   "main": "lib/server.js",
   "scripts": {
