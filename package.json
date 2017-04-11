@@ -26,7 +26,7 @@
     "numeral": "~1.5.3",
     "sphericalmercator": "~1.0.5",
     "spherical": "~0.1.0",
-    "tilelive-promise": "^1.0.5",
+    "tilelive-promise": "^2.0.0",
     "underscore": "~1.8.0"
   },
   "devDependencies": {
