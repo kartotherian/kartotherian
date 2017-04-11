@@ -13,12 +13,12 @@ const _ = require('underscore');
 const core = require('@kartotherian/core');
 
 let fauxSource = function () {};
-fauxSource.getAsync = o => Promise.resolve({type: o.type, tile: o.t, headers: o.h});
+fauxSource.getAsync = o => Promise.resolve({type: o.type, data: o.t, headers: o.h});
 
 core.tilelive = {
     protocols: {}
 };
-core.loadSource = v => fauxSource
+core.loadSource = v => fauxSource;
 
 babel.initKartotherian(core);
 
@@ -52,10 +52,10 @@ describe('Tag recombination', () => {
             if (typeof expected === 'string') {
                 // Binary compare with the stored file
                 expected = fs.readFileSync(pathLib.resolve(__dirname, 'data', expected + '.pbf'));
-                assert.deepStrictEqual(result.tile, expected);
+                assert.deepStrictEqual(result.data, expected);
             } else if (expected !== undefined) {
                 // Object compare with the provided JSON
-                const dec = tileCodec.decodeTile(result.tile);
+                const dec = tileCodec.decodeTile(result.data);
                 assert.deepStrictEqual(dec, expected);
             }
         });
