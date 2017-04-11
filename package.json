@@ -64,7 +64,7 @@
     "mapnik": "~3.5.0",
     "tilelive": "~5.12.2",
     "tilelive-bridge": "~2.3.1",
-    "@kartotherian/tilelive-vector": "3.9.5-beta.0",
+    "@kartotherian/tilelive-vector": "3.9.5-beta.1",
     "tilejson": "^1.0.3",
     "@kartotherian/core": "^0.0.26",
     "@kartotherian/server": "^0.0.21",
