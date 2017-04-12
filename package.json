@@ -22,7 +22,7 @@
     "tilelive-promise": "^2.0.0",
     "@kartotherian/err": "^0.0.3",
     "@kartotherian/input-validator": "^0.0.6",
-    "@kartotherian/module-loader": "^0.0.4"
+    "@kartotherian/module-loader": "^0.0.5"
   },
   "devDependencies": {
     "mocha": "^3.2.0"
