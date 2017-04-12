@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/module-loader",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Kartotherian loader that instantiates tilelive and Kartotherian modules",
   "main": "lib/index.js",
   "scripts": {
