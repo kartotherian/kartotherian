@@ -32,7 +32,7 @@ if (matchLang) {
 
 // Add a map layer
 L.tileLayer(style + '/{z}/{x}/{y}' + scalex + '.png' + query, {
-    maxZoom: 18,
+    maxZoom: 20,
     attribution: 'Map data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
     id: 'map-01'
 }).addTo(map);
