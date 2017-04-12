@@ -13,8 +13,13 @@ function test(opts, expected) {
 
 function xml(opts) {
     opts = opts || {};
-    let source = opts.source || '<![CDATA[<a/>]]>';
-    let layerOptional = opts.excludeOptional ? '' : `
+
+    if (opts.source === undefined){
+        opts.source = '<![CDATA[<a/>]]>';
+    }
+    const source = !opts.source ? '' : `\n    <Parameter name="source">${opts.source}</Parameter>`;
+
+    const layerOptional = opts.excludeOptional ? '' : `
   <Layer name="layerOptional">
     <StyleName>Optional</StyleName>
   </Layer>`;
@@ -22,8 +27,7 @@ function xml(opts) {
     // `<?xml version="1.0" encoding="utf-8"?><!DOCTYPE Map[]>
     return `<Map srs="abc"${opts.attrs || ''}>
   <Parameters>
-    <Parameter name="attribution"><![CDATA[<a/>]]></Parameter>
-    <Parameter name="source">${source}</Parameter>
+    <Parameter name="attribution"><![CDATA[<a/>]]></Parameter>${source}
   </Parameters>
   <Layer name="layerAlways">
     <StyleName>Always</StyleName>
@@ -37,6 +41,13 @@ describe('xmlLoader', () => {
 
     it('xmlSetParams', test({
         xml: xml(),
+        xmlSetParams: {
+            source: {ref: "sourceId"}
+        }
+    }, xml({source: 'sourceId'})));
+
+    it('xmlSetParams new', test({
+        xml: xml({source: null}),
         xmlSetParams: {
             source: {ref: "sourceId"}
         }
