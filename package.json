@@ -2,6 +2,9 @@
   "name": "kartotherian",
   "version": "0.0.30",
   "description": "Renders map tiles",
+  "bin": {
+    "kartotherian": "./app.js"
+  },
   "main": "./app.js",
   "scripts": {
     "start": "service-runner",
@@ -29,26 +32,6 @@
     "url": "https://phabricator.wikimedia.org/tag/maps/"
   },
   "homepage": "https://github.com/kartotherian/kartotherian",
-  "kartotherian": {
-    "registerSourceLibs": [
-      "tilelive-bridge",
-      "@kartotherian/tilelive-vector",
-      "@kartotherian/autogen",
-      "@kartotherian/babel",
-      "@kartotherian/cassandra",
-      "@kartotherian/demultiplexer",
-      "@kartotherian/layermixer",
-      "@kartotherian/overzoom",
-      "@kartotherian/postgres",
-      "@kartotherian/substantial",
-      "@kartotherian/tilelive-http",
-      "tilejson"
-    ],
-    "requestHandlers": [
-      "@kartotherian/maki",
-      "@kartotherian/snapshot"
-    ]
-  },
   "dependencies": {
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
@@ -64,24 +47,8 @@
     "mapnik": "~3.5.0",
     "tilelive": "~5.12.2",
     "tilelive-bridge": "~2.3.1",
-    "@kartotherian/tilelive-vector": "3.9.5-beta.1",
-    "tilejson": "^1.0.3",
-    "@kartotherian/core": "^0.0.27",
-    "@kartotherian/server": "^0.0.21",
-    "@kartotherian/autogen": "^0.0.10",
-    "@kartotherian/babel": "^0.1.4",
-    "@kartotherian/cassandra": "^0.0.12",
-    "@kartotherian/postgres": "^0.0.10",
-    "@kartotherian/demultiplexer": "^0.0.10",
-    "@kartotherian/layermixer": "^0.0.8",
-    "@kartotherian/overzoom": "^0.0.14",
-    "@kartotherian/substantial": "^0.0.8",
-    "@kartotherian/tilelive-http": "^0.12.1",
-    "@kartotherian/osm-bright-source": "^0.0.4",
-    "@kartotherian/osm-bright-style": "^2.1.3",
-    "@kartotherian/geoshapes": "^0.0.13",
-    "@kartotherian/maki": "^0.0.8",
-    "@kartotherian/snapshot": "^0.3.4"
+    "@kartotherian/core": "^0.1.1",
+    "@kartotherian/server": "^0.0.21"
   },
   "optionalDependencies": {
     "bunyan-prettystream": "*"
@@ -93,22 +60,5 @@
     "mocha-jshint": "^2.3.1",
     "mocha-lcov-reporter": "^1.3.0",
     "swagger-router": "^0.5.6"
-  },
-  "deploy": {
-    "node": "6.9.1",
-    "target": "debian",
-    "dependencies": {
-      "_all": [
-        "libcairo2-dev",
-        "libgif-dev",
-        "libpango1.0-dev"
-      ],
-      "ubuntu": [
-        "libjpeg62-dev"
-      ],
-      "debian": [
-        "libjpeg62-turbo-dev"
-      ]
-    }
   }
 }

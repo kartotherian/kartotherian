@@ -1,6 +1,4 @@
-# Maps Tile service for Wikipedia
-
-This code is cross-hosted at [gerrit](https://git.wikimedia.org/summary/maps%2Fkartotherian)
+# Map Tile service 
 
 Maps nodejs server for vector-based tiles and snapshots, designed for Wikipedia and other sites. It ties together a number of [MapBox](https://github.com/mapbox) components for vector and raster rendering based on [Mapnik 3](https://github.com/mapnik/mapnik), and uses [service runner](https://github.com/wikimedia/service-runner) for scalability, performance monitoring and stability.
 
@@ -39,25 +37,12 @@ At this point, only "pin" is supported for the base. The color is a 3 digit or 6
 ## Very quick start
 
 ```
-git clone https://github.com/kartotherian/kartotherian.git  # Clone the repository
+git clone https://github.com/kartotherian/kartotherian.git
 cd kartotherian
-```
-
-Edit `package.json`
-* **Add** these lines to the `dependencies` section:
-```
-    "tilejson": "*",
-    "@kartotherian/tilelive-http": "^0.12.1",
-```
-* **Add** this line to the `registerSourceLibs` section:
-```
-    "@kartotherian/tilelive-http",
-```
-* **Remove** `kartotherian-geoshapes` line from `requestHandlers` section.
-
-```
 npm install
-node server.js -c config.external.yaml
+npm install @kartotherian/tilelive-vector
+npm install @kartotherian/tilelive-http
+node server.js -c configs/config.external.yaml
 ```
 
 Browse to http://localhost:6533/

@@ -1,0 +1,37 @@
+# Number of worker processes to spawn.
+# Set to 0 to run everything in a single process without clustering.
+# Use 'ncpu' to run as many workers as there are CPU units
+num_workers: 0
+
+# Log error messages and gracefully restart a worker if v8 reports that it
+# uses more heap (note: not RSS) than this many mb.
+worker_heap_limit_mb: 250
+
+# Logger info
+logging:
+  level: trace
+
+services:
+  - name: kartotherian
+    module: ./app.js
+
+
+    conf:
+      port: 6533
+      # Comment this out to allow connections from everywhere
+      interface: localhost
+
+      # Kartotherian/Tilelive NPM modules
+      modules:
+        - "tilelive-bridge"                 # bridge://
+        - "@kartotherian/tilelive-vector"   # vector://
+        - "@kartotherian/autogen"           # autogen://
+        - "@kartotherian/babel"             # babel:// and json2tags://
+        - "@kartotherian/cassandra"         # cassandra://
+        - "@kartotherian/demultiplexer"     # demultiplexer://
+        - "@kartotherian/layermixer"        # layermixer://
+        - "@kartotherian/overzoom"          # overzoom://
+        - "@kartotherian/postgres"          # postgres://
+        - "@kartotherian/substantial"       # substantial://
+      variables: {}
+      sources: sources.sample.yaml

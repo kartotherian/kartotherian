@@ -1,0 +1,156 @@
+# Number of worker processes to spawn.
+# Set to 0 to run everything in a single process without clustering.
+# Use 'ncpu' to run as many workers as there are CPU units
+num_workers: 0
+
+# Log error messages and gracefully restart a worker if v8 reports that it
+# uses more heap (note: not RSS) than this many mb.
+worker_heap_limit_mb: 250
+
+# Logger info
+logging:
+  level: trace
+  streams:
+    - type: debug
+
+services:
+  - name: kartotherian
+    # a relative path or the name of an npm package, if different from name
+    module: ./app.js
+    # optionally, a version constraint of the npm package
+    # version: ^0.4.0
+    # per-service config
+    conf:
+      port: 6533
+      # interface: localhost # uncomment to only listen on localhost
+      # more per-service config settings
+      # the location of the spec, defaults to spec.yaml if not specified
+      spec: ./spec.template.yaml
+      # allow cross-domain requests to the API (default '*')
+      # cors: '*'
+      # to disable use:
+      cors: false
+      # to restrict to a particular domain, use:
+      # cors: restricted.domain.org
+      # content for the CSP headers
+      # csp: false  # uncomment this line to disable sending them
+      # URL of the outbound proxy to use (complete with protocol)
+      # proxy: http://my.proxy.org:8080
+      # the list of domains for which not to use the proxy defined above
+      # no_proxy_list:
+      #   - domain1.com
+      #   - domain2.org
+      # the list of incoming request headers that can be logged; if left empty,
+      # the following headers are allowed: cache-control, content-length,
+      # content-type, if-match, user-agent, x-request-id
+      # log_header_whitelist:
+      #   - cache-control
+      #   - content-length
+      #   - content-type
+      #   - if-match
+      #   - user-agent
+      #   - x-request-id
+      # Uncomment to restrict connections to localhost only
+      # interface: localhost
+
+      # Kartotherian/Tilelive NPM modules
+      modules:
+        - "tilelive-bridge"                 # bridge://
+        - "@kartotherian/tilelive-vector"   # vector://
+        - "@kartotherian/autogen"           # autogen://
+        - "@kartotherian/babel"             # babel:// and json2tags://
+        - "@kartotherian/cassandra"         # cassandra://
+        - "@kartotherian/demultiplexer"     # demultiplexer://
+        - "@kartotherian/layermixer"        # layermixer://
+        - "@kartotherian/overzoom"          # overzoom://
+        - "@kartotherian/postgres"          # postgres://
+        - "@kartotherian/substantial"       # substantial://
+        - "@kartotherian/tilelive-http"     # http://, https://
+        - "tilejson"                        # tilejson://, tilejson+(file|http|https)://
+      # Kartotherian variables and sources
+      variables: {}
+      sources:
+        remote:
+          uri: https://shorter.wmflabs.org/meddo/tile/{z}/{x}/{y}.pbf
+        #  uri: https://maps.wikimedia.org/osm-pbf/{z}/{x}/{y}.pbf
+          overrideInfo:
+            attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+            tiles: ["https://shorter.wmflabs.org/meddo/tile/{z}/{x}/{y}.pbf"]
+        gen:
+          public: true
+          formats: [pbf]
+          uri: bridge://
+          xml: /mnt/tiles/meddo/meddo.xml
+#--          xmlLayers: ['transport']
+#          xmlSetDataSource:
+#            if:
+#              dbname: ct
+#              host: ''
+#              type: postgis
+#            set:
+#              host: localhost
+#              user: {var: osmdb-user}
+#              password: {var: osmdb-pswd}
+        gen2:
+          public: true
+          formats: [pbf]
+          uri: bridge://
+          xml: /mnt/tiles/meddo/meddo.xml
+          xmlSetDataSource:
+            if:
+              dbname: ct
+            set:
+              dbname: ct2
+        json2tags:
+          uri: json2tags://
+          public: true
+          formats: [pbf]
+          params:
+            source: {ref: gen2}
+            tag: name
+        store:
+          public: true
+#          uri: mbtiles:///mnt/tiles/kartotherian/cache.mbtiles
+          uri: file:///mnt/tiles/kartotherian/cache
+        dyn:
+          uri: autogen://
+          params:
+            storage: {ref: store}
+            generator: {ref: json2tags}
+            mingen: 0 # Only generate tiles if missing within this zoom range
+            maxgen: 14
+            minstore: 0  # if generated, only store them if within this zoom range
+            maxstore: 14
+        babel:
+          public: true
+          formats: [pbf]
+          uri: babel://
+          params:
+            source: {ref: dyn}
+            combineName: true
+        osm-intl:
+          public: true
+          formats: [png,json,headers,svg,jpeg]
+          scales: [1.3, 1.5, 2, 2.6, 3]
+          static: true
+          maxheight: 2048
+          maxwidth: 2048
+          uri: vector://
+          xml: /mnt/tiles/brighmed/brighmed.xml
+          xmlSetParams:
+            source: {ref: babel}
+          xmlSetAttrs:
+            font-directory: /mnt/tiles/kartotherian/node_modules/osm-bright-fonts/fonts
+        json:
+          public: true
+          formats: [json]
+          scales: [1.3, 1.5, 2, 2.6, 3]
+          static: true
+          maxheight: 2048
+          maxwidth: 2048
+          uri: vector://
+          xml: /mnt/tiles/brighmed/brighmed.xml
+          xmlSetParams:
+            source: {ref: gen}
+          xmlSetAttrs:
+            font-directory: /mnt/tiles/kartotherian/node_modules/osm-bright-fonts/fonts
