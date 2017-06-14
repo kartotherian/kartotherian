@@ -12,11 +12,11 @@
   },
   "license": "BSD-2-Clause",
   "dependencies": {
-    "tilelive-bridge": "^2.3.1",
+    "@mapbox/tilelive-bridge": "^2.3.1",
     "js-yaml": "^3.2.5",
-    "carto": "^0.14.1",
+    "carto": "^0.18.1",
     "underscore": "^1.7.0",
-    "mapnik-reference": "8.x"
+    "mapnik-reference": "^8.7.0"
   },
   "peerDependencies": {
     "mapnik": "^3.5.0"

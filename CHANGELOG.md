@@ -1,5 +1,9 @@
 # Changes
 
+## v0.6.0 - 6/13/17
+
+* Update dependencies
+
 ## v0.5.0 - 5/27/16
 
 * Update `tilelive-bridge` dependency to support MVT v2 spec.
