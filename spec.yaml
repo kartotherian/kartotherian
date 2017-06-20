@@ -159,7 +159,25 @@ paths:
       x-monitor: false
       produces:
         - image/png
-
+  # geoline service
+  /geoline?getgeojson=1&ids={ids}:
+    get:
+      tags:
+        - kartotherian
+        - maps
+        - geojson
+      description: Returns a json representation of a given line
+      produces:
+        - application/vnd.geo+json
+      x-amples:
+        - title: Moscow
+          request:
+            params:
+              ids: Q649
+          response:
+            status: 200
+            headers:
+              content-type: application/vnd.geo+json; charset=utf-8
   # from routes/root.js
   /robots.txt:
     get:
