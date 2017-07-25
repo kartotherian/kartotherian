@@ -23,4 +23,20 @@ Err.prototype.metrics = function(metrics) {
     return this;
 };
 
+/**
+ * Throw "standard" tile does not exist error.
+ * The error message string is often used to check if tile existance, so it has to be exact
+ */
+Err.throwNoTile = function throwNoTile() {
+    throw new Error('Tile does not exist');
+};
+
+/**
+ * Checks if the error indicates the tile does not exist
+ */
+Err.isNoTileError = function isNoTileError(err) {
+    return err.message === 'Tile does not exist';
+};
+
+
 module.exports = Err;
