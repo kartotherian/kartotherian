@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/overzoom",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Overzoom tile source for Kartotherian map tile server",
   "keywords": [
     "kartotherian",
@@ -21,7 +21,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "tilelive-promise": "^2.0.0",
-    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/err": "^0.0.4",
     "@kartotherian/input-validator": "^0.0.6"
   }
 }

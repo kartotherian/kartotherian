@@ -64,13 +64,13 @@ OverZoomer.prototype.getAsync = Promise.method(function(opts) {
 
     function getSubTile() {
         if (opts2.z < self.minzoom || opts2.z > self.maxzoom) {
-            core.throwNoTile();
+            Err.throwNoTile();
         }
 
         return Promise.try(() => {
             return self.source.getTileAsync(opts2.z, opts2.x, opts2.y);
         }).catch(err => {
-            if (opts2.z > self.minzoom && core.isNoTileError(err)) {
+            if (opts2.z > self.minzoom && Err.isNoTileError(err)) {
                 // Tile is missing, zoom out and repeat
                 opts2.z = opts2.z - 1;
                 opts2.x = Math.floor(opts2.x / 2);
