@@ -1,11 +1,11 @@
 'use strict';
 
-let assert = require('assert'),
-    Promise = require('bluebird'),
-    pathLib = require('path'),
-    fs = Promise.promisifyAll(require('fs')),
-    tileCodec = require('../lib/tileCodec'),
-    PbfSplicer = require('../lib/PbfSplicer');
+const assert = require('assert');
+const Promise = require('bluebird');
+const pathLib = require('path');
+const fs = Promise.promisifyAll(require('fs'));
+const tileCodec = require('../lib/tileCodec');
+const PbfSplicer = require('../lib/PbfSplicer');
 
 describe('PBF round-trip', () => {
 

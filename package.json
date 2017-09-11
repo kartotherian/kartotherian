@@ -31,7 +31,7 @@
     "mocha": "^3.2.0",
     "typedarray-to-buffer": "*",
     "json-stringify-pretty-compact": "*",
-    "@kartotherian/core": "^0.0.25"
+    "@kartotherian/core": "^0.1.1"
   },
   "engines": {
     "node": ">=6.0.0"
