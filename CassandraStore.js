@@ -5,18 +5,17 @@
  CassandraStore is a Cassandra tile storage source for Kartotherian
  */
 
-let util = require('util'),
-    Promise = require('bluebird'),
-    cassandra = require('cassandra-driver'),
-    multistream = require('multistream'),
-    promistreamus = require('promistreamus'),
-    qidx = require('quadtile-index'),
-    checkType = require('@kartotherian/input-validator'),
-    Err = require('@kartotherian/err'),
-    pckg = require('./package.json');
+const util = require('util');
+const Promise = require('bluebird');
+const cassandra = require('cassandra-driver');
+const multistream = require('multistream');
+const promistreamus = require('promistreamus');
+const qidx = require('quadtile-index');
+const checkType = require('@kartotherian/input-validator');
+const Err = require('@kartotherian/err');
+const pckg = require('./package.json');
 
-let core,
-    prepared = {prepare: true};
+const prepared = {prepare: true};
 
 Promise.promisifyAll(cassandra.Client.prototype);
 
@@ -123,10 +122,10 @@ function CassandraStore(uri, callback) {
 CassandraStore.prototype.getTile = function(z, x, y, callback) {
     let self = this;
     return Promise.try(() => {
-        if (z < self.minzoom || z > self.maxzoom) core.throwNoTile();
+        if (z < self.minzoom || z > self.maxzoom) Err.throwNoTile();
         return self.queryTileAsync({zoom: z, idx: qidx.xyToIndex(x, y, z)});
     }).then(row => {
-        if (!row) core.throwNoTile();
+        if (!row) Err.throwNoTile();
         return [row.tile, self.headers];
     }).nodeify(callback, {spread: true});
 };
@@ -409,9 +408,8 @@ CassandraStore.prototype.query = function(options) {
 };
 
 
-CassandraStore.initKartotherian = cor => {
-    core = cor;
-    core.tilelive.protocols['cassandra:'] = CassandraStore;
+CassandraStore.registerProtocols = tilelive => {
+    tilelive.protocols['cassandra:'] = CassandraStore;
 };
 
 Promise.promisifyAll(CassandraStore.prototype);

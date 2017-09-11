@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/cassandra",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Cassandra tile storage for Kartotherian map tile server",
   "main": "CassandraStore.js",
   "scripts": {
@@ -24,7 +24,7 @@
     "multistream": "^2.0.5",
     "promistreamus": "^0.1.14",
     "quadtile-index": "^0.0.6",
-    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/err": "^0.0.4",
     "@kartotherian/input-validator": "^0.0.6"
   }
 }
