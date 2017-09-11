@@ -5,17 +5,15 @@
  PostgresStore is a Postgres tile storage.
  */
 
-let util = require('util'),
-    Promise = require('bluebird'),
-    qidx = require('quadtile-index'),
-    Err = require('@kartotherian/err'),
-    checkType = require('@kartotherian/input-validator'),
-    postgres = require('pg-promise')({promiseLib: Promise}),
-    promistreamus = require('promistreamus'),
-    QueryStream = require('pg-query-stream'),
-    pckg = require('./package.json');
-
-let core;
+const util = require('util');
+const Promise = require('bluebird');
+const qidx = require('quadtile-index');
+const Err = require('@kartotherian/err');
+const checkType = require('@kartotherian/input-validator');
+const postgres = require('pg-promise')({promiseLib: Promise});
+const promistreamus = require('promistreamus');
+const QueryStream = require('pg-query-stream');
+const pckg = require('./package.json');
 
 function PostgresStore(uri, callback) {
     let self = this;
@@ -108,12 +106,12 @@ PostgresStore.prototype.getTile = function(z, x, y, callback) {
     let self = this;
     return Promise.try(() => {
         if (z < self._params.minzoom || z > self._params.maxzoom) {
-            core.throwNoTile();
+            Err.throwNoTile();
         }
         return self.queryTileAsync({zoom: z, idx: qidx.xyToIndex(x, y, z)});
     }).then(row => {
         if (!row) {
-            core.throwNoTile();
+            Err.throwNoTile();
         }
         return [row.tile, self.headers];
     }).catch(this.attachUri).nodeify(callback, {spread: true});
@@ -337,9 +335,8 @@ PostgresStore.prototype.query = function(options) {
 };
 
 
-PostgresStore.initKartotherian = function(cor) {
-    core = cor;
-    core.tilelive.protocols['postgres:'] = PostgresStore;
+PostgresStore.registerProtocols = function(tilelive) {
+    tilelive.protocols['postgres:'] = PostgresStore;
 };
 
 Promise.promisifyAll(PostgresStore.prototype);

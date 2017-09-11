@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/postgres",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "PostgreSQL tile storage for Kartotherian map tile server",
   "keywords": [
     "kartotherian",
@@ -24,7 +24,7 @@
     "pg-query-stream": "^1.0.0",
     "promistreamus": "^0.1.14",
     "quadtile-index": "^0.0.6",
-    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/err": "^0.0.4",
     "@kartotherian/input-validator": "^0.0.6"
   }
 }
