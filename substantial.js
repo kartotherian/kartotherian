@@ -55,7 +55,7 @@ Substantial.prototype.getTile = function(z, x, y, callback) {
         if (self.params.debug) {
             // For debug mode, return predefined tile when no tile error would be thrown otherwise
             p = p.catch(err => {
-                if (core.isNoTileError(err)) {
+                if (Err.isNoTileError(err)) {
                     return self.params.debug;
                 } else {
                     throw err;
@@ -80,7 +80,7 @@ Substantial.prototype._testTile = function _testTile(zoom, x, y, data) {
     // this must be set to the source
     let self = this;
     if (!data) {
-        core.throwNoTile();
+        Err.throwNoTile();
     }
     if (data.length >= self.params.maxsize) {
         return; // generated tile is too big, save
@@ -88,7 +88,7 @@ Substantial.prototype._testTile = function _testTile(zoom, x, y, data) {
     let vt = new core.mapnik.VectorTile(zoom, x, y);
     return core.uncompressAsync(data).then(uncompressed => vt.setDataAsync(uncompressed)).then(() => {
         if (vt.empty()) {
-            core.throwNoTile();
+            Err.throwNoTile();
         } else {
             let layers = vt.names();
             if (layers.length === 0 ||
@@ -96,7 +96,7 @@ Substantial.prototype._testTile = function _testTile(zoom, x, y, data) {
             ) {
                 // TODO: BUG?: should we use query() to check if there are any features?
                 // either no layers, or only contains one whitelisted layer
-                core.throwNoTile();
+                Err.throwNoTile();
             }
         }
     });
@@ -122,7 +122,7 @@ function query(options) {
             }
             isDone = true;
         }).catch(err => {
-            if (core.isNoTileError(err)) {
+            if (Err.isNoTileError(err)) {
                 return getNextValAsync();
             } else {
                 throw err;
