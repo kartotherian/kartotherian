@@ -25,8 +25,7 @@ let args = yargs
             type: 'string',
             nargs: 1,
             coerce: function(arg) {
-                let conf = loadYamlFile(arg).services[0].conf;
-                return {variables: conf.variables, sources: conf.sources};
+                return loadYamlFile(arg).services[0].conf;
             }
         },
         source: {
