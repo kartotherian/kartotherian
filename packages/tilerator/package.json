@@ -101,7 +101,7 @@
     "swagger-router": "^0.4.2"
   },
   "deploy": {
-    "node": "6.9.1",
+    "node": "6.11",
     "target": "debian",
     "install_opts": ["--build-from-source=mapnik", "--fallback-to-build=false"] ,
     "dependencies": {
