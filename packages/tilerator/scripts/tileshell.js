@@ -165,6 +165,7 @@ return tilerator.bootstrap(app).then(function() {
     process.exit(-2);
 }).then(function() {
     console.log('done');
+    process.exit(0);
 });
 
 
