@@ -33,11 +33,12 @@ function CassandraStore(uri, callback) {
         throw err;
     };
 
+    this.getHeaders = () => ({
+       'Content-Type': 'application/x-protobuf',
+       'Content-Encoding': 'gzip'
+    });
+
     return Promise.try(() => {
-        self.headers = {
-            'Content-Type': 'application/x-protobuf',
-            'Content-Encoding': 'gzip'
-        };
         let params = checkType.normalizeUrl(uri).query;
         self._params = params;
 
@@ -126,7 +127,7 @@ CassandraStore.prototype.getTile = function(z, x, y, callback) {
         return self.queryTileAsync({zoom: z, idx: qidx.xyToIndex(x, y, z)});
     }).then(row => {
         if (!row) Err.throwNoTile();
-        return [row.tile, self.headers];
+        return [row.tile, self.getHeaders()];
     }).nodeify(callback, {spread: true});
 };
 
@@ -401,7 +402,7 @@ CassandraStore.prototype.query = function(options) {
         };
         if (options.getTiles) {
             res.tile = value.tile;
-            res.headers = self.headers;
+            res.headers = self.getHeaders();
         }
         return res;
     });
