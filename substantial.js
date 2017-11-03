@@ -83,7 +83,7 @@ Substantial.prototype._testTile = function _testTile(zoom, x, y, data) {
         Err.throwNoTile();
     }
     if (data.length >= self.params.maxsize) {
-        return; // generated tile is too big, save
+        return Promise.resolve(undefined); // generated tile is too big, save
     }
     let vt = new core.mapnik.VectorTile(zoom, x, y);
     return core.uncompressAsync(data).then(uncompressed => vt.setDataAsync(uncompressed)).then(() => {
