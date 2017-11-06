@@ -25,9 +25,8 @@ function Substantial(uri, callback) {
         }
         checkType(params, 'minzoom', 'integer', 0, 0, 22);
         checkType(params, 'maxzoom', 'integer', 22, params.minzoom + 1, 22);
-        checkType(params, 'minsize', 'integer', 0, 0);
+        checkType(params, 'maxsize', 'integer', undefined, 0);
         checkType(params, 'layers', 'string-array', true, 1);
-        checkType(params, 'minsize', 'integer', 0, 0);
         checkType(params, 'debug', 'boolean', false);
         self.params = params;
         return core.loadSource(params.source);
@@ -83,7 +82,7 @@ Substantial.prototype._testTile = function _testTile(zoom, x, y, data) {
         Err.throwNoTile();
     }
     if (data.length >= self.params.maxsize) {
-        return; // generated tile is too big, save
+        return Promise.resolve(undefined); // generated tile is too big, save
     }
     let vt = new core.mapnik.VectorTile(zoom, x, y);
     return core.uncompressAsync(data).then(uncompressed => vt.setDataAsync(uncompressed)).then(() => {
