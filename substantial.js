@@ -25,7 +25,7 @@ function Substantial(uri, callback) {
         }
         checkType(params, 'minzoom', 'integer', 0, 0, 22);
         checkType(params, 'maxzoom', 'integer', 22, params.minzoom + 1, 22);
-        checkType(params, 'maxsize', 'integer', true, 0);
+        checkType(params, 'maxsize', 'integer', undefined, 0);
         checkType(params, 'layers', 'string-array', true, 1);
         checkType(params, 'debug', 'boolean', false);
         self.params = params;
