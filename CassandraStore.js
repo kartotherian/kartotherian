@@ -69,6 +69,8 @@ function CassandraStore(uri, callback) {
         self.maxzoom = typeof params.maxzoom === 'undefined' ? 22 : parseInt(params.maxzoom);
         self.blocksize = typeof params.blocksize === 'undefined' ? 32768 : parseInt(params.blocksize);
         self.maxBatchSize = typeof params.maxBatchSize === 'undefined' ? undefined : parseInt(params.maxBatchSize);
+        self.setLastModified = !!params.setLastModified;
+
         let clientOpts = {contactPoints: self.contactPoints};
         if (params.username || params.password) {
             clientOpts.authProvider = new cassandra.auth.PlainTextAuthProvider(params.username, params.password);
@@ -124,10 +126,19 @@ CassandraStore.prototype.getTile = function(z, x, y, callback) {
     let self = this;
     return Promise.try(() => {
         if (z < self.minzoom || z > self.maxzoom) Err.throwNoTile();
-        return self.queryTileAsync({zoom: z, idx: qidx.xyToIndex(x, y, z)});
+        let queryOptions = {
+            zoom: z,
+            idx: qidx.xyToIndex(x, y, z),
+            getWriteTime: self.setLastModified
+        };
+        return self.queryTileAsync(queryOptions);
     }).then(row => {
         if (!row) Err.throwNoTile();
-        return [row.tile, self.getHeaders()];
+        let headers = self.getHeaders();
+        if (self.setLastModified && row.writeTime){
+            headers['Last-Modified'] = row.writeTime.toUTCString();
+        }
+        return [row.tile, headers];
     }).nodeify(callback, {spread: true});
 };
 
