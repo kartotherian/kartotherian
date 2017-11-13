@@ -126,7 +126,7 @@ CassandraStore.prototype.getTile = function(z, x, y, callback) {
     let self = this;
     return Promise.try(() => {
         if (z < self.minzoom || z > self.maxzoom) Err.throwNoTile();
-        let queryOptions = {
+        const queryOptions = {
             zoom: z,
             idx: qidx.xyToIndex(x, y, z),
             getWriteTime: self.setLastModified
@@ -134,7 +134,7 @@ CassandraStore.prototype.getTile = function(z, x, y, callback) {
         return self.queryTileAsync(queryOptions);
     }).then(row => {
         if (!row) Err.throwNoTile();
-        let headers = self.getHeaders();
+        const headers = self.getHeaders();
         if (self.setLastModified && row.writeTime){
             headers['Last-Modified'] = row.writeTime.toUTCString();
         }
