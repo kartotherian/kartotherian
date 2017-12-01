@@ -81,7 +81,7 @@
     "@kartotherian/osm-bright-source": "^0.0.4",
     "@kartotherian/osm-bright-style": "^2.1.3",
     "@kartotherian/geoshapes": "^0.0.13",
-    "@kartotherian/maki": "^0.0.8",
+    "@kartotherian/maki": "^0.0.10",
     "@kartotherian/snapshot": "^0.3.4"
   },
   "optionalDependencies": {
