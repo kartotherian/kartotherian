@@ -1,6 +1,6 @@
 {
   "name": "tilerator",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Map tiles pre-generation service",
   "main": "./app.js",
   "scripts": {
@@ -84,8 +84,8 @@
     "@kartotherian/overzoom": "^0.0.10",
     "@kartotherian/substantial": "^0.0.8",
 
-    "@kartotherian/osm-bright-source": "^0.0.4",
-    "@kartotherian/osm-bright-style": "^2.1.3",
+    "@kartotherian/osm-bright-source": "^0.0.5",
+    "@kartotherian/osm-bright-style": "^2.1.4",
 
     "@kartotherian/jobprocessor": "^0.0.15"
   },
