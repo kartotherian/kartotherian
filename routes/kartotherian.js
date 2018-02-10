@@ -13,11 +13,25 @@ function startup(app) {
         let sources = new core.Sources();
         return sources.init(app.conf.variables, app.conf.sources);
     }).then(function (sources) {
+        var sourceKey, sourceConfig, sourceConfigs, frontendConfig = {};
         core.setSources(sources);
+
+        sourceConfigs = sources.getSourceConfigs();
+
+        for ( sourceKey in sourceConfigs ) {
+            sourceConfig = sourceConfigs[sourceKey];
+            if ( sourceConfig.public ) {
+                frontendConfig[sourceKey] = {
+                    maxZoom: sourceConfig.maxzoom
+                };
+            }
+        }
+
         return require('@kartotherian/server').init({
             core: core,
             app: app,
-            requestHandlers: core.loadNpmModules('requestHandlers')
+            requestHandlers: core.loadNpmModules('requestHandlers'),
+            config: frontendConfig
         });
     }).return(); // avoid app.js's default route initialization
 }
