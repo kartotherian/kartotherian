@@ -17,7 +17,7 @@ function startup(app) {
         return require('@kartotherian/server').init({
             core: core,
             app: app,
-            requestHandlers: core.loadNpmModules('requestHandlers')
+            requestHandlers: app.conf.requestHandlers.map( rh => require( rh ) )
         });
     }).return(); // avoid app.js's default route initialization
 }
