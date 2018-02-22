@@ -11,7 +11,7 @@ function startup(app) {
 
     return startup.bootstrap(app).then(function() {
         let sources = new core.Sources();
-        return sources.init(app.conf.variables, app.conf.sources);
+        return sources.init(app.conf);
     }).then(function (sources) {
         core.setSources(sources);
         return require('@kartotherian/server').init({
