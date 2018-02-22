@@ -1,6 +1,6 @@
 {
   "name": "@mapbox/abaculus",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "stitches map tiles together for high-res exporting from tm2",
   "main": "index.js",
   "contributors": [
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@mapbox/sphericalmercator": "1.0.x",
-    "mapnik": "~3.6.0",
+    "mapnik": "~3.7.0",
     "d3-queue": "^2.0.2"
   },
   "devDependencies": {

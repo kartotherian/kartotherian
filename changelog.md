@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# v2.2.0
+
+* Updates to mapnik 3.7.0
+
 # v2.1.0
 
 * Switches sphericalmercator to use mapbox repo
