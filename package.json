@@ -29,13 +29,6 @@
     "url": "https://phabricator.wikimedia.org/tag/maps/"
   },
   "homepage": "https://github.com/kartotherian/kartotherian",
-  "kartotherian": {
-    "requestHandlers": [
-      "@kartotherian/geoshapes",
-      "@kartotherian/maki",
-      "@kartotherian/snapshot"
-    ]
-  },
   "dependencies": {
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
