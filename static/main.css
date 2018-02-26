@@ -1,4 +1,6 @@
-html, body, #map {
+html,
+body,
+#map {
   margin: 0;
   height: 100%;
 }

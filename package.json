@@ -4,7 +4,7 @@
   "description": "Serves Kartotherian maps",
   "main": "lib/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt test"
   },
   "repository": "kartotherian/server",
   "keywords": [
@@ -18,13 +18,24 @@
   },
   "homepage": "https://github.com/kartotherian/server",
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "express": "^4.15.2",
-    "compression": "^1.6.2",
-    "underscore": "^1.8.3",
-    "quadtile-index": "^0.0.6",
     "@kartotherian/err": "^0.0.3",
     "@kartotherian/input-validator": "^0.0.6",
-    "leaflet": "^1.0.3"
+    "bluebird": "^3.5.0",
+    "compression": "^1.6.2",
+    "express": "^4.15.2",
+    "leaflet": "^1.0.3",
+    "quadtile-index": "^0.0.6",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-kartotherian": "0.0.2",
+    "eslint-plugin-import": "^2.9.0",
+    "grunt": "1.0.1",
+    "grunt-contrib-watch": "1.0.0",
+    "grunt-eslint": "20.1.0",
+    "grunt-stylelint": "0.9.0",
+    "stylelint": "8.2.0",
+    "stylelint-config-wikimedia": "0.4.2"
   }
 }
