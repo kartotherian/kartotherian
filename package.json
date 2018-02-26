@@ -1,6 +1,6 @@
 {
   "name": "@mapbox/abaculus",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "stitches map tiles together for high-res exporting from tm2",
   "main": "index.js",
   "contributors": [
