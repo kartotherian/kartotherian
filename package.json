@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-config-kartotherian": "0.0.2",
+    "eslint-config-kartotherian": "^0.0.3",
     "eslint-plugin-import": "^2.9.0",
     "grunt": "1.0.1",
     "grunt-contrib-watch": "1.0.0",
