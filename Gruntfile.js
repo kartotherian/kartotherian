@@ -12,7 +12,7 @@ module.exports = function Gruntfile(grunt) {
           '!node_modules/**',
           '!vendor/**',
           '!tests/externals/**',
-          '!static/lib/**'
+          '!static/lib/**',
         ]
       }
     },
@@ -23,7 +23,7 @@ module.exports = function Gruntfile(grunt) {
       },
       all: [
         'static/**/*.css',
-        '!static/lib/**'
+        '!static/lib/**',
       ]
     }
   });

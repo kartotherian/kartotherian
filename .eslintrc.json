@@ -1,10 +1,6 @@
 {
 	"extends": "kartotherian",
 	"rules": {
-		"comma-dangle": [2,"never"],
-		"one-var": [2,"always"],
-		"no-param-reassign": [2,{"props":false}],
-		"no-plusplus": [2,{"allowForLoopAfterthoughts": true}]
 	},
 	"env": {
 		"browser": true
