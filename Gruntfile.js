@@ -13,19 +13,19 @@ module.exports = function Gruntfile(grunt) {
           '!vendor/**',
           '!tests/externals/**',
           '!static/lib/**',
-        ]
-      }
+        ],
+      },
     },
     // Lint – Styling
     stylelint: {
       options: {
-        syntax: 'less'
+        syntax: 'less',
       },
       all: [
         'static/**/*.css',
         '!static/lib/**',
-      ]
-    }
+      ],
+    },
   });
 
   grunt.registerTask('lint', ['eslint', 'stylelint']);
