@@ -52,7 +52,6 @@
     "@kartotherian/babel": "^0.0.7",
     "@kartotherian/cassandra": "^0.0.13",
     "@kartotherian/postgres": "^0.0.11",
-    "@kartotherian/demultiplexer": "^0.0.10",
     "@kartotherian/layermixer": "^0.0.8",
     "@kartotherian/overzoom": "^0.0.10",
     "@kartotherian/substantial": "^0.0.8",
