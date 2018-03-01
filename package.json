@@ -60,7 +60,7 @@
     "@kartotherian/osm-bright-style": "^2.1.4",
     "@kartotherian/geoshapes": "^0.0.13",
     "@kartotherian/maki": "^0.0.10",
-    "@kartotherian/snapshot": "kartotherian/snapshot#master"
+    "@kartotherian/snapshot": "^0.3.5"
   },
   "optionalDependencies": {
     "bunyan-prettystream": "*"
