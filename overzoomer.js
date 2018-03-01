@@ -32,12 +32,12 @@ function OverZoomer(uri, callback) {
 }
 
 OverZoomer.prototype.getAsync = Promise.method(function(opts) {
+    const self = this;
 
     if (opts.type !== undefined && opts.type !== 'tile') {
         return self.source.getAsync(opts);
     }
 
-    const self = this;
     const opts2 = Object.assign({}, opts);
 
     return getSubTile().then(
@@ -53,12 +53,12 @@ OverZoomer.prototype.getAsync = Promise.method(function(opts) {
 
             // Extract portion of the higher zoom tile as a new tile
             return core.uncompressAsync(res.data, res.headers).then(
-                pbf => core.extractSubTileAsync(v, opts.z, opts.x, opts.y, opts2.z, opts2.x, opts2.y)
+                pbf => core.extractSubTileAsync(pbf, opts.z, opts.x, opts.y, opts2.z, opts2.x, opts2.y)
             ).then(pbf => {
                 res.data = pbf;
                 res.headers.OverzoomFrom = opts2.z;
                 return res;
-            });
+            }).then( res => core.compressPbfAsync(res) );
 
         });
 
@@ -66,9 +66,8 @@ OverZoomer.prototype.getAsync = Promise.method(function(opts) {
         if (opts2.z < self.minzoom || opts2.z > self.maxzoom) {
             Err.throwNoTile();
         }
-
         return Promise.try(() => {
-            return self.source.getTileAsync(opts2.z, opts2.x, opts2.y);
+            return self.source.getAsync(opts2);
         }).catch(err => {
             if (opts2.z > self.minzoom && Err.isNoTileError(err)) {
                 // Tile is missing, zoom out and repeat
@@ -82,11 +81,6 @@ OverZoomer.prototype.getAsync = Promise.method(function(opts) {
         });
     }
 });
-
-OverZoomer.prototype.getInfo = function getInfo(callback) {
-    return this.source.getInfo(callback);
-};
-
 
 OverZoomer.initKartotherian = function initKartotherian(cor) {
     core = cor;
