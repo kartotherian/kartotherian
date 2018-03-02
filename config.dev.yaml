@@ -63,8 +63,36 @@ services:
       # interface: localhost
 
       # Kartotherian variables and sources
-      variables: ../variables.yaml
-      sources: ../sources.yaml
+      variables: {}
+      sources: sources.dev.yaml
+
+      modules:
+      - "tilelive-bridge"
+      - "tilelive-vector"
+      - "@kartotherian/autogen"
+      - "@kartotherian/babel"
+      - "@kartotherian/cassandra"
+      - "@kartotherian/layermixer"
+      - "@kartotherian/overzoom"
+      - "@kartotherian/postgres"
+      - "@kartotherian/substantial"
+      - "@kartotherian/tilelive-http"
+      - "tilejson"
+
+      requestHandlers:
+      - "@kartotherian/geoshapes"
+      - "@kartotherian/maki"
+      - "@kartotherian/snapshot"
+
+      geoshapes:
+        allowUserQueries: true
+        database: gis
+        host: localhost
+        lineTable: planet_osm_line
+        password: ''
+        polygonTable: planet_osm_polygon
+        table: planet_osm_polygon
+        user: ''
 
       # allowedDomains:
       #   http:
