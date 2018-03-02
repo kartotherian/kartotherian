@@ -1,5 +1,7 @@
-html, body, #map {
-  margin: 0px;
+html,
+body,
+#map {
+  margin: 0;
   height: 100%;
 }
 
@@ -11,4 +13,9 @@ html, body, #map {
   top: 0;
   z-index: 1000;
   background: #ddd;
+}
+
+/* Allow right click on tiles for easier debugging */
+.leaflet-tile-container {
+  pointer-events: auto;
 }
