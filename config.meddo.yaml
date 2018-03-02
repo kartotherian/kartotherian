@@ -102,6 +102,23 @@ services:
           xmlSetParams:
             source: {ref: babel}
 
+      modules:
+      - "tilelive-bridge"
+      - "tilelive-vector"
+      - "@kartotherian/autogen"
+      - "@kartotherian/babel"
+      - "@kartotherian/cassandra"
+      - "@kartotherian/layermixer"
+      - "@kartotherian/overzoom"
+      - "@kartotherian/postgres"
+      - "@kartotherian/substantial"
+      - "@kartotherian/tilelive-http"
+      - "tilejson"
+
+      requestHandlers:
+      - "@kartotherian/maki"
+      - "@kartotherian/snapshot"
+
       # allowedDomains:
       #   http:
       #     - localhost:8080

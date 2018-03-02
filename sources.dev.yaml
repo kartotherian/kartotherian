@@ -17,7 +17,7 @@ v5:
     cp: 127.0.0.1
     repfactor: 1
     durablewrite: 0
-    createIfMissing: false
+    createIfMissing: true
 
 # View tiles as generated directly from the database. Don't view zoom0-5
 genview:
