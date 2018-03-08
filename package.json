@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/babel",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Tile source to support multilingual maps",
   "main": "lib/Babel.js",
   "scripts": {
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-config-kartotherian": "^0.0.3",
+    "eslint-config-kartotherian": "^0.0.4",
     "grunt": "^1.0.2",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-eslint": "^20.1.0",
