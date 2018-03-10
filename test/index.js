@@ -1,6 +1,1 @@
-'use strict';
-
-
-// Run jshint as part of normal testing
-require('mocha-jshint')();
-
+'use strict'; // eslint-disable-line strict
