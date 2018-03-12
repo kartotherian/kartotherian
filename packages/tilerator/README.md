@@ -53,7 +53,7 @@ http://localhost:6534/add?generatorId=gen&storageId=store&zoom=3
 * `parts` - break the job into NNN independent jobs, allowing it to run in multiple workers and/or machines
 * `idxFrom` - the starting tile index (inclusive, 0 by default)
 * `idxBefore`- generate tiles until this index (non-inclusive, 4^zoom by default)
-* `x` and `y` - generate just one tile at these coordinates. Cannot be used with `idxFrom` or `idxBefore`
+* `x` and `y` - generate just one tile at these coordinates. Cannot be used with `idxFrom` or `idxBefore`. Coordinates are based on the [Slippy Map Tile Names](https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames) system. These can be generated easily with [Geofabrik's calculator](http://tools.geofabrik.de/calc/#type=geofabrik_standard&grid=1).
 * `deleteEmpty` - if true, any non-generated tile (e.g. empty or solid) will be explicitly deleted from the storage (optional, false by default)
 * `keepJob` - if true, the job will not be automatically removed from the que once it successfully completes
 
