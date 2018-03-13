@@ -63,7 +63,24 @@ services:
       #   - user-agent
       #   - x-request-id
 
-      sources: ../sources.yaml
+      sources: ./sources.dev.yaml
+      variables:
+        cassandra-user: cassandra
+        cassandra-pswd: cassandra
+        cassandra-servers:
+        - localhost
+        osmdb-user: ''
+        osmdb-pswd: ''
+
+      modules:
+      - tilelive-bridge
+      - tilelive-vector
+      - "@kartotherian/autogen"
+      - "@kartotherian/cassandra"
+      - "@kartotherian/layermixer"
+      - "@kartotherian/overzoom"
+      - "@kartotherian/postgres"
+      - "@kartotherian/substantial"
 
       # If true, do not enable admin interface
       daemonOnly: false

@@ -24,21 +24,6 @@
   "license": "Apache-2.0",
   "bugs": "https://github.com/kartotherian/tilerator/issues",
   "homepage": "https://github.com/kartotherian/tilerator",
-
-  "kartotherian": {
-    "registerSourceLibs": [
-      "tilelive-bridge",
-      "tilelive-vector",
-      "@kartotherian/autogen",
-      "@kartotherian/cassandra",
-      "@kartotherian/demultiplexer",
-      "@kartotherian/layermixer",
-      "@kartotherian/overzoom",
-      "@kartotherian/postgres",
-      "@kartotherian/substantial"
-    ]
-  },
-
   "dependencies": {
     "bluebird": "^3.5.0",
     "body-parser": "^1.15.0",
@@ -49,45 +34,35 @@
     "express": "^4.13.4",
     "js-yaml": "^3.8.2",
     "preq": "^0.5.2",
-    "service-runner": "^2.2.5"
-    ,
+    "service-runner": "^2.2.5",
     "heapdump": "*",
-
     "minimist": "0.2.*",
     "yargs": "^5.0.0",
     "underscore": "^1.8.3",
     "why-is-node-running": "^1.2.2",
-
     "htcp-purge": "^0.1.2",
     "jade": "^1.11.0",
     "kue": "^0.11.0",
     "kue-ui": "git+https://github.com/nyurik/kue-ui.git",
-
     "mapnik": "~3.5.0",
     "tilelive": "~5.12.2",
     "tilelive-bridge": "~2.3.1",
     "tilelive-vector": "~3.9.3",
-
     "quadtile-index": "^0.0.6",
-    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/err": "^0.0.4",
     "@kartotherian/input-validator": "^0.0.6",
-
-    "@kartotherian/core": "^0.0.21",
-    "@kartotherian/server": "^0.0.16",
-
+    "@kartotherian/core": "^0.1.1",
+    "@kartotherian/server": "^0.0.22",
     "@kartotherian/autogen": "^0.0.10",
     "@kartotherian/babel": "^0.0.7",
-    "@kartotherian/cassandra": "^0.0.12",
-    "@kartotherian/postgres": "^0.0.10",
-    "@kartotherian/demultiplexer": "^0.0.10",
+    "@kartotherian/cassandra": "^0.0.13",
+    "@kartotherian/postgres": "^0.0.11",
     "@kartotherian/layermixer": "^0.0.8",
-    "@kartotherian/overzoom": "^0.0.10",
-    "@kartotherian/substantial": "^0.0.8",
-
+    "@kartotherian/overzoom": "^0.0.16",
+    "@kartotherian/substantial": "^0.0.10",
     "@kartotherian/osm-bright-source": "^0.0.5",
     "@kartotherian/osm-bright-style": "^2.1.4",
-
-    "@kartotherian/jobprocessor": "^0.0.15"
+    "@kartotherian/jobprocessor": "^0.0.18"
   },
   "optionalDependencies": {
     "bunyan-prettystream": "*"
@@ -103,10 +78,19 @@
   "deploy": {
     "node": "6.11",
     "target": "debian",
-    "install_opts": ["--build-from-source=mapnik", "--fallback-to-build=false"] ,
+    "install_opts": [
+      "--build-from-source=mapnik",
+      "--fallback-to-build=false"
+    ],
     "dependencies": {
-      "_all": ["libcairo2-dev", "libgif-dev", "libpango1.0-dev"],
-      "ubuntu": ["libjpeg62-dev"],
+      "_all": [
+        "libcairo2-dev",
+        "libgif-dev",
+        "libpango1.0-dev"
+      ],
+      "ubuntu": [
+        "libjpeg62-dev"
+      ],
       "debian": [
         "libjpeg62-turbo-dev",
         "fonts-dejavu",
@@ -126,7 +110,11 @@
           "repo_url": "https://apt.wikimedia.org/wikimedia",
           "release": "jessie-wikimedia",
           "pool": "backports",
-          "packages": [ "libmapbox-variant-dev", "libmapnik-dev", "mapnik-utils" ]
+          "packages": [
+            "libmapbox-variant-dev",
+            "libmapnik-dev",
+            "mapnik-utils"
+          ]
         }
       ]
     }
