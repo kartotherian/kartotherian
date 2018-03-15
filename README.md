@@ -44,11 +44,6 @@ cd kartotherian
 ```
 
 Edit `package.json`
-* **Add** these lines to the `dependencies` section:
-```
-    "tilejson": "*",
-    "@kartotherian/tilelive-http": "^0.12.1",
-```
 * **Add** this line to the `registerSourceLibs` section:
 ```
     "@kartotherian/tilelive-http",
