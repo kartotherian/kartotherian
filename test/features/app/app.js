@@ -53,7 +53,7 @@ describe('express app', function() {
         });
     });
 
-    it.skip('should get static content gzipped', function() {
+    it('should get static content gzipped', function() {
         // Using 'rp' instead of 'preq' because the latter unzips
         // and removes the 'content-encoding' header.
         return rp({
