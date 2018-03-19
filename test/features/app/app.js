@@ -8,7 +8,6 @@ const rp     = require('request-promise');
 const assert = require('../../utils/assert.js');
 const server = require('../../utils/server.js');
 
-
 describe('express app', function test() {
 	this.timeout(20000);
 
