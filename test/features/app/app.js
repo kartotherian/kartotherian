@@ -35,7 +35,7 @@ describe('express app', function test() {
 	});
 
 	it('should set CSP headers', () => {
-		return rp({
+		return preq.get({
 			uri: `${server.config.uri}robots.txt`,
 		}).then((res) => {
 			assert.deepEqual(res.status, 200);

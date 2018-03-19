@@ -131,6 +131,7 @@ paths:
         - maps
         - geojson
       description: Returns a json representation of a given line
+      x-monitor: false
       produces:
         - application/vnd.geo+json
       x-amples:

@@ -80,7 +80,6 @@ services:
       - "tilejson"
 
       requestHandlers:
-      - "@kartotherian/geoshapes"
       - "@kartotherian/maki"
       - "@kartotherian/snapshot"
 
