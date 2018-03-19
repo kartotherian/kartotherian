@@ -69,11 +69,12 @@ describe('express app', function() {
     });
 
     it('should get static content uncompressed', function() {
-        return preq.get({
+        return rp({
             uri: server.config.uri + 'index.html',
             headers: {
                 'accept-encoding': ''
-            }
+            },
+            resolveWithFullResponse: true
         }).then(function(res) {
             // check that the response is gzip-ed
             assert.deepEqual(res.headers['content-encoding'], undefined, 'Did not expect gzipped contents!');
