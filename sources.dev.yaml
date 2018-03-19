@@ -43,10 +43,6 @@ genviewraw:
     tag: name
     combineName: true
     defaultLanguage: en
-    lang: {query: lang}
-    languageMap:
-      fr: ['es', 'en']
-      es: ['pt', 'fr', 'en']
 
 # View tiles as generated directly from the database. Don't view zoom0-5
 genview:
@@ -163,12 +159,6 @@ osm-localized:
     tag: name
     combineName: true
     defaultLanguage: en
-<<<<<<< HEAD
-=======
-    languageMap:
-      fr: ['es', 'en']
-      es: ['pt', 'fr', 'en']
->>>>>>> Localization of map labels
 
 # Default OSM PBF source
 osm-pbf:
