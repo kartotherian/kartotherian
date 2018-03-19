@@ -81,6 +81,7 @@ services:
       - "@kartotherian/postgres"
       - "@kartotherian/substantial"
       - "@kartotherian/tilelive-vector"
+      - "@kartotherian/babel"
 
       # If true, do not enable admin interface
       daemonOnly: false
