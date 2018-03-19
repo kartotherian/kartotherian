@@ -16,7 +16,7 @@ var extend = require('extend');
 
 // set up the configuration
 var config = {
-    conf: yaml.safeLoad(fs.readFileSync(__dirname + '/../../config.yaml'))
+    conf: yaml.safeLoad(fs.readFileSync(__dirname + '/../../config.test.yaml'))
 };
 // build the API endpoint URI by supposing the actual service
 // is the last one in the 'services' list in the config file
@@ -45,7 +45,6 @@ function start(_options) {
     _options = _options || {};
 
     if (!assert.isDeepEqual(options, _options)) {
-        console.log('server options changed; restarting');
         stop();
         options = _options;
         // set up the config
@@ -55,7 +54,6 @@ function start(_options) {
         .then(function(servers) {
             var server = servers[0];
             stop = function () {
-                console.log('stopping test server');
                 server.close();
                 stop = function () {};
             };

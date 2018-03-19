@@ -2,6 +2,7 @@
 
 
 var preq   = require('preq');
+var rp     = require('request-promise');
 var assert = require('../../utils/assert.js');
 var server = require('../../utils/server.js');
 
@@ -52,12 +53,15 @@ describe('express app', function() {
         });
     });
 
-    it.skip('should get static content gzipped', function() {
-        return preq.get({
-            uri: server.config.uri + 'static/index.html',
+    it('should get static content gzipped', function() {
+        // Using 'rp' instead of 'preq' because the latter unzips
+        // and removes the 'content-encoding' header.
+        return rp({
+            uri: server.config.uri + 'index.html',
             headers: {
                 'accept-encoding': 'gzip, deflate'
-            }
+            },
+            resolveWithFullResponse: true
         }).then(function(res) {
             // check that the response is gzip-ed
             assert.deepEqual(res.headers['content-encoding'], 'gzip', 'Expected gzipped contents!');
@@ -66,7 +70,7 @@ describe('express app', function() {
 
     it('should get static content uncompressed', function() {
         return preq.get({
-            uri: server.config.uri + 'static/index.html',
+            uri: server.config.uri + 'index.html',
             headers: {
                 'accept-encoding': ''
             }

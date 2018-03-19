@@ -62,7 +62,6 @@ function validateExamples(pathStr, defParams, mSpec) {
 
 
 function constructTestCase(title, path, method, request, response) {
-
     return {
         title: title,
         request: {
@@ -90,15 +89,13 @@ function constructTests(paths, defParams) {
     Object.keys(paths).forEach(function(pathStr) {
         Object.keys(paths[pathStr]).forEach(function(method) {
             var p = paths[pathStr][method];
-            var uri;
             if(p.hasOwnProperty('x-monitor') && !p['x-monitor']) {
                 return;
             }
-            uri = new URI(pathStr, {}, true);
             if(!p['x-amples']) {
                 ret.push(constructTestCase(
                     pathStr,
-                    uri.toString({params: defParams}),
+                    pathStr,
                     method,
                     {},
                     {}
@@ -109,7 +106,7 @@ function constructTests(paths, defParams) {
                 ex.request = ex.request || {};
                 ret.push(constructTestCase(
                     ex.title,
-                    uri.toString({params: Object.assign({}, defParams, ex.request.params || {})}),
+                    pathStr,
                     method,
                     ex.request,
                     ex.response || {}
