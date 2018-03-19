@@ -43,13 +43,6 @@ git clone https://github.com/kartotherian/kartotherian.git  # Clone the reposito
 cd kartotherian
 ```
 
-Edit `package.json`
-* **Add** this line to the `registerSourceLibs` section:
-```
-    "@kartotherian/tilelive-http",
-```
-* **Remove** `kartotherian-geoshapes` line from `requestHandlers` section.
-
 ```
 npm install
 node server.js -c config.external.yaml
