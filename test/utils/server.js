@@ -27,11 +27,11 @@ config.service = myService;
 // no forking, run just one process when testing
 config.conf.num_workers = 0;
 // have a separate, in-memory logger only
-config.conf.logging = {
-    name: 'test-log',
-    level: 'trace',
-    stream: logStream()
-};
+// config.conf.logging = {
+//     name: 'test-log',
+//     level: 'trace',
+//     stream: logStream()
+// };
 // make a deep copy of it for later reference
 var origConfig = extend(true, {}, config);
 
