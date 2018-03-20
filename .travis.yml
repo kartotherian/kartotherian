@@ -1,10 +1,9 @@
-language: node_js
+sudo: required
 
-sudo: false
-
-node_js:
-  - "6"
+services:
+  - docker
 
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libgif-dev libstdc++6
+  - docker build -t kart .
+
+script: docker run -v $(pwd):/home/code -w /home/code kart
