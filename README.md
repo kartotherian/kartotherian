@@ -46,7 +46,7 @@ cd kartotherian
 Edit `package.json`
 * **Add** this line to the `registerSourceLibs` section:
 ```
-    "@kartotherian/tilelive-http",
+    "tilelive-http",
 ```
 * **Remove** `kartotherian-geoshapes` line from `requestHandlers` section.
 
