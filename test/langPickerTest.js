@@ -4,31 +4,167 @@ const assert = require('assert');
 const LanguagePicker = require('../lib/LanguagePicker');
 
 describe('LanguagePicker', () => {
-  function test(languages, expected, ...testVals) {
-    return () => {
-      const lp = new LanguagePicker({
+  const cases = [
+    {
+      msg: 'No values given',
+      langCode: 'en',
+      values: undefined,
+      expected: undefined,
+    },
+    {
+      msg: 'Pick first (only) value',
+      langCode: 'en',
+      values: [
+        { en: 'en value' },
+      ],
+      expected: 'en value',
+    },
+    {
+      msg: 'Pick exact match language value',
+      langCode: 'he',
+      values: [
+        { en: 'en value' },
+        { he: 'he value' },
+      ],
+      expected: 'he value',
+    },
+    {
+      msg: 'Fallback yi -> he',
+      langCode: 'yi',
+      config: {
+        languageMap: {
+          yi: 'he',
+          foo: 'bar',
+          other: 'languages',
+          that: 'dont',
+          matter: 'at all',
+        },
+      },
+      values: [
+        { en: 'en value' },
+        { he: 'he value' },
+        { es: 'es value' },
+      ],
+      expected: 'he value',
+    },
+    {
+      msg: 'Fallback gan -> zh-hans (third fallback)',
+      langCode: 'gan',
+      config: {
+        languageMap: {
+          gan: [
+            'gan-hant',
+            'zh-hant',
+            'zh-hans',
+          ],
+        },
+      },
+      values: [
+        { en: 'en value' },
+        { he: 'he value' },
+        { 'zh-hans': 'zh-hans value' },
+      ],
+      expected: 'zh-hans value',
+    },
+    {
+      msg: 'Object language map, fallback foo -> bar',
+      langCode: 'foo',
+      config: {
+        languageMap: { foo: 'bar' },
+      },
+      values: [
+        { baz: 'baz value' },
+        { bar: 'bar value' },
+        { quuz: 'quuz value' },
+      ],
+      expected: 'bar value',
+    },
+    {
+      msg: 'Object language map given, but no fallback exists, fall back to en',
+      langCode: 'foo',
+      config: {
+        languageMap: { foo: 'bar' },
+      },
+      values: [
+        { baz: 'baz value' },
+        { en: 'en value' },
+        { quuz: 'quuz value' },
+      ],
+      expected: 'en value',
+    },
+    {
+      msg: 'No fallback value exists; fallback to en',
+      langCode: 'yi',
+      values: [
+        { es: 'es value' },
+        { en: 'en value' },
+      ],
+      expected: 'en value',
+    },
+    {
+      msg: 'No fallback value exists, no en value exists, fallback to nameTag',
+      langCode: 'yi',
+      config: {
         nameTag: 'name',
-        multiTag: 'name_',
-        languages,
-      });
-      const lpp = lp.newProcessor();
-      testVals.forEach((val) => {
-        const lang = Object.keys(val);
-        assert.strictEqual(lang.length, 1, 'test values must be in this form: {lang:val}, {lang:val}, ...');
-        lpp.addValue(lang, val[lang]);
-      });
-      assert.equal(lpp.getResult(), expected);
-    };
-  }
+      },
+      values: [
+        { ru: 'ru value' },
+        { name: 'base name tag' },
+        { fr: 'fr value' },
+      ],
+      expected: 'base name tag',
+    },
+    {
+      msg: 'No fallback value exists, no en value exists, no nameTag given, fallback to first option given',
+      langCode: 'yi',
+      values: [
+        { ru: 'ru value' },
+        { es: 'es value' },
+        { fr: 'fr value' },
+      ],
+      expected: 'ru value',
+    },
+    {
+      msg: 'Use prefixed codes',
+      langCode: 'en',
+      config: {
+        multiTag: 'pref_',
+      },
+      values: [
+        { pref_ru: 'ru value' },
+        { pref_en: 'en value' },
+        { pref_fr: 'fr value' },
+      ],
+      expected: 'en value',
+    },
+    {
+      msg: 'Language code unrecognized, fallback to en',
+      langCode: 'quuz',
+      values: [
+        { ru: 'ru value' },
+        { fr: 'fr value' },
+        { en: 'en value' },
+      ],
+      expected: 'en value',
+    },
+  ];
 
-  it('nothing', test(['en'], undefined));
-  it('en: name', test(['en'], '-name', { name: '-name' }));
-  it('en: single match', test(['en'], '-en', { name_en: '-en' }));
-  it('en: pick any', test(['en'], '-he', { name_he: '-he' }));
-  it('en: en+name -> en', test(['en'], '-en', { name: '-name' }, { name_en: '-en' }));
-  it('en: ru+fr -> fr (Latn)', test(['en'], '-fr', { name_ru: '-ru' }, { name_fr: '-fr' }));
-  it('en: fr+name -> fr', test(['en'], '-fr', { name_fr: '-fr' }, { name: '-name' }));
-  it('en: he+name -> name', test(['en'], '-name', { name_he: '-he' }, { name: '-name' }));
-  it('ru: he+be -> be (same script)', test(['ru'], '-be', { name_he: '-he' }, { name_be: '-be' }));
-  it('ru: he+el+es -> es (Latn)', test(['ru'], '-es', { name_he: '-he' }, { name_el: '-el' }, { name_es: '-es' }));
+  cases.forEach((data) => {
+    const lp = new LanguagePicker(data.langCode, data.config);
+    const lpp = lp.newProcessor();
+
+    // Add test values
+    (data.values || []).forEach((valueData) => {
+      const lang = Object.keys(valueData)[0];
+      lpp.addValue(lang, valueData[lang]);
+    });
+
+    // Check the result
+    it(data.msg, () => {
+      assert.equal(
+        lpp.getResult(),
+        data.expected
+      );
+    });
+  });
 });
