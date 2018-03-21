@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.0.10
+  version: 0.0.11
   title: Kartotherian
   description: Renders map tiles
   termsOfService: https://wikimediafoundation.org/wiki/Terms_of_Use
@@ -13,7 +13,8 @@ info:
 
 paths:
   # Tiles handler
-  /{src}/{z}/{x}/{y}.{format}:
+  # /{src}/{z}/{x}/{y}.{format}:
+  /osm-intl/11/828/655.png:
     get:
       tags:
         - kartotherian
@@ -26,19 +27,13 @@ paths:
         - application/x-protobuf
       x-amples:
         - title: get a tile in the middle of the ocean, with overzoom
-          request:
-            params:
-              src: osm-intl
-              z: 11
-              x: 828
-              y: 655
-              format: png
           response:
             status: 200
             headers:
               content-type: image/png
   # Tiles handler with scaling
-  /{src}/{z}/{x}/{y}@{scale}x.{format}:
+  # /{src}/{z}/{x}/{y}@{scale}x.{format}:
+  /osm-intl/9/207/163@1.5x.png:
     get:
       tags:
         - kartotherian
@@ -50,20 +45,13 @@ paths:
         - application/json
       x-amples:
         - title: default scaled tile
-          request:
-            params:
-              src: osm-intl
-              z: 9
-              x: 207
-              y: 163
-              scale: 1.5
-              format: png
           response:
             status: 200
             headers:
               content-type: image/png
   # Source info
-  /{src}/info.json:
+  # /{src}/info.json:
+  /osm-intl/info.json:
     get:
       tags:
         - tileinfo
@@ -72,23 +60,13 @@ paths:
         - application/json
       x-amples:
         - title: tile service info for osm-intl
-          request:
-            params:
-              src: osm-intl
-          response:
-            status: 200
-            headers:
-              content-type: application/json
-        - title: tile service info for osm-pbf
-          request:
-            params:
-              src: osm-pbf
           response:
             status: 200
             headers:
               content-type: application/json
   # Maki icon markers (pushpins)
-  /v4/marker/{base}-{size}-{symbol}+{color}@{scale}x.png:
+  # /v4/marker/{base}-{size}-{symbol}+{color}@{scale}x.png:
+  /v4/marker/pin-m-fuel+ffffff@2x.png:
     get:
       tags:
         - marker
@@ -98,37 +76,31 @@ paths:
         - image/png
       x-amples:
         - title: scaled pushpin marker with an icon
-          request:
-            params:
-              base: pin
-              size: m
-              symbol: fuel
-              color: ffffff
-              scale: 2
           response:
             status: 200
             headers:
               content-type: image/png
-  /v4/marker/{base}-{size}-{symbol}+{color}.png:
+  # /v4/marker/{base}-{size}-{symbol}+{color}.png:
+  /v4/marker/pin-m-fuel+ffffff.png:
     get:
       description: Renders pushpin marker of a given color and size with an icon.
-      x-monitor: false
       produces:
         - image/png
-  /v4/marker/{base}-{size}+{color}.png:
+  # /v4/marker/{base}-{size}+{color}.png:
+  /v4/marker/pin-m+ffffff.png:
     get:
       description: Renders a pushpin marker of a given color and size withoun an icon
-      x-monitor: false
       produces:
         - image/png
-  /v4/marker/{base}-{size}+{color}@{scale}x.png:
+  # /v4/marker/{base}-{size}+{color}@{scale}x.png:
+  /v4/marker/pin-m+ffffff@2x.png:
     get:
       description: Renders 2x scaled pushpin marker of a given color and size withoun an icon.
-      x-monitor: false
       produces:
         - image/png
   # Map snapshots
-  /img/{src},{z},{lat},{lon},{w}x{h}@{scale}x.{format}:
+  # /img/{src},{z},{lat},{lon},{w}x{h}@{scale}x.{format}:
+  /img/osm-intl,1,0.0,0.0,100x100@1.5x.png:
     get:
       tags:
         - kartotherian
@@ -139,41 +111,31 @@ paths:
         - image/png
       x-amples:
         - title: Small scaled map
-          request:
-            params:
-              src: osm-intl
-              z: 1
-              lat: 0.0
-              lon: 0.0
-              w: 100
-              h: 100
-              scale: 1.5
-              format: png
           response:
             status: 200
             headers:
               content-type: image/png
-  /{src}/{z},{lat},{lon},{w}x{h}.{format}:
+  # /{src}/{z},{lat},{lon},{w}x{h}.{format}:
+  /osm-intl/1,0.0,0.0,100x100.png:
     get:
       description: Renders requested map region as an image
       x-monitor: false
       produces:
         - image/png
   # geoline service
-  /geoline?getgeojson=1&ids={ids}:
+  # /geoline?getgeojson=1&ids={ids}:
+  /geoline?getgeojson=1&ids=Q649:
     get:
       tags:
         - kartotherian
         - maps
         - geojson
       description: Returns a json representation of a given line
+      x-monitor: false
       produces:
         - application/vnd.geo+json
       x-amples:
         - title: Moscow
-          request:
-            params:
-              ids: Q649
           response:
             status: 200
             headers:

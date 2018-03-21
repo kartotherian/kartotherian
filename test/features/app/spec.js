@@ -78,14 +78,12 @@ function constructTestCase(title, path, method, request, response) {
   };
 }
 
-
-function constructTests(paths, defParams) {
+function constructTests(paths) {
   const ret = [];
 
   Object.keys(paths).forEach((pathStr) => {
     Object.keys(paths[pathStr]).forEach((method) => {
       const p = paths[pathStr][method];
-      const uri = new URI(pathStr, {}, true);
 
       if (Object.prototype.hasOwnProperty.call(p, 'x-monitor') && !p['x-monitor']) {
         return;
@@ -94,7 +92,7 @@ function constructTests(paths, defParams) {
       if (!p['x-amples']) {
         ret.push(constructTestCase(
           pathStr,
-          uri.toString({ params: defParams }),
+          pathStr,
           method,
           {},
           {}
@@ -105,7 +103,7 @@ function constructTests(paths, defParams) {
         const request = ex.request || {};
         ret.push(constructTestCase(
           ex.title,
-          uri.toString({ params: Object.assign({}, defParams, request.params || {}) }),
+          pathStr,
           method,
           request,
           ex.response || {}
@@ -116,7 +114,6 @@ function constructTests(paths, defParams) {
 
   return ret;
 }
-
 
 function cmp(result, expected, errMsg) {
   if (expected === null || expected === undefined) {
@@ -185,7 +182,7 @@ function validateTestResponse(testCase, res) {
   Object.keys(expRes.headers).forEach((key) => {
     const val = expRes.headers[key];
     assert.deepEqual(
-      Object.prototype.hasOwnProperty.call(res, key),
+      Object.prototype.hasOwnProperty.call(res.headers, key),
       true,
       `Header ${key} not found in response!`
     );
@@ -214,7 +211,6 @@ function validateTestResponse(testCase, res) {
 
   return true;
 }
-
 
 describe('Swagger spec', function () { // eslint-disable-line func-names
   // the variable holding the spec
@@ -261,7 +257,7 @@ describe('Swagger spec', function () { // eslint-disable-line func-names
   });
 
   describe('routes', () => {
-    constructTests(spec.paths, defParams).forEach((testCase) => {
+    constructTests(spec.paths).forEach((testCase) => {
       it(testCase.title, () => preq(testCase.request)
         .then((res) => {
           validateTestResponse(testCase, res);

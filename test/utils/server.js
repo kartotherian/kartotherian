@@ -11,10 +11,9 @@ const assert = require('./assert');
 const yaml = require('js-yaml');
 const extend = require('extend');
 
-
 // set up the configuration
 let config = {
-  conf: yaml.safeLoad(fs.readFileSync(`${__dirname}/../../config.dev.yaml`)),
+  conf: yaml.safeLoad(fs.readFileSync(`${__dirname}/../../config.test.yaml`)),
 };
 // build the API endpoint URI by supposing the actual service
 // is the last one in the 'services' list in the config file
@@ -37,12 +36,10 @@ let stop = function stop() {};
 let options = null;
 const runner = new ServiceRunner();
 
-
 function start(_options) {
   const normalizedOptions = _options || {};
 
   if (!assert.isDeepEqual(options, normalizedOptions)) {
-    console.log('server options changed; restarting');
     stop();
     options = normalizedOptions;
     // set up the config
@@ -52,7 +49,6 @@ function start(_options) {
       .then((servers) => {
         const server = servers[0];
         stop = function stop() { // eslint-disable-line no-shadow
-          console.log('stopping test server');
           server.close();
           stop = function stop() {}; // eslint-disable-line no-shadow,no-func-assign
         };

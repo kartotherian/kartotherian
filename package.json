@@ -49,7 +49,7 @@
     "tilelive-vector": "~3.9.4",
     "tilejson": "^1.0.3",
     "@kartotherian/core": "^0.1.1",
-    "@kartotherian/server": "^0.0.23",
+    "@kartotherian/server": "^0.0.24",
     "@kartotherian/autogen": "^0.0.10",
     "@kartotherian/babel": "^0.0.7",
     "@kartotherian/cassandra": "^0.0.13",
@@ -76,8 +76,9 @@
     "grunt-mocha-test": "^0.13.3",
     "istanbul": "^0.4.5",
     "mocha": "^5.0.4",
-    "mocha-jshint": "^2.3.1",
     "mocha-lcov-reporter": "^1.3.0",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
     "swagger-router": "^0.5.6"
   },
   "deploy": {
