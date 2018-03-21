@@ -1,5 +1,3 @@
-
-
 const pathLib = require('path');
 const Promise = require('bluebird');
 const core = require('@kartotherian/core');

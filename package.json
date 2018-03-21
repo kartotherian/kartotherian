@@ -5,6 +5,7 @@
   "main": "./app.js",
   "scripts": {
     "start": "service-runner",
+    "lint": "grunt lint",
     "test": "grunt test",
     "docker-start": "service-runner docker-start",
     "docker-test": "service-runner docker-test",
@@ -67,7 +68,7 @@
   },
   "devDependencies": {
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-config-kartotherian": "^0.0.4",
+    "eslint-config-kartotherian": "^0.0.5",
     "extend": "^3.0.0",
     "grunt": "^1.0.2",
     "grunt-contrib-watch": "^1.0.0",
