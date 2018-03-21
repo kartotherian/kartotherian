@@ -2,7 +2,6 @@
 
 const assert = require('assert');
 const LanguagePicker = require('../lib/LanguagePicker');
-const defaultMap = require('../lib/fallbacks.json');
 
 describe('LanguagePicker', () => {
   const cases = [
@@ -33,7 +32,13 @@ describe('LanguagePicker', () => {
       msg: 'Fallback yi -> he',
       langCode: 'yi',
       config: {
-        languageMap: defaultMap,
+        languageMap: {
+          yi: 'he',
+          foo: 'bar',
+          other: 'languages',
+          that: 'dont',
+          matter: 'at all',
+        },
       },
       values: [
         { en: '_en' },
@@ -46,7 +51,13 @@ describe('LanguagePicker', () => {
       msg: 'Fallback gan -> zh-hans (third fallback)',
       langCode: 'gan',
       config: {
-        languageMap: defaultMap,
+        languageMap: {
+          gan: [
+            'gan-hant',
+            'zh-hant',
+            'zh-hans',
+          ],
+        },
       },
       values: [
         { en: '_en' },
