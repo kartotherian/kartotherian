@@ -5,7 +5,6 @@
 
 const BBPromise = require('bluebird');
 const ServiceRunner = require('service-runner');
-const logStream = require('./logStream');
 const fs = require('fs');
 const assert = require('./assert');
 const yaml = require('js-yaml');
@@ -23,12 +22,6 @@ config.uri = `http://localhost:${myService.conf.port}/`;
 config.service = myService;
 // no forking, run just one process when testing
 config.conf.num_workers = 0;
-// have a separate, in-memory logger only
-config.conf.logging = {
-  name: 'test-log',
-  level: 'trace',
-  stream: logStream(),
-};
 // make a deep copy of it for later reference
 const origConfig = extend(true, {}, config);
 

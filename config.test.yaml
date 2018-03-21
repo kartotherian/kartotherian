@@ -9,7 +9,7 @@ worker_heap_limit_mb: 250
 
 # Logger info
 logging:
-  level: trace
+  level: warn
 #  streams:
 #  # Use gelf-stream -> logstash
 #  - type: gelf
