@@ -78,7 +78,7 @@ function constructTestCase(title, path, method, request, response) {
   };
 }
 
-function constructTests(paths, defParams) {
+function constructTests(paths) {
   const ret = [];
 
   Object.keys(paths).forEach((pathStr) => {
@@ -182,7 +182,7 @@ function validateTestResponse(testCase, res) {
   Object.keys(expRes.headers).forEach((key) => {
     const val = expRes.headers[key];
     assert.deepEqual(
-      Object.prototype.hasOwnProperty.call(res, key),
+      Object.prototype.hasOwnProperty.call(res.headers, key),
       true,
       `Header ${key} not found in response!`
     );
@@ -257,7 +257,7 @@ describe('Swagger spec', function () { // eslint-disable-line func-names
   });
 
   describe('routes', () => {
-    constructTests(spec.paths, defParams).forEach((testCase) => {
+    constructTests(spec.paths).forEach((testCase) => {
       it(testCase.title, () => preq(testCase.request)
         .then((res) => {
           validateTestResponse(testCase, res);
