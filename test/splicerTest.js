@@ -265,7 +265,6 @@ describe('Tag recombination', () => {
     ],
   }));
 
-
   it('pick missing', () => test('02-multilingual-alltags', { lng: 'es', map: { es: ['fr'] } }, {
     layers: [
       {
