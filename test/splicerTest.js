@@ -25,6 +25,7 @@ core.loadSource = () => fauxSource;
 
 babel.initKartotherian(core);
 
+
 describe('Tag recombination', () => {
   function test2(file, opts, expected) {
     const path = pathLib.resolve(__dirname, 'data', `${file}.pbf`);
@@ -151,9 +152,7 @@ describe('Tag recombination', () => {
       },
     ],
   };
-
   it('pick en', () => test('02-multilingual-alltags', { lng: 'en' }, expected_pick_en));
-
   it('pick en (gzip)', () => test('02-multilingual-alltags', { lng: 'en', gzip: 1 }, expected_pick_en));
 
   it('pick ru', () => test('02-multilingual-alltags', { lng: 'ru' }, {
@@ -237,6 +236,35 @@ describe('Tag recombination', () => {
       },
     ],
   }));
+
+  it('pick using fallback', () => test('02-multilingual-alltags', { lng: 'es', map: { es: ['fr', 'ru'] } }, {
+    layers: [
+      {
+        features: [
+          {
+            type: 1,
+            id: 5,
+            tags: [0, 0, 1, 1, 2, 2],
+            geometry: [9, 1599, 4288],
+          },
+        ],
+        keys: [
+          'class',
+          'name',
+          'name_',
+        ],
+        values: [
+          { tag: 1, value: 'city' },
+          { tag: 1, value: 'Vancouver' },
+          { tag: 1, value: 'Ванкувер' },
+        ],
+        version: 2,
+        name: 'place',
+        extent: 4096,
+      },
+    ],
+  }));
+
 
   it('pick missing', () => test('02-multilingual-alltags', { lng: 'es', map: { es: ['fr'] } }, {
     layers: [
