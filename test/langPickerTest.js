@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const LanguagePicker = require('../lib/LanguagePicker');
+const defaultMap = require('../lib/fallbacks.json');
 
 describe('LanguagePicker', () => {
   const cases = [
@@ -31,6 +32,9 @@ describe('LanguagePicker', () => {
     {
       msg: 'Fallback yi -> he',
       langCode: 'yi',
+      config: {
+        languageMap: defaultMap,
+      },
       values: [
         { en: '_en' },
         { he: '_he' },
@@ -41,12 +45,41 @@ describe('LanguagePicker', () => {
     {
       msg: 'Fallback gan -> zh-hans (third fallback)',
       langCode: 'gan',
+      config: {
+        languageMap: defaultMap,
+      },
       values: [
         { en: '_en' },
         { he: '_he' },
         { 'zh-hans': '_zh-hans' },
       ],
       expected: '_zh-hans',
+    },
+    {
+      msg: 'Object language map, fallback foo -> bar',
+      langCode: 'foo',
+      config: {
+        languageMap: { foo: 'bar' },
+      },
+      values: [
+        { baz: '_baz' },
+        { bar: '_bar' },
+        { quuz: '_quuz' },
+      ],
+      expected: '_bar',
+    },
+    {
+      msg: 'Object language map given, but no fallback exists, fall back to en',
+      langCode: 'foo',
+      config: {
+        languageMap: { foo: 'bar' },
+      },
+      values: [
+        { baz: '_baz' },
+        { en: '_en' },
+        { quuz: '_quuz' },
+      ],
+      expected: '_en',
     },
     {
       msg: 'No fallback value exists; fallback to en',
