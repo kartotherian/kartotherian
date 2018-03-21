@@ -4,31 +4,123 @@ const assert = require('assert');
 const LanguagePicker = require('../lib/LanguagePicker');
 
 describe('LanguagePicker', () => {
-  function test(languages, expected, ...testVals) {
-    return () => {
-      const lp = new LanguagePicker({
+  const cases = [
+    {
+      msg: 'No values given',
+      langCode: 'en',
+      values: undefined,
+      expected: undefined,
+    },
+    {
+      msg: 'Pick first (only) value',
+      langCode: 'en',
+      values: [
+        { en: '_en' },
+      ],
+      expected: '_en',
+    },
+    {
+      msg: 'Pick exact match language value',
+      langCode: 'he',
+      values: [
+        { en: '_en' },
+        { he: '_he' },
+      ],
+      expected: '_he',
+    },
+    {
+      msg: 'Fallback yi -> he',
+      langCode: 'yi',
+      values: [
+        { en: '_en' },
+        { he: '_he' },
+        { es: '_es' },
+      ],
+      expected: '_he',
+    },
+    {
+      msg: 'Fallback gan -> zh-hans (third fallback)',
+      langCode: 'gan',
+      values: [
+        { en: '_en' },
+        { he: '_he' },
+        { 'zh-hans': '_zh-hans' },
+      ],
+      expected: '_zh-hans',
+    },
+    {
+      msg: 'No fallback value exists; fallback to en',
+      langCode: 'yi',
+      values: [
+        { es: '_es' },
+        { en: '_en' },
+      ],
+      expected: '_en',
+    },
+    {
+      msg: 'No fallback value exists, no en value exists, fallback to nameTag',
+      langCode: 'yi',
+      config: {
         nameTag: 'name',
-        multiTag: 'name_',
-        languages,
-      });
-      const lpp = lp.newProcessor();
-      testVals.forEach((val) => {
-        const lang = Object.keys(val);
-        assert.strictEqual(lang.length, 1, 'test values must be in this form: {lang:val}, {lang:val}, ...');
-        lpp.addValue(lang, val[lang]);
-      });
-      assert.equal(lpp.getResult(), expected);
-    };
-  }
+      },
+      values: [
+        { ru: '_ru' },
+        { name: '_nameTag' },
+        { fr: '_fr' },
+      ],
+      expected: '_nameTag',
+    },
+    {
+      msg: 'No fallback value exists, no en value exists, no nameTag given, fallback to first option given',
+      langCode: 'yi',
+      values: [
+        { ru: '_ru' },
+        { es: '_es' },
+        { fr: '_fr' },
+      ],
+      expected: '_ru',
+    },
+    {
+      msg: 'Use prefixed codes',
+      langCode: 'en',
+      config: {
+        multiTag: 'pref_',
+      },
+      values: [
+        { pref_ru: '_ru' },
+        { pref_en: '_en' },
+        { pref_fr: '_fr' },
+      ],
+      expected: '_en',
+    },
+    {
+      msg: 'Language code unrecognized, fallback to en',
+      langCode: 'quuz',
+      values: [
+        { ru: '_ru' },
+        { fr: '_fr' },
+        { en: '_en' },
+      ],
+      expected: '_en',
+    },
+  ];
 
-  it('nothing', test(['en'], undefined));
-  it('en: name', test(['en'], '-name', { name: '-name' }));
-  it('en: single match', test(['en'], '-en', { name_en: '-en' }));
-  it('en: pick any', test(['en'], '-he', { name_he: '-he' }));
-  it('en: en+name -> en', test(['en'], '-en', { name: '-name' }, { name_en: '-en' }));
-  it('en: ru+fr -> fr (Latn)', test(['en'], '-fr', { name_ru: '-ru' }, { name_fr: '-fr' }));
-  it('en: fr+name -> fr', test(['en'], '-fr', { name_fr: '-fr' }, { name: '-name' }));
-  it('en: he+name -> name', test(['en'], '-name', { name_he: '-he' }, { name: '-name' }));
-  it('ru: he+be -> be (same script)', test(['ru'], '-be', { name_he: '-he' }, { name_be: '-be' }));
-  it('ru: he+el+es -> es (Latn)', test(['ru'], '-es', { name_he: '-he' }, { name_el: '-el' }, { name_es: '-es' }));
+  cases.forEach((data) => {
+    const lp = new LanguagePicker(data.langCode, data.config);
+    const lpp = lp.newProcessor();
+
+    // Add test values
+    (data.values || []).forEach((valueData) => {
+      const lang = Object.keys(valueData)[0];
+      lpp.addValue(lang, valueData[lang]);
+    });
+
+    // Check the result
+    it(data.msg, () => {
+      assert.equal(
+        lpp.getResult(),
+        data.expected
+      );
+    });
+  });
 });

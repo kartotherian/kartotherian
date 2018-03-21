@@ -21,7 +21,6 @@
   "dependencies": {
     "@kartotherian/err": "^0.0.3",
     "@kartotherian/input-validator": "^0.0.6",
-    "language-scripts": "^1.0.2",
     "bluebird": "^3.5.1",
     "pbf": "^3.1.0",
     "tilelive-promise": "^2.0.0",
@@ -29,7 +28,7 @@
   },
   "devDependencies": {
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-config-kartotherian": "^0.0.4",
+    "eslint-config-kartotherian": "^0.0.5",
     "grunt": "^1.0.2",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-eslint": "^20.1.0",
