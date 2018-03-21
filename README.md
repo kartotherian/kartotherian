@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kartotherian/kartotherian.svg?branch=master)](https://travis-ci.org/kartotherian/kartotherian)
+
 # Maps Tile service for Wikipedia
 
 This code is cross-hosted at [gerrit](https://git.wikimedia.org/summary/maps%2Fkartotherian)
