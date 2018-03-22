@@ -38,7 +38,7 @@ function start(_options) {
     // set up the config
     config = extend(true, {}, origConfig);
     extend(true, config.conf.services[myServiceIdx].conf, options);
-    return runner.run(config.conf)
+    return runner.start(config.conf)
       .then((servers) => {
         const server = servers[0];
         stop = function stop() { // eslint-disable-line no-shadow
