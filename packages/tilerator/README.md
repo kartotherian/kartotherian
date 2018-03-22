@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/kartotherian/tilerator.svg?branch=master)](https://travis-ci.org/kartotherian/tilerator)
 # Map Tile Pre-Generation Service for [Kartotherian](https://github.com/kartotherian/kartotherian)
 
 **Tilerator** (Russian: Тилератор, tee-LEH-ruh-tor)

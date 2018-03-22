@@ -131,7 +131,7 @@ if (args.dumptiles) {
     }
 }
 
-return tilerator.bootstrap(app).then(function() {
+tilerator.bootstrap(app).then(function() {
     let sources = new core.Sources();
     return sources.init(app.conf.variables, app.conf.sources);
 }).then(function (sources) {

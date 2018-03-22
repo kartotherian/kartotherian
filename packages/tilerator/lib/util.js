@@ -1,46 +1,49 @@
-'use strict';
 
 
-var BBPromise = require('bluebird');
-var util = require('util');
-var express = require('express');
-var uuid = require('cassandra-uuid');
-var bunyan = require('bunyan');
+const BBPromise = require('bluebird');
+const util = require('util');
+const express = require('express');
+const uuid = require('cassandra-uuid');
+const bunyan = require('bunyan');
 
 
 /**
  * Error instance wrapping HTTP error responses
  */
 function HTTPError(response) {
+  let key;
+  let normalizedResponse = response;
 
-    Error.call(this);
-    Error.captureStackTrace(this, HTTPError);
+  Error.call(this);
+  Error.captureStackTrace(this, HTTPError);
 
-    if(response.constructor !== Object) {
-        // just assume this is just the error message
-        var msg = response;
-        response = {
-            status: 500,
-            type: 'internal_error',
-            title: 'InternalError',
-            detail: msg
-        };
+  if (response.constructor !== Object) {
+    // just assume this is just the error message
+    normalizedResponse = {
+      status: 500,
+      type: 'internal_error',
+      title: 'InternalError',
+      detail: response,
+    };
+  }
+
+  this.name = this.constructor.name;
+  this.message = `${response.status}`;
+  if (normalizedResponse.type) {
+    this.message += `: ${response.type}`;
+  }
+
+  // TODO: Replace this for-in statement with hasOwnProperty with a better loop
+  // like Object.keys and a binding for context 'this'
+  // eslint-disable-next-line no-restricted-syntax
+  for (key in normalizedResponse) {
+    if (Object.prototype.hasOwnProperty.call(normalizedResponse, key)) {
+      this[key] = normalizedResponse[key];
     }
-
-    this.name = this.constructor.name;
-    this.message = response.status + '';
-    if(response.type) {
-        this.message += ': ' + response.type;
-    }
-
-    for (var key in response) {
-        this[key] = response[key];
-    }
-
+  }
 }
 
 util.inherits(HTTPError, Error);
-
 
 /**
  * Generates an object suitable for logging out of a request object
@@ -50,28 +53,26 @@ util.inherits(HTTPError, Error);
  * @return {Object} an object containing the key components of the request
  */
 function reqForLog(req, whitelistRE) {
+  const ret = {
+    url: req.originalUrl,
+    headers: {},
+    method: req.method,
+    params: req.params,
+    query: req.query,
+    body: req.body,
+    remoteAddress: req.connection.remoteAddress,
+    remotePort: req.connection.remotePort,
+  };
 
-    var ret = {
-        url: req.originalUrl,
-        headers: {},
-        method: req.method,
-        params: req.params,
-        query: req.query,
-        body: req.body,
-        remoteAddress: req.connection.remoteAddress,
-        remotePort: req.connection.remotePort
-    };
+  if (req.headers && whitelistRE) {
+    Object.keys(req.headers).forEach((hdr) => {
+      if (whitelistRE.test(hdr)) {
+        ret.headers[hdr] = req.headers[hdr];
+      }
+    });
+  }
 
-    if(req.headers && whitelistRE) {
-        Object.keys(req.headers).forEach(function(hdr) {
-            if(whitelistRE.test(hdr)) {
-                ret.headers[hdr] = req.headers[hdr];
-            }
-        });
-    }
-
-    return ret;
-
+  return ret;
 }
 
 
@@ -82,19 +83,17 @@ function reqForLog(req, whitelistRE) {
  * @return {Object} the serialised version of the error
  */
 function errForLog(err) {
+  const ret = bunyan.stdSerializers.err(err);
+  ret.status = err.status;
+  ret.type = err.type;
+  ret.detail = err.detail;
 
-    var ret = bunyan.stdSerializers.err(err);
-    ret.status = err.status;
-    ret.type = err.type;
-    ret.detail = err.detail;
+  // log the stack trace only for 500 errors
+  if (Number.parseInt(ret.status, 10) !== 500) {
+    ret.stack = undefined;
+  }
 
-    // log the stack trace only for 500 errors
-    if(Number.parseInt(ret.status) !== 500) {
-        ret.stack = undefined;
-    }
-
-    return ret;
-
+  return ret;
 }
 
 /**
@@ -103,9 +102,7 @@ function errForLog(err) {
  * @return {String} the generated request ID
  */
 function generateRequestId() {
-
-    return uuid.TimeUuid.now().toString();
-
+  return uuid.TimeUuid.now().toString();
 }
 
 
@@ -118,19 +115,16 @@ function generateRequestId() {
  * @param {Router} router object
  */
 function wrapRouteHandlers(router) {
-
-    router.stack.forEach(function(routerLayer) {
-        routerLayer.route.stack.forEach(function(layer) {
-            var origHandler = layer.handle;
-            layer.handle = function(req, res, next) {
-                BBPromise.try(function() {
-                    return origHandler(req, res, next);
-                })
-                .catch(next);
-            };
-        });
+  router.stack.forEach((routerLayer) => {
+    routerLayer.route.stack.forEach((layer) => {
+      const origHandler = layer.handle;
+      // eslint-disable-next-line no-param-reassign
+      layer.handle = function handle(req, res, next) {
+        BBPromise.try(() => origHandler(req, res, next))
+          .catch(next);
+      };
     });
-
+  });
 }
 
 
@@ -141,78 +135,78 @@ function wrapRouteHandlers(router) {
  * @param {Application} app the application object to add the handler to
  */
 function setErrorHandler(app) {
-
-    app.use(function(err, req, res, next) {
-        var errObj;
-        // ensure this is an HTTPError object
-        if(err.constructor === HTTPError) {
-            errObj = err;
-        } else if(err instanceof Error) {
-            // is this an HTTPError defined elsewhere? (preq)
-            if(err.constructor.name === 'HTTPError') {
-                var o = { status: err.status };
-                if(err.body && err.body.constructor === Object) {
-                    Object.keys(err.body).forEach(function(key) {
-                        o[key] = err.body[key];
-                    });
-                } else {
-                    o.detail = err.body;
-                }
-                o.message = err.message;
-                errObj = new HTTPError(o);
-            } else {
-                // this is a standard error, convert it
-                errObj = new HTTPError({
-                    status: 500,
-                    type: 'internal_error',
-                    title: err.name,
-                    detail: err.message,
-                    stack: err.stack
-                });
-            }
-        } else if(err.constructor === Object) {
-            // this is a regular object, suppose it's a response
-            errObj = new HTTPError(err);
+  app.use((err, req, res) => {
+    let errObj;
+    // ensure this is an HTTPError object
+    if (err.constructor === HTTPError) {
+      errObj = err;
+    } else if (err instanceof Error) {
+      // is this an HTTPError defined elsewhere? (preq)
+      if (err.constructor.name === 'HTTPError') {
+        const o = { status: err.status };
+        if (err.body && err.body.constructor === Object) {
+          Object.keys(err.body).forEach((key) => {
+            o[key] = err.body[key];
+          });
         } else {
-            // just assume this is just the error message
-            errObj = new HTTPError({
-                status: 500,
-                type: 'internal_error',
-                title: 'InternalError',
-                detail: err
-            });
+          o.detail = err.body;
         }
-        // ensure some important error fields are present
-        if(!errObj.status) { errObj.status = 500; }
-        if(!errObj.type) { errObj.type = 'internal_error'; }
-        // add the offending URI and method as well
-        if(!errObj.method) { errObj.method = req.method; }
-        if(!errObj.uri) { errObj.uri = req.url; }
-        // some set 'message' or 'description' instead of 'detail'
-        errObj.detail = errObj.detail || errObj.message || errObj.description || '';
-        // adjust the log level based on the status code
-        var level = 'error';
-        if(Number.parseInt(errObj.status) < 400) {
-            level = 'trace';
-        } else if(Number.parseInt(errObj.status) < 500) {
-            level = 'info';
-        }
-        // log the error
-        (req.logger || app.logger).log(level + '/' +
-                (errObj.component ? errObj.component : errObj.status),
-                errForLog(errObj));
-        // let through only non-sensitive info
-        var respBody = {
-            status: errObj.status,
-            type: errObj.type,
-            title: errObj.title,
-            detail: errObj.detail,
-            method: errObj.method,
-            uri: errObj.uri
-        };
-        res.status(errObj.status).json(respBody);
-    });
-
+        o.message = err.message;
+        errObj = new HTTPError(o);
+      } else {
+        // this is a standard error, convert it
+        errObj = new HTTPError({
+          status: 500,
+          type: 'internal_error',
+          title: err.name,
+          detail: err.message,
+          stack: err.stack,
+        });
+      }
+    } else if (err.constructor === Object) {
+      // this is a regular object, suppose it's a response
+      errObj = new HTTPError(err);
+    } else {
+      // just assume this is just the error message
+      errObj = new HTTPError({
+        status: 500,
+        type: 'internal_error',
+        title: 'InternalError',
+        detail: err,
+      });
+    }
+    // ensure some important error fields are present
+    if (!errObj.status) { errObj.status = 500; }
+    if (!errObj.type) { errObj.type = 'internal_error'; }
+    // add the offending URI and method as well
+    if (!errObj.method) { errObj.method = req.method; }
+    if (!errObj.uri) { errObj.uri = req.url; }
+    // some set 'message' or 'description' instead of 'detail'
+    errObj.detail = errObj.detail || errObj.message || errObj.description || '';
+    // adjust the log level based on the status code
+    let level = 'error';
+    if (Number.parseInt(errObj.status, 10) < 400) {
+      level = 'trace';
+    } else if (Number.parseInt(errObj.status, 10) < 500) {
+      level = 'info';
+    }
+    // log the error
+    (req.logger || app.logger).log(
+      `${level}/${
+        errObj.component ? errObj.component : errObj.status}`,
+      errForLog(errObj)
+    );
+    // let through only non-sensitive info
+    const respBody = {
+      status: errObj.status,
+      type: errObj.type,
+      title: errObj.title,
+      detail: errObj.detail,
+      method: errObj.method,
+      uri: errObj.uri,
+    };
+    res.status(errObj.status).json(respBody);
+  });
 }
 
 
@@ -223,19 +217,17 @@ function setErrorHandler(app) {
  * @return {Router} a new router object
  */
 function createRouter(opts) {
+  const options = {
+    mergeParams: true,
+  };
 
-    var options = {
-        mergeParams: true
-    };
+  if (opts && opts.constructor === Object) {
+    Object.keys(opts).forEach((key) => {
+      options[key] = opts[key];
+    });
+  }
 
-    if(opts && opts.constructor === Object) {
-        Object.keys(opts).forEach(function(key) {
-            options[key] = opts[key];
-        });
-    }
-
-    return express.Router(options);
-
+  return express.Router(options);
 }
 
 
@@ -246,17 +238,17 @@ function createRouter(opts) {
  * @param {Application} app application object
  */
 function initAndLogRequest(req, app) {
-    req.headers = req.headers || {};
-    req.headers['x-request-id'] = req.headers['x-request-id'] || generateRequestId();
-    req.logger = app.logger.child({request_id: req.headers['x-request-id'], request: reqForLog(req, app.conf.log_header_whitelist)});
-    req.logger.log('trace/req', {msg: 'incoming request'});
+  req.headers = req.headers || {};
+  req.headers['x-request-id'] = req.headers['x-request-id'] || generateRequestId();
+  req.logger = app.logger.child({ request_id: req.headers['x-request-id'], request: reqForLog(req, app.conf.log_header_whitelist) });
+  req.logger.log('trace/req', { msg: 'incoming request' });
 }
 
 
 module.exports = {
-    HTTPError: HTTPError,
-    initAndLogRequest: initAndLogRequest,
-    wrapRouteHandlers: wrapRouteHandlers,
-    setErrorHandler: setErrorHandler,
-    router: createRouter
+  HTTPError,
+  initAndLogRequest,
+  wrapRouteHandlers,
+  setErrorHandler,
+  router: createRouter,
 };

@@ -5,73 +5,65 @@
  * Accepts two optional params: redis and redisPrefix  (same as in configuration)
  */
 
-'use strict';
+const Promise = require('bluebird');
+const _ = require('underscore');
+const kue = require('kue');
 
-var Promise = require('bluebird');
-var util = require('util');
-var _ = require('underscore');
-
-var kue = require('kue');
 Promise.promisifyAll(kue.Job);
 Promise.promisifyAll(kue.Job.prototype);
 
-var argv = require('minimist')(process.argv.slice(2));
+const argv = require('minimist')(process.argv.slice(2));
 
-var opts = {};
+const opts = {};
 if (argv.redisPrefix) opts.prefix = argv.redisPrefix;
 if (argv.redis) opts.redis = argv.redis;
-var queue = Promise.promisifyAll(kue.createQueue(opts));
+const queue = Promise.promisifyAll(kue.createQueue(opts));
 
-var headers = {};
+const headers = {};
 
 function setVal(res, key, val) {
-    var str;
-    if (typeof(val) === 'string')
-        str = val.replace('\\', '\\\\').replace('\n', '\\n').replace('\t', '\\t');
-    else
-        str = JSON.stringify(val);
-    res[key] = str;
-    headers[key] = undefined;
+  let str;
+  if (typeof (val) === 'string') { str = val.replace('\\', '\\\\').replace('\n', '\\n').replace('\t', '\\t'); } else { str = JSON.stringify(val); }
+  res[key] = str;
+  headers[key] = undefined;
 }
 
 
-Promise.map(['inactive', 'active', 'failed', 'complete', 'delayed'], function (state) {
-    return queue
-        .stateAsync(state)
-        .then(function (ids) {
-            return Promise.map(ids, function (id) {
-                return kue.Job
-                    .getAsync(id)
-                    .then(function (job) {
-                        var res = {};
-                        (function crush(obj, prefix, firstCol) {
-                            _.each(obj, function (val, key) {
-                                if (key[0] === '_' || (prefix === '' && key === 'client')) return;
-                                var key2 = (prefix + key);
-                                if (typeof(val) !== 'object') {
-                                    setVal(res, key2, val);
-                                } else if (Array.isArray(val)) {
-                                    if (firstCol) {
-                                        setVal(res, key2 + firstCol, val[0]);
-                                        setVal(res, key2, val.slice(1));
-                                    } else {
-                                        setVal(res, key2, val);
-                                    }
-                                } else {
-                                    crush(val, key2 + '|', key === 'progress_data' ? 'count' : '');
-                                }
-                            });
-                        })(job, '');
-                        return res;
-                    })
-            })
+Promise.map(['inactive', 'active', 'failed', 'complete', 'delayed'], state => queue
+  .stateAsync(state)
+  .then(ids => Promise.map(ids, id => kue.Job
+    .getAsync(id)
+    .then((job) => {
+      const res = {};
+      (function crush(obj, prefix, firstCol) {
+        _.each(obj, (val, key) => {
+          if (key[0] === '_' || (prefix === '' && key === 'client')) return;
+          const key2 = (prefix + key);
+          if (typeof (val) !== 'object') {
+            setVal(res, key2, val);
+          } else if (Array.isArray(val)) {
+            if (firstCol) {
+              setVal(res, key2 + firstCol, val[0]);
+              setVal(res, key2, val.slice(1));
+            } else {
+              setVal(res, key2, val);
+            }
+          } else {
+            // TODO: Double check the intent of the template here.
+            // The value was: `${key2 }|` with an extra space; eslint complains, justifiably so
+            // Should the space remain (moved after the end curly brace) or was it a redundant
+            // and unnecessary space?
+            crush(val, `${key2} |`, key === 'progress_data' ? 'count' : '');
+          }
         });
-}).then(_.flatten).then(function (result) {
-    var hdrs = _.keys(headers).sort();
-    console.log(hdrs.join('\t'));
-    _.each(result, function(row) {
-        console.log(_.map(hdrs, function(h) {
-            return row[h] || '';
-        }).join('\t'));
-    });
+      }(job, ''));
+      return res;
+    })))).then(_.flatten).then((result) => {
+  const hdrs = _.keys(headers).sort();
+  // eslint-disable-next-line no-console
+  console.log(hdrs.join('\t'));
+  _.each(result, (row) => {
+    // eslint-disable-next-line no-console
+    console.log(_.map(hdrs, h => row[h] || '').join('\t'));
+  });
 });

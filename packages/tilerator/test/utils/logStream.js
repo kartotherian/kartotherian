@@ -1,34 +1,32 @@
-'use strict';
-
-var bunyan = require('bunyan');
+const bunyan = require('bunyan');
 
 function logStream(logStdout) {
-
-  var log = [];
-  var parrot = bunyan.createLogger({
+  const log = [];
+  const parrot = bunyan.createLogger({
     name: 'test-logger',
-    level: 'warn'
+    level: 'warn',
   });
 
-  function write(chunk, encoding, callback) {
+  function write(chunk) {
     try {
-        var entry = JSON.parse(chunk);
-        var levelMatch = /^(\w+)/.exec(entry.levelPath);
-        if (logStdout && levelMatch) {
-            var level = levelMatch[1];
-            if (parrot[level]) {
-                parrot[level](entry);
-            }
+      const entry = JSON.parse(chunk);
+      const levelMatch = /^(\w+)/.exec(entry.levelPath);
+      if (logStdout && levelMatch) {
+        const level = levelMatch[1];
+        if (parrot[level]) {
+          parrot[level](entry);
         }
+      }
     } catch (e) {
-        console.error('something went wrong trying to parrot a log entry', e, chunk);
+      // eslint-disable-next-line no-console
+      console.error('something went wrong trying to parrot a log entry', e, chunk);
     }
 
     log.push(chunk);
   }
 
   // to implement the stream writer interface
-  function end(chunk, encoding, callback) {
+  function end() {
   }
 
   function get() {
@@ -36,32 +34,30 @@ function logStream(logStdout) {
   }
 
   function slice() {
-
-    var begin = log.length;
-    var end   = null;
+    const begin = log.length;
+    let end2 = null;
 
     function halt() {
-      if (end === null) {
-        end = log.length;
+      if (end2 === null) {
+        end2 = log.length;
       }
     }
 
-    function get() {
+    function get2() {
       return log.slice(begin, end);
     }
 
     return {
-      halt: halt,
-      get: get
+      halt,
+      get: get2,
     };
-
   }
 
   return {
-    write: write,
-    end: end,
-    slice: slice,
-    get: get
+    write,
+    end,
+    slice,
+    get,
   };
 }
 

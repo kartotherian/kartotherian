@@ -1,89 +1,78 @@
+/* global describe it before */
+
+// eslint-disable-next-line strict,lines-around-directive
 'use strict';
 
+const preq = require('preq');
+const assert = require('../../utils/assert.js');
+const server = require('../../utils/server.js');
 
-var preq   = require('preq');
-var assert = require('../../utils/assert.js');
-var server = require('../../utils/server.js');
 
+describe('errors', function errors() {
+  this.timeout(20000);
 
-describe('errors', function() {
+  before(() => server.start());
 
-    this.timeout(20000);
+  // common URI prefix for the errors
+  const uri = `${server.config.uri}ex/err/`;
 
-    before(function () { return server.start(); });
+  it('array creation error', () => preq.get({
+    uri: `${uri}array`,
+  }).then((res) => {
+    // if we are here, no error was thrown, not good
+    throw new Error(`Expected an error to be thrown, got status: ${res.status}`);
+  }, (err) => {
+    // inspect the status
+    assert.deepEqual(err.status, 500);
+    // check the error title
+    assert.deepEqual(err.body.title, 'RangeError');
+  }));
 
-    // common URI prefix for the errors
-    var uri = server.config.uri + 'ex/err/';
+  it('file read error', () => preq.get({
+    uri: `${uri}file`,
+  }).then((res) => {
+    // if we are here, no error was thrown, not good
+    throw new Error(`Expected an error to be thrown, got status: ${res.status}`);
+  }, (err) => {
+    // inspect the status
+    assert.deepEqual(err.status, 500);
+    // check the error title
+    assert.deepEqual(err.body.title, 'Error');
+  }));
 
-    it('array creation error', function() {
-        return preq.get({
-            uri: uri + 'array'
-        }).then(function(res) {
-            // if we are here, no error was thrown, not good
-            throw new Error('Expected an error to be thrown, got status: ' + res.status);
-        }, function(err) {
-            // inspect the status
-            assert.deepEqual(err.status, 500);
-            // check the error title
-            assert.deepEqual(err.body.title, 'RangeError');
-        });
-    });
+  it('constraint check error', () => preq.get({
+    uri: `${uri}manual/error`,
+  }).then((res) => {
+    // if we are here, no error was thrown, not good
+    throw new Error(`Expected an error to be thrown, got status: ${res.status}`);
+  }, (err) => {
+    // inspect the status
+    assert.deepEqual(err.status, 500);
+    // check the error title
+    assert.deepEqual(err.body.title, 'Error');
+  }));
 
-    it('file read error', function() {
-        return preq.get({
-            uri: uri + 'file'
-        }).then(function(res) {
-            // if we are here, no error was thrown, not good
-            throw new Error('Expected an error to be thrown, got status: ' + res.status);
-        }, function(err) {
-            // inspect the status
-            assert.deepEqual(err.status, 500);
-            // check the error title
-            assert.deepEqual(err.body.title, 'Error');
-        });
-    });
+  it('access denied error', () => preq.get({
+    uri: `${uri}manual/deny`,
+  }).then((res) => {
+    // if we are here, no error was thrown, not good
+    throw new Error(`Expected an error to be thrown, got status: ${res.status}`);
+  }, (err) => {
+    // inspect the status
+    assert.deepEqual(err.status, 403);
+    // check the error title
+    assert.deepEqual(err.body.type, 'access_denied');
+  }));
 
-    it('constraint check error', function() {
-        return preq.get({
-            uri: uri + 'manual/error'
-        }).then(function(res) {
-            // if we are here, no error was thrown, not good
-            throw new Error('Expected an error to be thrown, got status: ' + res.status);
-        }, function(err) {
-            // inspect the status
-            assert.deepEqual(err.status, 500);
-            // check the error title
-            assert.deepEqual(err.body.title, 'Error');
-        });
-    });
-
-    it('access denied error', function() {
-        return preq.get({
-            uri: uri + 'manual/deny'
-        }).then(function(res) {
-            // if we are here, no error was thrown, not good
-            throw new Error('Expected an error to be thrown, got status: ' + res.status);
-        }, function(err) {
-            // inspect the status
-            assert.deepEqual(err.status, 403);
-            // check the error title
-            assert.deepEqual(err.body.type, 'access_denied');
-        });
-    });
-
-    it('authorisation error', function() {
-        return preq.get({
-            uri: uri + 'manual/auth'
-        }).then(function(res) {
-            // if we are here, no error was thrown, not good
-            throw new Error('Expected an error to be thrown, got status: ' + res.status);
-        }, function(err) {
-            // inspect the status
-            assert.deepEqual(err.status, 401);
-            // check the error title
-            assert.deepEqual(err.body.type, 'unauthorized');
-        });
-    });
-
+  it('authorisation error', () => preq.get({
+    uri: `${uri}manual/auth`,
+  }).then((res) => {
+    // if we are here, no error was thrown, not good
+    throw new Error(`Expected an error to be thrown, got status: ${res.status}`);
+  }, (err) => {
+    // inspect the status
+    assert.deepEqual(err.status, 401);
+    // check the error title
+    assert.deepEqual(err.body.type, 'unauthorized');
+  }));
 });
-
