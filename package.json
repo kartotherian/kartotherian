@@ -46,7 +46,7 @@
     "tilelive": "~5.12.2",
     "tilelive-bridge": "~2.3.1",
     "tilelive-http": "~0.13.0",
-    "tilelive-vector": "~3.9.4",
+    "@kartotherian/tilelive-vector": "~3.9.6",
     "tilejson": "^1.0.3",
     "@kartotherian/core": "^0.1.1",
     "@kartotherian/server": "^0.0.24",

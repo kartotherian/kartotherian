@@ -68,7 +68,6 @@ services:
 
       modules:
       - "tilelive-bridge"
-      - "tilelive-vector"
       - "tilelive-http"
       - "@kartotherian/autogen"
       - "@kartotherian/babel"
@@ -77,6 +76,7 @@ services:
       - "@kartotherian/overzoom"
       - "@kartotherian/postgres"
       - "@kartotherian/substantial"
+      - "@kartotherian/tilelive-vector"
       - "tilejson"
 
       requestHandlers:
