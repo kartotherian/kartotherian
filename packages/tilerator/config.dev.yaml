@@ -77,13 +77,13 @@ services:
 
       modules:
       - tilelive-bridge
-      - tilelive-vector
       - "@kartotherian/autogen"
       - "@kartotherian/cassandra"
       - "@kartotherian/layermixer"
       - "@kartotherian/overzoom"
       - "@kartotherian/postgres"
       - "@kartotherian/substantial"
+      - "@kartotherian/tilelive-vector"
 
       # If true, do not enable admin interface
       daemonOnly: false
