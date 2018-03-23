@@ -5,6 +5,7 @@
  CassandraStore is a Cassandra tile storage source for Kartotherian
  */
 
+const crypto = require('crypto');
 const util = require('util');
 const Promise = require('bluebird');
 const cassandra = require('cassandra-driver');
@@ -138,6 +139,7 @@ CassandraStore.prototype.getTile = function(z, x, y, callback) {
         if (self.setLastModified && row.writeTime){
             headers['Last-Modified'] = row.writeTime.toUTCString();
         }
+        headers['ETag'] = crypto.createHash('sha256').update(row.tile).digest('hex');
         return [row.tile, headers];
     }).nodeify(callback, {spread: true});
 };
