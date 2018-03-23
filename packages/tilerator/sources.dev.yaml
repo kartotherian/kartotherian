@@ -28,6 +28,7 @@ v4:
     repfactor: 4
     durablewrite: 0
     createIfMissing: true
+    setLastModified: true
 
 # View tiles as generated directly from the database. Don't view zoom0-5
 v4view:
