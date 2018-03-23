@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/cassandra",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Cassandra tile storage for Kartotherian map tile server",
   "main": "CassandraStore.js",
   "scripts": {
