@@ -49,11 +49,7 @@ Promise.map(['inactive', 'active', 'failed', 'complete', 'delayed'], state => qu
               setVal(res, key2, val);
             }
           } else {
-            // TODO: Double check the intent of the template here.
-            // The value was: `${key2 }|` with an extra space; eslint complains, justifiably so
-            // Should the space remain (moved after the end curly brace) or was it a redundant
-            // and unnecessary space?
-            crush(val, `${key2} |`, key === 'progress_data' ? 'count' : '');
+            crush(val, `${key2}|`, key === 'progress_data' ? 'count' : '');
           }
         });
       }(job, ''));
