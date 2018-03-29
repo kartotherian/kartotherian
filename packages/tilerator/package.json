@@ -77,7 +77,6 @@
     "grunt-mocha-test": "^0.13.3",
     "istanbul": "^0.4.3",
     "mocha": "^5.0.4",
-    "mocha-jshint": "^2.3.1",
     "mocha-lcov-reporter": "^1.2.0",
     "swagger-router": "^0.4.2"
   },

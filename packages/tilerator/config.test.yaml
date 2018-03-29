@@ -9,7 +9,7 @@ worker_heap_limit_mb: 250
 
 # Logger info
 logging:
-  level: info
+  level: warn
   streams:
     - type: debug
 #  streams:
@@ -39,7 +39,7 @@ services:
 
       # more per-service config settings
       # the location of the spec, defaults to spec.yaml if not specified
-      spec: ./spec.template.yaml
+      spec: ./spec.yaml
       # allow cross-domain requests to the API (default '*')
       cors: '*'
       # to disable use:
@@ -86,7 +86,7 @@ services:
       - "@kartotherian/tilelive-vector"
 
       # If true, do not enable admin interface
-      daemonOnly: true
+      daemonOnly: false
 
       # If true, runs this instance without processing tiles
       # This could be good for queue management

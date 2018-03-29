@@ -94,7 +94,8 @@ Queue.prototype.cleanup = function cleanup(opts) {
   checkType(opts, 'minutesSinceUpdate', 'integer', 60);
   checkType(opts, 'sources', 'object', true);
   checkType(opts, 'updateSources', 'boolean');
-  const jobId = checkType(opts, 'jobId', 'integer', false, 1, 2 ** 50) ? opts.jobId : false;
+  // eslint-disable-next-line no-restricted-properties
+  const jobId = checkType(opts, 'jobId', 'integer', false, 1, Math.pow(2, 50)) ? opts.jobId : false;
   const { type } = opts;
   const result = {};
 

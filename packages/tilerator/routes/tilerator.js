@@ -34,8 +34,8 @@ function reportAsync(res, task, isYaml) {
     })
     .then(task)
     .then((val) => {
-      // we should have a log of all requests's responses, 'warn' is a good level for that
-      core.log('warn', val);
+      // log of all requests's responses as 'info'
+      core.log('info', val);
       return format(val);
     }, (err) => {
       core.log('warn', err);
