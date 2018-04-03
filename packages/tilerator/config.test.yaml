@@ -65,7 +65,16 @@ services:
       #   - user-agent
       #   - x-request-id
 
-      sources: ./sources.dev.yaml
+      sources:
+        # Download tiles on the fly from wiki maps service
+        gen:
+          public: true
+          uri: https://maps.wikimedia.org/osm-pbf/{z}/{x}/{y}.pbf
+
+        # Store tiles as files
+        file:
+          public: true
+          uri: file://./test/filestore
 
       variables:
         cassandra-user: cassandra
@@ -77,13 +86,8 @@ services:
 
       modules:
       - tilelive-bridge
-      - "@kartotherian/autogen"
-      - "@kartotherian/cassandra"
-      - "@kartotherian/layermixer"
-      - "@kartotherian/overzoom"
-      - "@kartotherian/postgres"
-      - "@kartotherian/substantial"
-      - "@kartotherian/tilelive-vector"
+      - tilelive-http
+      - tilelive-file
 
       # If true, do not enable admin interface
       daemonOnly: false
