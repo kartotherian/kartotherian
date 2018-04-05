@@ -126,6 +126,9 @@
     var style = (match && match[1]) || 'osm-intl';
     document.getElementById('style').value = style;
 
+    var matchLang = location.search.match(/lang=([^&\/]*)/);
+    var lang = matchLang && matchLang[1];
+
     var initZoom = 5;
 
     // Create a map
@@ -150,7 +153,11 @@
     }
 
     function getTileUrl() {
-        return '/' + document.getElementById('style').value + '/{z}/{x}/{y}' + scalex + '.png';
+        var url = '/' + document.getElementById('style').value + '/{z}/{x}/{y}' + scalex + '.png';
+        if (lang) {
+            url += '?lang=' + lang;
+        }
+        return url;
     }
 
     /**
