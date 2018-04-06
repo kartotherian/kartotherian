@@ -259,6 +259,29 @@ describe('Tag recombination', () => {
     ],
   }));
 
+  it('Verify existence of default fallback', () => {
+    babel({
+      protocol: 'babel:',
+      query: {
+        nameTag: 'name',
+        defaultLanguage: 'en',
+        source: 'a',
+      },
+    }).then((bbl) => {
+      // NOTE: These are known fallbacks from within fallbacks.json
+      // if the file changes, these test cases may need to change as well
+      assert.deepStrictEqual(
+        bbl.languageMap.av,
+        ['av', 'ru']
+      );
+
+      assert.deepStrictEqual(
+        bbl.languageMap.cdo,
+        ['cdo', 'nan', 'zh-hant']
+      );
+    });
+  });
+
   it('pick missing', () => test('02-multilingual-alltags', { lng: 'es', map: { es: ['fr'] } }, {
     layers: [
       {
