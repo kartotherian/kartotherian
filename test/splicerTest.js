@@ -162,18 +162,16 @@ describe('Tag recombination', () => {
           {
             type: 1,
             id: 5,
-            tags: [0, 0, 1, 1, 2, 2],
+            tags: [0, 0, 1, 1],
             geometry: [9, 1599, 4288],
           },
         ],
         keys: [
           'class',
           'name',
-          'name_',
         ],
         values: [
           { tag: 1, value: 'city' },
-          { tag: 1, value: 'Vancouver' },
           { tag: 1, value: 'Ванкувер' },
         ],
         version: 2,
@@ -216,18 +214,16 @@ describe('Tag recombination', () => {
           {
             type: 1,
             id: 5,
-            tags: [0, 0, 1, 1, 2, 2],
+            tags: [0, 0, 1, 1],
             geometry: [9, 1599, 4288],
           },
         ],
         keys: [
           'class',
           'name',
-          'name_',
         ],
         values: [
           { tag: 1, value: 'city' },
-          { tag: 1, value: 'Vancouver' },
           { tag: 1, value: 'Ванкувер' },
         ],
         version: 2,
@@ -244,18 +240,16 @@ describe('Tag recombination', () => {
           {
             type: 1,
             id: 5,
-            tags: [0, 0, 1, 1, 2, 2],
+            tags: [0, 0, 1, 1],
             geometry: [9, 1599, 4288],
           },
         ],
         keys: [
           'class',
           'name',
-          'name_',
         ],
         values: [
           { tag: 1, value: 'city' },
-          { tag: 1, value: 'Vancouver' },
           { tag: 1, value: 'Ванкувер' },
         ],
         version: 2,
