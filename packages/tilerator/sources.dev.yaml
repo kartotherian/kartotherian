@@ -69,7 +69,7 @@ osm-localized:
   params:
     source: {ref: v4}
     tag: name
-    combineName: true
+    combineName: false
     defaultLanguage: en
 
 # OSM PBF source
