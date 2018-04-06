@@ -35,15 +35,6 @@ genviewraw:
     combineName: true
     defaultLanguage: en
 
-# set name tag based on name_* attributes
-genviewraw:
-  uri: babel://
-  params:
-    source: {ref: gen}
-    tag: name
-    combineName: true
-    defaultLanguage: en
-
 # View tiles as generated directly from the database. Don't view zoom0-5
 genview:
   public: true
@@ -157,7 +148,7 @@ osm-localized:
   params:
     source: {ref: v4}
     tag: name
-    combineName: true
+    combineName: false
     defaultLanguage: en
 
 # Default OSM PBF source
