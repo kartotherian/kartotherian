@@ -60,8 +60,8 @@
     "@kartotherian/layermixer": "^0.0.8",
     "@kartotherian/overzoom": "^0.0.16",
     "@kartotherian/substantial": "^0.0.10",
-    "@kartotherian/osm-bright-source": "kartotherian/osm-bright.tm2source#name_en",
-    "@kartotherian/osm-bright-style": "kartotherian/osm-bright.tm2#render-name",
+    "@kartotherian/osm-bright-source": "^1.0.0",
+    "@kartotherian/osm-bright-style": "^3.0.0",
     "@kartotherian/jobprocessor": "^0.0.18"
   },
   "optionalDependencies": {
