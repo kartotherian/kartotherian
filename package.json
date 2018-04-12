@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "0.0.35",
+  "version": "0.0.38",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
@@ -43,7 +43,7 @@
     "@kartotherian/overzoom": "^0.0.16",
     "@kartotherian/postgres": "^0.0.11",
     "@kartotherian/server": "^0.0.25",
-    "@kartotherian/snapshot": "^0.3.6",
+    "@kartotherian/snapshot": "^0.3.7",
     "@kartotherian/substantial": "^0.0.10",
     "@kartotherian/tilelive-vector": "^3.9.6",
     "bluebird": "^3.5.0",
