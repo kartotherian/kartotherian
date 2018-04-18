@@ -3,7 +3,7 @@
 const assert = require('assert');
 const LanguagePicker = require('../lib/LanguagePicker');
 
-describe('LanguagePicker', () => {
+describe('LanguagePicker: Pick the correct language', () => {
   const cases = [
     {
       msg: 'No values given',
@@ -147,6 +147,45 @@ describe('LanguagePicker', () => {
       ],
       expected: 'en value',
     },
+    /* Script overrides */
+    {
+      msg: 'Fallback to language script be-tarask -> Cyrl',
+      langCode: 'be-tarask',
+      config: {
+        languageMap: {
+          foo: 'bar',
+          other: 'languages',
+          that: 'dont',
+          matter: 'at all',
+        },
+      },
+      values: [
+        { en: 'en value' },
+        { he: 'he value' },
+        { es: 'es value' },
+        { Cyrl: 'Cyrl value' },
+      ],
+      expected: 'Cyrl value',
+    },
+    {
+      msg: 'Fallback to language script zh -> Hans',
+      langCode: 'zh',
+      config: {
+        languageMap: {
+          foo: 'bar',
+          other: 'languages',
+          that: 'dont',
+          matter: 'at all',
+        },
+      },
+      values: [
+        { en: 'en value' },
+        { he: 'he value' },
+        { es: 'es value' },
+        { Hans: 'Hans value' },
+      ],
+      expected: 'Hans value',
+    },
   ];
 
   cases.forEach((data) => {
@@ -163,6 +202,66 @@ describe('LanguagePicker', () => {
     it(data.msg, () => {
       assert.equal(
         lpp.getResult(),
+        data.expected
+      );
+    });
+  });
+});
+
+describe('LanguagePicker: Build a correct fallback list', () => {
+  const cases = [
+    {
+      msg: 'Spanish falls back to Latn',
+      langCode: 'es',
+      config: {
+        languageMap: {
+          other: 'languages',
+          that: 'dont',
+          matter: 'at all',
+        },
+      },
+      expected: ['es', 'Latn', 'en'],
+    },
+    {
+      msg: 'Language with a fallback; the script comes from the main language',
+      langCode: 'yi',
+      config: {
+        languageMap: {
+          yi: 'he', // From fallbacks.json
+          other: 'languages',
+          that: 'dont',
+          matter: 'at all',
+        },
+      },
+      // language_scripts yi -> Hebr
+      // Should find 'Hebr' from 'yi' directly
+      expected: ['yi', 'he', 'Hebr', 'en'],
+    },
+    {
+      msg: 'Language with a fallback; the script comes from the fallback',
+      langCode: 'aeb-arab',
+      config: {
+        languageMap: {
+          'aeb-arab': 'ar', // From fallbacks.json
+          other: 'languages',
+          that: 'dont',
+          matter: 'at all',
+        },
+      },
+      // language_scripts ar -> Arab
+      // Should find 'Arab' from the fallback 'ar'
+      expected: ['aeb-arab', 'ar', 'Arab', 'en'],
+    },
+  ];
+
+  cases.forEach((data) => {
+    const lp = new LanguagePicker(data.langCode, data.config);
+    const lpp = lp.newProcessor();
+
+    // Check the result
+    it(data.msg, () => {
+      assert.deepStrictEqual(
+        lpp.getFallbacks(),
         data.expected
       );
     });
