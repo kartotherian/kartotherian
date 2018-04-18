@@ -147,6 +147,75 @@ describe('LanguagePicker: Pick the correct language', () => {
       ],
       expected: 'en value',
     },
+    {
+      msg: 'Russian has no value and no fallback defined;' +
+        'get value from a language that has -Cyrl over value in English',
+      langCode: 'ru',
+      values: [
+        { sah: 'sah value' }, // Same alphabet
+        { 'foo-Cyrl': 'foo-Cyrl value' },
+        { en: 'en value' },
+      ],
+      expected: 'foo-Cyrl value',
+    },
+    {
+      msg: 'Russian has no value and no fallback defined;' +
+        'no value with -Cyrl, get value from a language that uses the same script over value in English',
+      langCode: 'ru',
+      values: [
+        { sah: 'sah value' }, // Same alphabet
+        { 'foo-Arab': 'foo-Arab value' },
+        { en: 'en value' },
+      ],
+      expected: 'sah value',
+    },
+    {
+      msg: 'Hebrew has no value, no fallback defined,' +
+        ' no other language with -Hebr suffix,' +
+        ' and no English value; get value from any language that has -Latn',
+      langCode: 'he',
+      values: [
+        { sah: 'sah value' },
+        { 'zh-Latn': 'zh-Latn value' },
+        { 'bar-Cyrl': 'bar-Cyrl value' },
+      ],
+      expected: 'zh-Latn value',
+    },
+    {
+      msg: 'Arabic has no value, no fallback defined, ' +
+        'no other language with -Arab suffix, ' +
+        'no English value, ' +
+        'no value from any language that has -Arab, ' +
+        'no language with -Latn; ' +
+        'Get local value.',
+      langCode: 'ar',
+      config: {
+        nameTag: 'name',
+      },
+      values: [
+        { fr: 'fr value' },
+        { 'zh-Hebr': 'zh-Hebr value' },
+        { 'bar-Cyrl': 'bar-Cyrl value' },
+        { name: 'name value' },
+      ],
+      expected: 'name value',
+    },
+    {
+      msg: 'Arabic has no value, no fallback defined, ' +
+        'no other language with -Arab suffix, ' +
+        'no English value, ' +
+        'no value from any language that has -Arab, ' +
+        'no language with -Latn; ' +
+        'there is no local value (no nametag);' +
+        'get first value',
+      langCode: 'ar',
+      values: [
+        { fr: 'fr value' },
+        { 'zh-Hebr': 'zh-Hebr value' },
+        { 'bar-Cyrl': 'bar-Cyrl value' },
+      ],
+      expected: 'fr value',
+    },
   ];
 
   cases.forEach((data) => {
@@ -163,45 +232,6 @@ describe('LanguagePicker: Pick the correct language', () => {
     it(data.msg, () => {
       assert.equal(
         lpp.getResult(),
-        data.expected
-      );
-    });
-  });
-});
-
-describe('LanguagePicker: Build a correct fallback list', () => {
-  const cases = [
-    {
-      msg: 'Spanish falls back to a Latn language',
-      langCode: 'es',
-      expected: ['es', 'aa', 'abr', 'ace', 'ach', 'ada', 'af', 'agq', 'ak', 'akz', 'ale', 'en'],
-    },
-    {
-      msg: 'Language with a fallback and script fallbacks',
-      langCode: 'yi',
-      config: {
-        languageMap: {
-          yi: 'he', // From fallbacks.json
-          other: 'languages',
-          that: 'dont',
-          matter: 'at all',
-        },
-      },
-      // Languages with 'Hebr' script come after the
-      // official fallback (and there are only 5 languages
-      // using the Hebr script)
-      expected: ['yi', 'he', 'jpr', 'jrb', 'lad', 'en'],
-    },
-  ];
-
-  cases.forEach((data) => {
-    const lp = new LanguagePicker(data.langCode, data.config);
-    const lpp = lp.newProcessor();
-
-    // Check the result
-    it(data.msg, () => {
-      assert.deepStrictEqual(
-        lpp.getFallbacks(),
         data.expected
       );
     });
