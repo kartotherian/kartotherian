@@ -174,7 +174,7 @@ describe('LanguagePicker: Build a correct fallback list', () => {
     {
       msg: 'Spanish falls back to a Latn language',
       langCode: 'es',
-      expected: ['es', 'aa', 'abr', 'ace', 'ach', 'ada', 'en'],
+      expected: ['es', 'aa', 'abr', 'ace', 'ach', 'ada', 'af', 'agq', 'ak', 'akz', 'ale', 'en'],
     },
     {
       msg: 'Language with a fallback and script fallbacks',
@@ -188,7 +188,8 @@ describe('LanguagePicker: Build a correct fallback list', () => {
         },
       },
       // Languages with 'Hebr' script come after the
-      // official fallback
+      // official fallback (and there are only 5 languages
+      // using the Hebr script)
       expected: ['yi', 'he', 'jpr', 'jrb', 'lad', 'en'],
     },
   ];
