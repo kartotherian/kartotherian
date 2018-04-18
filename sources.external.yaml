@@ -15,3 +15,7 @@ osm-intl:
     loader: "@kartotherian/osm-bright-style"
   xmlSetParams:
     source: {ref: gen}
+  defaultHeaders:
+    Cache-Control: 'no-cache, no-store, must-revalidate'
+    Pragma: no-cache
+    Expires: 0
