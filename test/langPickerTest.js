@@ -147,45 +147,6 @@ describe('LanguagePicker: Pick the correct language', () => {
       ],
       expected: 'en value',
     },
-    /* Script overrides */
-    {
-      msg: 'Fallback to language script be-tarask -> Cyrl',
-      langCode: 'be-tarask',
-      config: {
-        languageMap: {
-          foo: 'bar',
-          other: 'languages',
-          that: 'dont',
-          matter: 'at all',
-        },
-      },
-      values: [
-        { en: 'en value' },
-        { he: 'he value' },
-        { es: 'es value' },
-        { Cyrl: 'Cyrl value' },
-      ],
-      expected: 'Cyrl value',
-    },
-    {
-      msg: 'Fallback to language script zh -> Hans',
-      langCode: 'zh',
-      config: {
-        languageMap: {
-          foo: 'bar',
-          other: 'languages',
-          that: 'dont',
-          matter: 'at all',
-        },
-      },
-      values: [
-        { en: 'en value' },
-        { he: 'he value' },
-        { es: 'es value' },
-        { Hans: 'Hans value' },
-      ],
-      expected: 'Hans value',
-    },
   ];
 
   cases.forEach((data) => {
@@ -211,19 +172,12 @@ describe('LanguagePicker: Pick the correct language', () => {
 describe('LanguagePicker: Build a correct fallback list', () => {
   const cases = [
     {
-      msg: 'Spanish falls back to Latn',
+      msg: 'Spanish falls back to a Latn language',
       langCode: 'es',
-      config: {
-        languageMap: {
-          other: 'languages',
-          that: 'dont',
-          matter: 'at all',
-        },
-      },
-      expected: ['es', 'Latn', 'en'],
+      expected: ['es', 'aa', 'abr', 'ace', 'ach', 'ada', 'en'],
     },
     {
-      msg: 'Language with a fallback; the script comes from the main language',
+      msg: 'Language with a fallback and script fallbacks',
       langCode: 'yi',
       config: {
         languageMap: {
@@ -233,24 +187,9 @@ describe('LanguagePicker: Build a correct fallback list', () => {
           matter: 'at all',
         },
       },
-      // language_scripts yi -> Hebr
-      // Should find 'Hebr' from 'yi' directly
-      expected: ['yi', 'he', 'Hebr', 'en'],
-    },
-    {
-      msg: 'Language with a fallback; the script comes from the fallback',
-      langCode: 'aeb-arab',
-      config: {
-        languageMap: {
-          'aeb-arab': 'ar', // From fallbacks.json
-          other: 'languages',
-          that: 'dont',
-          matter: 'at all',
-        },
-      },
-      // language_scripts ar -> Arab
-      // Should find 'Arab' from the fallback 'ar'
-      expected: ['aeb-arab', 'ar', 'Arab', 'en'],
+      // Languages with 'Hebr' script come after the
+      // official fallback
+      expected: ['yi', 'he', 'jpr', 'jrb', 'lad', 'en'],
     },
   ];
 
