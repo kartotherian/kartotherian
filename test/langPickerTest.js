@@ -148,7 +148,7 @@ describe('LanguagePicker: Pick the correct language', () => {
       expected: 'en value',
     },
     {
-      msg: 'Russian has no value and no fallback defined;' +
+      msg: 'Russian has no value and no fallback defined; ' +
         'get value from a language that has -Cyrl over value in English',
       langCode: 'ru',
       values: [
@@ -159,7 +159,7 @@ describe('LanguagePicker: Pick the correct language', () => {
       expected: 'foo-Cyrl value',
     },
     {
-      msg: 'Russian has no value and no fallback defined;' +
+      msg: 'Russian has no value and no fallback defined; ' +
         'no value with -Cyrl, get value from a language that uses the same script over value in English',
       langCode: 'ru',
       values: [
