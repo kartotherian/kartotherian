@@ -48,6 +48,10 @@ genview:
     loader: "@kartotherian/osm-bright-style"
   xmlSetParams:
     source: {ref: genviewraw}
+  defaultHeaders:
+    Cache-Control: 'no-cache, no-store, must-revalidate'
+    Pragma: no-cache
+    Expires: 0
 
 # Filter out any small tiles without significant data on or after zoom 10
 substgen:
@@ -180,6 +184,10 @@ osm-intl:
   overrideInfo:
     attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
     tiles: ["http://localhost:6533/osm-intl/{z}/{x}/{y}.png"]
+  defaultHeaders:
+    Cache-Control: 'no-cache, no-store, must-revalidate'
+    Pragma: no-cache
+    Expires: 0
 
 # OSM map without any labels
 osm:
