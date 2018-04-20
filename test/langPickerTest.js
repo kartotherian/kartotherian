@@ -182,6 +182,34 @@ describe('LanguagePicker: Pick the correct language', () => {
       expected: 'zh-Latn value',
     },
     {
+      msg: 'Hebrew has no value, no fallback defined,' +
+        ' no other language with -Hebr suffix,' +
+        ' no English value;' +
+        ' no value from any language that has -Latn;' +
+        ' show language with zh_pinyin value',
+      langCode: 'he',
+      values: [
+        { sah: 'sah value' },
+        { zh_pinyin: 'zh_pinyin value' },
+        { 'bar-Cyrl': 'bar-Cyrl value' },
+      ],
+      expected: 'zh_pinyin value',
+    },
+    {
+      msg: 'Hebrew has no value, no fallback defined,' +
+        ' no other language with -Hebr suffix,' +
+        ' no English value;' +
+        ' no value from any language that has -Latn;' +
+        ' show language with _rm suffix',
+      langCode: 'he',
+      values: [
+        { sah: 'sah value' },
+        { jp_rm: 'jp_rm value' },
+        { 'bar-Cyrl': 'bar-Cyrl value' },
+      ],
+      expected: 'jp_rm value',
+    },
+    {
       msg: 'Arabic has no value, no fallback defined, ' +
         'no other language with -Arab suffix, ' +
         'no English value, ' +
