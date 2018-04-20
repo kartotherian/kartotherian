@@ -80,26 +80,62 @@ describe('LanguagePicker: Pick the correct language', () => {
       expected: 'bar value',
     },
     {
-      msg: 'Object language map given, but no fallback exists, fall back to en',
+      msg: 'Object language map given, but no fallback exists for a non-latin language, fall back to local',
       langCode: 'foo',
       config: {
+        nameTag: 'name',
         languageMap: { foo: 'bar' },
       },
       values: [
         { baz: 'baz value' },
         { en: 'en value' },
         { quuz: 'quuz value' },
+        { name: 'name value' },
+      ],
+      expected: 'name value',
+    },
+    {
+      msg: 'Object language map given, but no fallback exists for a latin language, fall back to English',
+      langCode: 'es', // Spanish
+      config: {
+        nameTag: 'name',
+        languageMap: { foo: 'bar' },
+      },
+      values: [
+        { name_baz: 'baz value' },
+        { name_en: 'en value' },
+        { name_quuz: 'quuz value' },
+        { name: 'name value' },
       ],
       expected: 'en value',
     },
     {
-      msg: 'No fallback value exists; fallback to en',
+      msg: 'Object language map given, but no fallback exists for a latin language, no value in English, fall back to a romanized value',
+      langCode: 'es', // Spanish
+      config: {
+        nameTag: 'name',
+        languageMap: { foo: 'bar' },
+      },
+      values: [
+        { baz: 'baz value' },
+        { foo_rm: 'foo_rm value' },
+        { quuz: 'quuz value' },
+        { name: 'name value' },
+      ],
+      expected: 'foo_rm value',
+    },
+    {
+      msg: 'No fallback value exists in a non-latin language; fallback to local',
       langCode: 'yi',
+      config: {
+        nameTag: 'name',
+      },
       values: [
         { es: 'es value' },
         { en: 'en value' },
+        { name: 'name value' },
       ],
-      expected: 'en value',
+      expected: 'name value',
     },
     {
       msg: 'No fallback value exists, no en value exists, fallback to nameTag',
@@ -160,6 +196,17 @@ describe('LanguagePicker: Pick the correct language', () => {
     },
     {
       msg: 'Russian has no value and no fallback defined; ' +
+        'get value from a language that is also Cyrillic (uk)',
+      langCode: 'ru',
+      values: [
+        { uk: 'uk value' }, // Same alphabet
+        { foo: 'foo value' },
+        { en: 'en value' },
+      ],
+      expected: 'uk value',
+    },
+    {
+      msg: 'Russian has no value and no fallback defined; ' +
         'no value with -Cyrl, get value from a language that uses the same script over value in English',
       langCode: 'ru',
       values: [
@@ -172,49 +219,24 @@ describe('LanguagePicker: Pick the correct language', () => {
     {
       msg: 'Hebrew has no value, no fallback defined,' +
         ' no other language with -Hebr suffix,' +
-        ' and no English value; get value from any language that has -Latn',
+        'Fall back on local value',
+      config: {
+        nameTag: 'name',
+      },
       langCode: 'he',
       values: [
-        { sah: 'sah value' },
-        { 'zh-Latn': 'zh-Latn value' },
-        { 'bar-Cyrl': 'bar-Cyrl value' },
+        { name_sah: 'sah value' },
+        { 'name_zh-Latn': 'zh-Latn value' },
+        { name: 'name value' },
+        { 'name_bar-Cyrl': 'bar-Cyrl value' },
       ],
-      expected: 'zh-Latn value',
-    },
-    {
-      msg: 'Hebrew has no value, no fallback defined,' +
-        ' no other language with -Hebr suffix,' +
-        ' no English value;' +
-        ' no value from any language that has -Latn;' +
-        ' show language with zh_pinyin value',
-      langCode: 'he',
-      values: [
-        { sah: 'sah value' },
-        { zh_pinyin: 'zh_pinyin value' },
-        { 'bar-Cyrl': 'bar-Cyrl value' },
-      ],
-      expected: 'zh_pinyin value',
-    },
-    {
-      msg: 'Hebrew has no value, no fallback defined,' +
-        ' no other language with -Hebr suffix,' +
-        ' no English value;' +
-        ' no value from any language that has -Latn;' +
-        ' show language with _rm suffix',
-      langCode: 'he',
-      values: [
-        { sah: 'sah value' },
-        { jp_rm: 'jp_rm value' },
-        { 'bar-Cyrl': 'bar-Cyrl value' },
-      ],
-      expected: 'jp_rm value',
+      expected: 'name value',
     },
     {
       msg: 'Arabic has no value, no fallback defined, ' +
         'no other language with -Arab suffix, ' +
         'no English value, ' +
-        'no value from any language that has -Arab, ' +
-        'no language with -Latn; ' +
+        'no value from any language that has -Arab; ' +
         'Get local value.',
       langCode: 'ar',
       config: {
@@ -233,8 +255,7 @@ describe('LanguagePicker: Pick the correct language', () => {
         'no other language with -Arab suffix, ' +
         'no English value, ' +
         'no value from any language that has -Arab, ' +
-        'no language with -Latn; ' +
-        'there is no local value (no nametag);' +
+        'there is no local value (no nametag); ' +
         'get first value',
       langCode: 'ar',
       values: [
