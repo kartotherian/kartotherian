@@ -265,3 +265,58 @@ describe('LanguagePicker: Pick the correct language', () => {
     });
   });
 });
+
+describe('LanguagePicker: Isolation', () => {
+  const lp = new LanguagePicker('foo', { nameTag: 'name' });
+  // We are always asking for 'foo' language
+  // Let's make sure that cases are not found where
+  // foo is not given as a value
+  const cases = [
+    {
+      msg: 'foo language is defined: Found value in foo',
+      values: [
+        { bar: 'The first bar value' },
+        { baz: 'The first baz value' },
+        { foo: 'The first foo value' },
+      ],
+      expected: 'The first foo value',
+    },
+    {
+      msg: 'foo language is not defined, neither are all other fallbacks, exept nameTag. Make sure we fall back on nameTag',
+      values: [
+        { blip: 'The first blip value' },
+        { blop: 'The first blop value' },
+        { name: 'The first name value' },
+        { bloop: 'The first bloop value' },
+      ],
+      expected: 'The first name value',
+    },
+    {
+      msg: 'foo language is not defined, neither are all other fallbacks. Make sure we fall back on first value',
+      values: [
+        { me: 'The first me value' },
+        { meo: 'The first meo value' },
+        { meow: 'The first meow value' },
+      ],
+      expected: 'The first me value',
+    },
+  ];
+
+  cases.forEach((data) => {
+    const lpp = lp.newProcessor();
+
+    // Add test values
+    (data.values || []).forEach((valueData) => {
+      const lang = Object.keys(valueData)[0];
+      lpp.addValue(lang, valueData[lang]);
+    });
+
+    // Check the result
+    it(data.msg, () => {
+      assert.equal(
+        lpp.getResult(),
+        data.expected
+      );
+    });
+  });
+});
