@@ -3,6 +3,7 @@ module.exports = function Gruntfile(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-mocha-test');
+  grunt.loadNpmTasks('grunt-tyops');
 
   grunt.initConfig({
     watch: {
@@ -19,6 +20,15 @@ module.exports = function Gruntfile(grunt) {
         ],
       },
     },
+    tyops: {
+      options: {
+        typos: '.typos.json',
+      },
+      src: [
+        '**/*.js',
+        '!node_modules/**',
+      ],
+    },
     mochaTest: {
       test: {
         options: {
@@ -30,6 +40,6 @@ module.exports = function Gruntfile(grunt) {
   });
 
   grunt.registerTask('lint', ['eslint']);
-  grunt.registerTask('test', ['mochaTest', 'lint']);
+  grunt.registerTask('test', ['tyops', 'lint', 'mochaTest']);
   grunt.registerTask('default', 'test');
 };
