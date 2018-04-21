@@ -305,6 +305,19 @@ describe('LanguagePicker: Pick the correct language', () => {
       ],
       expected: 'fr value',
     },
+    {
+      msg: 'Force local language, without a nameTag set; show first value',
+      config: {
+        forceLocal: true,
+      },
+      langCode: 'en',
+      values: [
+        { fr: 'fr value' },
+        { en: 'en value' },
+        { ar: 'ar value' },
+      ],
+      expected: 'fr value',
+    },
   ];
 
   cases.forEach((data) => {
