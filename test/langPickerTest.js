@@ -265,6 +265,59 @@ describe('LanguagePicker: Pick the correct language', () => {
       ],
       expected: 'fr value',
     },
+    {
+      msg: 'Force local language, even if the requested language exists in values',
+      config: {
+        nameTag: 'name',
+        forceLocal: true,
+      },
+      langCode: 'fr',
+      values: [
+        { name_fr: 'fr value' },
+        { name_ar: 'ar value' },
+        { name: 'name value' },
+      ],
+      expected: 'name value',
+    },
+    {
+      msg: 'Force local language, without a requested language at all',
+      config: {
+        nameTag: 'name',
+        forceLocal: true,
+      },
+      values: [
+        { name_fr: 'fr value' },
+        { name_ar: 'ar value' },
+        { name: 'name value' },
+      ],
+      expected: 'name value',
+    },
+    {
+      msg: 'Force local language, without a requested language at all, and without local value; show first value',
+      config: {
+        nameTag: 'name',
+        forceLocal: true,
+      },
+      values: [
+        { name_fr: 'fr value' },
+        { name_ar: 'ar value' },
+        { name_foo: 'foo value' },
+      ],
+      expected: 'fr value',
+    },
+    {
+      msg: 'Force local language, without a nameTag set; show first value',
+      config: {
+        forceLocal: true,
+      },
+      langCode: 'en',
+      values: [
+        { fr: 'fr value' },
+        { en: 'en value' },
+        { ar: 'ar value' },
+      ],
+      expected: 'fr value',
+    },
   ];
 
   cases.forEach((data) => {
