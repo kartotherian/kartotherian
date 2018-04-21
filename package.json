@@ -34,6 +34,7 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-eslint": "^20.1.0",
     "grunt-mocha-test": "^0.13.3",
+    "grunt-tyops": "0.1.0",
     "mocha": "^5.0.4",
     "typedarray-to-buffer": "*",
     "json-stringify-pretty-compact": "*",
