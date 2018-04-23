@@ -80,7 +80,7 @@ describe('LanguagePicker: Pick the correct language', () => {
       expected: 'bar value',
     },
     {
-      msg: 'Object language map given, but no fallback exists for a non-latin language, fall back to local',
+      msg: 'Object language map given, no fallback exists, fall back to local',
       langCode: 'foo',
       config: {
         nameTag: 'name',
@@ -95,7 +95,7 @@ describe('LanguagePicker: Pick the correct language', () => {
       expected: 'name value',
     },
     {
-      msg: 'Object language map given, but no fallback exists for a latin language, fall back to English',
+      msg: 'Object language map given, no fallback exists, find suffix of same script',
       langCode: 'es', // Spanish
       config: {
         nameTag: 'name',
@@ -104,61 +104,39 @@ describe('LanguagePicker: Pick the correct language', () => {
       values: [
         { name_baz: 'baz value' },
         { name_en: 'en value' },
+        { 'name_foo-Latn': 'foo-Latn value' },
         { name_quuz: 'quuz value' },
         { name: 'name value' },
       ],
-      expected: 'en value',
+      expected: 'foo-Latn value',
     },
     {
-      msg: 'Object language map given, but no fallback exists for a latin language, no value in English, fall back to a romanized value',
+      msg: 'Latin language requested, no fallback exists, find romanized label with _rm suffix',
       langCode: 'es', // Spanish
       config: {
         nameTag: 'name',
-        languageMap: { foo: 'bar' },
       },
       values: [
-        { baz: 'baz value' },
-        { foo_rm: 'foo_rm value' },
-        { quuz: 'quuz value' },
+        { name_baz: 'baz value' },
+        { name_en: 'en value' },
+        { name_jp_rm: 'jp_rm value' },
+        { name_quuz: 'quuz value' },
         { name: 'name value' },
       ],
-      expected: 'foo_rm value',
+      expected: 'jp_rm value',
     },
     {
-      msg: 'No fallback value exists in a non-latin language; fallback to local',
+      msg: 'Non-latin language requested, no fallback value exists, no value with script suffix; fallback to local',
       langCode: 'yi',
       config: {
         nameTag: 'name',
       },
       values: [
-        { es: 'es value' },
-        { en: 'en value' },
+        { name_es: 'es value' },
+        { name_en: 'en value' },
         { name: 'name value' },
       ],
       expected: 'name value',
-    },
-    {
-      msg: 'No fallback value exists, no en value exists, fallback to nameTag',
-      langCode: 'yi',
-      config: {
-        nameTag: 'name',
-      },
-      values: [
-        { ru: 'ru value' },
-        { name: 'base name tag' },
-        { fr: 'fr value' },
-      ],
-      expected: 'base name tag',
-    },
-    {
-      msg: 'No fallback value exists, no en value exists, no nameTag given, fallback to first option given',
-      langCode: 'yi',
-      values: [
-        { ru: 'ru value' },
-        { es: 'es value' },
-        { fr: 'fr value' },
-      ],
-      expected: 'ru value',
     },
     {
       msg: 'Use prefixed codes',
@@ -174,14 +152,18 @@ describe('LanguagePicker: Pick the correct language', () => {
       expected: 'en value',
     },
     {
-      msg: 'Language code unrecognized, fallback to en',
+      msg: 'Language code unrecognized, fallback to local',
       langCode: 'quuz',
+      config: {
+        nameTag: 'name',
+      },
       values: [
-        { ru: 'ru value' },
-        { fr: 'fr value' },
-        { en: 'en value' },
+        { name_ru: 'ru value' },
+        { name_fr: 'fr value' },
+        { name_en: 'en value' },
+        { name: 'name value' },
       ],
-      expected: 'en value',
+      expected: 'name value',
     },
     {
       msg: 'Russian has no value and no fallback defined; ' +
@@ -193,28 +175,6 @@ describe('LanguagePicker: Pick the correct language', () => {
         { en: 'en value' },
       ],
       expected: 'foo-Cyrl value',
-    },
-    {
-      msg: 'Russian has no value and no fallback defined; ' +
-        'get value from a language that is also Cyrillic (uk)',
-      langCode: 'ru',
-      values: [
-        { uk: 'uk value' }, // Same alphabet
-        { foo: 'foo value' },
-        { en: 'en value' },
-      ],
-      expected: 'uk value',
-    },
-    {
-      msg: 'Russian has no value and no fallback defined; ' +
-        'no value with -Cyrl, get value from a language that uses the same script over value in English',
-      langCode: 'ru',
-      values: [
-        { sah: 'sah value' }, // Same alphabet
-        { 'foo-Arab': 'foo-Arab value' },
-        { en: 'en value' },
-      ],
-      expected: 'sah value',
     },
     {
       msg: 'Hebrew has no value, no fallback defined,' +
@@ -231,39 +191,6 @@ describe('LanguagePicker: Pick the correct language', () => {
         { 'name_bar-Cyrl': 'bar-Cyrl value' },
       ],
       expected: 'name value',
-    },
-    {
-      msg: 'Arabic has no value, no fallback defined, ' +
-        'no other language with -Arab suffix, ' +
-        'no English value, ' +
-        'no value from any language that has -Arab; ' +
-        'Get local value.',
-      langCode: 'ar',
-      config: {
-        nameTag: 'name',
-      },
-      values: [
-        { fr: 'fr value' },
-        { 'zh-Hebr': 'zh-Hebr value' },
-        { 'bar-Cyrl': 'bar-Cyrl value' },
-        { name: 'name value' },
-      ],
-      expected: 'name value',
-    },
-    {
-      msg: 'Arabic has no value, no fallback defined, ' +
-        'no other language with -Arab suffix, ' +
-        'no English value, ' +
-        'no value from any language that has -Arab, ' +
-        'there is no local value (no nametag); ' +
-        'get first value',
-      langCode: 'ar',
-      values: [
-        { fr: 'fr value' },
-        { 'zh-Hebr': 'zh-Hebr value' },
-        { 'bar-Cyrl': 'bar-Cyrl value' },
-      ],
-      expected: 'fr value',
     },
     {
       msg: 'Force local language, even if the requested language exists in values',
@@ -291,32 +218,6 @@ describe('LanguagePicker: Pick the correct language', () => {
         { name: 'name value' },
       ],
       expected: 'name value',
-    },
-    {
-      msg: 'Force local language, without a requested language at all, and without local value; show first value',
-      config: {
-        nameTag: 'name',
-        forceLocal: true,
-      },
-      values: [
-        { name_fr: 'fr value' },
-        { name_ar: 'ar value' },
-        { name_foo: 'foo value' },
-      ],
-      expected: 'fr value',
-    },
-    {
-      msg: 'Force local language, without a nameTag set; show first value',
-      config: {
-        forceLocal: true,
-      },
-      langCode: 'en',
-      values: [
-        { fr: 'fr value' },
-        { en: 'en value' },
-        { ar: 'ar value' },
-      ],
-      expected: 'fr value',
     },
   ];
 
@@ -366,13 +267,13 @@ describe('LanguagePicker: Isolation', () => {
       expected: 'The first name value',
     },
     {
-      msg: 'foo language is not defined, neither are all other fallbacks. Make sure we fall back on first value',
+      msg: 'foo language is not defined, neither are all other fallbacks, and there is no nameTag. Show empty result (do not display label)',
       values: [
         { me: 'The first me value' },
         { meo: 'The first meo value' },
         { meow: 'The first meow value' },
       ],
-      expected: 'The first me value',
+      expected: undefined,
     },
   ];
 
