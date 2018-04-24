@@ -32,13 +32,13 @@ describe('Tag recombination', () => {
     let pbfData = fs.readFileSync(path);
 
     return babel({
-      protocol: opts.lng !== undefined ? 'babel:' : 'json2tags:',
+      protocol: opts.protocol,
       query: {
         nameTag: 'name',
-        defaultLanguage: opts.lng || undefined,
+        defaultLanguage: opts.defaultLanguage,
         languageMap: opts.map,
         source: 'a',
-        combineName: opts.comb,
+        combineName: opts.combineName,
         keepUncompressed: opts.keepUncompressed,
       },
     }).then((bbl) => {
@@ -48,7 +48,7 @@ describe('Tag recombination', () => {
         pbfData = zlib.gzipSync(pbfData);
       }
       const getParams = {
-        type: opts.type, t: pbfData, h: headers, lang: opts.rlang,
+        type: opts.type, t: pbfData, h: headers, lang: opts.lang,
       };
       return bbl.getAsync(getParams);
     }).then((result) => {
@@ -121,11 +121,11 @@ describe('Tag recombination', () => {
     ],
   };
 
-  it('json to tags', () => test('02-multilingual', {}, expected_02_multilingual));
-  it('json to tags (gzip)', () => test('02-multilingual', { gzip: 1 }, expected_02_multilingual));
+  it('json to tags', () => test('02-multilingual', { protocol: 'json2tags:' }, expected_02_multilingual));
+  it('json to tags (gzip)', () => test('02-multilingual', { protocol: 'json2tags:', gzip: 1 }, expected_02_multilingual));
 
-  it('json to tags bin', () => test('02-multilingual', {}, '02-multilingual-alltags'));
-  it('json to tags bin (gzip)', () => test('02-multilingual', { gzip: 1 }, '02-multilingual-alltags'));
+  it('json to tags bin', () => test('02-multilingual', { protocol: 'json2tags:' }, '02-multilingual-alltags'));
+  it('json to tags bin (gzip)', () => test('02-multilingual', { protocol: 'json2tags:', gzip: 1 }, '02-multilingual-alltags'));
 
   const expected_pick_en = {
     layers: [
@@ -152,10 +152,10 @@ describe('Tag recombination', () => {
       },
     ],
   };
-  it('pick en', () => test('02-multilingual-alltags', { lng: 'en' }, expected_pick_en));
-  it('pick en (gzip)', () => test('02-multilingual-alltags', { lng: 'en', gzip: 1 }, expected_pick_en));
+  it('pick en', () => test('02-multilingual-alltags', { protocol: 'babel:', lang: 'en' }, expected_pick_en));
+  it('pick en (gzip)', () => test('02-multilingual-alltags', { protocol: 'babel:', lang: 'en', gzip: 1 }, expected_pick_en));
 
-  it('pick ru', () => test('02-multilingual-alltags', { lng: 'ru' }, {
+  it('pick ru', () => test('02-multilingual-alltags', { protocol: 'babel:', lang: 'ru' }, {
     layers: [
       {
         features: [
@@ -181,7 +181,7 @@ describe('Tag recombination', () => {
     ],
   }));
 
-  it('pick ru combine', () => test('02-multilingual-alltags', { lng: 'ru', comb: true }, {
+  it('pick ru combine', () => test('02-multilingual-alltags', { protocol: 'babel:', lang: 'ru', combineName: true }, {
     layers: [
       {
         features: [
@@ -207,7 +207,7 @@ describe('Tag recombination', () => {
     ],
   }));
 
-  it('pick ru dyn', () => test('02-multilingual-alltags', { lng: false, rlang: 'ru' }, {
+  it('pick ru dyn', () => test('02-multilingual-alltags', { protocol: 'babel:', defaultLanguage: '', lang: 'ru' }, {
     layers: [
       {
         features: [
@@ -233,7 +233,7 @@ describe('Tag recombination', () => {
     ],
   }));
 
-  it('pick using fallback', () => test('02-multilingual-alltags', { lng: 'es', map: { es: ['fr', 'ru'] } }, {
+  it('pick using fallback', () => test('02-multilingual-alltags', { protocol: 'babel:', lang: 'es', map: { es: ['fr', 'ru'] } }, {
     layers: [
       {
         features: [
@@ -282,7 +282,7 @@ describe('Tag recombination', () => {
     });
   });
 
-  it('pick missing', () => test('02-multilingual-alltags', { lng: 'es', map: { es: ['fr'] } }, {
+  it('pick missing', () => test('02-multilingual-alltags', { protocol: 'babel:', lang: 'es', map: { es: ['fr'] } }, {
     layers: [
       {
         features: [
@@ -308,5 +308,104 @@ describe('Tag recombination', () => {
     ],
   }));
 
-  it('getGrid', () => test('02-multilingual-alltags', { type: 'grid' }));
+  it('pick local (from lang)', () => test(
+    '02-multilingual-alltags',
+    {
+      protocol: 'babel:',
+      defaultLanguage: 'fr',
+      lang: 'local',
+      keepUncompressed: true,
+      map: {},
+    },
+    {
+      layers: [
+        {
+          features: [
+            {
+              type: 1,
+              id: 5,
+              tags: [0, 0, 1, 1, 2, 2, 3, 3, 4, 1, 5, 4, 6, 5, 7, 6, 8, 7, 9, 7],
+              geometry: [9, 1599, 4288],
+            },
+          ],
+          keys: [
+            'class',
+            'name',
+            'name_ar',
+            'name_bn',
+            'name_en',
+            'name_hi',
+            'name_ja',
+            'name_kn',
+            'name_ru',
+            'name_uk',
+          ],
+          values: [
+            { tag: 1, value: 'city' },
+            { tag: 1, value: 'Vancouver' },
+            { tag: 1, value: 'فانكوفر' },
+            { tag: 1, value: 'বাংকূবর' },
+            { tag: 1, value: 'वांकूवर' },
+            { tag: 1, value: 'バンクーバー' },
+            { tag: 1, value: 'ವಾಂಕೂವರ್' },
+            { tag: 1, value: 'Ванкувер' },
+          ],
+          version: 2,
+          name: 'place',
+          extent: 4096,
+        },
+      ],
+    }
+  ));
+
+  it('pick local (from default)', () => test(
+    '02-multilingual-alltags',
+    {
+      protocol: 'babel:',
+      defaultLanguage: 'local',
+      keepUncompressed: true,
+      map: {},
+    },
+    {
+      layers: [
+        {
+          features: [
+            {
+              type: 1,
+              id: 5,
+              tags: [0, 0, 1, 1, 2, 2, 3, 3, 4, 1, 5, 4, 6, 5, 7, 6, 8, 7, 9, 7],
+              geometry: [9, 1599, 4288],
+            },
+          ],
+          keys: [
+            'class',
+            'name',
+            'name_ar',
+            'name_bn',
+            'name_en',
+            'name_hi',
+            'name_ja',
+            'name_kn',
+            'name_ru',
+            'name_uk',
+          ],
+          values: [
+            { tag: 1, value: 'city' },
+            { tag: 1, value: 'Vancouver' },
+            { tag: 1, value: 'فانكوفر' },
+            { tag: 1, value: 'বাংকূবর' },
+            { tag: 1, value: 'वांकूवर' },
+            { tag: 1, value: 'バンクーバー' },
+            { tag: 1, value: 'ವಾಂಕೂವರ್' },
+            { tag: 1, value: 'Ванкувер' },
+          ],
+          version: 2,
+          name: 'place',
+          extent: 4096,
+        },
+      ],
+    }
+  ));
+
+  it('getGrid', () => test('02-multilingual-alltags', { protocol: 'babel:', type: 'grid' }));
 });
