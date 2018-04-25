@@ -51,7 +51,7 @@
     "@kartotherian/tilelive-vector": "~3.9.6",
     "@kartotherian/err": "^0.0.4",
     "@kartotherian/input-validator": "^0.0.6",
-    "@kartotherian/server": "^0.0.25",
+    "@kartotherian/server": "^0.0.26",
     "@kartotherian/cassandra": "^0.0.15",
     "@kartotherian/core": "^0.1.2",
     "@kartotherian/autogen": "^0.0.10",
