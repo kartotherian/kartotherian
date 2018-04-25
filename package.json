@@ -42,7 +42,7 @@
     "@kartotherian/osm-bright-style": "^3.0.0",
     "@kartotherian/overzoom": "^0.0.16",
     "@kartotherian/postgres": "^0.0.11",
-    "@kartotherian/server": "^0.0.25",
+    "@kartotherian/server": "^0.0.26",
     "@kartotherian/snapshot": "^0.3.7",
     "@kartotherian/substantial": "^0.0.10",
     "@kartotherian/tilelive-vector": "^3.9.6",
