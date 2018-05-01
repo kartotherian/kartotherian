@@ -84,7 +84,7 @@ function initApp(options) {
     app.conf.spec.paths = {};
   }
 
-  // set the CORS and CSP headers
+  // set the CORS, Powered-By, and CSP headers
   app.all('*', (req, res, next) => {
     if (app.conf.cors !== false) {
       res.header('access-control-allow-origin', app.conf.cors);
@@ -99,11 +99,19 @@ function initApp(options) {
       res.header('x-content-security-policy', app.conf.csp);
       res.header('x-webkit-csp', app.conf.csp);
     }
+    if (app.conf.expose_version !== false) {
+      let poweredBy = `${app.info.name}: ${app.info.version}`;
+      if (app.info.gitHead) {
+        poweredBy += ` (${app.info.gitHead})`;
+      }
+      res.header('x-powered-by', poweredBy);
+    }
+
     sUtil.initAndLogRequest(req, app);
     next();
   });
 
-  // disable the X-Powered-By header
+  // disable the default X-Powered-By header
   app.set('x-powered-by', false);
   // disable the ETag header - users should provide them!
   app.set('etag', false);
