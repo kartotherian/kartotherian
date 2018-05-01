@@ -52,6 +52,8 @@ services:
       #   - x-request-id
       # Uncomment to restrict connections to localhost only
       # interface: localhost
+      # Uncomment to disable the X-Powered-By header
+      # expose_version: false
 
       # Kartotherian variables and sources
       variables: {}
