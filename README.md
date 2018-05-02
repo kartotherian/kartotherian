@@ -9,4 +9,6 @@ Load `tmsource:///path/to/project.tm2source` as a tilelive source.
 
 OR
 
-new TMSource( { yaml: 'yaml document here' }, callback )
+```javascript
+new TMSource({ yaml: "yaml document here" }, callback)
+```
