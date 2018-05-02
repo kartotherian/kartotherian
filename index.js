@@ -142,7 +142,6 @@ var toXML = function(data, callback) {
 
   opts.Layer = data.Layer.map(function(l) {
     l.srs = l.srs || tm.srs["900913"];
-    l.name = l.id;
     return l;
   });
 
@@ -163,23 +162,33 @@ var toXML = function(data, callback) {
   }
 };
 
-
 var TMSource = function(uri, callback) {
-  uri = url.parse(uri);
+  var self = this;
+  if (typeof uri === 'string') {
+    uri = url.parse(uri);
+  }
 
-  uri.pathname = path.resolve(uri.hostname + uri.pathname);
-  uri.hostname = "";
+  if (uri.yaml) {
+    return self.init(uri, uri.yaml, callback);
+  } else {
+    uri.pathname = path.resolve(uri.hostname + uri.pathname);
+    uri.hostname = "";
 
-  var self = this,
-      filename = path.join(uri.hostname + uri.pathname, "data.yml");
+    var filename = path.join(uri.hostname + uri.pathname, "data.yml");
 
-  return fs.readFile(filename, "utf8", function(err, data) {
-    if (err) {
-      return callback(err);
-    }
+    return fs.readFile(filename, "utf8", function(err, data) {
+      if (err) {
+        return callback(err);
+      }
+      return self.init(uri, data, callback);
+    });
+  }
+};
 
-    try {
-      self.info = yaml.load(data);
+TMSource.prototype.init = function(uri, yamlData, callback) {
+  var self = this;
+  try {
+      self.info = yaml.load(yamlData);
 
       self.info.id = url.format(uri);
       self.info = normalize(self.info);
@@ -197,7 +206,6 @@ var TMSource = function(uri, callback) {
 
       return Bridge.call(self, uri, callback);
     });
-  });
 };
 
 TMSource.prototype.getInfo = function(callback) {
