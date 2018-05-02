@@ -1,5 +1,11 @@
 # Changes
 
+## v0.7.0 - 5/2/18
+
+* Support YAML input in place of a URI (or as a `yaml` property on the provided
+  URI object)
+* Remove deprecated `layer.name` property
+
 ## v0.6.1 - 6/14/17
 
 * Fix dependency `require`s
