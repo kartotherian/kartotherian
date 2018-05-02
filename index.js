@@ -188,24 +188,24 @@ var TMSource = function(uri, callback) {
 TMSource.prototype.init = function(uri, yamlData, callback) {
   var self = this;
   try {
-      self.info = yaml.load(yamlData);
+    self.info = yaml.load(yamlData);
 
-      self.info.id = url.format(uri);
-      self.info = normalize(self.info);
-    } catch (err) {
+    self.info.id = url.format(uri);
+    self.info = normalize(self.info);
+  } catch (err) {
+    return callback(err);
+  }
+
+  return toXML(self.info, function(err, xml) {
+    if (err) {
       return callback(err);
     }
 
-    return toXML(self.info, function(err, xml) {
-      if (err) {
-        return callback(err);
-      }
+    uri.xml = xml;
+    uri.base = uri.pathname;
 
-      uri.xml = xml;
-      uri.base = uri.pathname;
-
-      return Bridge.call(self, uri, callback);
-    });
+    return Bridge.call(self, uri, callback);
+  });
 };
 
 TMSource.prototype.getInfo = function(callback) {
