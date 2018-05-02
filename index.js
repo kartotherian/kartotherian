@@ -170,19 +170,19 @@ var TMSource = function(uri, callback) {
 
   if (uri.yaml) {
     return self.init(uri, uri.yaml, callback);
-  } else {
-    uri.pathname = path.resolve(uri.hostname + uri.pathname);
-    uri.hostname = "";
-
-    var filename = path.join(uri.hostname + uri.pathname, "data.yml");
-
-    return fs.readFile(filename, "utf8", function(err, data) {
-      if (err) {
-        return callback(err);
-      }
-      return self.init(uri, data, callback);
-    });
   }
+    
+  uri.pathname = path.resolve(uri.hostname + uri.pathname);
+  uri.hostname = "";
+
+  var filename = path.join(uri.hostname + uri.pathname, "data.yml");
+
+  return fs.readFile(filename, "utf8", function(err, data) {
+    if (err) {
+      return callback(err);
+    }
+    return self.init(uri, data, callback);
+  });
 };
 
 TMSource.prototype.init = function(uri, yamlData, callback) {
