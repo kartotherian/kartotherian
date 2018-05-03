@@ -6,4 +6,7 @@ Kartotherian loader that instantiates tilelive and Kartotherian modules
 # XmlLoader
 This class is used to parse and dynamically modify XML configurations.
 
+# YamlLoader
+This class is used to parse and dynamically modify YAML configurations.
+
 See also [XML configuration](https://github.com/kartotherian/core#xml-based-sources)
