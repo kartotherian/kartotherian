@@ -106,7 +106,7 @@ function CassandraStore(uri, callback) {
             ")";
         return self.client.executeAsync(createTableSql);
     }).catch(
-        err => self.closeAsync().finally(() => { throw err; })
+        err => self._closeAsync().finally(() => { throw err; })
     ).then(() => {
         let whereClause = ' WHERE zoom = ? AND idx = ?';
         if (self.blocksize)
@@ -198,7 +198,7 @@ CassandraStore.prototype._storeDataAsync = function(zoom, idx, data) {
     }).catch(this.attachUri);
 };
 
-CassandraStore.prototype.close = function(callback) {
+CassandraStore.prototype._close = function(callback) {
     let cl = this.client;
     if (!cl) {
         callback(null);
