@@ -1,6 +1,6 @@
 # Download tiles on the fly from wiki maps service
 gen:
-  uri: https://maps.wikimedia.org/osm-pbf-i18n/{z}/{x}/{y}.pbf
+  uri: https://maps.wikimedia.org/osm-pbf/{z}/{x}/{y}.pbf
 
 babel:
   uri: babel://
