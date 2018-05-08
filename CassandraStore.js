@@ -18,6 +18,8 @@ const pckg = require('./package.json');
 
 const prepared = {prepare: true};
 
+let core;
+
 Promise.promisifyAll(cassandra.Client.prototype);
 
 function CassandraStore(uri, callback) {
@@ -71,6 +73,7 @@ function CassandraStore(uri, callback) {
         self.blocksize = typeof params.blocksize === 'undefined' ? 32768 : parseInt(params.blocksize);
         self.maxBatchSize = typeof params.maxBatchSize === 'undefined' ? undefined : parseInt(params.maxBatchSize);
         self.setLastModified = !!params.setLastModified;
+        self.copyInfoFrom = params.copyInfoFrom;
 
         let clientOpts = {contactPoints: self.contactPoints};
         if (params.username || params.password) {
@@ -105,9 +108,7 @@ function CassandraStore(uri, callback) {
                 : " PRIMARY KEY (zoom, idx)") +
             ")";
         return self.client.executeAsync(createTableSql);
-    }).catch(
-        err => self._closeAsync().finally(() => { throw err; })
-    ).then(() => {
+    }).then(() => {
         let whereClause = ' WHERE zoom = ? AND idx = ?';
         if (self.blocksize)
             whereClause += ' AND block = ?';
@@ -120,6 +121,21 @@ function CassandraStore(uri, callback) {
         };
 
         return self;
+    }).then(() => {
+        if (!self.createIfMissing) {
+            return self;
+        }
+
+        if (!self.copyInfoFrom) {
+            self.throwError("Uri parameter 'copyInfoFrom' must be a valid source ref");
+        }
+
+        return core.loadSource(self.copyInfoFrom)
+            .then(src => src.getAsync({type:'info'}))
+            .then(info => self.putInfoAsync(info.data))
+            .then(() => self);
+    }).catch(err => {
+        self._closeAsync().finally(() => { throw err; });
     }).catch(this.attachUri).nodeify(callback);
 }
 
@@ -421,9 +437,9 @@ CassandraStore.prototype.query = function(options) {
     });
 };
 
-
-CassandraStore.registerProtocols = tilelive => {
-    tilelive.protocols['cassandra:'] = CassandraStore;
+CassandraStore.initKartotherian = function initKartotherian(cor) {
+  core = cor;
+  core.tilelive.protocols['cassandra:'] = CassandraStore;
 };
 
 Promise.promisifyAll(CassandraStore.prototype);
