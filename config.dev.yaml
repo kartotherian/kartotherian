@@ -69,7 +69,8 @@ services:
       sources: sources.dev.yaml
 
       modules:
-      - "tilelive-bridge"
+      - "tilelive-tmsource"
+      - "tilelive-tmstyle"
       - "@kartotherian/autogen"
       - "@kartotherian/babel"
       - "@kartotherian/cassandra"
