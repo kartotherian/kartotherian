@@ -147,25 +147,25 @@ substv4ozview:
   xmlSetParams:
     source: {ref: substv4oz}
 
-osm-localized:
-  uri: babel://
-  params:
-    source: {ref: v4}
-    tag: name
-    combineName: false
-    defaultLanguage: en
-
 # Default OSM PBF source
 osm-pbf:
   public: true
   formats: [pbf]
   uri: overzoom://
   params:
-    source: {ref: osm-localized}
+    source: {ref: v4}
     maxzoom: 19
   overrideInfo:
     attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
     tiles: ["http://localhost:6533/osm-pbf/{z}/{x}/{y}.pbf"]
+
+babel:
+  uri: babel://
+  params:
+    source: {ref: osm-pbf}
+    tag: name
+    combineName: false
+    defaultLanguage: local
 
 # OSM map with international labeling - will be used as default
 osm-intl:
@@ -180,7 +180,7 @@ osm-intl:
   xml:
     loader: "@kartotherian/osm-bright-style"
   xmlSetParams:
-    source: {ref: osm-pbf}
+    source: {ref: babel}
   overrideInfo:
     attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
     tiles: ["http://localhost:6533/osm-intl/{z}/{x}/{y}.png"]

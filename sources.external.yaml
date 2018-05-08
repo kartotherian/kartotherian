@@ -2,6 +2,14 @@
 gen:
   uri: https://maps.wikimedia.org/osm-pbf/{z}/{x}/{y}.pbf
 
+babel:
+  uri: babel://
+  params:
+    source: {ref: gen}
+    tag: name
+    combineName: false
+    defaultLanguage: local
+
 # View tiles as generated directly from the database. Don't view zoom0-5
 osm-intl:
   public: true
@@ -14,7 +22,7 @@ osm-intl:
   xml:
     loader: "@kartotherian/osm-bright-style"
   xmlSetParams:
-    source: {ref: gen}
+    source: {ref: babel}
   defaultHeaders:
     Cache-Control: 'no-cache, no-store, must-revalidate'
     Pragma: no-cache
