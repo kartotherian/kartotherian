@@ -59,7 +59,7 @@
     "preq": "^0.5.2",
     "service-runner": "^2.2.5",
     "tilelive": "~5.12.2",
-    "tilelive-bridge": "~2.3.1",
+    "@mapbox/tilelive-bridge": "~2.3.1",
     "tilejson": "^1.0.3",
     "tilelive-http": "~0.13.0",
     "tilelive-tmsource": "0.7.0",
