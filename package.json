@@ -33,13 +33,13 @@
   "dependencies": {
     "@kartotherian/autogen": "^0.0.10",
     "@kartotherian/babel": "^0.2.3",
-    "@kartotherian/cassandra": "^0.0.15",
-    "@kartotherian/core": "^0.1.2",
+    "@kartotherian/cassandra": "^0.2.0",
+    "@kartotherian/core": "^0.2.0",
     "@kartotherian/geoshapes": "^0.0.13",
     "@kartotherian/layermixer": "^0.0.8",
     "@kartotherian/maki": "^0.0.10",
-    "@kartotherian/osm-bright-source": "^1.0.0",
-    "@kartotherian/osm-bright-style": "^3.0.0",
+    "@kartotherian/osm-bright-source": "^1.0.1",
+    "@kartotherian/osm-bright-style": "^4.0.0",
     "@kartotherian/overzoom": "^0.0.16",
     "@kartotherian/postgres": "^0.0.11",
     "@kartotherian/server": "^0.0.26",
@@ -61,7 +61,9 @@
     "tilelive": "~5.12.2",
     "tilelive-bridge": "~2.3.1",
     "tilejson": "^1.0.3",
-    "tilelive-http": "~0.13.0"
+    "tilelive-http": "~0.13.0",
+    "tilelive-tmsource": "0.7.0",
+    "tilelive-tmstyle": "0.8.0"
   },
   "optionalDependencies": {
     "bunyan-prettystream": "*"

@@ -60,8 +60,8 @@ services:
       sources: sources.external.yaml
 
       modules:
-      - "tilelive-bridge"
       - "tilelive-http"
+      - "tilelive-tmstyle"
       - "@kartotherian/autogen"
       - "@kartotherian/babel"
       - "@kartotherian/cassandra"
