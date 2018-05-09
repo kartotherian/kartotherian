@@ -76,7 +76,8 @@ services:
         osmdb-pswd: ''
 
       modules:
-      - tilelive-bridge
+      - tilelive-tmsource
+      - tilelive-tmstyle
       - "@kartotherian/autogen"
       - "@kartotherian/cassandra"
       - "@kartotherian/layermixer"

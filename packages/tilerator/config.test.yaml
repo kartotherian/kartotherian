@@ -85,7 +85,6 @@ services:
         osmdb-pswd: ''
 
       modules:
-      - tilelive-bridge
       - tilelive-http
       - tilelive-file
 

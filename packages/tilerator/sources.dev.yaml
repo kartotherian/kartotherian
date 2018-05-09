@@ -2,10 +2,10 @@
 genraw:
   public: true
   formats: [pbf]
-  uri: bridge://
-  xml:
-    npm: ["@kartotherian/osm-bright-source", "data.xml"]
-  xmlSetDataSource:
+  uri: tmsource://
+  yaml:
+    npm: ["@kartotherian/osm-bright-source", "data.yml"]
+  yamlSetDataSource:
     if:
       dbname: gis
       host: ''
@@ -34,6 +34,7 @@ v4:
     repfactor: 4
     durablewrite: 0
     createIfMissing: true
+    copyInfoFrom: {ref: gen}
     setLastModified: true
 
 # View tiles as generated directly from the database. Don't view zoom0-5
@@ -44,10 +45,10 @@ v4view:
   static: true
   maxheight: 2048
   maxwidth: 2048
-  uri: vector://
-  xml:
-    loader: "@kartotherian/osm-bright-style"
-  xmlSetParams:
+  uri: tmstyle://
+  yaml:
+    npm: ["@kartotherian/osm-bright-style", "project.yml"]
+  yamlSetParams:
     source: {ref: v4}
 
 # View tiles as generated directly from the database. Don't view zoom0-5
@@ -58,10 +59,10 @@ genview:
   static: true
   maxheight: 2048
   maxwidth: 2048
-  uri: vector://
-  xml:
-    loader: "@kartotherian/osm-bright-style"
-  xmlSetParams:
+  uri: tmstyle://
+  yaml:
+    npm: ["@kartotherian/osm-bright-style", "project.yml"]
+  yamlSetParams:
     source: {ref: gen}
 
 osm-localized:
@@ -93,10 +94,10 @@ osm-intl:
   static: true
   maxheight: 2048
   maxwidth: 2048
-  uri: vector://
-  xml:
-    loader: "@kartotherian/osm-bright-style"
-  xmlSetParams:
+  uri: tmstyle://
+  yaml:
+    npm: ["@kartotherian/osm-bright-style", "project.yml"]
+  yamlSetParams:
     source: {ref: osm-pbf}
   overrideInfo:
     attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
@@ -111,12 +112,12 @@ osm:
   static: true
   maxheight: 2048
   maxwidth: 2048
-  uri: vector://
-  xml:
-    loader: "@kartotherian/osm-bright-style"
-  xmlSetParams:
+  uri: tmstyle://
+  yaml:
+    npm: ["@kartotherian/osm-bright-style", "project.yml"]
+  yamlSetParams:
     source: {ref: osm-pbf}
-  xmlExceptLayers: ['country_label', 'place_label', 'poi_label']
+  yamlExceptLayers: ['country_label', 'place_label', 'poi_label']
   overrideInfo:
     attribution: 'Map data © <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
     tiles: ["https://maps.wikimedia.org/osm/{z}/{x}/{y}.png"]
