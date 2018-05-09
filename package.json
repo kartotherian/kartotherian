@@ -39,7 +39,7 @@
     "@kartotherian/layermixer": "^0.0.8",
     "@kartotherian/maki": "^0.0.10",
     "@kartotherian/osm-bright-source": "^1.0.1",
-    "@kartotherian/osm-bright-style": "^4.0.0",
+    "@kartotherian/osm-bright-style": "^4.0.1",
     "@kartotherian/overzoom": "^0.0.16",
     "@kartotherian/postgres": "^0.0.11",
     "@kartotherian/server": "^0.0.26",
