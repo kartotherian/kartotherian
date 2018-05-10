@@ -57,7 +57,7 @@
     "@kartotherian/cassandra": "^0.2.0",
     "@kartotherian/core": "^0.2.0",
     "@kartotherian/autogen": "^0.0.10",
-    "@kartotherian/babel": "^0.2.3",
+    "@kartotherian/babel": "^0.2.4",
     "@kartotherian/postgres": "^0.0.11",
     "@kartotherian/layermixer": "^0.0.8",
     "@kartotherian/overzoom": "^0.0.16",
