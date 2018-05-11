@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/snapshot",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "Serves Kartotherian snapshot images",
   "main": "lib/snapshot.js",
   "scripts": {
