@@ -166,11 +166,21 @@
         "zh-hant"
     ],
     "nap": "it",
-    "nb": "nn",
+    "nb": [
+        "no",
+        "nn"
+    ],
     "nds": "de",
     "nds-nl": "nl",
     "nl-informal": "nl",
-    "nn": "nb",
+    "nn": [
+        "no",
+        "nb"
+    ],
+    "no": [
+        "nb",
+        "nn"
+    ],
     "nrm": "fr",
     "oc": [
         "ca",
