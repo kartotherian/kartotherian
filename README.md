@@ -51,10 +51,9 @@ For `babel://`, the language of the `name_` is chosen based on these rules:
 `getAsync({z,x,y, lang:'xx')`:
  * `name_xx`
  * Use explicitly set fallbacks from the languageMap
- * Use any `name_yy` where yy's script is the same as xx's. This way, if `lang=ru`, pick any other Cyrillic name before non-Cyrillic
- * Use any `name_zz` where zz uses Latin script
-
-Note that `name_xx` will not be added if it is identical to `name` tag
+ * Use any `name_yy-Script` where `Script` is the script of `xx`. E.g. if `lang=ru`, pick any `lang_yy-Cyrl`.
+ * If `xx` uses the Latin script, use any `name_zz_rm`
+ * `name`
 
 ## Scripts
 
