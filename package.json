@@ -32,7 +32,7 @@
   "homepage": "https://github.com/kartotherian/kartotherian",
   "dependencies": {
     "@kartotherian/autogen": "^0.0.10",
-    "@kartotherian/babel": "^0.2.4",
+    "@kartotherian/babel": "^0.2.6",
     "@kartotherian/cassandra": "^0.2.0",
     "@kartotherian/core": "^0.2.0",
     "@kartotherian/geoshapes": "^0.0.13",
@@ -43,7 +43,7 @@
     "@kartotherian/overzoom": "^0.0.16",
     "@kartotherian/postgres": "^0.0.11",
     "@kartotherian/server": "^0.0.26",
-    "@kartotherian/snapshot": "^0.3.9",
+    "@kartotherian/snapshot": "^0.3.10",
     "@kartotherian/substantial": "^0.0.10",
     "@kartotherian/tilelive-vector": "^3.9.6",
     "bluebird": "^3.5.0",
