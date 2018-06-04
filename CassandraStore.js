@@ -135,7 +135,7 @@ function CassandraStore(uri, callback) {
             .then(info => self.putInfoAsync(info.data))
             .then(() => self);
     }).catch(err => {
-        self.closeConnectionAsync().finally(() => { throw err; });
+        return self.closeConnectionAsync().finally(() => { throw err; });
     }).catch(this.attachUri).nodeify(callback);
 }
 
