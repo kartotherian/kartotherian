@@ -28,7 +28,7 @@
     "underscore": "^1.8.3",
     "@kartotherian/err": "^0.0.3",
     "@kartotherian/input-validator": "^0.0.6",
-    "wikimedia-mapdata": "git+https://gerrit.wikimedia.org/r/mapdata#1b905757de765c60761c3ac82e04de41ccf78ea0"
+    "wikimedia-mapdata": "git+https://gerrit.wikimedia.org/r/mapdata#0159e39c4de2f4522e2915faa636306f42d08cbe"
   },
   "optionalDependencies": {
     "sphericalmercator": "^1.0.5"
