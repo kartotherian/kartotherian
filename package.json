@@ -43,7 +43,7 @@
     "@kartotherian/overzoom": "^0.0.16",
     "@kartotherian/postgres": "^0.0.11",
     "@kartotherian/server": "^0.0.26",
-    "@kartotherian/snapshot": "^0.3.10",
+    "@kartotherian/snapshot": "^0.3.11",
     "@kartotherian/substantial": "^0.0.10",
     "@kartotherian/tilelive-vector": "^3.9.6",
     "bluebird": "^3.5.0",
