@@ -135,7 +135,7 @@ function CassandraStore(uri, callback) {
             .then(info => self.putInfoAsync(info.data))
             .then(() => self);
     }).catch(err => {
-        self._closeAsync().finally(() => { throw err; });
+        return self.closeConnectionAsync().finally(() => { throw err; });
     }).catch(this.attachUri).nodeify(callback);
 }
 
@@ -214,7 +214,7 @@ CassandraStore.prototype._storeDataAsync = function(zoom, idx, data) {
     }).catch(this.attachUri);
 };
 
-CassandraStore.prototype._close = function(callback) {
+CassandraStore.prototype.closeConnection = function(callback) {
     let cl = this.client;
     if (!cl) {
         callback(null);
