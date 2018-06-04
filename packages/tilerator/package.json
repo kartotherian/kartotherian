@@ -54,7 +54,7 @@
     "@kartotherian/err": "^0.0.4",
     "@kartotherian/input-validator": "^0.0.6",
     "@kartotherian/server": "^0.0.26",
-    "@kartotherian/cassandra": "^0.2.0",
+    "@kartotherian/cassandra": "^0.2.1",
     "@kartotherian/core": "^0.2.0",
     "@kartotherian/autogen": "^0.0.10",
     "@kartotherian/babel": "^0.2.6",
