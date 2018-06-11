@@ -32,6 +32,6 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "mocha": "^3.2.0"
+    "mocha": "^5.2.0"
   }
 }
