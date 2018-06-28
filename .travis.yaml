@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+    - "6"
+    - "8"
+
+sudo: false
+
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#wikimedia-ri-ci"
+    on_success: change
+    on_failure: always
