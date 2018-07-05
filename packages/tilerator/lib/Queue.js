@@ -4,7 +4,7 @@ const Err = require('@kartotherian/err');
 const checkType = require('@kartotherian/input-validator');
 const common = require('../lib/common');
 const kue = require('kue');
-const kueui = require('kue-ui');
+const kueUiExpress = require('kue-ui-express');
 
 const jobName = 'generate';
 
@@ -38,9 +38,8 @@ function Queue(app, jobHandler) {
       updateInterval: 5000, // Fetches new data every 5000 ms
     };
 
-    kueui.setup(uiConf);
+    kueUiExpress(app, uiConf.baseURL, uiConf.apiURL);
     app.use(uiConf.apiURL, kue.app);
-    app.use(uiConf.baseURL, kueui.app);
   }
 
   // Default: 15 minutes ought to be enough for a single tile generation

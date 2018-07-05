@@ -43,7 +43,7 @@
     "htcp-purge": "^0.1.2",
     "jade": "^1.11.0",
     "kue": "^0.11.0",
-    "kue-ui": "git+https://github.com/nyurik/kue-ui.git",
+    "kue-ui-express": "^1.0.2",
     "mapnik": "~3.5.0",
     "tilelive": "~5.12.2",
     "@mapbox/tilelive-bridge": "~2.3.1",
