@@ -135,7 +135,9 @@ function wrapRouteHandlers(router) {
  * @param {Application} app the application object to add the handler to
  */
 function setErrorHandler(app) {
-  app.use((err, req, res) => {
+  // Note: the 'next' parameter is required for correct error handling
+  // eslint-disable-next-line no-unused-vars
+  app.use((err, req, res, next) => {
     let errObj;
     // ensure this is an HTTPError object
     if (err.constructor === HTTPError) {
