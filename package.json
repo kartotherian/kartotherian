@@ -18,19 +18,19 @@
   },
   "homepage": "https://github.com/kartotherian/snapshot",
   "dependencies": {
-    "abaculus": "^2.0.3",
-    "bluebird": "^3.5.0",
-    "domain-validator": "^0.0.5",
-    "geojson-mapnikify": "^0.7.2",
-    "leaflet-headless": "^0.2.5",
-    "mwapi": "^0.0.10",
-    "tilelive-overlay": "^0.7.1",
-    "underscore": "^1.8.3",
     "@kartotherian/err": "^0.0.3",
     "@kartotherian/input-validator": "^0.0.6",
-    "@wikimedia/mapdata": "^0.5.0"
+    "@mapbox/abaculus": "~3.0.0",
+    "@mapbox/geojson-mapnikify": "~1.0.0",
+    "@mapbox/tilelive-overlay": "~1.0.0",
+    "@wikimedia/mapdata": "^0.5.0",
+    "bluebird": "^3.5.0",
+    "domain-validator": "^0.0.5",
+    "leaflet-headless": "^0.2.5",
+    "mwapi": "^0.0.10",
+    "underscore": "^1.8.3"
   },
   "optionalDependencies": {
-    "sphericalmercator": "^1.0.5"
+    "@mapbox/sphericalmercator": "^1.0.5"
   }
 }
