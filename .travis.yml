@@ -1,8 +1,8 @@
 language: node_js
 
 node_js:
-- '4'
 - '6'
+- '8'
 
 addons:
   apt:
@@ -20,6 +20,3 @@ env:
   - secure: CMwaxidCWlxccrPByDsEOcyJ+W6pjXwufb8s8Pe9YecnpEp+ppr6eK5/AYP9bor5QJwS8G/m0JOwDA8Pzn6vhOn/GXCamBCYHtTZPhliYWt9b81ZJbaoqSzJgtkUgyU9DzOkgDa6SJ+jRAmdtcDgDbRcadI7rsA/YVFxeO+mxI0=
 
 sudo: false
-
-after_success:
-- if [[ ${TRAVIS_NODE_VERSION} == "0.10" ]]; then npm run coverage; fi;
