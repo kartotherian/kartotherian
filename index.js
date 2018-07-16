@@ -1,5 +1,5 @@
-var tilelive = require('tilelive');
-var tiletype = require('tiletype');
+var tilelive = require('@mapbox/tilelive');
+var tiletype = require('@mapbox/tiletype');
 var mapnik = require('mapnik');
 var fs = require('fs');
 var tar = require('tar');
@@ -13,7 +13,7 @@ var crypto = require('crypto');
 var request = require('request');
 var exists = fs.exists || require('path').exists;
 var numeral = require('numeral');
-var sm = new (require('sphericalmercator'))();
+var sm = new (require('@mapbox/sphericalmercator'))();
 var profiler = require('./tile-profiler');
 var Backend = require('./backend');
 var AWS = require('aws-sdk');

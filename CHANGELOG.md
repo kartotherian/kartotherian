@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.0.0
+
+- Update to mapnik v3.7.0
+- Drops support for windows
+
+## 3.10.2
+
+- Pass `scale`, `legacy`, and `upgrade` params through to backend source.
+
+## 3.10.1
+
+- Update request to 2.72.x
+
+## 3.10.0
+- Updated the dependencies `tiletype`, `tilelive`, `sphericalmercator`, `mapbox-studio-default-style` to use the `@mapbox` scoped package.
+- Updated `Mapnik` to v3.6.0
+
 ## 3.9.4
 
 - Update to node-tilejson@1.x

@@ -1,8 +1,7 @@
-var tilelive = require('tilelive');
+var tilelive = require('@mapbox/tilelive');
 var crypto = require('crypto');
 var mapnik = require('mapnik');
-var util = require('util');
-var sm = new (require('sphericalmercator'))();
+var sm = new (require('@mapbox/sphericalmercator'))();
 var uptile = require('tilelive-promise');
 
 module.exports = Backend;
@@ -91,7 +90,6 @@ Backend.prototype.getTile = function(z, x, y, callback) {
     });
 };
 
-// Wrapper around backend.getTile that implements a "locking" cache.
 function _getTileAsync(opts) {
     var backend = this;
 

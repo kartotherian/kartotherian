@@ -1,4 +1,4 @@
-var tilelive = require('tilelive');
+var tilelive = require('@mapbox/tilelive');
 var zlib = require('zlib');
 var fs = require('fs');
 var path = require('path');
@@ -157,6 +157,17 @@ function Testsource(uri, callback) {
 
 Testsource.prototype.getTile = function(z,x,y,callback) {
     var key = [z,x,y].join('.');
+    if (callback.scale == undefined) {
+        return callback(new Error("Expected the callback to carry through scale option"));
+    }
+
+    if (callback.legacy == undefined) {
+        return callback(new Error("Expected the callback to carry through legacy option"));
+    }
+
+    if (callback.upgrade == undefined) {
+        return callback(new Error("Expected the callback to carry through upgrade option"));
+    }
 
     // Count number of times each key is requested for tests.
     this.stats[key] = this.stats[key] || 0;

@@ -1,5 +1,5 @@
 var test = require('tape');
-var tilelive = require('tilelive');
+var tilelive = require('@mapbox/tilelive');
 var imageEqualsFile = require('./image.js');
 var Testsource = require('./testsource');
 var xray = require('..').xray;

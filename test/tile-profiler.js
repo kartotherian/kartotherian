@@ -1,5 +1,5 @@
 var test = require('tape');
-var tilelive = require('tilelive');
+var tilelive = require('@mapbox/tilelive');
 var Vector = require('..');
 var profiler = require('../tile-profiler');
 var Testsource = require('./testsource');

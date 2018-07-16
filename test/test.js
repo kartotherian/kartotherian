@@ -1,5 +1,5 @@
 var test = require('tape');
-var tilelive = require('tilelive');
+var tilelive = require('@mapbox/tilelive');
 var url = require('url');
 var Vector = require('..');
 var path = require('path');
