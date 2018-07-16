@@ -1,7 +1,7 @@
 
 
 const Promise = require('bluebird');
-const makizushi = Promise.promisify(require('makizushi'));
+const makizushi = Promise.promisify(require('@mapbox/makizushi'));
 const Err = require('@kartotherian/err');
 
 let core;
