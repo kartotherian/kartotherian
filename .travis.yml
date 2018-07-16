@@ -5,6 +5,11 @@ node_js:
 
 sudo: false
 
+addons:
+  apt:
+    packages:
+      - libgif-dev
+
 notifications:
   irc:
     channels:
