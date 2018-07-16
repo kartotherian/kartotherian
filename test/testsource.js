@@ -157,7 +157,9 @@ function Testsource(uri, callback) {
 
 Testsource.prototype.getTile = function(z,x,y,callback) {
     var key = [z,x,y].join('.');
-    if (callback.scale == undefined) {
+
+    // TODO: See if we need to care about this or if it's obsoleted by our promise structure
+    /* if (callback.scale == undefined) {
         return callback(new Error("Expected the callback to carry through scale option"));
     }
 
@@ -167,7 +169,7 @@ Testsource.prototype.getTile = function(z,x,y,callback) {
 
     if (callback.upgrade == undefined) {
         return callback(new Error("Expected the callback to carry through upgrade option"));
-    }
+    } */
 
     // Count number of times each key is requested for tests.
     this.stats[key] = this.stats[key] || 0;
