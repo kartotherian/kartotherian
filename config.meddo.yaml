@@ -105,7 +105,6 @@ services:
             source: {ref: babel}
 
       modules:
-      - "tilelive-bridge"
       - "tilelive-http"
       - "@kartotherian/autogen"
       - "@kartotherian/babel"
@@ -115,7 +114,8 @@ services:
       - "@kartotherian/postgres"
       - "@kartotherian/substantial"
       - "@kartotherian/tilelive-vector"
-      - "tilejson"
+      - "@mapbox/tilelive-bridge"
+      - "@mapbox/tilejson"
 
       requestHandlers:
       - "@kartotherian/maki"
