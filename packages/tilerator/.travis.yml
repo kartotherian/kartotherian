@@ -3,7 +3,4 @@ sudo: required
 services:
   - docker
 
-before_install:
-  - docker build -t tilerator .
-
-script: docker run tilerator
+script: docker build -t tilerator .

@@ -8,4 +8,4 @@ ENV HOME=/root/ LINK=g++
 ENV IN_DOCKER=1
 COPY . /home/code
 WORKDIR /home/code
-CMD . $NVM_DIR/nvm.sh && nvm use 6.11.1 && npm install --build-from-source=mapnik --fallback-to-build=false && (redis-server &) && npm test
+RUN . $NVM_DIR/nvm.sh && nvm use 6.11.1 && npm install --build-from-source=mapnik --fallback-to-build=false && (redis-server &) && npm test
