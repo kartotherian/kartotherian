@@ -3,7 +3,4 @@ sudo: required
 services:
   - docker
 
-before_install:
-  - docker build -t kartotherian .
-
-script: docker run kartotherian
+script: docker build -t kartotherian .
