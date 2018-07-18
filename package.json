@@ -1,5 +1,5 @@
 {
-  "name": "tilelive-tmsource",
+  "name": "@kartotherian/tilelive-tmsource",
   "version": "0.7.0",
   "description": "A tilelive.js source for tmsource:// URIs",
   "contributors": [
