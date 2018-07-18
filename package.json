@@ -11,6 +11,9 @@
     "url": "https://github.com/mojodna/tilelive-tmsource.git"
   },
   "license": "BSD-2-Clause",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@mapbox/tilelive-bridge": "2.3.1",
     "js-yaml": "^3.2.5",
