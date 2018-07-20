@@ -76,7 +76,6 @@ services:
         osmdb-pswd: ''
 
       modules:
-      - tilelive-tmsource
       - tilelive-tmstyle
       - "@kartotherian/autogen"
       - "@kartotherian/cassandra"
@@ -84,6 +83,7 @@ services:
       - "@kartotherian/overzoom"
       - "@kartotherian/postgres"
       - "@kartotherian/substantial"
+      - "@kartotherian/tilelive-tmsource"
       - "@kartotherian/tilelive-vector"
       - "@kartotherian/babel"
 

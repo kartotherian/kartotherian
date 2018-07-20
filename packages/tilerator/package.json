@@ -46,8 +46,6 @@
     "kue-ui-express": "^1.0.2",
     "mapnik": "~3.5.0",
     "tilelive": "~5.12.2",
-    "@mapbox/tilelive-bridge": "~2.3.1",
-    "tilelive-tmsource": "0.7.0",
     "tilelive-tmstyle": "0.8.0",
     "quadtile-index": "^0.0.6",
     "@kartotherian/tilelive-vector": "~3.9.6",
@@ -64,7 +62,9 @@
     "@kartotherian/substantial": "^0.0.10",
     "@kartotherian/osm-bright-source": "^1.0.1",
     "@kartotherian/osm-bright-style": "^4.0.1",
-    "@kartotherian/jobprocessor": "^0.0.18"
+    "@kartotherian/jobprocessor": "^0.0.18",
+    "@kartotherian/tilelive-tmsource": "~0.7.0",
+    "@mapbox/tilelive-bridge": "~2.3.1"
   },
   "optionalDependencies": {
     "bunyan-prettystream": "*"
