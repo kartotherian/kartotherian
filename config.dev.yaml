@@ -69,7 +69,6 @@ services:
       sources: sources.dev.yaml
 
       modules:
-      - "tilelive-tmsource"
       - "tilelive-tmstyle"
       - "@kartotherian/autogen"
       - "@kartotherian/babel"
@@ -78,6 +77,7 @@ services:
       - "@kartotherian/overzoom"
       - "@kartotherian/postgres"
       - "@kartotherian/substantial"
+      - "@kartotherian/tilelive-tmsource"
       - "@kartotherian/tilelive-vector"
       - "tilejson"
 

@@ -45,6 +45,7 @@
     "@kartotherian/server": "^0.0.26",
     "@kartotherian/snapshot": "^0.3.12",
     "@kartotherian/substantial": "^0.0.10",
+    "@kartotherian/tilelive-tmsource": "~0.7.0",
     "@kartotherian/tilelive-vector": "^3.9.6",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
@@ -62,7 +63,6 @@
     "@mapbox/tilelive-bridge": "~2.3.1",
     "tilejson": "^1.0.3",
     "tilelive-http": "~0.13.0",
-    "tilelive-tmsource": "0.7.0",
     "tilelive-tmstyle": "0.8.0"
   },
   "optionalDependencies": {
