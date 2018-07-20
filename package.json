@@ -20,12 +20,12 @@
     "access": "public"
   },
   "dependencies": {
+    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/input-validator": "^0.0.6",
     "bluebird": "^3.5.0",
     "js-yaml": "^3.8.2",
-    "underscore": "^1.8.3",
-    "xmldoc": "git+https://github.com/nyurik/xmldoc.git",
-    "@kartotherian/err": "^0.0.3",
-    "@kartotherian/input-validator": "^0.0.6"
+    "libxmljs": "^0.19.1",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "mocha": "^5.2.0"

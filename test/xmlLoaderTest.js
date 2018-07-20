@@ -17,22 +17,13 @@ function xml(opts) {
     if (opts.source === undefined){
         opts.source = '<![CDATA[<a/>]]>';
     }
-    const source = !opts.source ? '' : `\n    <Parameter name="source">${opts.source}</Parameter>`;
+    const source = !opts.source ? '' : `<Parameter name="source">${opts.source}</Parameter>`;
 
-    const layerOptional = opts.excludeOptional ? '' : `
-  <Layer name="layerOptional">
-    <StyleName>Optional</StyleName>
-  </Layer>`;
+    const layerOptional = opts.excludeOptional ? '' : `<Layer name="layerOptional"><StyleName>Optional</StyleName></Layer>`;
 
-    // `<?xml version="1.0" encoding="utf-8"?><!DOCTYPE Map[]>
-    return `<Map srs="abc"${opts.attrs || ''}>
-  <Parameters>
-    <Parameter name="attribution"><![CDATA[<a/>]]></Parameter>${source}
-  </Parameters>
-  <Layer name="layerAlways">
-    <StyleName>Always</StyleName>
-  </Layer>${layerOptional}
-</Map>`;
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<Map srs="abc"${opts.attrs || ''}><Parameters><Parameter name="attribution"><![CDATA[<a/>]]></Parameter>${source}</Parameters><Layer name="layerAlways"><StyleName>Always</StyleName></Layer>${layerOptional}</Map>
+`;
 }
 
 describe('xmlLoader', () => {
