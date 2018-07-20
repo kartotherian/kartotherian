@@ -45,7 +45,6 @@
     "kue": "^0.11.0",
     "kue-ui-express": "^1.0.2",
     "mapnik": "~3.5.0",
-    "tilelive": "~5.12.2",
     "tilelive-tmstyle": "0.8.0",
     "quadtile-index": "^0.0.6",
     "@kartotherian/tilelive-vector": "~3.9.6",
@@ -53,7 +52,7 @@
     "@kartotherian/input-validator": "^0.0.6",
     "@kartotherian/server": "^0.0.26",
     "@kartotherian/cassandra": "^0.2.1",
-    "@kartotherian/core": "0.2.0",
+    "@kartotherian/core": "^0.3.0",
     "@kartotherian/autogen": "^0.0.10",
     "@kartotherian/babel": "^0.2.6",
     "@kartotherian/postgres": "^0.0.11",
@@ -64,6 +63,7 @@
     "@kartotherian/osm-bright-style": "^4.0.1",
     "@kartotherian/jobprocessor": "^0.0.18",
     "@kartotherian/tilelive-tmsource": "~0.7.0",
+    "@mapbox/tilelive": "~5.12.2",
     "@mapbox/tilelive-bridge": "~2.3.1"
   },
   "optionalDependencies": {
