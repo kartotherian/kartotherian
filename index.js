@@ -78,8 +78,8 @@ abaculus.tileList = function(z, s, center, tileSize) {
     var ts = Math.floor(size * s);
 
     var centerCoordinate = {
-        column: x / size,
-        row: y / size,
+        column: x / ts,
+        row: y / ts,
         zoom: z
     };
 
