@@ -3,4 +3,4 @@ sudo: required
 services:
   - docker
 
-script: docker build -t kartotherian .
+script: docker build --no-cache -t kartotherian .
