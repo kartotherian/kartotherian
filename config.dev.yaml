@@ -79,7 +79,7 @@ services:
       - "@kartotherian/substantial"
       - "@kartotherian/tilelive-tmsource"
       - "@kartotherian/tilelive-vector"
-      - "tilejson"
+      - "@mapbox/tilejson"
 
       requestHandlers:
       - "@kartotherian/geoshapes"
