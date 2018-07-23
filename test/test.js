@@ -88,19 +88,19 @@ describe('create list of tile coordinates', function() {
     it('should return a tiles object with correct coords', function() {
         var zoom = 5,
             scale = 4,
-            width = 1824,
-            height = 1832,
-            center = { x: 4096, y: 4096, w: width, h: height };
+            width = 250,
+            height = 250,
+            center = printer.coordsFromCenter(zoom, scale, { x: -47.368, y: -24.405, w: width, h: height }, limit, 256);
 
         var expectedCoords = {
             tiles: [
-                { z: zoom, x: 15, y: 15, px: -112, py: -108 },
-                { z: zoom, x: 15, y: 16, px: -112, py: 916 },
-                { z: zoom, x: 16, y: 15, px: 912, py: -108 },
-                { z: zoom, x: 16, y: 16, px: 912, py: 916 }
+                { z: zoom, x: 11, y: 17, px: -308, py: -768 },
+                { z: zoom, x: 11, y: 18, px: -308, py: 256 },
+                { z: zoom, x: 12, y: 17, px: 716, py: -768 },
+                { z: zoom, x: 12, y: 18, px: 716, py: 256 }
             ],
-            dimensions: { x: width, y: height },
-            center: { row: 16, column: 16, zoom: zoom },
+            dimensions: { x: Math.round(width*scale), y: Math.round(height*scale) },
+            center: { row: 18, column: 11, zoom: zoom },
             scale: scale
         };
         var coords = printer.tileList(zoom, scale, center);
