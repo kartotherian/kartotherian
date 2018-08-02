@@ -61,7 +61,7 @@
     "mapnik": "~3.5.0",
     "node-pre-gyp": "^0.6.34",
     "preq": "^0.5.2",
-    "service-runner": "^2.2.5",
+    "service-runner": "^2.6.4",
     "tilelive-http": "~0.13.0",
     "tilelive-tmstyle": "0.8.0"
   },
