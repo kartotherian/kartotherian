@@ -1,6 +1,6 @@
 {
   "name": "tilerator",
-  "version": "0.0.25",
+  "version": "1.0.0",
   "description": "Map tiles pre-generation service",
   "main": "./app.js",
   "scripts": {
@@ -44,10 +44,10 @@
     "jade": "^1.11.0",
     "kue": "^0.11.0",
     "kue-ui-express": "^1.0.2",
-    "mapnik": "~3.5.0",
+    "mapnik": "~3.7.2",
     "tilelive-tmstyle": "0.8.0",
     "quadtile-index": "^0.0.6",
-    "@kartotherian/tilelive-vector": "~3.9.6",
+    "@kartotherian/tilelive-vector": "~4.0.0",
     "@kartotherian/err": "^0.0.4",
     "@kartotherian/input-validator": "^0.0.6",
     "@kartotherian/server": "^0.0.26",
@@ -62,9 +62,9 @@
     "@kartotherian/osm-bright-source": "^1.0.1",
     "@kartotherian/osm-bright-style": "^4.0.1",
     "@kartotherian/jobprocessor": "^0.0.18",
-    "@kartotherian/tilelive-tmsource": "~0.7.0",
+    "@kartotherian/tilelive-tmsource": "~1.0.0",
     "@mapbox/tilelive": "~5.12.2",
-    "@mapbox/tilelive-bridge": "~2.3.1"
+    "@mapbox/tilelive-bridge": "~3.1.0"
   },
   "optionalDependencies": {
     "bunyan-prettystream": "*"
