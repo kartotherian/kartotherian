@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# v3.0.1
+
+* Publishing under kartotherian namespace
+* Fixing tile size calculation for scales greater then 1
+
 # v3.0.0
 
 * Updates to mapnik 3.7.0
