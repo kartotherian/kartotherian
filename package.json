@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/kartotherian/snapshot",
   "dependencies": {
-    "@kartotherian/abaculus" : "^3.0.1",
+    "@kartotherian/abaculus": "^3.0.1",
     "bluebird": "^3.5.0",
     "domain-validator": "^0.0.5",
     "@mapbox/geojson-mapnikify": "^1.1.0",
