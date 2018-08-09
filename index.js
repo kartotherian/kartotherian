@@ -1,4 +1,4 @@
-var SphericalMercator = require('sphericalmercator');
+var SphericalMercator = require('@mapbox/sphericalmercator');
 var queue = require('d3-queue').queue;
 var blend = require('mapnik').blend;
 var crypto = require('crypto');
@@ -75,11 +75,11 @@ abaculus.tileList = function(z, s, center, tileSize) {
         h = center.h;
     var dimensions = {x: w, y: h};
     var size = tileSize || 256;
-    var ts = Math.round(size * s);
+    var ts = Math.floor(size * s);
 
     var centerCoordinate = {
-        column: x / size,
-        row: y / size,
+        column: x / ts,
+        row: y / ts,
         zoom: z
     };
 
