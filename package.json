@@ -4,7 +4,8 @@
   "description": "Serves Kartotherian maps",
   "main": "lib/server.js",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "postinstall": "browserify -r quadtile-index > static/lib/quadtile-index.js && browserify -r to-regex-range > static/lib/to-regex-range.js"
   },
   "repository": "kartotherian/server",
   "keywords": [
@@ -21,10 +22,12 @@
     "@kartotherian/err": "^0.0.3",
     "@kartotherian/input-validator": "^0.0.6",
     "bluebird": "^3.5.0",
+    "browserify": "^16.2.2",
     "compression": "^1.6.2",
     "express": "^4.15.2",
     "leaflet": "^1.0.3",
     "quadtile-index": "^0.0.6",
+    "to-regex-range": "^4.0.2",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
