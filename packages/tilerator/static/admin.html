@@ -118,7 +118,10 @@
 <script src="leaflet/leaflet.js"></script>
 <!-- Optional - changes URL to reflect the current location on the map -->
 <script src="lib/leaflet-hash.js"></script>
+<script src="lib/quadtile-index.js"></script>
+<script src="lib/to-regex-range.js"></script>
 <script>
+    var MAX_ZOOM_LEVEL = 19;
 
     // Allow user to change style via the ?s=xxx URL parameter
     // Uses "osm-intl" as the default style
@@ -287,11 +290,43 @@
         return false;
     }
 
+    function printTileBanRegexes(tile, beforeZoom) {
+        var qidx = require('quadtile-index');
+        var toRegexRange = require('to-regex-range');
+        var zoom = map.getZoom();
+        var resultBox = document.getElementById('result');
+
+        var minIdx = qidx.xyToIndex(tile.x, tile.y);
+        var maxIdx = qidx.xyToIndex(tile.x, tile.y);
+        var xyMin;
+        var xyMax;
+
+        var result = [ `^/${style}/${zoom}/${tile.x}/${tile.y}` ];
+
+        for (++zoom; zoom < beforeZoom; zoom++) {
+            minIdx = minIdx * 4;
+            maxIdx = maxIdx * 4 + 3;
+            xyMin = qidx.indexToXY(minIdx);
+            xyMax = qidx.indexToXY(maxIdx);
+            result.push(`^/${style}/${zoom}/${toRegexRange(xyMin[0], xyMax[0])}/${toRegexRange(xyMin[1], xyMax[1])}`)
+        }
+
+        result.forEach(regex => resultBox.innerHTML += `<br>${regex}`);
+    }
+
     map.on('click', function(e) {
-        if (!e.originalEvent.ctrlKey && !e.originalEvent.altKey) return;
+        if (!(e.originalEvent.ctrlKey || e.originalEvent.altKey || e.originalEvent.shiftKey)) return;
         if (!e.latlng) return;
 
         var tile = map.project(e.latlng).divideBy(256).floor();
+
+        if (e.originalEvent.shiftKey) {
+            var beforeZoomEl = document.getElementById('beforeZoom');
+            var beforeZoom = (beforeZoomEl.value && beforeZoomEl.value.trim()) || map.getZoom() + 3;
+            printTileBanRegexes(tile, Math.min(beforeZoom, MAX_ZOOM_LEVEL + 1));
+            return;
+        }
+
         var req = {};
         addField(req, 'zoom', map.getZoom());
         addField(req, 'x', tile.x);
