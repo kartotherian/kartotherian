@@ -129,6 +129,10 @@
     var style = (match && match[1]) || 'osm-intl';
     document.getElementById('style').value = style;
 
+    // Set default generator and storage source IDs
+    document.getElementById('generatorId').value = 'gen';
+    document.getElementById('storageId').value = 'v4';
+
     var matchLang = location.search.match(/lang=([^&\/]*)/);
     var lang = matchLang && matchLang[1];
 
