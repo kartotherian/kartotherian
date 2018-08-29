@@ -4,6 +4,7 @@ const _ = require('underscore');
 const express = require('express');
 const yaml = require('js-yaml');
 const Queue = require('../lib/Queue');
+const EventService = require('../lib/EventService');
 const common = require('../lib/common');
 const checkType = require('@kartotherian/input-validator');
 const Err = require('@kartotherian/err');
@@ -15,6 +16,7 @@ const bodyParser = require('body-parser');
 
 let jobProcessor;
 let queue;
+let eventService;
 
 function reportAsync(res, task, isYaml) {
   let format;
@@ -143,7 +145,7 @@ function startup(app) {
           if (jobProcessor) {
             core.log('warn', 'Another handler is already running');
           }
-          jobProcessor = new JobProcessor(sources, job, core.metrics, queue);
+          jobProcessor = new JobProcessor(sources, job, core.metrics, queue, eventService);
           return jobProcessor.runAsync();
         }).catch((err) => {
           core.metrics.increment('joberror');
@@ -154,6 +156,17 @@ function startup(app) {
       };
     }
     queue = new Queue(app, jobHandler);
+
+    if (app.conf.eventlogging_service_uri
+        && app.conf.tile_server_domain
+        && app.conf.sources_to_invalidate) {
+      eventService = new EventService(
+        app.conf.eventlogging_service_uri,
+        app.conf.tile_server_domain,
+        app.conf.sources_to_invalidate,
+        app.logger
+      );
+    }
 
     if (!app.conf.daemonOnly) {
       const textParser = bodyParser.text();

@@ -87,6 +87,15 @@ services:
       - "@kartotherian/tilelive-vector"
       - "@kartotherian/babel"
 
+      # URI for the eventlogging service (optional)
+      eventlogging_service_uri: http://localhost:8085/v1/events
+      # Sources for which tiles in shared cache should be invalidated on resource change (optional)
+      sources_to_invalidate:
+      - osm
+      - osm-intl
+      # Domain of tile server (if sending invalidation events)
+      tile_server_domain: maps.localhost
+
       # If true, do not enable admin interface
       daemonOnly: true
 
