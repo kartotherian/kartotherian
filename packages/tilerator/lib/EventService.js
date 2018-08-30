@@ -16,11 +16,12 @@ function getResourceChangeEvent(resourceUri, domain) {
 }
 
 class EventService {
-  constructor(eventBusUri, domain, sources, logger) {
+  constructor(eventBusUri, domain, sources, logger, protocol = 'https') {
     this.eventBusUri = eventBusUri;
     this.domain = domain;
     this.sources = sources;
     this.logger = logger;
+    this.protocol = protocol;
 
     this.emitEvents = (events) => {
       P.try(() => preq.post({
@@ -34,7 +35,7 @@ class EventService {
     this.emitResourceChangeEvents = uris => this.emitEvents(uris.map(uri => getResourceChangeEvent(uri, this.domain)));
 
     this.notifyTileChanged = (z, x, y) => {
-      this.emitResourceChangeEvents(this.sources.map(s => `//${this.domain}/${s}/${z}/${x}/${y}.png`));
+      this.emitResourceChangeEvents(this.sources.map(s => `${this.protocol}://${this.domain}/${s}/${z}/${x}/${y}.png`));
     };
   }
 }
