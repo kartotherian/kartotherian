@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/jobprocessor",
-  "version": "0.0.19",
+  "version": "0.1.0",
   "description": "Processes tile generation jobs",
   "main": "index.js",
   "scripts": {
