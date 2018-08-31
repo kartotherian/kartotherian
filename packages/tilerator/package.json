@@ -61,7 +61,7 @@
     "@kartotherian/substantial": "^0.0.10",
     "@kartotherian/osm-bright-source": "^1.0.1",
     "@kartotherian/osm-bright-style": "^4.0.1",
-    "@kartotherian/jobprocessor": "^0.0.18",
+    "@kartotherian/jobprocessor": "^1.0.0",
     "@kartotherian/tilelive-tmsource": "~1.0.0",
     "@mapbox/tilelive": "~5.12.2",
     "@mapbox/tilelive-bridge": "~3.1.0"
@@ -80,6 +80,7 @@
     "istanbul": "^0.4.3",
     "mocha": "^5.0.4",
     "mocha-lcov-reporter": "^1.2.0",
+    "nock": "^9.6.1",
     "swagger-router": "^0.4.2",
     "tilelive-file": "~0.0.3",
     "tilelive-http": "~0.13.0",

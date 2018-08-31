@@ -5,6 +5,7 @@
 
 const fs = require('fs');
 const preq = require('preq');
+const nock = require('nock');
 const wait = require('wait-as-promised');
 const assert = require('../../utils/assert.js');
 const server = require('../../utils/server.js');
@@ -46,6 +47,13 @@ describe('express app', function expressApp() {
   it('moves a tile from source to destination', () => {
     // ensure file doesn't exist yet
     deleteIfExist('test/filestore/6/33/22.png');
+
+    // Mock the eventlogging server to receive resource change events from jobprocessor
+    // (will log error output to the console if no request is received)
+    nock('http://localhost:8085')
+      .post('/v1/events')
+      .reply(200);
+
     return preq.post({
       uri: `${server.config.uri}add?generatorId=gen&storageId=file&zoom=6&x=33&y=22`,
     }).then((res) => {
