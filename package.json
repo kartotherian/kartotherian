@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/tilelive-vector",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "main": "./index.js",
   "description": "Vector tile => raster tile backend for tilelive",
   "repository": {
