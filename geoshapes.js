@@ -159,7 +159,11 @@ function handler(type, req, res, next) {
     return Promise.try(
         () => {
             geoshape = new GeoShapes(type, req.query);
-            return geoshape.execute();
+            const lowerHeaders = Object.keys(req.headers).reduce((newHeaders, key) => {
+                newHeaders[key.toLowerCase()] = headers[key];
+                return newHeaders;
+            }, {});
+            return geoshape.execute(lowerHeaders['x-client-ip']);
         }
     ).then(geodata => {
         core.setResponseHeaders(res);
@@ -208,10 +212,10 @@ function GeoShapes(type, reqParams) {
  * Main execution method
  * @return {Promise}
  */
-GeoShapes.prototype.execute = function execute () {
+GeoShapes.prototype.execute = function execute (xClientIp) {
     let self = this;
     return Promise.try(
-        () => self.runWikidataQuery()
+        () => self.runWikidataQuery(xClientIp)
     ).then(
         () => Promise.all([self.runSqlQuery(), self.expandProperties()])
     ).then(
@@ -223,7 +227,7 @@ GeoShapes.prototype.execute = function execute () {
  *
  * @return {Promise|undefined}
  */
-GeoShapes.prototype.runWikidataQuery = function runWikidataQuery () {
+GeoShapes.prototype.runWikidataQuery = function runWikidataQuery (xClientIp) {
     let self = this;
     // If there is no query, we only use the ids given in the request
     if (!self.sparqlQuery) return;
@@ -234,7 +238,7 @@ GeoShapes.prototype.runWikidataQuery = function runWikidataQuery () {
             format: 'json',
             query: self.sparqlQuery
         },
-        headers: config.sparqlHeaders
+        headers: Object.assign(config.sparqlHeaders, { 'X-Client-IP': xClientIp });
     }).then(queryResult => {
         if (queryResult.headers['content-type'] !== 'application/sparql-results+json') {
             throw new Err('Unexpected content type %s', queryResult.headers['content-type']);
