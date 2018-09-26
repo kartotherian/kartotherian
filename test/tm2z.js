@@ -197,10 +197,9 @@ test('errors out on invalid project.xml', function(t) {
         t.end();
     });
 });
-test('errors out if style references a missing font', function(t) {
+test('does not error out if style references a missing font', function(t) {
     tilelive.load('tm2z://' + path.join(fixtureDir, 'missing_font.tm2z'), function(err, source) {
-        t.equal('EMAPNIK', err.code);
-        t.equal(err.message.split("'")[0], 'Failed to find font face ');
+        t.ifError(err);
         t.end();
     });
 });

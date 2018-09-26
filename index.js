@@ -28,7 +28,7 @@ module.exports.tm2z = tm2z;
 module.exports.xray = xray;
 module.exports.mapnik = mapnik;
 module.exports.Backend = Backend;
-module.exports.strict = true;
+module.exports.strict = false;
 
 function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex');
