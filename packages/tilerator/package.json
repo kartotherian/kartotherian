@@ -47,7 +47,7 @@
     "mapnik": "~3.7.2",
     "tilelive-tmstyle": "0.8.0",
     "quadtile-index": "^0.0.6",
-    "@kartotherian/tilelive-vector": "~4.0.0",
+    "@kartotherian/tilelive-vector": "~4.0.1",
     "@kartotherian/err": "^0.0.4",
     "@kartotherian/input-validator": "^0.0.6",
     "@kartotherian/server": "^1.0.0",
