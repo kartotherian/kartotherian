@@ -31,10 +31,10 @@ module.exports = function geoshapes(coreV, router) {
         if (!config.database || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(config.database)) {
             throw new Err('"geoshapes" parameters must specify "database"');
         }
-
-        if (config.wikidataQueryService === undefined) {
-            config.wikidataQueryService = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql';
+        if (!config.wikidataQueryService) {
+            throw new Err('"geoshapes" parameters must specify "wikidataQueryService"');
         }
+
         config.sparqlHeaders = {
             'User-Agent': userAgent,
             'Accept': 'application/sparql-results+json',
