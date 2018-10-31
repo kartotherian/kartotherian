@@ -102,3 +102,7 @@ services:
       # If true, runs this instance without processing tiles
       # This could be good for queue management
       uiOnly: false
+
+      # Set different timeout for tile generation in case mapnik stuck on
+      # locked resource while reading Postgres
+      tileTimeOut: 90000

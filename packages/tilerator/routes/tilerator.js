@@ -145,7 +145,14 @@ function startup(app) {
           if (jobProcessor) {
             core.log('warn', 'Another handler is already running');
           }
-          jobProcessor = new JobProcessor(sources, job, core.metrics, queue, eventService);
+          jobProcessor = new JobProcessor(
+            sources,
+            job,
+            core.metrics,
+            queue,
+            eventService,
+            app.conf.tileTimeOut
+          );
           return jobProcessor.runAsync();
         }).catch((err) => {
           core.metrics.increment('joberror');
