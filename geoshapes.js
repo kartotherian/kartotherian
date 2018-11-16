@@ -240,7 +240,7 @@ GeoShapes.prototype.runWikidataQuery = function runWikidataQuery (xClientIp) {
         },
         headers: Object.assign(config.sparqlHeaders, { 'X-Client-IP': xClientIp })
     }).then(queryResult => {
-        if (queryResult.headers['content-type'] !== 'application/sparql-results+json') {
+        if (!queryResult.headers['content-type'].startsWith('application/sparql-results+json')) {
             throw new Err('Unexpected content type %s', queryResult.headers['content-type']);
         }
         let data = queryResult.body;
