@@ -35,7 +35,7 @@
     "@kartotherian/babel": "^0.3.0",
     "@kartotherian/cassandra": "^0.2.1",
     "@kartotherian/core": "^0.2.0",
-    "@kartotherian/geoshapes": "^0.0.13",
+    "@kartotherian/geoshapes": "^1.0.2",
     "@kartotherian/layermixer": "^0.0.8",
     "@kartotherian/maki": "^0.0.10",
     "@kartotherian/osm-bright-source": "^1.0.1",
