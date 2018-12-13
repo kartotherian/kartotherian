@@ -24,7 +24,7 @@
     "@mapbox/geojson-mapnikify": "^1.1.0",
     "leaflet-headless": "^0.2.5",
     "mwapi": "^0.0.10",
-    "@mapbox/tilelive-overlay": "^1.0.0",
+    "@mapbox/tilelive-overlay": "1.0.0",
     "underscore": "^1.8.3",
     "@kartotherian/err": "^0.0.3",
     "@kartotherian/input-validator": "^0.0.6",
