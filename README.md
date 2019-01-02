@@ -103,19 +103,27 @@ Tilerator is separate from Kartotherian, but it reuses most of the same componen
 
 This documentation assumes that you are going to use [osm-bright.tm2](https://github.com/kartotherian/osm-bright.tm2) and [osm-bright.tm2source](https://github.com/kartotherian/osm-bright.tm2source) for a map style.
 
-### Install dependencies
+### Install node.js and npm
 
-Kartotherian requires nodejs and npm. On Ubuntu these can be installed with
+Node.js v6 or v8 required; v10+ currently not supported.
+
+For Windows and Mac, downloadable installers can be found at https://nodejs.org/download/release/latest-v6.x/ or https://nodejs.org/download/release/latest-v8.x/.
+
+For Linux, installation via the instructions at https://nodejs.org/en/download/package-manager/ is recommended.
+
+### Install other software dependencies
+
+On Ubuntu these can be installed with
 ```
-sudo apt-get install git unzip curl build-essential sqlite3 nodejs-legacy npm
+sudo apt-get install git unzip curl build-essential sqlite3 pkg-config libcairo2-dev libjpeg-dev libgif-dev libmapnik-dev
 ```
 
-### Get Kartotherian code
+### Clone the repo and install npm dependencies
 
 ```
-git clone https://github.com/kartotherian/kartotherian.git  # Clone the repository
+git clone https://github.com/kartotherian/kartotherian.git
 cd kartotherian
-npm install                                                 # install npm dependencies
+npm install
 ```
 
 ### Source
