@@ -95,6 +95,7 @@ services:
         polygonTable: planet_osm_polygon
         table: planet_osm_polygon
         user: ''
+        wikidataQueryService: https://query.wikidata.org/bigdata/namespace/wdq/sparql
 
       # allowedDomains:
       #   http:
