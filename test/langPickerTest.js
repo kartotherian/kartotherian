@@ -111,6 +111,26 @@ describe('LanguagePicker: Pick the correct language', () => {
       expected: 'foo-Latn value',
     },
     {
+      msg: 'Edge case: Values have value for "rm" which is also the suffix ' +
+        'we used when a -Latn lang is not found.',
+      // In essence, we need to make sure that when we fall back to looking for
+      // things that 'end with' _rm, we don't find 'rm' language
+      // (because name_rm fits the pattern) and only things that actually
+      // end up with name_langcode_rm
+      langCode: 'en', // English;
+      config: {
+        nameTag: 'name',
+        languageMap: { foo: 'bar' },
+      },
+      values: [
+        { name_baz: 'baz value' },
+        { name_rm: 'rm value which should not be picked' },
+        { name_quuz: 'quuz value' },
+        { name: 'default name value' },
+      ],
+      expected: 'default name value',
+    },
+    {
       msg: 'Latin language requested, no fallback exists, find romanized label with _rm suffix',
       langCode: 'es', // Spanish
       config: {
