@@ -73,8 +73,20 @@ services:
       - "@mapbox/tilejson"
 
       requestHandlers:
+      - "@kartotherian/geoshapes"
       - "@kartotherian/maki"
       - "@kartotherian/snapshot"
+
+      geoshapes:
+        allowUserQueries: true
+        database: gis
+        host: localhost
+        lineTable: planet_osm_line
+        password: ''
+        polygonTable: planet_osm_polygon
+        table: planet_osm_polygon
+        user: ''
+        wikidataQueryService: https://query.wikidata.org/bigdata/namespace/wdq/sparql
 
       # allowedDomains:
       #   http:
