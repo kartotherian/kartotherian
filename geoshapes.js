@@ -160,7 +160,7 @@ function handler(type, req, res, next) {
         () => {
             geoshape = new GeoShapes(type, req.query);
             const lowerHeaders = Object.keys(req.headers).reduce((newHeaders, key) => {
-                newHeaders[key.toLowerCase()] = headers[key];
+                newHeaders[key.toLowerCase()] = req.headers[key];
                 return newHeaders;
             }, {});
             return geoshape.execute(lowerHeaders['x-client-ip']);
