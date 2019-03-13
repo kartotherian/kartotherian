@@ -1,0 +1,30 @@
+{
+  "name": "@kartotherian/cassandra",
+  "version": "0.2.1",
+  "description": "Cassandra tile storage for Kartotherian map tile server",
+  "main": "CassandraStore.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "kartotherian/cassandra",
+  "keywords": [
+    "kartotherian",
+    "cassandra",
+    "tilelive"
+  ],
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": "https://github.com/kartotherian/cassandra/issues",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "cassandra-driver": "3.0.2",
+    "multistream": "^2.0.5",
+    "promistreamus": "^0.1.14",
+    "quadtile-index": "^0.0.6",
+    "@kartotherian/err": "^0.0.4",
+    "@kartotherian/input-validator": "^0.0.6"
+  }
+}
