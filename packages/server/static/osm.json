@@ -1,0 +1,66 @@
+{
+  "tiles": [
+     "http://ns512621.ip-167-114-156.net/osm/{z}/{x}/{y}.pbf"
+  ],
+  "center": [
+    -122.4069,
+    37.7834,
+    15
+  ],
+  "format": "pbf",
+  "maxzoom": 16,
+  "minzoom": 0,
+  "name": "osm2pgsql-osm-bright",
+  "vector_layers": [
+    {
+      "id":"landuse",
+      "description":"",
+      "fields": {"osm_id":"Number", "class":"String", "z_order":"Number", "way_area":"Number"}
+    },
+    {
+      "id":"waterway",
+      "description":"",
+      "fields": {"osm_id":"Number", "class":"String"}
+    },
+    {
+      "id":"water",
+      "description":"",
+      "fields": {"osm_id":"Number"}
+    },
+    {
+      "id":"aeroway",
+      "description":"",
+      "fields": {"osm_id":"Number", "type":"String"}
+    },
+    {
+      "id":"building",
+      "description":"",
+      "fields": {"osm_id":"Number"}
+    },
+    {
+      "id":"road",
+      "description":"",
+      "fields": {"osm_id":"Number", "class":"String", "is":"String"}
+    },
+    {
+      "id":"admin",
+      "description":"",
+      "fields": {"osm_id":"Number", "admin_level":"String", "maritime":"Number", "disputed":"Number"}
+    },
+    {
+      "id":"country_label",
+      "description":"",
+      "fields": {"osm_id":"Number", "name_en":"String", "scalerank":"Number"}
+    },
+    {
+      "id":"place_label",
+      "description":"",
+      "fields": {"osm_id":"Number", "name_en":"String", "type":"String", "ldir":"String", "localrank":"Number"}
+    },
+    {
+      "id":"road_label",
+      "description":"",
+      "fields": {"osm_id":"Number", "shield":"String", "name_en":"String", "ref":"String", "reflen":"Number", "len":"Number"}
+    }
+  ]
+}
