@@ -1,7 +1,31 @@
 {
   "name": "root",
   "private": true,
+  "description": "Kartotherian - a suite of map tile rendering and map serving software",
+  "license": "Apache-2.0",
+  "repository": "kartotherian/kartotherian",
+  "bugs": "https://phabricator.wikimedia.org/tag/maps/",
+  "homepage": "https://github.com/kartotherian/kartotherian",
+  "keywords": [
+    "maps",
+    "tilelive",
+    "Wikipedia",
+    "MediaWiki",
+    "kartotherian",
+    "Tilerator"
+  ],
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "contributors": [
+    "Max Semenik <msemenik@wikimedia.org>",
+    "Michael Holloway <mholloway@wikimedia.org>",
+    "Mateus Santos <msantos@wikimedia.org>",
+    "Petr Pchelko <ppchelko@wikimedia.org>",
+    "Stephane Bisson <sbisson@wikimedia.org>"
+  ],
   "devDependencies": {
     "lerna": "^3.13.1"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
