@@ -1,0 +1,20 @@
+{
+  "preset": "node-style-guide",
+
+  "validateIndentation": 4,
+  "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
+  "requireCapitalizedComments": null,
+  "maximumLineLength": 100,
+  "validateQuoteMarks": null,
+  "requireTrailingComma": null,
+  "disallowTrailingComma": null,
+  "requireSpacesInsideObjectBrackets": "all",
+  "requireEarlyReturn": false,
+  "disallowMultipleVarDecl": null,
+
+  "excludeFiles": [
+    "node_modules/**",
+    "test/**",
+    "coverage/**"
+  ]
+}
