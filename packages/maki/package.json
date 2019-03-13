@@ -1,0 +1,32 @@
+{
+  "name": "@kartotherian/maki",
+  "version": "1.0.0",
+  "description": "Serves Kartotherian maki markers",
+  "main": "maki.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": "kartotherian/maki",
+  "keywords": [
+    "kartotherian"
+  ],
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": "https://github.com/kartotherian/maki/issues",
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/kartotherian/maki",
+  "dependencies": {
+    "@kartotherian/err": "^0.0.3",
+    "@mapbox/makizushi": "~2.0.0",
+    "bluebird": "^3.5.0"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-kartotherian": "^0.0.5",
+    "grunt": "^1.0.2",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-eslint": "^20.1.0"
+  }
+}
