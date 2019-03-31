@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "1.0.1",
+  "version": "1.1.0-alpha",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
