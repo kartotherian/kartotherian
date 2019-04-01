@@ -1,0 +1,25 @@
+[Unit]
+Description=<%= @description ? @service_name + ' - ' + @description : @service_name %>
+Documentation=<%= @homepage %>
+After=network.target local-fs.target
+
+[Service]
+Type=simple
+LimitNOFILE=<%= @no_file %>
+PIDFile=%t/<%= @service_name %>.pid
+User=<%= @service_name %>
+Group=<%= @service_name %>
+WorkingDirectory=/srv/deployment/<%= @service_name %>/deploy
+Environment="NODE_PATH='/srv/deployment/<%= @service_name %>/deploy/node_modules'" "<%= @service_name.gsub(/[^a-z0-9_]/, '_').upcase %>_PORT=<%= @port %>"
+ExecStart=/usr/bin/nodejs src/server.js -c /etc/<%= @service_name %>/config.yaml
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=<%= @service_name %>
+TimeoutStartSec=5
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target
+

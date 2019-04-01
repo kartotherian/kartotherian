@@ -1,0 +1,3 @@
+debian: 'debian:jessie'
+ubuntu: 'ubuntu:14.04'
+

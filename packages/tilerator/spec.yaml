@@ -1,0 +1,72 @@
+swagger: '2.0'
+info:
+  version: 0.2.1
+  title: Tilerator/TileratorUI Service Template
+  description: A template for creating Node.JS services
+  termsOfService: https://wikimediafoundation.org/wiki/Terms_of_Use
+  contact:
+    name: the Wikimedia Services team
+    url: http://mediawiki.org/wiki/Services
+  license:
+    name: Apache2
+    url: http://www.apache.org/licenses/LICENSE-2.0
+x-default-params:
+  domain: en.wikipedia.org
+paths:
+  # from routes/root.js
+  /robots.txt:
+    get:
+      tags:
+        - Root
+        - Robots
+      description: Gets robots.txt
+      x-amples:
+        - title: robots.txt check
+          request: {}
+          response:
+            status: 200
+            headers:
+              user-agent: '*'
+              disallow: '/'
+  /:
+    get:
+      tags:
+        - Root
+      description: The root service end-point
+      produces:
+        - application/json
+      x-amples:
+        - title: root with no query params
+          request: {}
+          response:
+            status: 200
+  /variables:
+    get:
+      description: Get configured variables
+      produces:
+        - application/json
+      x-amples:
+        - title: Get configured variables
+          request: {}
+          reponse:
+            status: 200
+  /sources:
+    get:
+      description: Get configured sources
+      produces:
+        - application/json
+      x-amples:
+        - title: Get configured sources
+          request: {}
+          reponse:
+            status: 200
+  /jobs/stats:
+    get:
+      description: Get stats about current jobs
+      produces:
+        - application/json
+      x-amples:
+        - title: Get stats about current jobs
+          request: {}
+          reponse:
+            status: 200

@@ -1,0 +1,3 @@
+<Parameter name="interactivity_layer"><![CDATA[%s]]></Parameter>
+<Parameter name="interactivity_fields"><![CDATA[%s]]></Parameter>
+<Parameter name="template"><![CDATA[%s]]></Parameter>

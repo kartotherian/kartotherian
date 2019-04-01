@@ -1,0 +1,29 @@
+{
+  "name": "@kartotherian/geoshapes",
+  "version": "1.0.2",
+  "description": "Kartotherian service to generate geometric shapes from PostgreSQL data",
+  "main": "geoshapes.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "kartotherian/geoshapes",
+  "keywords": [
+    "kartotherian",
+    "postgres"
+  ],
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": "https://github.com/kartotherian/geoshapes/issues",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "pg.js": "^4.1.1",
+    "pg-promise": "^5.6.4",
+    "preq": "^0.5.2",
+    "topojson": "^2.2.0",
+    "wd-type-parser": "^0.0.3",
+    "@kartotherian/err": "^0.0.3"
+  }
+}

@@ -1,0 +1,29 @@
+{
+    "predef": [
+        "ve",
+        "setImmediate",
+        "QUnit",
+        "Map",
+        "Set"
+    ],
+    "bitwise": true,
+    "laxbreak": true,
+    "curly": true,
+    "eqeqeq": true,
+    "immed": true,
+    "latedef": true,
+    "newcap": true,
+    "noarg": true,
+    "noempty": true,
+    "nonew": true,
+    "regexp": false,
+    "undef": true,
+    "strict": true,
+    "trailing": true,
+    "smarttabs": true,
+    "multistr": true,
+    "node": true,
+    "nomen": false,
+    "loopfunc": true,
+    "esnext": true
+}

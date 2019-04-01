@@ -1,0 +1,24 @@
+# Upstart job for <%= @service_name %>
+
+description "<%= @description ? @service_name + ' - ' + @description : @service_name %>"
+
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on runlevel [!2345]
+
+# up ulimit -n a bit
+limit nofile <%= @no_file %> <%= @no_file %>
+
+setuid "<%= @service_name %>"
+setgid "<%= @service_name %>"
+
+env NODE_PATH="/srv/deployment/<%= @service_name %>/deploy/node_modules"
+env <%= @service_name.gsub(/[^a-zA-Z0-9_]/, '_').upcase %>_PORT="<%= @port %>"
+
+respawn
+
+# wait 60 seconds for a graceful restart before killing the master
+kill timeout 60
+
+chdir /srv/deployment/<%= @service_name %>/deploy
+exec /usr/bin/nodejs src/server.js -c /etc/<%= @service_name %>/config.yaml >> /var/log/<%= @service_name %>/main.log 2>&1
+

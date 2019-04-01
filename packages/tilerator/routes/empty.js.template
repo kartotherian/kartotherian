@@ -1,0 +1,39 @@
+'use strict';
+
+
+var BBPromise = require('bluebird');
+var preq = require('preq');
+var sUtil = require('../lib/util');
+
+// shortcut
+var HTTPError = sUtil.HTTPError;
+
+
+/**
+ * The main router object
+ */
+var router = sUtil.router();
+
+/**
+ * The main application object reported when this module is require()d
+ */
+var app;
+
+
+/** ROUTE DECLARATIONS GO HERE **/
+
+
+module.exports = function(appObj) {
+
+    app = appObj;
+
+    // the returned object mounts the routes on
+    // /{domain}/vX/mount/path
+    return {
+        path: '/mount/path',
+        api_version: X,  // must be a number!
+        router: router
+    };
+
+};
+

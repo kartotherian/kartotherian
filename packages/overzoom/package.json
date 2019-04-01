@@ -1,0 +1,27 @@
+{
+  "name": "@kartotherian/overzoom",
+  "version": "0.0.16",
+  "description": "Overzoom tile source for Kartotherian map tile server",
+  "keywords": [
+    "kartotherian",
+    "overzoom",
+    "tilelive"
+  ],
+  "main": "overzoomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "kartotherian/overzoom",
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": "https://github.com/kartotherian/overzoom/issues",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "tilelive-promise": "^2.0.0",
+    "@kartotherian/err": "^0.0.4",
+    "@kartotherian/input-validator": "^0.0.6"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@kartotherian/tilelive-tmsource",
+  "version": "1.0.0",
+  "description": "A tilelive.js source for tmsource:// URIs",
+  "contributors": [
+    "TM2 Contributors",
+    "Seth Fitzsimmons <seth@mojodna.net>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mojodna/tilelive-tmsource.git"
+  },
+  "license": "BSD-2-Clause",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@mapbox/tilelive-bridge": "^3.1.0",
+    "js-yaml": "^3.2.5",
+    "carto": "^0.18.1",
+    "underscore": "^1.7.0",
+    "mapnik-reference": "^8.7.0"
+  },
+  "peerDependencies": {
+    "mapnik": "^3.7.0"
+  }
+}

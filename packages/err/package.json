@@ -1,0 +1,21 @@
+{
+  "name": "@kartotherian/err",
+  "version": "0.0.4",
+  "description": "A generic exception with parameter formatting and an optional metrics param",
+  "main": "Err.js",
+  "scripts": {
+    "test": "mocha",
+    "preversion": "npm test"
+  },
+  "repository": "kartotherian/err",
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "license": "MIT",
+  "bugs": "https://github.com/kartotherian/err/issues",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "^3.4.2"
+  }
+}

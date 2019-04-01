@@ -1,0 +1,26 @@
+{
+  "name": "@kartotherian/abaculus",
+  "version": "3.0.1",
+  "description": "stitches map tiles together for high-res exporting from tm2",
+  "main": "index.js",
+  "contributors": [
+    "Yuri Astrakhan <yurik@wikimedia.org>"
+  ],
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mapbox/abaculus.git"
+  },
+  "dependencies": {
+    "@mapbox/sphericalmercator": "1.0.x",
+    "d3-queue": "^2.0.2"
+  },
+  "devDependencies": {
+    "mocha": "2.x"
+  },
+  "peerDependencies": {
+    "mapnik": "~3.7.0"
+  }
+}

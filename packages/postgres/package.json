@@ -1,0 +1,30 @@
+{
+  "name": "@kartotherian/postgres",
+  "version": "0.0.11",
+  "description": "PostgreSQL tile storage for Kartotherian map tile server",
+  "keywords": [
+    "kartotherian",
+    "postgres"
+  ],
+  "main": "Postgres.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "kartotherian/postgres",
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": "https://github.com/kartotherian/postgres/issues",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "pg.js": "^4.1.1",
+    "pg-promise": "^5.6.4",
+    "pg-query-stream": "^1.0.0",
+    "promistreamus": "^0.1.14",
+    "quadtile-index": "^0.0.6",
+    "@kartotherian/err": "^0.0.4",
+    "@kartotherian/input-validator": "^0.0.6"
+  }
+}

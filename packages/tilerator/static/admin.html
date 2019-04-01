@@ -1,0 +1,343 @@
+<!doctype html>
+<html>
+<head>
+    <title>Tilerator UI</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="leaflet/leaflet.css"/>
+</head>
+<style>
+    html, body {
+        margin: 0;
+        height: 100vh;
+        font-family: verdana, arial, sans-serif;
+    }
+    #header {
+        margin: 0;
+        padding: 5px;
+    }
+    #style {
+        width: 50px;
+    }
+    #host {
+        width: 100px;
+    }
+    #filepath {
+        width: 120px;
+    }
+    #generatorId, #storageId, #priority {
+        width: 40px;
+    }
+    #zoom, #fromZoom, #beforeZoom, #fileZoomOverride, #parts {
+        width: 18px;
+    }
+    #checkZoom, #sourceId, #dateBefore, #dateFrom, #biggerThan, #smallerThan, #checkZoom2, #sourceId2, #dateBefore2, #dateFrom2, #biggerThan2, #smallerThan2 {
+        width: 42px;
+    }
+    aside {
+        width:200px;
+        height: 76vh;
+        float:left;
+        padding:5px 10px;
+    }
+    #sources {
+        width: 100%;
+        height: 63%;
+        font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace;
+        font-size: 10px;
+    }
+    #result {
+        font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace;
+        font-size: 9px;
+    }
+    #map {
+        height: 85vh;
+    }
+    .leaflet-tile-container {
+        pointer-events: auto;
+    }
+    .leaflet-tile-loaded:hover {
+        opacity: .5 !important;
+    }
+    footer {
+        padding: 10px;
+    }
+</style>
+<body>
+
+<aside>
+    <input type="button" value="set style" onclick="mapLayer.setUrl(getTileUrl())" title="Set the style of the currently viewed tiles">
+    <input type="button" value="info" onclick="return getInfo('style')" title="Show formatted info.json for the given style">
+    <input id="style" type="text" title="style name">
+    <a href="jobs/" target="_blank" title="Show jobs in the job queue">jobs</a>,
+    <a href="raw/" target="_blank" title="View job queue raw data">data</a>,
+    <a href="sources/" target="_blank" title="Show currently configured sources yaml">sources</a>,
+    <a href="variables/" target="_blank" title="Show the list of available source variables">vars</a>
+    <table>
+        <tr><th>Filters</th><th>#1</th><th>#2</th></tr>
+        <tr><td><label for="checkZoom" title="Only generate if tiles exist in this zoom level. Negative, e.g. -1 means the one above the current">checkZoom</label></td><td><input id="checkZoom" type="text" value=""></td><td><input id="checkZoom2" type="text" value=""></td></tr>
+        <tr><td><label for="sourceId" title="Which source to check for tiles. Checks storage by default.">sourceId</label></td><td><input id="sourceId" type="text" value=""></td><td><input id="sourceId2" type="text" value=""></td></tr>
+        <tr><td><label for="missing" title="Only generate if tile does not exist in the storage">missing</label></td><td><input id="missing" type="checkbox"></td><td><input id="missing2" type="checkbox"></td></tr>
+        <tr><td><label for="dateBefore" title="Only generate if existing tile was generated before this date">dateBefore</label></td><td><input id="dateBefore" type="text" value=""></td><td><input id="dateBefore2" type="text" value=""></td></tr>
+        <tr><td><label for="dateFrom" title="Only generate if existing tile was generated on or after this date">dateFrom</label></td><td><input id="dateFrom" type="text" value=""></td><td><input id="dateFrom2" type="text" value=""></td></tr>
+        <tr><td><label for="biggerThan" title="Only generate if existing tile is bigger than this many bytes">biggerThan</label></td><td><input id="biggerThan" type="text" value=""></td><td><input id="biggerThan2" type="text" value=""></td></tr>
+        <tr><td><label for="smallerThan" title="Only generate if existing tile is smaller than this many bytes">smallerThan</label></td><td><input id="smallerThan" type="text" value=""></td><td><input id="smallerThan2" type="text" value=""></td></tr>
+    </table>
+
+    <input id="filepath" type="text" value="" title="A text file on the server that contains a list of tiles to generate. Each line must be 3 integers: zoom/x/y, or if zoom override is set, just one index integer">
+    <input type="button" value="load file" onclick="parseFile()" title="Load the list of tiles to invalidate from a file located on the server"><br>
+    <label for="fileZoomOverride" title="If set, represents the zoom for each index in the input file, one per line">fileZ </label><input id="fileZoomOverride" type="text" value="">
+
+    <b><label for="sources">Sources</label></b>
+    <input type="button" value="set" onclick="postCommand('sources')" title="Update sources without adding any jobs"><br>
+    <textarea id="sources" title="Set the source configuration on the server. These sources will be merged with the server's current source configuration, and any new jobs created will have the updated sources. Note that this will only affect the instance that handles this request, plus the changes sources will be preserved inside the jobs created in that instance. It is recommended that you only run 1 instance of the tilerator admin UI"></textarea>
+</aside>
+
+<div id="header">
+    <label for="host" title="Which host to use to get tiles from">host </label><input id="host" type="text" value="localhost:6534">
+    <label for="generatorId" title="Source ID that will be used to generate tiles (copy from)"><a href="#" onclick="return getInfo('generatorId')">src</a> </label><input id="generatorId" type="text" value="">
+    <label for="storageId" title="Source ID that will be used to store the tiles (copy to)"><a href="#" onclick="return getInfo('storageId')">dst</a> </label><input id="storageId" type="text" value="">
+    <input type="button" value="copy info" onclick="copyInfo()" title="Copy the info.json data from one source to another">
+    <label for="zoom">zoom </label><input id="zoom" type="text" value="" readonly title="Shows the current zoom of the view. This zoom will be used when scheduling new jobs with Ctrl+click.">
+    <label for="fromZoom">fromZ </label><input id="fromZoom" type="text" value="" title="Copy a pyramid of zooms - zooms equal or bigger than this value.">
+    <label for="beforeZoom">beforeZ </label><input id="beforeZoom" type="text" value="" title="Copy a pyramid of zooms - zooms less than this value.">
+    <label for="parts">parts </label><input id="parts" type="text" value="" title="Break each scheduled zoom level into this many jobs">
+    <label for="priority">priority </label><input id="priority" type="text" value="" title="Job que priority, e.g. low, high, ...">
+    <label for="deleteEmpty">deleteEmpty </label><input id="deleteEmpty" type="checkbox" title="If the generator source does not have a given tile, delete it in the storage">
+    <label for="keepJob">keepJob </label><input id="keepJob" type="checkbox" title="If set, the job will not be automatically removed from the que once it successfully completes">
+    <br>
+</div>
+<!-- Map placeholder -->
+    <article id="map"></article>
+
+<footer id="result">
+    <b>Result</b>
+</footer>
+
+<!-- Load Leaflet -->
+<script src="leaflet/leaflet.js"></script>
+<!-- Optional - changes URL to reflect the current location on the map -->
+<script src="lib/leaflet-hash.js"></script>
+<script src="lib/quadtile-index.js"></script>
+<script src="lib/to-regex-range.js"></script>
+<script>
+    var MAX_ZOOM_LEVEL = 19;
+
+    // Allow user to change style via the ?s=xxx URL parameter
+    // Uses "osm-intl" as the default style
+    var match = location.search.match(/s=([^&\/]*)/);
+    var style = (match && match[1]) || 'osm-intl';
+    document.getElementById('style').value = style;
+
+    // Set default generator and storage source IDs
+    document.getElementById('generatorId').value = 'gen';
+    document.getElementById('storageId').value = 'v4';
+
+    var matchLang = location.search.match(/lang=([^&\/]*)/);
+    var lang = matchLang && matchLang[1];
+
+    var initZoom = 5;
+
+    // Create a map
+    var map = L.map('map', {
+        // doubleClickZoom: false
+    }).setView([40.75, -73.96], initZoom);
+
+    function bracketDevicePixelRatio() {
+        var brackets = [1, 1.3, 1.5, 2, 2.6, 3],
+                baseRatio = window.devicePixelRatio || 1;
+        for (var i = 0; i < brackets.length; i++) {
+            var scale = brackets[i];
+            if (scale >= baseRatio || (baseRatio - scale) < 0.1) {
+                return scale;
+            }
+        }
+        return brackets[brackets.length - 1];
+    }
+
+    function updateZoom(zoom) {
+        document.getElementById('zoom').value = zoom;
+    }
+
+    function getTileUrl() {
+        var url = '/' + document.getElementById('style').value + '/{z}/{x}/{y}' + scalex + '.png';
+        if (lang) {
+            url += '?lang=' + lang;
+        }
+        return url;
+    }
+
+    /**
+     *
+     * @param {string|object} res
+     * @param {string} fieldId
+     * @param {*} [value]
+     * @param {boolean} [addToPath]
+     * @returns {*}
+     */
+    function addField(res, fieldId, value, addToPath) {
+        if (value === undefined) {
+            var field = document.getElementById(fieldId);
+            switch (field.type) {
+                case 'text':
+                    if (field.value)
+                        value = field.value.trim();
+                    break;
+                case 'checkbox':
+                    if (field.checked)
+                        value = 1;
+                    break;
+                default:
+                    throw new Error('Unknown field type ' + fieldId);
+            }
+        } else {
+            value = value.toString();
+        }
+        if (value !== undefined && value !== '') {
+            if (addToPath) {
+                res += '/' + encodeURIComponent(value);
+            } else if (res[fieldId] === undefined) {
+                res[fieldId] = value;
+            }
+        } else if (addToPath) {
+            throw new Error('Required value is not set: ' + fieldId);
+        }
+        return res;
+    }
+
+    var scale = bracketDevicePixelRatio();
+    var scalex = (scale === 1) ? '' : ('@' + scale + 'x');
+
+    // Add a map layer
+    var mapLayer = L.tileLayer(getTileUrl(), {
+        maxZoom: 18,
+        attribution: 'Wikimedia maps beta | Map data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+        id: 'wikipedia-map-01'
+    });
+    mapLayer.addTo(map);
+
+    // Add a km/miles scale
+    L.control.scale().addTo(map);
+
+    // Init input field values
+    document.getElementById('host').value = window.location.host;
+    updateZoom(initZoom);
+
+    // Update the zoom level label
+    map.on('zoomend', function () {
+        updateZoom(map.getZoom());
+    });
+
+    // Add current location to URL hash
+    var hash = new L.Hash(map);
+
+    function postCommand(command, req) {
+        var sources = document.getElementById('sources').value || undefined;
+        var request = 'http://' + document.getElementById('host').value + '/' + command;
+        if (req) {
+            var query = [];
+            for(var key in req) {
+                if (req.hasOwnProperty(key)) {
+                    query.push(encodeURIComponent(key) + "=" + encodeURIComponent(req[key]));
+                }
+            }
+            if (query.length > 0) {
+                request += '?' + query.join("&");
+            }
+        } else if (req !== false && !sources) {
+            document.getElementById('result').innerHTML += '<br>Error: Nothing to do (sources are not set)';
+            return;
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.onerror = function (e) {
+            document.getElementById('result').innerHTML += '<br>' + 'Error #' + e.target.status;
+        };
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                document.getElementById('result').innerHTML += '<br>' + xhr.responseText;
+            }
+        };
+        document.getElementById('result').innerHTML = request;
+        xhr.open('POST', request, true);
+        xhr.send(sources);
+    }
+
+    function addCommonFields(req) {
+        [
+            'generatorId', 'storageId', 'fromZoom', 'beforeZoom', 'parts', 'priority', 'deleteEmpty', 'keepJob',
+            'checkZoom', 'sourceId', 'dateBefore', 'dateFrom', 'biggerThan', 'smallerThan', 'missing',
+            'checkZoom2', 'sourceId2', 'dateBefore2', 'dateFrom2', 'biggerThan2', 'smallerThan2', 'missing2',
+            'fileZoomOverride'
+        ].forEach(function (fld) {
+            addField(req, fld);
+        });
+    }
+
+    function parseFile() {
+        var req = addField({}, 'filepath');
+        addCommonFields(req);
+        postCommand('add', req);
+    }
+
+    function copyInfo() {
+        var command = 'setinfo';
+        command = addField(command, 'generatorId', undefined, true);
+        command = addField(command, 'storageId', undefined, true);
+        postCommand(command, false);
+    }
+
+    function getInfo(field) {
+        var href = '';
+        href = addField(href, field, undefined, true);
+        href += '/info.json?format=1';
+        window.open(href,'_blank');
+        return false;
+    }
+
+    function printTileBanRegexes(tile, beforeZoom) {
+        var qidx = require('quadtile-index');
+        var toRegexRange = require('to-regex-range');
+        var zoom = map.getZoom();
+        var resultBox = document.getElementById('result');
+
+        var minIdx = qidx.xyToIndex(tile.x, tile.y);
+        var maxIdx = qidx.xyToIndex(tile.x, tile.y);
+        var xyMin;
+        var xyMax;
+
+        var result = [ `^/${style}/${zoom}/${tile.x}/${tile.y}` ];
+
+        for (++zoom; zoom < beforeZoom; zoom++) {
+            minIdx = minIdx * 4;
+            maxIdx = maxIdx * 4 + 3;
+            xyMin = qidx.indexToXY(minIdx);
+            xyMax = qidx.indexToXY(maxIdx);
+            result.push(`^/${style}/${zoom}/${toRegexRange(xyMin[0], xyMax[0])}/${toRegexRange(xyMin[1], xyMax[1])}`)
+        }
+
+        result.forEach(regex => resultBox.innerHTML += `<br>${regex}`);
+    }
+
+    map.on('click', function(e) {
+        if (!(e.originalEvent.ctrlKey || e.originalEvent.altKey || e.originalEvent.shiftKey)) return;
+        if (!e.latlng) return;
+
+        var tile = map.project(e.latlng).divideBy(256).floor();
+
+        if (e.originalEvent.shiftKey) {
+            var beforeZoomEl = document.getElementById('beforeZoom');
+            var beforeZoom = (beforeZoomEl.value && beforeZoomEl.value.trim()) || map.getZoom() + 3;
+            printTileBanRegexes(tile, Math.min(beforeZoom, MAX_ZOOM_LEVEL + 1));
+            return;
+        }
+
+        var req = {};
+        addField(req, 'zoom', map.getZoom());
+        addField(req, 'x', tile.x);
+        addField(req, 'y', tile.y);
+        addCommonFields(req);
+        postCommand('add', req);
+    });
+    </script>
+</body>
+</html>

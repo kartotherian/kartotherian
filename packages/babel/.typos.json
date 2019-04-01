@@ -1,0 +1,19 @@
+{
+  "caseSensitive": [
+    [ "@returns", "@return" ]
+  ],
+  "caseInsensitive": [
+    [ "falback", "fallback" ],
+    [ "fallack", "fallback" ],
+    [ "fallbak", "fallback" ],
+    [ "paralell", "parallel" ],
+    [ "properites", "properties" ],
+    [ "\bteh\b", "the" ],
+    [ "intialization", "initialization" ],
+    [ "durring", "during" ],
+    [ "contian", "contain" ],
+    [ "occured", "occurred" ],
+    [ "pgk", "pkg" ],
+    [ "overriden", "overridden" ]
+  ]
+}

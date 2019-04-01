@@ -1,0 +1,6 @@
+sudo: required
+
+services:
+  - docker
+
+script: docker build --no-cache -t tilerator .

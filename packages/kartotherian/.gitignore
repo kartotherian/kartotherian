@@ -1,0 +1,8 @@
+.idea/
+coverage
+config.yaml
+node_modules
+npm-debug.log
+vectors
+variables.yaml
+config.vagrant.yaml

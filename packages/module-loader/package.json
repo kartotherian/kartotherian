@@ -1,0 +1,33 @@
+{
+  "name": "@kartotherian/module-loader",
+  "version": "0.1.2",
+  "description": "Kartotherian loader that instantiates tilelive and Kartotherian modules",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha",
+    "preversion": "npm test"
+  },
+  "repository": "kartotherian/module-loader",
+  "keywords": [
+    "kartotherian",
+    "tilelive",
+    "loader"
+  ],
+  "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": "https://github.com/kartotherian/module-loader/issues",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/input-validator": "^0.0.6",
+    "bluebird": "^3.5.0",
+    "js-yaml": "^3.8.2",
+    "libxmljs": "0.19.0",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  }
+}

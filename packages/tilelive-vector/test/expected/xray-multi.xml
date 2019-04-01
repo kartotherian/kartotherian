@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map[]>
+<Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over" background-color="#000000" maximum-extent="-20037508.34,-20037508.34,20037508.34,20037508.34">
+
+<Parameters>
+  <Parameter name="bounds">-180,-85.0511,180,85.0511</Parameter>
+  <Parameter name="center">0,0,3</Parameter>
+  <Parameter name="format">png8:m=h</Parameter>
+  <Parameter name="maxzoom">22</Parameter>
+  <Parameter name="minzoom">0</Parameter>
+  <Parameter name="scale">1</Parameter>
+</Parameters>
+
+<Style name="coastline" filter-mode="first" comp-op="screen">
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 3)</Filter>
+    <LineSymbolizer stroke-width="0.5" stroke="rgba(255,170,238,0.5)" />
+    <PolygonSymbolizer fill="rgba(255,170,238,0.05)" />
+  </Rule>
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 2)</Filter>
+    <LineSymbolizer stroke-width="1" stroke="rgba(255,170,238,0.5)" />
+  </Rule>
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 1)</Filter>
+    <DotSymbolizer width="5" fill="rgba(255,170,238,0.5)" />
+    <TextSymbolizer allow-overlap="true" justify-alignment="left" face-name="Source Sans Pro Regular" fill="rgba(255,170,238,0.75)" size="12" dy="6" ><![CDATA[[name]]]></TextSymbolizer>
+  </Rule>
+</Style>
+
+<Style name="coastline-raster" filter-mode="first">
+  <Rule>
+    <ElseFilter></ElseFilter>
+    <RasterSymbolizer opacity="1" />
+  </Rule>
+</Style>
+
+<Layer name="coastline" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    <StyleName>coastline</StyleName>
+    <StyleName>coastline-raster</StyleName>
+</Layer>
+
+<Style name="countries" filter-mode="first" comp-op="screen">
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 3)</Filter>
+    <LineSymbolizer stroke-width="0.5" stroke="rgba(255,221,238,0.5)" />
+    <PolygonSymbolizer fill="rgba(255,221,238,0.05)" />
+  </Rule>
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 2)</Filter>
+    <LineSymbolizer stroke-width="1" stroke="rgba(255,221,238,0.5)" />
+  </Rule>
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 1)</Filter>
+    <DotSymbolizer width="5" fill="rgba(255,221,238,0.5)" />
+    <TextSymbolizer allow-overlap="true" justify-alignment="left" face-name="Source Sans Pro Regular" fill="rgba(255,221,238,0.75)" size="12" dy="6" ><![CDATA[[name]]]></TextSymbolizer>
+  </Rule>
+</Style>
+
+<Style name="countries-raster" filter-mode="first">
+  <Rule>
+    <ElseFilter></ElseFilter>
+    <RasterSymbolizer opacity="1" />
+  </Rule>
+</Style>
+
+<Layer name="countries" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    <StyleName>countries</StyleName>
+    <StyleName>countries-raster</StyleName>
+</Layer>
+
+<Style name="water" filter-mode="first" comp-op="screen">
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 3)</Filter>
+    <LineSymbolizer stroke-width="0.5" stroke="rgba(136,170,238,0.5)" />
+    <PolygonSymbolizer fill="rgba(136,170,238,0.05)" />
+  </Rule>
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 2)</Filter>
+    <LineSymbolizer stroke-width="1" stroke="rgba(136,170,238,0.5)" />
+  </Rule>
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 1)</Filter>
+    <DotSymbolizer width="5" fill="rgba(136,170,238,0.5)" />
+    <TextSymbolizer allow-overlap="true" justify-alignment="left" face-name="Source Sans Pro Regular" fill="rgba(136,170,238,0.75)" size="12" dy="6" ><![CDATA[[name]]]></TextSymbolizer>
+  </Rule>
+</Style>
+
+<Style name="water-raster" filter-mode="first">
+  <Rule>
+    <ElseFilter></ElseFilter>
+    <RasterSymbolizer opacity="1" />
+  </Rule>
+</Style>
+
+<Layer name="water" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    <StyleName>water</StyleName>
+    <StyleName>water-raster</StyleName>
+</Layer>
+
+<Style name="landuse" filter-mode="first" comp-op="screen">
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 3)</Filter>
+    <LineSymbolizer stroke-width="0.5" stroke="rgba(85,153,255,0.5)" />
+    <PolygonSymbolizer fill="rgba(85,153,255,0.05)" />
+  </Rule>
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 2)</Filter>
+    <LineSymbolizer stroke-width="1" stroke="rgba(85,153,255,0.5)" />
+  </Rule>
+  <Rule>
+    <Filter>([mapnik::geometry_type] = 1)</Filter>
+    <DotSymbolizer width="5" fill="rgba(85,153,255,0.5)" />
+    <TextSymbolizer allow-overlap="true" justify-alignment="left" face-name="Source Sans Pro Regular" fill="rgba(85,153,255,0.75)" size="12" dy="6" ><![CDATA[[name]]]></TextSymbolizer>
+  </Rule>
+</Style>
+
+<Style name="landuse-raster" filter-mode="first">
+  <Rule>
+    <ElseFilter></ElseFilter>
+    <RasterSymbolizer opacity="1" />
+  </Rule>
+</Style>
+
+<Layer name="landuse" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    <StyleName>landuse</StyleName>
+    <StyleName>landuse-raster</StyleName>
+</Layer>
+
+
+<Style name="_image" filter-mode="first">
+  <Rule>
+    <RasterSymbolizer opacity="1" />
+  </Rule>
+</Style>
+<Layer name="_image" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+  <StyleName>_image</StyleName>
+</Layer>
+
+</Map>

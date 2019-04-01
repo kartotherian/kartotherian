@@ -1,0 +1,280 @@
+swagger: '2.0'
+info:
+  version: 0.2.1
+  title: WMF Node.JS Service Template
+  description: A template for creating Node.JS services
+  termsOfService: https://wikimediafoundation.org/wiki/Terms_of_Use
+  contact:
+    name: the Wikimedia Services team
+    url: http://mediawiki.org/wiki/Services
+  license:
+    name: Apache2
+    url: http://www.apache.org/licenses/LICENSE-2.0
+x-default-params:
+  domain: en.wikipedia.org
+paths:
+  # from routes/root.js
+  /robots.txt:
+    get:
+      tags:
+        - Root
+        - Robots
+      description: Gets robots.txt
+      x-amples:
+        - title: robots.txt check
+          request: {}
+          response:
+            status: 200
+            headers:
+              user-agent: '*'
+              disallow: '/'
+  /:
+    get:
+      tags:
+        - Root
+      description: The root service end-point
+      produces:
+        - application/json
+      x-amples:
+        - title: root with no query params
+          request: {}
+          response:
+            status: 404
+        - title: spec from root
+          request:
+            query:
+              spec: true
+          response:
+            status: 200
+        - title: root with wrong query param
+          request:
+            query:
+              fooo: true
+          response:
+            status: 404
+  # from routes/v1.js
+  /{domain}/v1/siteinfo{/prop}:
+    get:
+      tags:
+        - Site info
+        - MW API call
+        - Example
+      description: Calls the MW API siteinfo action and returns the response
+      produces:
+        - application/json
+      x-amples:
+        - title: site info for default domain
+          request: {}
+          response:
+            status: 200
+            headers:
+              content-type: application/json
+        - title: site info for a non-existent domain
+          request:
+            params:
+              domain: my.fake.domain
+          response:
+            status: 504
+            headers:
+              content-type: application/json
+        - title: site info check for valid prop
+          request:
+            params:
+              prop: sitename
+          response:
+            status: 200
+            headers:
+              content-type: application/json
+            body:
+              sitename: Wikipedia
+        - title: site info check for invalid prop
+          request:
+            params:
+              prop: blaprop
+          response:
+            status: 404
+            headers:
+              content-type: application/json
+  /{domain}/v1/page/{title}:
+    get:
+      tags:
+        - Page content
+        - Example
+      description: Gets the HTML for the page with the given title
+      produces:
+        - text/html
+        - application/json
+      x-amples:
+        - title: get the Foobar page from en.wp.org
+          request:
+            params:
+              title: Foobar
+          response:
+            status: 200
+            headers:
+              content-type: text/html
+  /{domain}/v1/page/{title}/lead:
+    get:
+      tags:
+        - Page content
+        - Lead section
+        - Example
+      description: Gets the lead-section HTML for the page with the given title
+      produces:
+        - text/html
+        - application/json
+      x-amples:
+        - title: get the lead section for Barack Obama
+          request:
+            params:
+              title: Barack Obama
+          response:
+            status: 200
+            headers:
+              content-type: text/html
+  # from routes/info.js
+  /_info:
+    get:
+      tags:
+        - Service information
+      description: Gets information about the service
+      produces:
+        - application/json
+      x-amples:
+        - title: retrieve service info
+          request: {}
+          response:
+            status: 200
+            headers:
+              content-type: application/json
+            body:
+              name: /.+/
+              description: /.+/
+              version: /.+/
+              home: /.+/
+  /_info/name:
+    get:
+      tags:
+        - Service information
+        - Service name
+      description: Gets the name of the service
+      produces:
+        - application/json
+      x-amples:
+        - title: retrieve service name
+          request: {}
+          response:
+            status: 200
+            headers:
+              content-type: application/json
+            body:
+              name: /.+/
+  /_info/version:
+    get:
+      tags:
+        - Service information
+        - Service version
+      description: Gets the running version of the service
+      produces:
+        - application/json
+      x-amples:
+        - title: retrieve service version
+          request: {}
+          response:
+            status: 200
+            headers:
+              content-type: application/json
+            body:
+              version: /.+/
+  /_info/home:
+    get:
+      tags:
+        - Service information
+        - Service homepage
+      description: Redirects to the home page
+      x-amples:
+        - title: redirect to the home page
+          request: {}
+          response:
+            status: 301
+  # from routes/ex.js
+  /ex/err/array:
+    get:
+      tags:
+        - Example
+        - Error
+        - Internal error
+      description: Generates an internal error due to a wrong array declaration
+      produces:
+        - application/json
+      x-amples:
+        - title: wrong array declaration example
+          request: {}
+          response:
+            status: 500
+            headers:
+              content-type: application/json
+  /ex/err/file:
+    get:
+      tags:
+        - Example
+        - Error
+        - Internal error
+      description: Generates an internal error due to a non-existing file
+      produces:
+        - application/json
+      x-amples:
+        - title: non-existing file example
+          request: {}
+          response:
+            status: 500
+            headers:
+              content-type: application/json
+  /ex/err/manual/error:
+    get:
+      tags:
+        - Example
+        - Error
+        - Internal error
+      description: Generates an internal error due to a user-thrown error
+      produces:
+        - application/json
+      x-amples:
+        - title: user error example
+          request: {}
+          response:
+            status: 500
+            headers:
+              content-type: application/json
+  /ex/err/manual/deny:
+    get:
+      tags:
+        - Example
+        - Error
+        - Access denied
+      description: Generates an access-denied error
+      produces:
+        - application/json
+      x-amples:
+        - title: access denied error example
+          request: {}
+          response:
+            status: 403
+            headers:
+              content-type: application/json
+  /ex/err/manual/auth:
+    get:
+      tags:
+        - Example
+        - Error
+        - Unauthorised access
+      description: Generates an unauthorised error
+      produces:
+        - application/json
+      x-amples:
+        - title: unauthorised error example
+          request: {}
+          response:
+            status: 401
+            headers:
+              content-type: application/json
