@@ -64,7 +64,7 @@ core.init = function init(app, packageConfig, rootDir, npmLoader, npmResolver) {
   Promise.promisifyAll(tilelive);
   core.tilelive = tilelive;
 
-  const mapnik = npmLoader('mapnik');
+  const mapnik = npmLoader('@kartotherian/mapnik');
   Promise.promisifyAll(mapnik.Map.prototype);
   Promise.promisifyAll(mapnik.VectorTile.prototype);
   Promise.promisifyAll(mapnik.Image);

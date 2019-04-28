@@ -19,12 +19,13 @@
     "access": "public"
   },
   "dependencies": {
+    "@kartotherian/err": "^0.0.4",
+    "@kartotherian/input-validator": "^0.0.6",
+    "@kartotherian/tilelive-bridge": "^3.1.1",
     "bluebird": "^3.5.0",
     "cassandra-driver": "3.0.2",
     "multistream": "^2.0.5",
     "promistreamus": "^0.1.14",
-    "quadtile-index": "^0.0.6",
-    "@kartotherian/err": "^0.0.4",
-    "@kartotherian/input-validator": "^0.0.6"
+    "quadtile-index": "^0.0.6"
   }
 }

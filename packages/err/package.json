@@ -14,7 +14,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@kartotherian/tilelive-bridge": "^3.1.1"
+  },
   "devDependencies": {
     "mocha": "^3.4.2"
   }

@@ -1,6 +1,6 @@
 var tilelive = require('@mapbox/tilelive');
 var tiletype = require('@mapbox/tiletype');
-var mapnik = require('mapnik');
+var mapnik = require('@kartotherian/mapnik');
 var fs = require('fs');
 var tar = require('tar');
 var url = require('url');

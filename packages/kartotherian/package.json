@@ -1,6 +1,6 @@
 {
   "name": "kartotherian",
-  "version": "1.1.0-alpha",
+  "version": "1.1.1-alpha",
   "description": "Renders map tiles",
   "main": "./app.js",
   "scripts": {
@@ -49,7 +49,7 @@
     "@kartotherian/tilelive-vector": "^4.0.1",
     "@mapbox/tilejson": "^1.0.3",
     "@mapbox/tilelive": "~5.12.2",
-    "@mapbox/tilelive-bridge": "~3.1.0",
+    "@kartotherian/tilelive-bridge": "~3.1.0",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "bunyan": "^1.8.9",
@@ -58,7 +58,7 @@
     "domino": "^1.0.28",
     "express": "^4.15.2",
     "js-yaml": "^3.8.2",
-    "mapnik": "~3.7.0",
+    "@kartotherian/mapnik": "~3.7.3",
     "node-pre-gyp": "^0.6.34",
     "preq": "^0.5.2",
     "service-runner": "^2.6.9",

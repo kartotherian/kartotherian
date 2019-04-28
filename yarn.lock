@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@kartotherian/blend@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@kartotherian/blend/-/blend-2.0.1.tgz#c2ba99bc2c3086db66be74a745186c0e64399ac2"
+  integrity sha512-rnXsB3vjeoUtsNoWkHre9L0w/plsi5z5p08QsFzNzep+lJtNo94Dc24cvtVA3Rvy+CC82+VGsHR6h0kexl+pgA==
+  dependencies:
+    "@kartotherian/mapnik" "~3.7.3"
+
 "@kartotherian/core@^0.0.26":
   version "0.0.26"
   resolved "https://registry.yarnpkg.com/@kartotherian/core/-/core-0.0.26.tgz#c6a74e27d3d4a45dd16cd4bb7346fbc554acc12b"
@@ -37,6 +44,21 @@
   resolved "https://registry.yarnpkg.com/@kartotherian/err/-/err-0.0.3.tgz#e78c2d763fa03999f394888192352b6d89121bdc"
   integrity sha1-54wtdj+gOZnzlIiBkjUrbYkSG9w=
 
+"@kartotherian/geojson-mapnikify@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@kartotherian/geojson-mapnikify/-/geojson-mapnikify-2.1.1.tgz#b57f86d03e3fec6a73ea254474f2a3ed432ceba4"
+  integrity sha512-mblbkioPQX6lHyypcIv4RVuOZlcUtQSMA8wzrz+KA4K1ijlHvLGHcbELd5YHu4vumu8SQ9YScJKzj6j/WO0WHg==
+  dependencies:
+    "@kartotherian/blend" "^2.0.1"
+    "@kartotherian/makizushi" "^3.0.1"
+    "@mapbox/geojson-normalize" "~0.0.1"
+    agentkeepalive "~2.0.2"
+    minimist "~1.2.0"
+    queue-async "~1.0.7"
+    request "~2.78.0"
+    sigmund "~1.0.0"
+    xtend "~4.0.0"
+
 "@kartotherian/geoshapes@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@kartotherian/geoshapes/-/geoshapes-1.0.4.tgz#f9d26cb0d744c29cf245fb4701ad2ba98f154f94"
@@ -49,6 +71,26 @@
     preq "^0.5.2"
     topojson "^2.2.0"
     wd-type-parser "^0.0.3"
+
+"@kartotherian/makizushi@^3.0.1", "@kartotherian/makizushi@~3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@kartotherian/makizushi/-/makizushi-3.0.1.tgz#c77f8b5f80d08c311f95cb63cf02b09a39621306"
+  integrity sha512-dKEP8SF5a8ntrJnBgBOlBoSU21JSMyGVT8IzC0j0f61j2yQqtjXcvd5FeFjS67JiM3Whj3dWplFwdTP0LKgfYQ==
+  dependencies:
+    "@kartotherian/blend" "^2.0.1"
+    err-code "0.1.2"
+    maki "0.5.0"
+    xtend "~3.0.0"
+
+"@kartotherian/mapnik@^3.7.3", "@kartotherian/mapnik@~3.7.3":
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/@kartotherian/mapnik/-/mapnik-3.7.3.tgz#bcb1eee12bb457b51c0f08a37d44e9a57d77fcea"
+  integrity sha512-yqkx+rF/aMJMjl+kAgi4feaFxbTakft7DXplZqp3rqtglw2XcQca0J8qeEMG+vik3eJeFW5PZ42tiIFuPhx3bQ==
+  dependencies:
+    mapnik-vector-tile "1.6.1"
+    nan "~2.10.0"
+    node-pre-gyp "~0.10.0"
+    protozero "1.5.1"
 
 "@kartotherian/module-loader@^0.0.4":
   version "0.0.4"
@@ -90,6 +132,23 @@
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/@kartotherian/postgis-vt-util/-/postgis-vt-util-0.3.1.tgz#eeb259990755d4fd568334609e3408d3bd5a9642"
   integrity sha512-DmH6Dxv87N/c2Iv20bdqSvyf+lZkym/QwjQwJKtS5wb4CG62mmTWAMNKaCZMEa5ECUKPgwuQ+yoxlVj3y1WrIQ==
+
+"@kartotherian/tilelive-bridge@^3.1.0", "@kartotherian/tilelive-bridge@^3.1.1", "@kartotherian/tilelive-bridge@~3.1.0":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@kartotherian/tilelive-bridge/-/tilelive-bridge-3.1.1.tgz#981ba4b76713258551698029a42f6844f6718e6c"
+  integrity sha512-Vb88UgG+wmwCtnI8TesdX3YukUkWatNnMZ9f3MkVyWg2HOfsAdQWKcMnCRrzoLI1wc9G/DAi4/vkp/iMG9vVgg==
+  dependencies:
+    "@kartotherian/mapnik" "~3.7.3"
+    "@mapbox/sphericalmercator" "~1.0.1"
+    mapnik-pool "~0.1.3"
+
+"@kartotherian/tilelive-overlay@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@kartotherian/tilelive-overlay/-/tilelive-overlay-2.1.1.tgz#7e6d7a997f2c77170bba705aba10389ec49f5c6a"
+  integrity sha512-YeGp8NuznAYXv09QBuSLwhEyXOfF3Hm38SaVGhUkA4Fhx7M8ENZ0KkGUD/KFwwOkz9yAkAvg2poymOfl/AGkEg==
+  dependencies:
+    "@kartotherian/geojson-mapnikify" "^2.1.1"
+    "@mapbox/sphericalmercator" "~1.0.2"
 
 "@lerna/add@3.13.1":
   version "3.13.1"
@@ -711,58 +770,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@mapbox/blend@~2.0.0":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@mapbox/blend/-/blend-2.0.1.tgz#6deb9027c3b723fac6bc45ab45c345be7740bf45"
-  integrity sha512-i3V47SxdEEAbrChwneVki3p03snG8WOBEufDzFHMHxNAX3czE0kggWqSFGOgqx9nuwWDTEa//7HoMQsEqnRiwg==
-  dependencies:
-    mapnik "3.x || 4.x"
-
-"@mapbox/geojson-mapnikify@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/geojson-mapnikify/-/geojson-mapnikify-1.1.0.tgz#bfbcec1f2c2e784b42f897333c5c9effe2f6ec58"
-  integrity sha512-Kzvy+ynttwIxNlDncRXIctVpLQPHJKqsOiOACT1mC+UWgILvCkw4DacAowfiexFA2z9OtKf1X23JTMDOo2mP/w==
-  dependencies:
-    "@mapbox/blend" "~2.0.0"
-    "@mapbox/geojson-normalize" "~0.0.1"
-    "@mapbox/makizushi" "~2.0.0"
-    agentkeepalive "~2.0.2"
-    minimist "~1.2.0"
-    queue-async "~1.0.7"
-    request "~2.78.0"
-    sigmund "~1.0.0"
-    xtend "~4.0.0"
-
-"@mapbox/geojson-mapnikify@~1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/geojson-mapnikify/-/geojson-mapnikify-1.0.0.tgz#f090c1a0899a1a3ecac0d1d5f5ed977c58303c4e"
-  integrity sha1-8JDBoImaGj7KwNHV9e2XfFgwPE4=
-  dependencies:
-    "@mapbox/blend" "~2.0.0"
-    "@mapbox/geojson-normalize" "~0.0.1"
-    "@mapbox/makizushi" "~2.0.0"
-    agentkeepalive "~2.0.2"
-    minimist "~1.2.0"
-    queue-async "~1.0.7"
-    request "~2.78.0"
-    sigmund "~1.0.0"
-    xtend "~4.0.0"
-
 "@mapbox/geojson-normalize@~0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@mapbox/geojson-normalize/-/geojson-normalize-0.0.1.tgz#1da1e6b3a7add3ad29909b30f438f60581b7cd80"
   integrity sha1-HaHms6et060pkJsw9Dj2BYG3zYA=
-
-"@mapbox/makizushi@~2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/makizushi/-/makizushi-2.0.0.tgz#08f43f63ba35a1eb0ac572421092676b50d84ed2"
-  integrity sha1-CPQ/Y7o1oesKxXJCEJJna1DYTtI=
-  dependencies:
-    "@mapbox/blend" "~2.0.0"
-    err-code "0.1.2"
-    maki "0.5.0"
-    mapnik "~3.7.0"
-    xtend "~3.0.0"
 
 "@mapbox/mapbox-studio-default-style@2.0.0":
   version "2.0.0"
@@ -787,23 +798,6 @@
     "@mapbox/tiletype" "~0.3.1"
     agentkeepalive "2.0.2"
     requestretry "^1.12.0"
-
-"@mapbox/tilelive-bridge@^3.1.0", "@mapbox/tilelive-bridge@~3.1.0":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@mapbox/tilelive-bridge/-/tilelive-bridge-3.1.1.tgz#3bec14fe0a4d4be4f6e8391b3bc47a6dbfb00636"
-  integrity sha512-734QRry9WqERbDkzdD0McI10JQ1yjMyx54geqlSEUVfULj1pz7XgyCpMCobe7w9igesIDyy3uBx/gOhzxNMuiA==
-  dependencies:
-    "@mapbox/sphericalmercator" "~1.0.1"
-    mapnik "~3.7.0"
-    mapnik-pool "~0.1.3"
-
-"@mapbox/tilelive-overlay@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/tilelive-overlay/-/tilelive-overlay-1.0.0.tgz#0887b79b292aa4689c7976b01fb5ebdcbb40109e"
-  integrity sha1-CIe3mykqpGiceXawH7Xr3LtAEJ4=
-  dependencies:
-    "@mapbox/geojson-mapnikify" "~1.0.0"
-    "@mapbox/sphericalmercator" "~1.0.2"
 
 "@mapbox/tilelive@~5.12.0", "@mapbox/tilelive@~5.12.2":
   version "5.12.6"
@@ -5762,14 +5756,14 @@ libnpmpublish@^1.1.1:
     semver "^5.5.1"
     ssri "^6.0.1"
 
-libxmljs@0.19.0:
-  version "0.19.0"
-  resolved "https://registry.yarnpkg.com/libxmljs/-/libxmljs-0.19.0.tgz#dd0e635ce752af7701492ceb8c565ab74d494473"
-  integrity sha512-57FG+c3zSTk0b0L0+brvggAHpI0HYlM/9jkPKkUKyvHt5TKyqh7okb8TY3xAG6Ez6IPh3ULc2yBxJ+vaQIJaUQ==
+libxmljs@0.19.5:
+  version "0.19.5"
+  resolved "https://registry.yarnpkg.com/libxmljs/-/libxmljs-0.19.5.tgz#b2f34cc12fd6a3e43670c604c42a902f339ea54d"
+  integrity sha512-mKlafbSIsgZCXcha6loyMN/Q1kcbNJ5N3VC/rS0vrJXdI99TzEI2i2rPp10HN/B70vSPh6bq6nHhoCT19eGtTw==
   dependencies:
     bindings "~1.3.0"
     nan "~2.10.0"
-    node-pre-gyp "~0.6.37"
+    node-pre-gyp "~0.11.0"
 
 limitation@^0.2.1:
   version "0.2.1"
@@ -6116,30 +6110,6 @@ mapnik-vector-tile@1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/mapnik-vector-tile/-/mapnik-vector-tile-1.6.1.tgz#3dff27d5e4f1fcc647d658ea8ac959121f339f59"
   integrity sha1-Pf8n1eTx/MZH1ljqislZEh8zn1k=
-
-mapnik-vector-tile@2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/mapnik-vector-tile/-/mapnik-vector-tile-2.2.1.tgz#9c70f07f2497ae2728679c7528f07c35bf7a62e9"
-  integrity sha512-+oasa2DfqArIMC7F71ca8CXpDt0rEcq9sJDv+AuhBCZJg+3m2ikDAs/oskEpPpUOwta1hH48Qr+0deCkyB/0Jg==
-
-"mapnik@3.x || 4.x":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/mapnik/-/mapnik-4.2.1.tgz#b1c4532527a8313f898c9d08a35f670fd0994582"
-  integrity sha512-xRGIzwPu3n9T1L8V0izZ7694nWMiHxe9PGy4ghL4PDr/koIqCN0JDD9wsrvt52m53ZZC+zdeXFtuS84JqU74lQ==
-  dependencies:
-    mapnik-vector-tile "2.2.1"
-    nan "~2.10.0"
-    node-pre-gyp "~0.10.0"
-
-mapnik@~3.7.0, mapnik@~3.7.2:
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/mapnik/-/mapnik-3.7.2.tgz#df1c97c44da59c7449938f8350bea6745e5ca1f4"
-  integrity sha512-mdpXpSds+Mi+1fABf2spMOQ+lnrJqE3isBMHDxCisZOPvppsTKAyGB9i8cXT+qbewcLgTcezgA8+SbeQQr/v9g==
-  dependencies:
-    mapnik-vector-tile "1.6.1"
-    nan "~2.8.0"
-    node-pre-gyp "~0.6.30"
-    protozero "1.5.1"
 
 math-random@^1.0.1:
   version "1.0.4"
@@ -6606,11 +6576,6 @@ nan@~2.10.0:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
   integrity sha512-bAdJv7fBLhWC+/Bls0Oza+mvTaNQtP+1RyhhhvD95pgUJz6XM5IzgmxOkItJ9tkoCiplvAnXI1tNmmUD/eScyA==
 
-nan@~2.8.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
-  integrity sha1-7XFfP+neArV6XmJS2QqWZ14fCFo=
-
 nanomatch@^1.2.9:
   version "1.2.13"
   resolved "https://registry.yarnpkg.com/nanomatch/-/nanomatch-1.2.13.tgz#b87a8aa4fc0de8fe6be88895b38983ff265bd119"
@@ -6720,7 +6685,7 @@ node-gyp@^3.8.0:
     tar "^2.0.0"
     which "1"
 
-node-pre-gyp@^0.6.34, node-pre-gyp@~0.6.30, node-pre-gyp@~0.6.37:
+node-pre-gyp@^0.6.34:
   version "0.6.39"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.6.39.tgz#c00e96860b23c0e1420ac7befc5044e1d78d8649"
   integrity sha512-OsJV74qxnvz/AMGgcfZoDaeDXKD3oY3QVIbBmwszTFkRisTSXbMQyn4UWzUMOtA5SVhrBZOTp0wcoSBgfMfMmQ==
@@ -6741,6 +6706,22 @@ node-pre-gyp@~0.10.0:
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.10.3.tgz#3070040716afdc778747b61b6887bf78880b80fc"
   integrity sha512-d1xFs+C/IPS8Id0qPTZ4bUT8wWryfR/OzzAFxweG+uLN85oPzyo2Iw6bVlLQ/JOdgNonXLCoRyqDzDWq4iw72A==
+  dependencies:
+    detect-libc "^1.0.2"
+    mkdirp "^0.5.1"
+    needle "^2.2.1"
+    nopt "^4.0.1"
+    npm-packlist "^1.1.6"
+    npmlog "^4.0.2"
+    rc "^1.2.7"
+    rimraf "^2.6.1"
+    semver "^5.3.0"
+    tar "^4"
+
+node-pre-gyp@~0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.11.0.tgz#db1f33215272f692cd38f03238e3e9b47c5dd054"
+  integrity sha512-TwWAOZb0j7e9eGaf9esRx3ZcLaE5tQ2lvYy1pb5IAaG1a2e2Kv5Lms1Y4hpj+ciXJRofIxxlt5haeQ/2ANeE0Q==
   dependencies:
     detect-libc "^1.0.2"
     mkdirp "^0.5.1"

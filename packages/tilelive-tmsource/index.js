@@ -6,9 +6,9 @@ var fs = require("fs"),
     util = require("util");
 
 var _ = require("underscore"),
-    Bridge = require("@mapbox/tilelive-bridge"),
+    Bridge = require("@kartotherian/tilelive-bridge"),
     carto = require("carto"),
-    mapnik = require("mapnik"),
+    mapnik = require("@kartotherian/mapnik"),
     mapnikref = require('mapnik-reference').load(mapnik.versions.mapnik),
     yaml = require("js-yaml");
 

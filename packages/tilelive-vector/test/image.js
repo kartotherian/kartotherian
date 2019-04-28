@@ -4,7 +4,7 @@ var path = require('path');
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var existsSync = require('fs').existsSync || require('path').existsSync;
-var mapnik = require('mapnik');
+var mapnik = require('@kartotherian/mapnik');
 
 function imageEqualsFile(buffer, file, meanError, callback) {
     if (typeof meanError == 'function') {

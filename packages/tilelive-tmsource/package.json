@@ -15,13 +15,13 @@
     "access": "public"
   },
   "dependencies": {
-    "@mapbox/tilelive-bridge": "^3.1.0",
+    "@kartotherian/tilelive-bridge": "^3.1.0",
     "js-yaml": "^3.2.5",
     "carto": "^0.18.1",
     "underscore": "^1.7.0",
     "mapnik-reference": "^8.7.0"
   },
   "peerDependencies": {
-    "mapnik": "^3.7.0"
+    "@kartotherian/mapnik": "^3.7.3"
   }
 }

@@ -20,9 +20,10 @@
     "access": "public"
   },
   "dependencies": {
-    "underscore": "^1.8.3",
+    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/tilelive-bridge": "^3.1.1",
     "quadtile-index": "^0.0.6",
-    "@kartotherian/err": "^0.0.3"
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "mocha": "^3.2.0"
