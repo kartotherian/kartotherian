@@ -18,13 +18,12 @@
     "access": "public"
   },
   "dependencies": {
-    "@kartotherian/err": "^0.0.3",
-    "@kartotherian/tilelive-bridge": "^3.1.1",
     "bluebird": "^3.5.0",
     "pg-promise": "^5.6.4",
     "pg.js": "^4.1.1",
     "preq": "^0.5.2",
     "topojson": "^2.2.0",
-    "wd-type-parser": "^0.0.3"
+    "wd-type-parser": "^0.0.3",
+    "@kartotherian/err": "^0.0.3"
   }
 }
