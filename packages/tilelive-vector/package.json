@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/tilelive-vector",
-  "version": "4.0.1",
+  "version": "4.0.2-alpha.0",
   "main": "./index.js",
   "description": "Vector tile => raster tile backend for tilelive",
   "repository": {
@@ -30,11 +30,11 @@
   },
   "devDependencies": {
     "@mapbox/mapbox-studio-default-style": "2.0.0",
-    "istanbul": "~0.3.17",
-    "coveralls": "~2.11.2",
-    "tape": "2.13.x",
     "@mapbox/tilejson": "^1.1.0",
-    "simple-statistics": "~0.8.0"
+    "coveralls": "~2.11.2",
+    "istanbul": "~0.3.17",
+    "simple-statistics": "~0.8.0",
+    "tape": "2.13.x"
   },
   "peerDependencies": {
     "@kartotherian/mapnik": "~3.7.3"

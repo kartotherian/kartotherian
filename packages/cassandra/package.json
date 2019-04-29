@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/cassandra",
-  "version": "0.2.1",
+  "version": "0.2.2-alpha.0",
   "description": "Cassandra tile storage for Kartotherian map tile server",
   "main": "CassandraStore.js",
   "scripts": {
@@ -19,12 +19,12 @@
     "access": "public"
   },
   "dependencies": {
+    "@kartotherian/err": "^0.0.5-alpha.0",
+    "@kartotherian/input-validator": "^0.0.7-alpha.0",
     "bluebird": "^3.5.0",
     "cassandra-driver": "3.0.2",
     "multistream": "^2.0.5",
     "promistreamus": "^0.1.14",
-    "quadtile-index": "^0.0.6",
-    "@kartotherian/err": "^0.0.4",
-    "@kartotherian/input-validator": "^0.0.6"
+    "quadtile-index": "^0.0.6"
   }
 }
