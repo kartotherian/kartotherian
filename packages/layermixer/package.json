@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/layermixer",
-  "version": "0.0.8",
+  "version": "0.0.9-alpha.0",
   "description": "Vector tile mixing source, allowing layers from multiple vector tile to be merged into one tile ",
   "main": "LayerMixer.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@kartotherian/input-validator": "^0.0.6",
+    "@kartotherian/input-validator": "^0.0.7-alpha.0",
     "bluebird": "^3.5.0",
     "underscore": "^1.8.3"
   }
