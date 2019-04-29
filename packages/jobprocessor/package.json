@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/jobprocessor",
-  "version": "1.0.2-alpha.0",
+  "version": "1.0.3-alpha.0",
   "description": "Processes tile generation jobs",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   "dependencies": {
     "@kartotherian/core": "^0.0.26",
     "@kartotherian/err": "^0.0.3",
-    "@kartotherian/input-validator": "^0.0.7-alpha.0",
+    "@kartotherian/input-validator": "^0.0.8-alpha.0",
     "bluebird": "^3.5.0",
     "event-stream": "^3.3.4",
     "numeral": "^2.0.5",

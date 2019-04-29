@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/postgres",
-  "version": "0.0.12-alpha.0",
+  "version": "0.0.13-alpha.0",
   "description": "PostgreSQL tile storage for Kartotherian map tile server",
   "keywords": [
     "kartotherian",
@@ -18,8 +18,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@kartotherian/err": "^0.0.5-alpha.0",
-    "@kartotherian/input-validator": "^0.0.7-alpha.0",
+    "@kartotherian/err": "^0.0.6-alpha.0",
+    "@kartotherian/input-validator": "^0.0.8-alpha.0",
     "bluebird": "^3.5.0",
     "pg-promise": "^5.6.4",
     "pg-query-stream": "^1.0.0",

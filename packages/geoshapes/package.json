@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/geoshapes",
-  "version": "1.0.3-alpha.0",
+  "version": "1.0.4-alpha.0",
   "description": "Kartotherian service to generate geometric shapes from PostgreSQL data",
   "main": "geoshapes.js",
   "scripts": {

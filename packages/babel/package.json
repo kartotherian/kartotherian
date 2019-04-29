@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/babel",
-  "version": "0.3.2-alpha.0",
+  "version": "0.3.3-alpha.0",
   "description": "Tile source to support multilingual maps",
   "main": "lib/Babel.js",
   "scripts": {
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@kartotherian/err": "^0.0.3",
-    "@kartotherian/input-validator": "^0.0.7-alpha.0",
+    "@kartotherian/input-validator": "^0.0.8-alpha.0",
     "bluebird": "^3.5.1",
     "language-scripts": "^1.0.2",
     "pbf": "^3.2.0",
