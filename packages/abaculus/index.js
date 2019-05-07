@@ -1,6 +1,6 @@
 var SphericalMercator = require('@mapbox/sphericalmercator');
 var queue = require('d3-queue').queue;
-var blend = require('mapnik').blend;
+var blend = require('@kartotherian/mapnik').blend;
 var crypto = require('crypto');
 
 module.exports = abaculus;

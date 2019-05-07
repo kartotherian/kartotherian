@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/jobprocessor",
-  "version": "1.0.1",
+  "version": "1.0.3-alpha.0",
   "description": "Processes tile generation jobs",
   "main": "index.js",
   "scripts": {
@@ -20,14 +20,14 @@
   },
   "homepage": "https://github.com/kartotherian/jobprocessor",
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "quadtile-index": "^0.0.6",
-    "@kartotherian/err": "^0.0.3",
-    "@kartotherian/input-validator": "^0.0.6",
     "@kartotherian/core": "^0.0.26",
+    "@kartotherian/err": "^0.0.3",
+    "@kartotherian/input-validator": "^0.0.8-alpha.0",
+    "bluebird": "^3.5.0",
+    "event-stream": "^3.3.4",
     "numeral": "^2.0.5",
     "promistreamus": "^0.1.14",
-    "event-stream": "^3.3.4",
+    "quadtile-index": "^0.0.6",
     "tmp-promise": "^1.0.3",
     "underscore": "^1.8.3"
   },

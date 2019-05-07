@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/tilelive-tmsource",
-  "version": "1.0.0",
+  "version": "1.0.2-alpha.0",
   "description": "A tilelive.js source for tmsource:// URIs",
   "contributors": [
     "TM2 Contributors",
@@ -15,13 +15,13 @@
     "access": "public"
   },
   "dependencies": {
-    "@mapbox/tilelive-bridge": "^3.1.0",
-    "js-yaml": "^3.2.5",
+    "@kartotherian/tilelive-bridge": "^3.1.0",
     "carto": "^0.18.1",
-    "underscore": "^1.7.0",
-    "mapnik-reference": "^8.7.0"
+    "js-yaml": "^3.2.5",
+    "mapnik-reference": "^8.7.0",
+    "underscore": "^1.7.0"
   },
   "peerDependencies": {
-    "mapnik": "^3.7.0"
+    "@kartotherian/mapnik": "^3.7.3"
   }
 }

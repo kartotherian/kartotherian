@@ -1,6 +1,6 @@
 var tilelive = require('@mapbox/tilelive');
 var crypto = require('crypto');
-var mapnik = require('mapnik');
+var mapnik = require('@kartotherian/mapnik');
 var sm = new (require('@mapbox/sphericalmercator'))();
 var uptile = require('tilelive-promise');
 

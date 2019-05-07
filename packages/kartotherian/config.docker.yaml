@@ -1,0 +1,135 @@
+# Number of worker processes to spawn.
+# Set to 0 to run everything in a single process without clustering.
+# Use 'ncpu' to run as many workers as there are CPU units
+num_workers: 0
+
+# Log error messages and gracefully restart a worker if v8 reports that it
+# uses more heap (note: not RSS) than this many mb.
+worker_heap_limit_mb: 250
+
+# Logger info
+logging:
+  level: trace
+#  streams:
+#  # Use gelf-stream -> logstash
+#  - type: gelf
+#    host: logstash1003.eqiad.wmnet
+#    port: 12201
+
+# Statsd metrics reporter
+metrics:
+  type: info
+  host: localhost
+  port: 8125
+
+services:
+  - name: kartotherian
+    # a relative path or the name of an npm package, if different from name
+    module: ./kartotherian/app.js
+    # optionally, a version constraint of the npm package
+    # version: ^0.4.0
+    # per-service config
+    conf:
+      port: 6533
+      # interface: localhost # uncomment to only listen on localhost
+      # more per-service config settings
+      # the location of the spec, defaults to spec.yaml if not specified
+      spec: ./spec.template.yaml
+      # allow cross-domain requests to the API (default '*')
+      cors: '*'
+      # to disable use:
+      # cors: false
+      # to restrict to a particular domain, use:
+      # cors: restricted.domain.org
+      # content for the CSP headers
+      # csp: false  # uncomment this line to disable sending them
+      # URL of the outbound proxy to use (complete with protocol)
+      # proxy: http://my.proxy.org:8080
+      # the list of domains for which not to use the proxy defined above
+      # no_proxy_list:
+      #   - domain1.com
+      #   - domain2.org
+      # the list of incoming request headers that can be logged; if left empty,
+      # the following headers are allowed: cache-control, content-length,
+      # content-type, if-match, user-agent, x-request-id
+      # log_header_whitelist:
+      #   - cache-control
+      #   - content-length
+      #   - content-type
+      #   - if-match
+      #   - user-agent
+      #   - x-request-id
+      # Uncomment to restrict connections to localhost only
+      # interface: localhost
+      # Uncomment to disable the X-Powered-By header
+      # expose_version: false
+
+      # Kartotherian variables and sources
+      variables: 
+        cassandra-pswd: cassandra
+        cassandra-servers:
+        - localhost
+        cassandra-user: cassandra
+        osmdb-pswd: secret
+        osmdb-user: default
+
+      sources: sources.docker.yaml
+
+      modules:
+      - "tilelive-tmstyle"
+      - "@kartotherian/autogen"
+      - "@kartotherian/babel"
+      - "@kartotherian/cassandra"
+      - "@kartotherian/layermixer"
+      - "@kartotherian/overzoom"
+      - "@kartotherian/postgres"
+      - "@kartotherian/substantial"
+      - "@kartotherian/tilelive-tmsource"
+      - "@kartotherian/tilelive-vector"
+      - "@mapbox/tilejson"
+
+      requestHandlers:
+      - "@kartotherian/geoshapes"
+      - "@kartotherian/maki"
+      - "@kartotherian/snapshot"
+
+      geoshapes:
+        allowUserQueries: true
+        database: gis
+        host: localhost
+        lineTable: planet_osm_line
+        password: secret
+        polygonTable: planet_osm_polygon
+        table: planet_osm_polygon
+        user: default
+        wikidataQueryService: https://query.wikidata.org/bigdata/namespace/wdq/sparql
+
+      mwapi_req:
+        body: "{{ default(request.query, {}) }}"
+        headers:                                                                                                                      
+          host: "{{request.params.domain}}"
+          user-agent: "{{user-agent}}"                                                                                                
+        method: post                                                                                                                  
+        uri:
+
+      allowedDomains:
+        http:
+          - localhost:8080
+          - localhost
+          - 127.0.0.1:8080
+          - wmflabs.org
+          - dev.wiki.local.wmftest.net:8080
+          - dev.wiki.local.wmftest.net
+        https:
+          - mediawiki.org
+          - wikibooks.org
+          - wikidata.org
+          - wikimedia.org
+          - wikimediafoundation.org
+          - wikinews.org
+          - wikipedia.org
+          - wikiquote.org
+          - wikisource.org
+          - wikiversity.org
+          - wikivoyage.org
+          - wiktionary.org

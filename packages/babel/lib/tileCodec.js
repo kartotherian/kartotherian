@@ -190,7 +190,8 @@ module.exports = {
   encodeTile: function encodeTile(tile) {
     const pbf = new Pbf();
     Tile.write(tile, pbf);
-    return pbf.finish();
+    // Using Buffer.from because of Node 10 Buffer constructor deprecation
+    return Buffer.from(pbf.finish());
   },
 };
 

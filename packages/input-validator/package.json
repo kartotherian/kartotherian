@@ -1,6 +1,6 @@
 {
   "name": "@kartotherian/input-validator",
-  "version": "0.0.6",
+  "version": "0.0.8-alpha.0",
   "description": "Functions to assert input correctness for Kartotherian",
   "main": "validator.js",
   "scripts": {
@@ -20,9 +20,9 @@
     "access": "public"
   },
   "dependencies": {
-    "underscore": "^1.8.3",
+    "@kartotherian/err": "^0.0.3",
     "quadtile-index": "^0.0.6",
-    "@kartotherian/err": "^0.0.3"
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "mocha": "^3.2.0"

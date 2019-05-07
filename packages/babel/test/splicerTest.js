@@ -277,7 +277,7 @@ describe('Tag recombination', () => {
 
       assert.deepStrictEqual(
         bbl.languageMap.cdo,
-        ['cdo', 'nan', 'zh-hant']
+        ['cdo', 'nan', 'zh-hant', 'zh', 'zh-hans']
       );
     });
   });
