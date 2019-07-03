@@ -11,6 +11,7 @@ let util = require('util');
 function Err(message) {
     Error.captureStackTrace(this, this.constructor);
     this.name = this.constructor.name;
+    this.metrics = null;
     this.message = arguments.length < 2
         ? (message || 'unknown')
         : util.format.apply(null, arguments);
