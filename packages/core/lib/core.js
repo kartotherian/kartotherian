@@ -361,7 +361,7 @@ core.reportRequestError = function reportRequestError(err, res) {
 // Prevent metrics to be sent if it's a function (T212303)
 core.areMetricsValid = function (metrics) {
   // if type is equal to function, metrics is not valid
-  return typeof metrics !== 'function';
+  return typeof metrics === 'string';
 }
 
 core.getAppConfiguration = function getAppConfiguration() {
