@@ -38,8 +38,8 @@
   },
   "devDependencies": {
     "eslint": "^5.15.1",
-    "eslint-config-node-services": "^2.2.5",
-    "eslint-config-wikimedia": "^0.11.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-kartotherian": "^0.0.5",
     "mocha": "^6.0.2",
     "mocha-eslint": "^5.0.0",
     "mocha-lcov-reporter": "^1.3.0",
