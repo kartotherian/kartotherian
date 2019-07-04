@@ -8,7 +8,7 @@
   ],
   "main": "Postgres.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No test specified\" && exit 0"
   },
   "repository": "kartotherian/postgres",
   "author": "Yuri Astrakhan <YuriAstrakhan@gmail.com>",

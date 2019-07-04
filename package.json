@@ -1,6 +1,13 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "bootstrap": "lerna exec -- npm install --build-from-source=@kartotherian/mapnik && lerna link",
+    "lint": "lerna run lint",
+    "lint:fix": "lerna run lint:fix",
+    "test": "lerna run test",
+    "clean": "./clean_node_modules.sh"
+  },
   "description": "Kartotherian - a suite of map tile rendering and map serving software",
   "license": "Apache-2.0",
   "repository": "kartotherian/kartotherian",
@@ -23,9 +30,21 @@
     "Stephane Bisson <sbisson@wikimedia.org>"
   ],
   "devDependencies": {
-    "lerna": "^3.13.1"
+    "lerna": "^3.13.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-kartotherian": "^0.0.5",
+    "grunt": "^1.0.2",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-eslint": "^20.1.0",
+    "grunt-mocha-test": "^0.13.3",
+    "grunt-tyops": "0.1.0",
+    "json-stringify-pretty-compact": "*",
+    "mocha": "^5.2.0",
+    "typedarray-to-buffer": "3.1.2"
   },
   "workspaces": {
-    "packages": ["packages/*"]
+    "packages": [
+      "packages/*"
+    ]
   }
 }
