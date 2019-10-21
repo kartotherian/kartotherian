@@ -212,8 +212,18 @@ Sources.prototype._loadSourceAsync = function _loadSourceAsync(src, sourceId) {
     checkType(src, 'static', 'boolean');
     checkType(src, 'maxwidth', 'integer');
     checkType(src, 'maxheight', 'integer');
-    checkType(src, 'setInfo', 'object');
-    checkType(src, 'overrideInfo', 'object');
+
+    // Customize tilejson
+    if (checkType(src, 'setInfo', 'object')) {
+      _.each(src.setInfo, (v, k) => {
+        src.setInfo[k] = self._resolveValue(v, k);
+      });
+    }
+    if (checkType(src, 'overrideInfo', 'object')) {
+      _.each(src.overrideInfo, (v, k) => {
+        src.overrideInfo[k] = self._resolveValue(v, k);
+      });
+    }
 
     // Add URI query values, e.g.  ?password=...
     if (checkType(src, 'params', 'object')) {
