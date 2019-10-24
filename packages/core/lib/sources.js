@@ -222,7 +222,7 @@ Sources.prototype._loadSourceAsync = function _loadSourceAsync(src, sourceId) {
       });
     }
     // Set URI's path, e.g. /srv/data/myDir
-    if (checkType(src, 'pathname', 'object')) {
+    if (checkType(src, 'pathname', 'string')) {
       uri.pathname = self._resolveValue(src.pathname, 'pathname');
     }
     if (src.xml) {
