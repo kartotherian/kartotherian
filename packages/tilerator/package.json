@@ -36,7 +36,7 @@
     "preq": "^0.5.2",
     "service-runner": "^2.6.4",
     "heapdump": "*",
-    "minimist": "0.2.*",
+    "minimist": "1.2.*",
     "yargs": "^5.0.0",
     "underscore": "^1.8.3",
     "why-is-node-running": "^1.2.2",
