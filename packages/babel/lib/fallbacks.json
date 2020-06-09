@@ -161,7 +161,7 @@
         "zh",
         "ja-Hani",
         "ko-Hani",
-        "ko_Hanja",
+        "ko_hanja",
         "vi-Hani"
     ],
     "lzz": "tr",
@@ -328,7 +328,7 @@
         "zh-Hans",
         "ja-Hani",
         "ko-Hani",
-        "ko_Hanja",
+        "ko_hanja",
         "vi-Hani"
     ],
     "zh-HK": [
