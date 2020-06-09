@@ -89,9 +89,9 @@
     "gom-deva": "hi",
     "gsw": "de",
     "hak": [
-        "zh-hant",
+        "zh-Hant",
         "zh",
-        "zh-hans"
+        "zh-Hans"
     ],
     "hif": "hif-latn",
     "hrx": "de",
@@ -102,8 +102,8 @@
     "ht": "fr",
     "hu-formal": "hu",
     "ii": [
-        "zh-cn",
-        "zh-hans",
+        "zh-CN",
+        "zh-Hans",
         "zh"
     ],
     "inh": "ru",
@@ -157,12 +157,12 @@
     "ltg": "lv",
     "luz": "fa",
     "lzh": [
-        "zh-hant",
+        "zh-Hant",
         "zh",
-        "ja-hani",
-        "ko-hani",
-        "ko_hanja",
-        "vi-hani"
+        "ja-Hani",
+        "ko-Hani",
+        "ko_Hanja",
+        "vi-Hani"
     ],
     "lzz": "tr",
     "mai": "hi",
@@ -182,7 +182,7 @@
     "nah": "es",
     "nan": [
         "cdo",
-        "zh-hant",
+        "zh-Hant",
         "zh"
     ],
     "nap": "it",
@@ -263,8 +263,8 @@
     "su": "id",
     "szl": "pl",
     "tay": [
-        "zh-hant",
-        "zh-tw",
+        "zh-Hant",
+        "zh-TW",
         "zh"
     ],
     "tcy": "kn",
@@ -287,97 +287,97 @@
     "wa": "fr",
     "wo": "fr",
     "wuu": [
-        "zh-hans",
-        "zh-cn",
+        "zh-Hans",
+        "zh-CN",
         "zh",
-        "zh-hant"
+        "zh-Hant"
     ],
     "xal": "ru",
     "xmf": "ka",
     "yi": "he",
     "za": [
-        "zh-hans",
-        "zh-cn",
+        "zh-Hans",
+        "zh-CN",
         "zh",
-        "zh-hant"
+        "zh-Hant"
     ],
     "zea": "nl",
     "zh": [
-        "zh-hans",
-        "zh-hant",
-        "zh-cn",
-        "zh-tw",
-        "ja-hani",
-        "ko-hani",
+        "zh-Hans",
+        "zh-Hant",
+        "zh-CN",
+        "zh-TW",
+        "ja-Hani",
+        "ko-Hani",
         "ko_hanja",
-        "vi-hani"
+        "vi-Hani"
     ],
-    "zh-cn": [
-        "zh-hans",
+    "zh-CN": [
+        "zh-Hans",
         "zh",
-        "zh-hant",
-        "ja-hani",
-        "ko-hani",
+        "zh-Hant",
+        "ja-Hani",
+        "ko-Hani",
         "ko_hanja",
-        "vi-hani"
+        "vi-Hani"
     ],
-    "zh-hant": [
-        "zh-tw",
-        "zh-hk",
+    "zh-Hant": [
+        "zh-TW",
+        "zh-HK",
         "zh",
-        "zh-hans",
-        "ja-hani",
-        "ko-hani",
-        "ko_hanja",
-        "vi-hani"
+        "zh-Hans",
+        "ja-Hani",
+        "ko-Hani",
+        "ko_Hanja",
+        "vi-Hani"
     ],
-    "zh-hk": [
-        "zh-hant",
-        "zh-tw",
+    "zh-HK": [
+        "zh-Hant",
+        "zh-TW",
         "zh",
-        "zh-hans",
-        "ja-hani",
-        "ko-hani",
+        "zh-Hans",
+        "ja-Hani",
+        "ko-Hani",
         "ko_hanja",
-        "vi-hani"
+        "vi-Hani"
     ],
-    "zh-mo": [
-        "zh-hk",
-        "zh-hant",
-        "zh-tw",
+    "zh-MO": [
+        "zh-HK",
+        "zh-Hant",
+        "zh-TW",
         "zh",
-        "zh-hans",
-        "ja-hani",
-        "ko-hani",
+        "zh-Hans",
+        "ja-Hani",
+        "ko-Hani",
         "ko_hanja",
-        "vi-hani"
+        "vi-Hani"
     ],
-    "zh-my": [
-        "zh-sg",
-        "zh-hans",
+    "zh-MY": [
+        "zh-SG",
+        "zh-Hans",
         "zh",
-        "zh-hant",
-        "ja-hani",
-        "ko-hani",
+        "zh-Hant",
+        "ja-Hani",
+        "ko-Hani",
         "ko_hanja",
-        "vi-hani"
+        "vi-Hani"
     ],
-    "zh-sg": [
-        "zh-hans",
+    "zh-SG": [
+        "zh-Hans",
         "zh",
-        "zh-hant",
-        "ja-hani",
-        "ko-hani",
+        "zh-Hant",
+        "ja-Hani",
+        "ko-Hani",
         "ko_hanja",
-        "vi-hani"
+        "vi-Hani"
     ],
-    "zh-tw": [
-        "zh-hant",
+    "zh-TW": [
+        "zh-Hant",
         "zh",
-        "zh-hans",
-        "ja-hani",
-        "ko-hani",
+        "zh-Hans",
+        "ja-Hani",
+        "ko-Hani",
         "ko_hanja",
-        "vi-hani"
+        "vi-Hani"
     ]
 }
